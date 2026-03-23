@@ -83,7 +83,13 @@ class Chord {
         'difficulty': difficulty,
       };
 
+  /// Sentinel used by [copyWith] to distinguish "clear to null" from "keep existing".
+  static const Object _unset = Object();
+
   /// Returns a copy of this [Chord] with the specified fields replaced.
+  ///
+  /// To explicitly clear the optional [audioFile] field, pass
+  /// `audioFile: null` together with `clearAudioFile: true`.
   Chord copyWith({
     String? name,
     String? root,
@@ -91,7 +97,7 @@ class Chord {
     List<int>? intervals,
     List<int>? fretPositions,
     List<int>? fingerPositions,
-    String? audioFile,
+    Object? audioFile = _unset,
     int? difficulty,
   }) {
     return Chord(
@@ -101,7 +107,9 @@ class Chord {
       intervals: intervals ?? this.intervals,
       fretPositions: fretPositions ?? this.fretPositions,
       fingerPositions: fingerPositions ?? this.fingerPositions,
-      audioFile: audioFile ?? this.audioFile,
+      audioFile: identical(audioFile, _unset)
+          ? this.audioFile
+          : audioFile as String?,
       difficulty: difficulty ?? this.difficulty,
     );
   }

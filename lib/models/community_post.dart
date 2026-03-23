@@ -88,7 +88,8 @@ class CommunityPost {
 
   /// Returns a copy of this [CommunityPost] with the specified fields replaced.
   ///
-  /// If [content] is provided it is re-sanitised.
+  /// If [content] is provided it is re-sanitised; otherwise the already-clean
+  /// content is preserved without redundant processing.
   CommunityPost copyWith({
     String? id,
     String? author,
@@ -97,10 +98,20 @@ class CommunityPost {
     int? likes,
     List<String>? tags,
   }) {
-    return CommunityPost(
+    if (content != null) {
+      return CommunityPost(
+        id: id ?? this.id,
+        author: author ?? this.author,
+        content: content,
+        timestamp: timestamp ?? this.timestamp,
+        likes: likes ?? this.likes,
+        tags: tags ?? this.tags,
+      );
+    }
+    return CommunityPost._raw(
       id: id ?? this.id,
       author: author ?? this.author,
-      content: content ?? this.content,
+      content: this.content,
       timestamp: timestamp ?? this.timestamp,
       likes: likes ?? this.likes,
       tags: tags ?? this.tags,

@@ -40,7 +40,7 @@ class AudioUtils {
   static String frequencyToNote(double frequency) {
     try {
       if (frequency <= 0) return '--';
-      final midi = frequencyToMidi(frequency);
+  final midi = frequencyToMidi(frequency);
       return noteNameFromMidi(midi);
     } catch (e, st) {
       debugPrint('AudioUtils.frequencyToNote error: $e\n$st');
@@ -75,25 +75,19 @@ class AudioUtils {
   }
 
   /// Returns the note name for a given MIDI number (e.g. MIDI 69 → `"A4"`).
+  ///
+  /// Uses MIDI convention: C-1 = 0, C4 = 60 (middle C), A4 = 69.
+  /// The `+1` octave offset corrects for MIDI's C(-1) base.
   static String noteNameFromMidi(int midi) {
-    final octave = (midi ~/ 12) - 1;
+    final octave = (midi ~/ 12) - 1; // +1 offset: MIDI C(-1)=0, so octave=(midi/12)-1
     final noteIndex = midi % 12;
     return '${chromaticNotes[noteIndex]}$octave';
   }
 
   // ── Internal Helpers ───────────────────────────────────────────────────────
 
-  /// Parses a note-with-octave string (e.g. `"A4"`) into a MIDI number.
+  /// Delegates to the shared [noteNameToMidi] helper in `music_theory.dart`.
   ///
   /// Returns `-1` when the string cannot be parsed.
-  static int _noteToMidi(String noteWithOctave) {
-    if (noteWithOctave.length < 2) return -1;
-    final lastChar = noteWithOctave[noteWithOctave.length - 1];
-    final octave = int.tryParse(lastChar);
-    if (octave == null) return -1;
-    final notePart = noteWithOctave.substring(0, noteWithOctave.length - 1);
-    final index = chromaticNotes.indexOf(notePart);
-    if (index == -1) return -1;
-    return (octave + 1) * 12 + index;
-  }
+  static int _noteToMidi(String noteWithOctave) => noteNameToMidi(noteWithOctave);
 }

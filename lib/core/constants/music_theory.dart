@@ -90,7 +90,8 @@ const Map<String, List<String>> alternateTunings = {
 /// Converts a note name with octave (e.g. `"E2"`) to its MIDI number.
 ///
 /// Middle C (C4) = MIDI 60.  Returns `-1` for unrecognised notes.
-int _noteNameToMidi(String noteWithOctave) {
+/// Octave numbering follows MIDI convention: C(−1) = MIDI 0.
+int noteNameToMidi(String noteWithOctave) {
   if (noteWithOctave.length < 2) return -1;
   final octaveStr = noteWithOctave[noteWithOctave.length - 1];
   final notePart = noteWithOctave.substring(0, noteWithOctave.length - 1);
@@ -98,12 +99,15 @@ int _noteNameToMidi(String noteWithOctave) {
   if (octave == null) return -1;
   final index = chromaticNotes.indexOf(notePart);
   if (index == -1) return -1;
-  return (octave + 1) * 12 + index;
+  return (octave + 1) * 12 + index; // +1: C(-1)=MIDI 0 → octave offset
 }
 
 /// Returns the note name for a given MIDI number (e.g. MIDI 69 → `"A4"`).
+///
+/// Uses MIDI convention: C-1 = 0, C4 = 60 (middle C), A4 = 69.
+/// The `−1` octave shift corrects for MIDI's C(−1) base (C(−1)=MIDI 0).
 String noteNameFromMidi(int midi) {
-  final octave = (midi ~/ 12) - 1;
+  final octave = (midi ~/ 12) - 1; // -1 offset: C(-1) starts at MIDI 0
   final noteIndex = midi % 12;
   return '${chromaticNotes[noteIndex]}$octave';
 }
@@ -120,7 +124,7 @@ final Map<int, Map<int, String>> fretboardMap = _buildFretboardMap(standardTunin
 Map<int, Map<int, String>> _buildFretboardMap(List<String> tuning) {
   final map = <int, Map<int, String>>{};
   for (var s = 0; s < tuning.length; s++) {
-    final openMidi = _noteNameToMidi(tuning[s]);
+    final openMidi = noteNameToMidi(tuning[s]);
     map[s] = {};
     for (var fret = 0; fret <= 22; fret++) {
       map[s]![fret] = noteNameFromMidi(openMidi + fret);
@@ -152,7 +156,7 @@ String transposeNote(String note, int semitones) {
     final octave = int.tryParse(lastChar);
     if (octave != null) {
       final notePart = note.substring(0, note.length - 1);
-      final midi = _noteNameToMidi(note);
+      final midi = noteNameToMidi(note);
       if (midi != -1) {
         return noteNameFromMidi(midi + semitones);
       }
