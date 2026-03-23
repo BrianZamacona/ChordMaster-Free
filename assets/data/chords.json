@@ -1,0 +1,3062 @@
+[
+  {
+    "name": "C Major",
+    "root": "C",
+    "type": "major",
+    "intervals": [
+      0,
+      4,
+      7
+    ],
+    "fretPositions": [
+      -1,
+      3,
+      2,
+      0,
+      1,
+      0
+    ],
+    "fingerPositions": [
+      0,
+      3,
+      2,
+      0,
+      1,
+      0
+    ],
+    "audioFile": null,
+    "difficulty": 1
+  },
+  {
+    "name": "C Minor",
+    "root": "C",
+    "type": "minor",
+    "intervals": [
+      0,
+      3,
+      7
+    ],
+    "fretPositions": [
+      -1,
+      3,
+      5,
+      5,
+      4,
+      3
+    ],
+    "fingerPositions": [
+      0,
+      1,
+      3,
+      4,
+      2,
+      1
+    ],
+    "audioFile": null,
+    "difficulty": 3
+  },
+  {
+    "name": "C Dom 7",
+    "root": "C",
+    "type": "dominant7",
+    "intervals": [
+      0,
+      4,
+      7,
+      10
+    ],
+    "fretPositions": [
+      -1,
+      3,
+      2,
+      3,
+      1,
+      0
+    ],
+    "fingerPositions": [
+      0,
+      3,
+      2,
+      4,
+      1,
+      0
+    ],
+    "audioFile": null,
+    "difficulty": 2
+  },
+  {
+    "name": "C Maj 7",
+    "root": "C",
+    "type": "major7",
+    "intervals": [
+      0,
+      4,
+      7,
+      11
+    ],
+    "fretPositions": [
+      -1,
+      3,
+      2,
+      0,
+      0,
+      0
+    ],
+    "fingerPositions": [
+      0,
+      3,
+      2,
+      0,
+      0,
+      0
+    ],
+    "audioFile": null,
+    "difficulty": 2
+  },
+  {
+    "name": "C Min 7",
+    "root": "C",
+    "type": "minor7",
+    "intervals": [
+      0,
+      3,
+      7,
+      10
+    ],
+    "fretPositions": [
+      -1,
+      3,
+      5,
+      3,
+      4,
+      3
+    ],
+    "fingerPositions": [
+      0,
+      1,
+      3,
+      1,
+      2,
+      1
+    ],
+    "audioFile": null,
+    "difficulty": 3
+  },
+  {
+    "name": "C Dim",
+    "root": "C",
+    "type": "diminished",
+    "intervals": [
+      0,
+      3,
+      6
+    ],
+    "fretPositions": [
+      -1,
+      3,
+      4,
+      5,
+      4,
+      -1
+    ],
+    "fingerPositions": [
+      0,
+      1,
+      2,
+      3,
+      2,
+      0
+    ],
+    "audioFile": null,
+    "difficulty": 4
+  },
+  {
+    "name": "C Aug",
+    "root": "C",
+    "type": "augmented",
+    "intervals": [
+      0,
+      4,
+      8
+    ],
+    "fretPositions": [
+      -1,
+      3,
+      6,
+      5,
+      5,
+      -1
+    ],
+    "fingerPositions": [
+      0,
+      1,
+      3,
+      2,
+      2,
+      0
+    ],
+    "audioFile": null,
+    "difficulty": 4
+  },
+  {
+    "name": "C Sus2",
+    "root": "C",
+    "type": "sus2",
+    "intervals": [
+      0,
+      2,
+      7
+    ],
+    "fretPositions": [
+      8,
+      10,
+      12,
+      9,
+      8,
+      8
+    ],
+    "fingerPositions": [
+      1,
+      2,
+      4,
+      1,
+      1,
+      1
+    ],
+    "audioFile": null,
+    "difficulty": 3
+  },
+  {
+    "name": "C Sus4",
+    "root": "C",
+    "type": "sus4",
+    "intervals": [
+      0,
+      5,
+      7
+    ],
+    "fretPositions": [
+      8,
+      10,
+      10,
+      10,
+      8,
+      8
+    ],
+    "fingerPositions": [
+      1,
+      2,
+      3,
+      4,
+      1,
+      1
+    ],
+    "audioFile": null,
+    "difficulty": 3
+  },
+  {
+    "name": "C# Major",
+    "root": "C#",
+    "type": "major",
+    "intervals": [
+      0,
+      4,
+      7
+    ],
+    "fretPositions": [
+      -1,
+      4,
+      6,
+      6,
+      6,
+      4
+    ],
+    "fingerPositions": [
+      0,
+      1,
+      3,
+      4,
+      3,
+      1
+    ],
+    "audioFile": null,
+    "difficulty": 3
+  },
+  {
+    "name": "C# Minor",
+    "root": "C#",
+    "type": "minor",
+    "intervals": [
+      0,
+      3,
+      7
+    ],
+    "fretPositions": [
+      -1,
+      4,
+      6,
+      6,
+      5,
+      4
+    ],
+    "fingerPositions": [
+      0,
+      1,
+      3,
+      4,
+      2,
+      1
+    ],
+    "audioFile": null,
+    "difficulty": 3
+  },
+  {
+    "name": "C# Dom 7",
+    "root": "C#",
+    "type": "dominant7",
+    "intervals": [
+      0,
+      4,
+      7,
+      10
+    ],
+    "fretPositions": [
+      -1,
+      4,
+      6,
+      4,
+      6,
+      4
+    ],
+    "fingerPositions": [
+      0,
+      1,
+      2,
+      0,
+      3,
+      1
+    ],
+    "audioFile": null,
+    "difficulty": 3
+  },
+  {
+    "name": "C# Maj 7",
+    "root": "C#",
+    "type": "major7",
+    "intervals": [
+      0,
+      4,
+      7,
+      11
+    ],
+    "fretPositions": [
+      -1,
+      4,
+      6,
+      5,
+      6,
+      4
+    ],
+    "fingerPositions": [
+      0,
+      1,
+      2,
+      1,
+      3,
+      1
+    ],
+    "audioFile": null,
+    "difficulty": 3
+  },
+  {
+    "name": "C# Min 7",
+    "root": "C#",
+    "type": "minor7",
+    "intervals": [
+      0,
+      3,
+      7,
+      10
+    ],
+    "fretPositions": [
+      -1,
+      4,
+      6,
+      4,
+      5,
+      4
+    ],
+    "fingerPositions": [
+      0,
+      1,
+      3,
+      0,
+      2,
+      1
+    ],
+    "audioFile": null,
+    "difficulty": 3
+  },
+  {
+    "name": "C# Dim",
+    "root": "C#",
+    "type": "diminished",
+    "intervals": [
+      0,
+      3,
+      6
+    ],
+    "fretPositions": [
+      -1,
+      4,
+      5,
+      6,
+      5,
+      -1
+    ],
+    "fingerPositions": [
+      0,
+      1,
+      2,
+      3,
+      2,
+      0
+    ],
+    "audioFile": null,
+    "difficulty": 4
+  },
+  {
+    "name": "C# Aug",
+    "root": "C#",
+    "type": "augmented",
+    "intervals": [
+      0,
+      4,
+      8
+    ],
+    "fretPositions": [
+      -1,
+      4,
+      7,
+      6,
+      6,
+      -1
+    ],
+    "fingerPositions": [
+      0,
+      1,
+      3,
+      2,
+      2,
+      0
+    ],
+    "audioFile": null,
+    "difficulty": 4
+  },
+  {
+    "name": "C# Sus2",
+    "root": "C#",
+    "type": "sus2",
+    "intervals": [
+      0,
+      2,
+      7
+    ],
+    "fretPositions": [
+      9,
+      11,
+      13,
+      10,
+      9,
+      9
+    ],
+    "fingerPositions": [
+      1,
+      2,
+      4,
+      1,
+      1,
+      1
+    ],
+    "audioFile": null,
+    "difficulty": 3
+  },
+  {
+    "name": "C# Sus4",
+    "root": "C#",
+    "type": "sus4",
+    "intervals": [
+      0,
+      5,
+      7
+    ],
+    "fretPositions": [
+      9,
+      11,
+      11,
+      11,
+      9,
+      9
+    ],
+    "fingerPositions": [
+      1,
+      2,
+      3,
+      4,
+      1,
+      1
+    ],
+    "audioFile": null,
+    "difficulty": 3
+  },
+  {
+    "name": "D Major",
+    "root": "D",
+    "type": "major",
+    "intervals": [
+      0,
+      4,
+      7
+    ],
+    "fretPositions": [
+      -1,
+      -1,
+      0,
+      2,
+      3,
+      2
+    ],
+    "fingerPositions": [
+      0,
+      0,
+      0,
+      1,
+      3,
+      2
+    ],
+    "audioFile": null,
+    "difficulty": 1
+  },
+  {
+    "name": "D Minor",
+    "root": "D",
+    "type": "minor",
+    "intervals": [
+      0,
+      3,
+      7
+    ],
+    "fretPositions": [
+      -1,
+      -1,
+      0,
+      2,
+      3,
+      1
+    ],
+    "fingerPositions": [
+      0,
+      0,
+      0,
+      1,
+      3,
+      1
+    ],
+    "audioFile": null,
+    "difficulty": 1
+  },
+  {
+    "name": "D Dom 7",
+    "root": "D",
+    "type": "dominant7",
+    "intervals": [
+      0,
+      4,
+      7,
+      10
+    ],
+    "fretPositions": [
+      -1,
+      -1,
+      0,
+      2,
+      1,
+      2
+    ],
+    "fingerPositions": [
+      0,
+      0,
+      0,
+      2,
+      1,
+      3
+    ],
+    "audioFile": null,
+    "difficulty": 2
+  },
+  {
+    "name": "D Maj 7",
+    "root": "D",
+    "type": "major7",
+    "intervals": [
+      0,
+      4,
+      7,
+      11
+    ],
+    "fretPositions": [
+      -1,
+      -1,
+      0,
+      2,
+      2,
+      2
+    ],
+    "fingerPositions": [
+      0,
+      0,
+      0,
+      1,
+      2,
+      3
+    ],
+    "audioFile": null,
+    "difficulty": 2
+  },
+  {
+    "name": "D Min 7",
+    "root": "D",
+    "type": "minor7",
+    "intervals": [
+      0,
+      3,
+      7,
+      10
+    ],
+    "fretPositions": [
+      -1,
+      -1,
+      0,
+      2,
+      1,
+      1
+    ],
+    "fingerPositions": [
+      0,
+      0,
+      0,
+      2,
+      1,
+      1
+    ],
+    "audioFile": null,
+    "difficulty": 1
+  },
+  {
+    "name": "D Dim",
+    "root": "D",
+    "type": "diminished",
+    "intervals": [
+      0,
+      3,
+      6
+    ],
+    "fretPositions": [
+      -1,
+      5,
+      6,
+      7,
+      6,
+      -1
+    ],
+    "fingerPositions": [
+      0,
+      1,
+      2,
+      3,
+      2,
+      0
+    ],
+    "audioFile": null,
+    "difficulty": 4
+  },
+  {
+    "name": "D Aug",
+    "root": "D",
+    "type": "augmented",
+    "intervals": [
+      0,
+      4,
+      8
+    ],
+    "fretPositions": [
+      -1,
+      5,
+      8,
+      7,
+      7,
+      -1
+    ],
+    "fingerPositions": [
+      0,
+      1,
+      3,
+      2,
+      2,
+      0
+    ],
+    "audioFile": null,
+    "difficulty": 4
+  },
+  {
+    "name": "D Sus2",
+    "root": "D",
+    "type": "sus2",
+    "intervals": [
+      0,
+      2,
+      7
+    ],
+    "fretPositions": [
+      10,
+      12,
+      14,
+      11,
+      10,
+      10
+    ],
+    "fingerPositions": [
+      1,
+      2,
+      4,
+      1,
+      1,
+      1
+    ],
+    "audioFile": null,
+    "difficulty": 3
+  },
+  {
+    "name": "D Sus4",
+    "root": "D",
+    "type": "sus4",
+    "intervals": [
+      0,
+      5,
+      7
+    ],
+    "fretPositions": [
+      10,
+      12,
+      12,
+      12,
+      10,
+      10
+    ],
+    "fingerPositions": [
+      1,
+      2,
+      3,
+      4,
+      1,
+      1
+    ],
+    "audioFile": null,
+    "difficulty": 3
+  },
+  {
+    "name": "D# Major",
+    "root": "D#",
+    "type": "major",
+    "intervals": [
+      0,
+      4,
+      7
+    ],
+    "fretPositions": [
+      -1,
+      6,
+      8,
+      8,
+      8,
+      6
+    ],
+    "fingerPositions": [
+      0,
+      1,
+      3,
+      4,
+      3,
+      1
+    ],
+    "audioFile": null,
+    "difficulty": 3
+  },
+  {
+    "name": "D# Minor",
+    "root": "D#",
+    "type": "minor",
+    "intervals": [
+      0,
+      3,
+      7
+    ],
+    "fretPositions": [
+      -1,
+      6,
+      8,
+      8,
+      7,
+      6
+    ],
+    "fingerPositions": [
+      0,
+      1,
+      3,
+      4,
+      2,
+      1
+    ],
+    "audioFile": null,
+    "difficulty": 3
+  },
+  {
+    "name": "D# Dom 7",
+    "root": "D#",
+    "type": "dominant7",
+    "intervals": [
+      0,
+      4,
+      7,
+      10
+    ],
+    "fretPositions": [
+      -1,
+      6,
+      8,
+      6,
+      8,
+      6
+    ],
+    "fingerPositions": [
+      0,
+      1,
+      2,
+      0,
+      3,
+      1
+    ],
+    "audioFile": null,
+    "difficulty": 3
+  },
+  {
+    "name": "D# Maj 7",
+    "root": "D#",
+    "type": "major7",
+    "intervals": [
+      0,
+      4,
+      7,
+      11
+    ],
+    "fretPositions": [
+      -1,
+      6,
+      8,
+      7,
+      8,
+      6
+    ],
+    "fingerPositions": [
+      0,
+      1,
+      2,
+      1,
+      3,
+      1
+    ],
+    "audioFile": null,
+    "difficulty": 3
+  },
+  {
+    "name": "D# Min 7",
+    "root": "D#",
+    "type": "minor7",
+    "intervals": [
+      0,
+      3,
+      7,
+      10
+    ],
+    "fretPositions": [
+      -1,
+      6,
+      8,
+      6,
+      7,
+      6
+    ],
+    "fingerPositions": [
+      0,
+      1,
+      3,
+      0,
+      2,
+      1
+    ],
+    "audioFile": null,
+    "difficulty": 3
+  },
+  {
+    "name": "D# Dim",
+    "root": "D#",
+    "type": "diminished",
+    "intervals": [
+      0,
+      3,
+      6
+    ],
+    "fretPositions": [
+      -1,
+      6,
+      7,
+      8,
+      7,
+      -1
+    ],
+    "fingerPositions": [
+      0,
+      1,
+      2,
+      3,
+      2,
+      0
+    ],
+    "audioFile": null,
+    "difficulty": 4
+  },
+  {
+    "name": "D# Aug",
+    "root": "D#",
+    "type": "augmented",
+    "intervals": [
+      0,
+      4,
+      8
+    ],
+    "fretPositions": [
+      -1,
+      6,
+      9,
+      8,
+      8,
+      -1
+    ],
+    "fingerPositions": [
+      0,
+      1,
+      3,
+      2,
+      2,
+      0
+    ],
+    "audioFile": null,
+    "difficulty": 4
+  },
+  {
+    "name": "D# Sus2",
+    "root": "D#",
+    "type": "sus2",
+    "intervals": [
+      0,
+      2,
+      7
+    ],
+    "fretPositions": [
+      11,
+      13,
+      15,
+      12,
+      11,
+      11
+    ],
+    "fingerPositions": [
+      1,
+      2,
+      4,
+      1,
+      1,
+      1
+    ],
+    "audioFile": null,
+    "difficulty": 3
+  },
+  {
+    "name": "D# Sus4",
+    "root": "D#",
+    "type": "sus4",
+    "intervals": [
+      0,
+      5,
+      7
+    ],
+    "fretPositions": [
+      11,
+      13,
+      13,
+      13,
+      11,
+      11
+    ],
+    "fingerPositions": [
+      1,
+      2,
+      3,
+      4,
+      1,
+      1
+    ],
+    "audioFile": null,
+    "difficulty": 3
+  },
+  {
+    "name": "E Major",
+    "root": "E",
+    "type": "major",
+    "intervals": [
+      0,
+      4,
+      7
+    ],
+    "fretPositions": [
+      0,
+      2,
+      2,
+      1,
+      0,
+      0
+    ],
+    "fingerPositions": [
+      0,
+      2,
+      3,
+      1,
+      0,
+      0
+    ],
+    "audioFile": null,
+    "difficulty": 1
+  },
+  {
+    "name": "E Minor",
+    "root": "E",
+    "type": "minor",
+    "intervals": [
+      0,
+      3,
+      7
+    ],
+    "fretPositions": [
+      0,
+      2,
+      2,
+      0,
+      0,
+      0
+    ],
+    "fingerPositions": [
+      0,
+      2,
+      3,
+      0,
+      0,
+      0
+    ],
+    "audioFile": null,
+    "difficulty": 1
+  },
+  {
+    "name": "E Dom 7",
+    "root": "E",
+    "type": "dominant7",
+    "intervals": [
+      0,
+      4,
+      7,
+      10
+    ],
+    "fretPositions": [
+      0,
+      2,
+      0,
+      1,
+      0,
+      0
+    ],
+    "fingerPositions": [
+      0,
+      2,
+      0,
+      1,
+      0,
+      0
+    ],
+    "audioFile": null,
+    "difficulty": 1
+  },
+  {
+    "name": "E Maj 7",
+    "root": "E",
+    "type": "major7",
+    "intervals": [
+      0,
+      4,
+      7,
+      11
+    ],
+    "fretPositions": [
+      0,
+      2,
+      1,
+      1,
+      0,
+      0
+    ],
+    "fingerPositions": [
+      0,
+      2,
+      1,
+      1,
+      0,
+      0
+    ],
+    "audioFile": null,
+    "difficulty": 2
+  },
+  {
+    "name": "E Min 7",
+    "root": "E",
+    "type": "minor7",
+    "intervals": [
+      0,
+      3,
+      7,
+      10
+    ],
+    "fretPositions": [
+      0,
+      2,
+      0,
+      0,
+      0,
+      0
+    ],
+    "fingerPositions": [
+      0,
+      2,
+      0,
+      0,
+      0,
+      0
+    ],
+    "audioFile": null,
+    "difficulty": 1
+  },
+  {
+    "name": "E Dim",
+    "root": "E",
+    "type": "diminished",
+    "intervals": [
+      0,
+      3,
+      6
+    ],
+    "fretPositions": [
+      0,
+      1,
+      2,
+      3,
+      2,
+      0
+    ],
+    "fingerPositions": [
+      0,
+      1,
+      2,
+      3,
+      2,
+      0
+    ],
+    "audioFile": null,
+    "difficulty": 3
+  },
+  {
+    "name": "E Aug",
+    "root": "E",
+    "type": "augmented",
+    "intervals": [
+      0,
+      4,
+      8
+    ],
+    "fretPositions": [
+      0,
+      3,
+      2,
+      1,
+      1,
+      0
+    ],
+    "fingerPositions": [
+      0,
+      3,
+      2,
+      1,
+      1,
+      0
+    ],
+    "audioFile": null,
+    "difficulty": 3
+  },
+  {
+    "name": "E Sus2",
+    "root": "E",
+    "type": "sus2",
+    "intervals": [
+      0,
+      2,
+      7
+    ],
+    "fretPositions": [
+      0,
+      2,
+      4,
+      4,
+      0,
+      0
+    ],
+    "fingerPositions": [
+      0,
+      1,
+      3,
+      4,
+      0,
+      0
+    ],
+    "audioFile": null,
+    "difficulty": 2
+  },
+  {
+    "name": "E Sus4",
+    "root": "E",
+    "type": "sus4",
+    "intervals": [
+      0,
+      5,
+      7
+    ],
+    "fretPositions": [
+      0,
+      2,
+      2,
+      2,
+      0,
+      0
+    ],
+    "fingerPositions": [
+      0,
+      2,
+      3,
+      4,
+      0,
+      0
+    ],
+    "audioFile": null,
+    "difficulty": 1
+  },
+  {
+    "name": "F Major",
+    "root": "F",
+    "type": "major",
+    "intervals": [
+      0,
+      4,
+      7
+    ],
+    "fretPositions": [
+      1,
+      1,
+      2,
+      3,
+      3,
+      1
+    ],
+    "fingerPositions": [
+      1,
+      1,
+      2,
+      3,
+      4,
+      1
+    ],
+    "audioFile": null,
+    "difficulty": 3
+  },
+  {
+    "name": "F Minor",
+    "root": "F",
+    "type": "minor",
+    "intervals": [
+      0,
+      3,
+      7
+    ],
+    "fretPositions": [
+      1,
+      1,
+      3,
+      3,
+      2,
+      1
+    ],
+    "fingerPositions": [
+      1,
+      1,
+      3,
+      4,
+      2,
+      1
+    ],
+    "audioFile": null,
+    "difficulty": 3
+  },
+  {
+    "name": "F Dom 7",
+    "root": "F",
+    "type": "dominant7",
+    "intervals": [
+      0,
+      4,
+      7,
+      10
+    ],
+    "fretPositions": [
+      1,
+      1,
+      2,
+      1,
+      1,
+      1
+    ],
+    "fingerPositions": [
+      1,
+      1,
+      2,
+      1,
+      1,
+      1
+    ],
+    "audioFile": null,
+    "difficulty": 3
+  },
+  {
+    "name": "F Maj 7",
+    "root": "F",
+    "type": "major7",
+    "intervals": [
+      0,
+      4,
+      7,
+      11
+    ],
+    "fretPositions": [
+      -1,
+      -1,
+      3,
+      2,
+      1,
+      0
+    ],
+    "fingerPositions": [
+      0,
+      0,
+      3,
+      2,
+      1,
+      0
+    ],
+    "audioFile": null,
+    "difficulty": 3
+  },
+  {
+    "name": "F Min 7",
+    "root": "F",
+    "type": "minor7",
+    "intervals": [
+      0,
+      3,
+      7,
+      10
+    ],
+    "fretPositions": [
+      1,
+      1,
+      3,
+      1,
+      2,
+      1
+    ],
+    "fingerPositions": [
+      1,
+      1,
+      3,
+      1,
+      2,
+      1
+    ],
+    "audioFile": null,
+    "difficulty": 3
+  },
+  {
+    "name": "F Dim",
+    "root": "F",
+    "type": "diminished",
+    "intervals": [
+      0,
+      3,
+      6
+    ],
+    "fretPositions": [
+      -1,
+      8,
+      9,
+      10,
+      9,
+      -1
+    ],
+    "fingerPositions": [
+      0,
+      1,
+      2,
+      3,
+      2,
+      0
+    ],
+    "audioFile": null,
+    "difficulty": 4
+  },
+  {
+    "name": "F Aug",
+    "root": "F",
+    "type": "augmented",
+    "intervals": [
+      0,
+      4,
+      8
+    ],
+    "fretPositions": [
+      -1,
+      8,
+      11,
+      10,
+      10,
+      -1
+    ],
+    "fingerPositions": [
+      0,
+      1,
+      3,
+      2,
+      2,
+      0
+    ],
+    "audioFile": null,
+    "difficulty": 4
+  },
+  {
+    "name": "F Sus2",
+    "root": "F",
+    "type": "sus2",
+    "intervals": [
+      0,
+      2,
+      7
+    ],
+    "fretPositions": [
+      1,
+      3,
+      5,
+      2,
+      1,
+      1
+    ],
+    "fingerPositions": [
+      1,
+      2,
+      4,
+      1,
+      1,
+      1
+    ],
+    "audioFile": null,
+    "difficulty": 3
+  },
+  {
+    "name": "F Sus4",
+    "root": "F",
+    "type": "sus4",
+    "intervals": [
+      0,
+      5,
+      7
+    ],
+    "fretPositions": [
+      1,
+      3,
+      3,
+      3,
+      1,
+      1
+    ],
+    "fingerPositions": [
+      1,
+      2,
+      3,
+      4,
+      1,
+      1
+    ],
+    "audioFile": null,
+    "difficulty": 3
+  },
+  {
+    "name": "F# Major",
+    "root": "F#",
+    "type": "major",
+    "intervals": [
+      0,
+      4,
+      7
+    ],
+    "fretPositions": [
+      -1,
+      9,
+      11,
+      11,
+      11,
+      9
+    ],
+    "fingerPositions": [
+      0,
+      1,
+      3,
+      4,
+      3,
+      1
+    ],
+    "audioFile": null,
+    "difficulty": 3
+  },
+  {
+    "name": "F# Minor",
+    "root": "F#",
+    "type": "minor",
+    "intervals": [
+      0,
+      3,
+      7
+    ],
+    "fretPositions": [
+      -1,
+      9,
+      11,
+      11,
+      10,
+      9
+    ],
+    "fingerPositions": [
+      0,
+      1,
+      3,
+      4,
+      2,
+      1
+    ],
+    "audioFile": null,
+    "difficulty": 3
+  },
+  {
+    "name": "F# Dom 7",
+    "root": "F#",
+    "type": "dominant7",
+    "intervals": [
+      0,
+      4,
+      7,
+      10
+    ],
+    "fretPositions": [
+      -1,
+      9,
+      11,
+      9,
+      11,
+      9
+    ],
+    "fingerPositions": [
+      0,
+      1,
+      2,
+      0,
+      3,
+      1
+    ],
+    "audioFile": null,
+    "difficulty": 3
+  },
+  {
+    "name": "F# Maj 7",
+    "root": "F#",
+    "type": "major7",
+    "intervals": [
+      0,
+      4,
+      7,
+      11
+    ],
+    "fretPositions": [
+      -1,
+      9,
+      11,
+      10,
+      11,
+      9
+    ],
+    "fingerPositions": [
+      0,
+      1,
+      2,
+      1,
+      3,
+      1
+    ],
+    "audioFile": null,
+    "difficulty": 3
+  },
+  {
+    "name": "F# Min 7",
+    "root": "F#",
+    "type": "minor7",
+    "intervals": [
+      0,
+      3,
+      7,
+      10
+    ],
+    "fretPositions": [
+      -1,
+      9,
+      11,
+      9,
+      10,
+      9
+    ],
+    "fingerPositions": [
+      0,
+      1,
+      3,
+      0,
+      2,
+      1
+    ],
+    "audioFile": null,
+    "difficulty": 3
+  },
+  {
+    "name": "F# Dim",
+    "root": "F#",
+    "type": "diminished",
+    "intervals": [
+      0,
+      3,
+      6
+    ],
+    "fretPositions": [
+      -1,
+      9,
+      10,
+      11,
+      10,
+      -1
+    ],
+    "fingerPositions": [
+      0,
+      1,
+      2,
+      3,
+      2,
+      0
+    ],
+    "audioFile": null,
+    "difficulty": 4
+  },
+  {
+    "name": "F# Aug",
+    "root": "F#",
+    "type": "augmented",
+    "intervals": [
+      0,
+      4,
+      8
+    ],
+    "fretPositions": [
+      -1,
+      9,
+      12,
+      11,
+      11,
+      -1
+    ],
+    "fingerPositions": [
+      0,
+      1,
+      3,
+      2,
+      2,
+      0
+    ],
+    "audioFile": null,
+    "difficulty": 4
+  },
+  {
+    "name": "F# Sus2",
+    "root": "F#",
+    "type": "sus2",
+    "intervals": [
+      0,
+      2,
+      7
+    ],
+    "fretPositions": [
+      2,
+      4,
+      6,
+      3,
+      2,
+      2
+    ],
+    "fingerPositions": [
+      1,
+      2,
+      4,
+      1,
+      1,
+      1
+    ],
+    "audioFile": null,
+    "difficulty": 3
+  },
+  {
+    "name": "F# Sus4",
+    "root": "F#",
+    "type": "sus4",
+    "intervals": [
+      0,
+      5,
+      7
+    ],
+    "fretPositions": [
+      2,
+      4,
+      4,
+      4,
+      2,
+      2
+    ],
+    "fingerPositions": [
+      1,
+      2,
+      3,
+      4,
+      1,
+      1
+    ],
+    "audioFile": null,
+    "difficulty": 3
+  },
+  {
+    "name": "G Major",
+    "root": "G",
+    "type": "major",
+    "intervals": [
+      0,
+      4,
+      7
+    ],
+    "fretPositions": [
+      3,
+      2,
+      0,
+      0,
+      0,
+      3
+    ],
+    "fingerPositions": [
+      3,
+      2,
+      0,
+      0,
+      0,
+      4
+    ],
+    "audioFile": null,
+    "difficulty": 2
+  },
+  {
+    "name": "G Minor",
+    "root": "G",
+    "type": "minor",
+    "intervals": [
+      0,
+      3,
+      7
+    ],
+    "fretPositions": [
+      3,
+      5,
+      5,
+      3,
+      3,
+      3
+    ],
+    "fingerPositions": [
+      1,
+      3,
+      4,
+      1,
+      1,
+      1
+    ],
+    "audioFile": null,
+    "difficulty": 2
+  },
+  {
+    "name": "G Dom 7",
+    "root": "G",
+    "type": "dominant7",
+    "intervals": [
+      0,
+      4,
+      7,
+      10
+    ],
+    "fretPositions": [
+      3,
+      2,
+      0,
+      0,
+      0,
+      1
+    ],
+    "fingerPositions": [
+      3,
+      2,
+      0,
+      0,
+      0,
+      1
+    ],
+    "audioFile": null,
+    "difficulty": 2
+  },
+  {
+    "name": "G Maj 7",
+    "root": "G",
+    "type": "major7",
+    "intervals": [
+      0,
+      4,
+      7,
+      11
+    ],
+    "fretPositions": [
+      3,
+      2,
+      0,
+      0,
+      0,
+      2
+    ],
+    "fingerPositions": [
+      3,
+      2,
+      0,
+      0,
+      0,
+      2
+    ],
+    "audioFile": null,
+    "difficulty": 2
+  },
+  {
+    "name": "G Min 7",
+    "root": "G",
+    "type": "minor7",
+    "intervals": [
+      0,
+      3,
+      7,
+      10
+    ],
+    "fretPositions": [
+      3,
+      5,
+      3,
+      3,
+      3,
+      3
+    ],
+    "fingerPositions": [
+      1,
+      3,
+      1,
+      1,
+      1,
+      1
+    ],
+    "audioFile": null,
+    "difficulty": 2
+  },
+  {
+    "name": "G Dim",
+    "root": "G",
+    "type": "diminished",
+    "intervals": [
+      0,
+      3,
+      6
+    ],
+    "fretPositions": [
+      -1,
+      10,
+      11,
+      12,
+      11,
+      -1
+    ],
+    "fingerPositions": [
+      0,
+      1,
+      2,
+      3,
+      2,
+      0
+    ],
+    "audioFile": null,
+    "difficulty": 4
+  },
+  {
+    "name": "G Aug",
+    "root": "G",
+    "type": "augmented",
+    "intervals": [
+      0,
+      4,
+      8
+    ],
+    "fretPositions": [
+      -1,
+      10,
+      13,
+      12,
+      12,
+      -1
+    ],
+    "fingerPositions": [
+      0,
+      1,
+      3,
+      2,
+      2,
+      0
+    ],
+    "audioFile": null,
+    "difficulty": 4
+  },
+  {
+    "name": "G Sus2",
+    "root": "G",
+    "type": "sus2",
+    "intervals": [
+      0,
+      2,
+      7
+    ],
+    "fretPositions": [
+      3,
+      5,
+      7,
+      4,
+      3,
+      3
+    ],
+    "fingerPositions": [
+      1,
+      2,
+      4,
+      1,
+      1,
+      1
+    ],
+    "audioFile": null,
+    "difficulty": 3
+  },
+  {
+    "name": "G Sus4",
+    "root": "G",
+    "type": "sus4",
+    "intervals": [
+      0,
+      5,
+      7
+    ],
+    "fretPositions": [
+      3,
+      5,
+      5,
+      5,
+      3,
+      3
+    ],
+    "fingerPositions": [
+      1,
+      2,
+      3,
+      4,
+      1,
+      1
+    ],
+    "audioFile": null,
+    "difficulty": 3
+  },
+  {
+    "name": "G# Major",
+    "root": "G#",
+    "type": "major",
+    "intervals": [
+      0,
+      4,
+      7
+    ],
+    "fretPositions": [
+      -1,
+      11,
+      13,
+      13,
+      13,
+      11
+    ],
+    "fingerPositions": [
+      0,
+      1,
+      3,
+      4,
+      3,
+      1
+    ],
+    "audioFile": null,
+    "difficulty": 3
+  },
+  {
+    "name": "G# Minor",
+    "root": "G#",
+    "type": "minor",
+    "intervals": [
+      0,
+      3,
+      7
+    ],
+    "fretPositions": [
+      -1,
+      11,
+      13,
+      13,
+      12,
+      11
+    ],
+    "fingerPositions": [
+      0,
+      1,
+      3,
+      4,
+      2,
+      1
+    ],
+    "audioFile": null,
+    "difficulty": 3
+  },
+  {
+    "name": "G# Dom 7",
+    "root": "G#",
+    "type": "dominant7",
+    "intervals": [
+      0,
+      4,
+      7,
+      10
+    ],
+    "fretPositions": [
+      -1,
+      11,
+      13,
+      11,
+      13,
+      11
+    ],
+    "fingerPositions": [
+      0,
+      1,
+      2,
+      0,
+      3,
+      1
+    ],
+    "audioFile": null,
+    "difficulty": 3
+  },
+  {
+    "name": "G# Maj 7",
+    "root": "G#",
+    "type": "major7",
+    "intervals": [
+      0,
+      4,
+      7,
+      11
+    ],
+    "fretPositions": [
+      -1,
+      11,
+      13,
+      12,
+      13,
+      11
+    ],
+    "fingerPositions": [
+      0,
+      1,
+      2,
+      1,
+      3,
+      1
+    ],
+    "audioFile": null,
+    "difficulty": 3
+  },
+  {
+    "name": "G# Min 7",
+    "root": "G#",
+    "type": "minor7",
+    "intervals": [
+      0,
+      3,
+      7,
+      10
+    ],
+    "fretPositions": [
+      -1,
+      11,
+      13,
+      11,
+      12,
+      11
+    ],
+    "fingerPositions": [
+      0,
+      1,
+      3,
+      0,
+      2,
+      1
+    ],
+    "audioFile": null,
+    "difficulty": 3
+  },
+  {
+    "name": "G# Dim",
+    "root": "G#",
+    "type": "diminished",
+    "intervals": [
+      0,
+      3,
+      6
+    ],
+    "fretPositions": [
+      -1,
+      11,
+      12,
+      13,
+      12,
+      -1
+    ],
+    "fingerPositions": [
+      0,
+      1,
+      2,
+      3,
+      2,
+      0
+    ],
+    "audioFile": null,
+    "difficulty": 4
+  },
+  {
+    "name": "G# Aug",
+    "root": "G#",
+    "type": "augmented",
+    "intervals": [
+      0,
+      4,
+      8
+    ],
+    "fretPositions": [
+      -1,
+      11,
+      14,
+      13,
+      13,
+      -1
+    ],
+    "fingerPositions": [
+      0,
+      1,
+      3,
+      2,
+      2,
+      0
+    ],
+    "audioFile": null,
+    "difficulty": 4
+  },
+  {
+    "name": "G# Sus2",
+    "root": "G#",
+    "type": "sus2",
+    "intervals": [
+      0,
+      2,
+      7
+    ],
+    "fretPositions": [
+      4,
+      6,
+      8,
+      5,
+      4,
+      4
+    ],
+    "fingerPositions": [
+      1,
+      2,
+      4,
+      1,
+      1,
+      1
+    ],
+    "audioFile": null,
+    "difficulty": 3
+  },
+  {
+    "name": "G# Sus4",
+    "root": "G#",
+    "type": "sus4",
+    "intervals": [
+      0,
+      5,
+      7
+    ],
+    "fretPositions": [
+      4,
+      6,
+      6,
+      6,
+      4,
+      4
+    ],
+    "fingerPositions": [
+      1,
+      2,
+      3,
+      4,
+      1,
+      1
+    ],
+    "audioFile": null,
+    "difficulty": 3
+  },
+  {
+    "name": "A Major",
+    "root": "A",
+    "type": "major",
+    "intervals": [
+      0,
+      4,
+      7
+    ],
+    "fretPositions": [
+      -1,
+      0,
+      2,
+      2,
+      2,
+      0
+    ],
+    "fingerPositions": [
+      0,
+      0,
+      2,
+      3,
+      4,
+      0
+    ],
+    "audioFile": null,
+    "difficulty": 1
+  },
+  {
+    "name": "A Minor",
+    "root": "A",
+    "type": "minor",
+    "intervals": [
+      0,
+      3,
+      7
+    ],
+    "fretPositions": [
+      -1,
+      0,
+      2,
+      2,
+      1,
+      0
+    ],
+    "fingerPositions": [
+      0,
+      0,
+      2,
+      3,
+      1,
+      0
+    ],
+    "audioFile": null,
+    "difficulty": 1
+  },
+  {
+    "name": "A Dom 7",
+    "root": "A",
+    "type": "dominant7",
+    "intervals": [
+      0,
+      4,
+      7,
+      10
+    ],
+    "fretPositions": [
+      -1,
+      0,
+      2,
+      0,
+      2,
+      0
+    ],
+    "fingerPositions": [
+      0,
+      0,
+      2,
+      0,
+      3,
+      0
+    ],
+    "audioFile": null,
+    "difficulty": 1
+  },
+  {
+    "name": "A Maj 7",
+    "root": "A",
+    "type": "major7",
+    "intervals": [
+      0,
+      4,
+      7,
+      11
+    ],
+    "fretPositions": [
+      -1,
+      0,
+      2,
+      1,
+      2,
+      0
+    ],
+    "fingerPositions": [
+      0,
+      0,
+      2,
+      1,
+      3,
+      0
+    ],
+    "audioFile": null,
+    "difficulty": 2
+  },
+  {
+    "name": "A Min 7",
+    "root": "A",
+    "type": "minor7",
+    "intervals": [
+      0,
+      3,
+      7,
+      10
+    ],
+    "fretPositions": [
+      -1,
+      0,
+      2,
+      0,
+      1,
+      0
+    ],
+    "fingerPositions": [
+      0,
+      0,
+      2,
+      0,
+      1,
+      0
+    ],
+    "audioFile": null,
+    "difficulty": 1
+  },
+  {
+    "name": "A Dim",
+    "root": "A",
+    "type": "diminished",
+    "intervals": [
+      0,
+      3,
+      6
+    ],
+    "fretPositions": [
+      -1,
+      0,
+      1,
+      2,
+      1,
+      -1
+    ],
+    "fingerPositions": [
+      0,
+      1,
+      2,
+      3,
+      2,
+      0
+    ],
+    "audioFile": null,
+    "difficulty": 4
+  },
+  {
+    "name": "A Aug",
+    "root": "A",
+    "type": "augmented",
+    "intervals": [
+      0,
+      4,
+      8
+    ],
+    "fretPositions": [
+      -1,
+      0,
+      3,
+      2,
+      2,
+      -1
+    ],
+    "fingerPositions": [
+      0,
+      1,
+      3,
+      2,
+      2,
+      0
+    ],
+    "audioFile": null,
+    "difficulty": 4
+  },
+  {
+    "name": "A Sus2",
+    "root": "A",
+    "type": "sus2",
+    "intervals": [
+      0,
+      2,
+      7
+    ],
+    "fretPositions": [
+      5,
+      7,
+      9,
+      6,
+      5,
+      5
+    ],
+    "fingerPositions": [
+      1,
+      2,
+      4,
+      1,
+      1,
+      1
+    ],
+    "audioFile": null,
+    "difficulty": 3
+  },
+  {
+    "name": "A Sus4",
+    "root": "A",
+    "type": "sus4",
+    "intervals": [
+      0,
+      5,
+      7
+    ],
+    "fretPositions": [
+      5,
+      7,
+      7,
+      7,
+      5,
+      5
+    ],
+    "fingerPositions": [
+      1,
+      2,
+      3,
+      4,
+      1,
+      1
+    ],
+    "audioFile": null,
+    "difficulty": 3
+  },
+  {
+    "name": "A# Major",
+    "root": "A#",
+    "type": "major",
+    "intervals": [
+      0,
+      4,
+      7
+    ],
+    "fretPositions": [
+      -1,
+      1,
+      3,
+      3,
+      3,
+      1
+    ],
+    "fingerPositions": [
+      0,
+      1,
+      3,
+      4,
+      3,
+      1
+    ],
+    "audioFile": null,
+    "difficulty": 3
+  },
+  {
+    "name": "A# Minor",
+    "root": "A#",
+    "type": "minor",
+    "intervals": [
+      0,
+      3,
+      7
+    ],
+    "fretPositions": [
+      -1,
+      1,
+      3,
+      3,
+      2,
+      1
+    ],
+    "fingerPositions": [
+      0,
+      1,
+      3,
+      4,
+      2,
+      1
+    ],
+    "audioFile": null,
+    "difficulty": 3
+  },
+  {
+    "name": "A# Dom 7",
+    "root": "A#",
+    "type": "dominant7",
+    "intervals": [
+      0,
+      4,
+      7,
+      10
+    ],
+    "fretPositions": [
+      -1,
+      1,
+      3,
+      1,
+      3,
+      1
+    ],
+    "fingerPositions": [
+      0,
+      1,
+      2,
+      0,
+      3,
+      1
+    ],
+    "audioFile": null,
+    "difficulty": 3
+  },
+  {
+    "name": "A# Maj 7",
+    "root": "A#",
+    "type": "major7",
+    "intervals": [
+      0,
+      4,
+      7,
+      11
+    ],
+    "fretPositions": [
+      -1,
+      1,
+      3,
+      2,
+      3,
+      1
+    ],
+    "fingerPositions": [
+      0,
+      1,
+      2,
+      1,
+      3,
+      1
+    ],
+    "audioFile": null,
+    "difficulty": 3
+  },
+  {
+    "name": "A# Min 7",
+    "root": "A#",
+    "type": "minor7",
+    "intervals": [
+      0,
+      3,
+      7,
+      10
+    ],
+    "fretPositions": [
+      -1,
+      1,
+      3,
+      1,
+      2,
+      1
+    ],
+    "fingerPositions": [
+      0,
+      1,
+      3,
+      0,
+      2,
+      1
+    ],
+    "audioFile": null,
+    "difficulty": 3
+  },
+  {
+    "name": "A# Dim",
+    "root": "A#",
+    "type": "diminished",
+    "intervals": [
+      0,
+      3,
+      6
+    ],
+    "fretPositions": [
+      -1,
+      1,
+      2,
+      3,
+      2,
+      -1
+    ],
+    "fingerPositions": [
+      0,
+      1,
+      2,
+      3,
+      2,
+      0
+    ],
+    "audioFile": null,
+    "difficulty": 4
+  },
+  {
+    "name": "A# Aug",
+    "root": "A#",
+    "type": "augmented",
+    "intervals": [
+      0,
+      4,
+      8
+    ],
+    "fretPositions": [
+      -1,
+      1,
+      4,
+      3,
+      3,
+      -1
+    ],
+    "fingerPositions": [
+      0,
+      1,
+      3,
+      2,
+      2,
+      0
+    ],
+    "audioFile": null,
+    "difficulty": 4
+  },
+  {
+    "name": "A# Sus2",
+    "root": "A#",
+    "type": "sus2",
+    "intervals": [
+      0,
+      2,
+      7
+    ],
+    "fretPositions": [
+      6,
+      8,
+      10,
+      7,
+      6,
+      6
+    ],
+    "fingerPositions": [
+      1,
+      2,
+      4,
+      1,
+      1,
+      1
+    ],
+    "audioFile": null,
+    "difficulty": 3
+  },
+  {
+    "name": "A# Sus4",
+    "root": "A#",
+    "type": "sus4",
+    "intervals": [
+      0,
+      5,
+      7
+    ],
+    "fretPositions": [
+      6,
+      8,
+      8,
+      8,
+      6,
+      6
+    ],
+    "fingerPositions": [
+      1,
+      2,
+      3,
+      4,
+      1,
+      1
+    ],
+    "audioFile": null,
+    "difficulty": 3
+  },
+  {
+    "name": "B Major",
+    "root": "B",
+    "type": "major",
+    "intervals": [
+      0,
+      4,
+      7
+    ],
+    "fretPositions": [
+      -1,
+      2,
+      4,
+      4,
+      4,
+      2
+    ],
+    "fingerPositions": [
+      0,
+      1,
+      3,
+      3,
+      3,
+      1
+    ],
+    "audioFile": null,
+    "difficulty": 3
+  },
+  {
+    "name": "B Minor",
+    "root": "B",
+    "type": "minor",
+    "intervals": [
+      0,
+      3,
+      7
+    ],
+    "fretPositions": [
+      -1,
+      2,
+      4,
+      4,
+      3,
+      2
+    ],
+    "fingerPositions": [
+      0,
+      1,
+      3,
+      4,
+      2,
+      1
+    ],
+    "audioFile": null,
+    "difficulty": 3
+  },
+  {
+    "name": "B Dom 7",
+    "root": "B",
+    "type": "dominant7",
+    "intervals": [
+      0,
+      4,
+      7,
+      10
+    ],
+    "fretPositions": [
+      -1,
+      2,
+      1,
+      2,
+      0,
+      2
+    ],
+    "fingerPositions": [
+      0,
+      2,
+      1,
+      3,
+      0,
+      4
+    ],
+    "audioFile": null,
+    "difficulty": 3
+  },
+  {
+    "name": "B Maj 7",
+    "root": "B",
+    "type": "major7",
+    "intervals": [
+      0,
+      4,
+      7,
+      11
+    ],
+    "fretPositions": [
+      -1,
+      2,
+      4,
+      3,
+      4,
+      2
+    ],
+    "fingerPositions": [
+      0,
+      1,
+      3,
+      2,
+      4,
+      1
+    ],
+    "audioFile": null,
+    "difficulty": 4
+  },
+  {
+    "name": "B Min 7",
+    "root": "B",
+    "type": "minor7",
+    "intervals": [
+      0,
+      3,
+      7,
+      10
+    ],
+    "fretPositions": [
+      -1,
+      2,
+      0,
+      2,
+      0,
+      2
+    ],
+    "fingerPositions": [
+      0,
+      2,
+      0,
+      3,
+      0,
+      4
+    ],
+    "audioFile": null,
+    "difficulty": 2
+  },
+  {
+    "name": "B Dim",
+    "root": "B",
+    "type": "diminished",
+    "intervals": [
+      0,
+      3,
+      6
+    ],
+    "fretPositions": [
+      -1,
+      2,
+      3,
+      4,
+      3,
+      -1
+    ],
+    "fingerPositions": [
+      0,
+      1,
+      2,
+      3,
+      2,
+      0
+    ],
+    "audioFile": null,
+    "difficulty": 4
+  },
+  {
+    "name": "B Aug",
+    "root": "B",
+    "type": "augmented",
+    "intervals": [
+      0,
+      4,
+      8
+    ],
+    "fretPositions": [
+      -1,
+      2,
+      5,
+      4,
+      4,
+      -1
+    ],
+    "fingerPositions": [
+      0,
+      1,
+      3,
+      2,
+      2,
+      0
+    ],
+    "audioFile": null,
+    "difficulty": 4
+  },
+  {
+    "name": "B Sus2",
+    "root": "B",
+    "type": "sus2",
+    "intervals": [
+      0,
+      2,
+      7
+    ],
+    "fretPositions": [
+      7,
+      9,
+      11,
+      8,
+      7,
+      7
+    ],
+    "fingerPositions": [
+      1,
+      2,
+      4,
+      1,
+      1,
+      1
+    ],
+    "audioFile": null,
+    "difficulty": 3
+  },
+  {
+    "name": "B Sus4",
+    "root": "B",
+    "type": "sus4",
+    "intervals": [
+      0,
+      5,
+      7
+    ],
+    "fretPositions": [
+      7,
+      9,
+      9,
+      9,
+      7,
+      7
+    ],
+    "fingerPositions": [
+      1,
+      2,
+      3,
+      4,
+      1,
+      1
+    ],
+    "audioFile": null,
+    "difficulty": 3
+  }
+]

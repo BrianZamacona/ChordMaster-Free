@@ -1,0 +1,4730 @@
+[
+  {
+    "name": "C Major",
+    "root": "C",
+    "type": "major",
+    "category": "Scales",
+    "intervals": [
+      0,
+      2,
+      4,
+      5,
+      7,
+      9,
+      11
+    ],
+    "description": "Bright and happy character, foundational scale",
+    "relatedChords": [
+      "C Dim",
+      "D Dim",
+      "E Dim",
+      "F Dim",
+      "G Dim",
+      "A Dim",
+      "B Dim"
+    ],
+    "commonUsage": "Pop, rock, classical, country"
+  },
+  {
+    "name": "C Natural Minor",
+    "root": "C",
+    "type": "naturalMinor",
+    "category": "Scales",
+    "intervals": [
+      0,
+      2,
+      3,
+      5,
+      7,
+      8,
+      10
+    ],
+    "description": "Dark and melancholic, emotionally rich",
+    "relatedChords": [
+      "C Dim",
+      "D Dim",
+      "D# Dim",
+      "F Dim",
+      "G Dim",
+      "G# Dim",
+      "A# Dim"
+    ],
+    "commonUsage": "Rock, metal, blues, classical"
+  },
+  {
+    "name": "C Pentatonic Major",
+    "root": "C",
+    "type": "pentatonicMajor",
+    "category": "Scales",
+    "intervals": [
+      0,
+      2,
+      4,
+      7,
+      9
+    ],
+    "description": "Universally pleasing, great for improvisation",
+    "relatedChords": [
+      "C Dim",
+      "D Dim",
+      "E Dim",
+      "G Dim",
+      "A Dim"
+    ],
+    "commonUsage": "Country, rock, pop, blues"
+  },
+  {
+    "name": "C Pentatonic Minor",
+    "root": "C",
+    "type": "pentatonicMinor",
+    "category": "Scales",
+    "intervals": [
+      0,
+      3,
+      5,
+      7,
+      10
+    ],
+    "description": "Soulful and expressive, core of blues and rock",
+    "relatedChords": [
+      "C Dim",
+      "D# Dim",
+      "F Dim",
+      "G Dim",
+      "A# Dim"
+    ],
+    "commonUsage": "Blues, rock, jazz, pop"
+  },
+  {
+    "name": "C Blues",
+    "root": "C",
+    "type": "blues",
+    "category": "Scales",
+    "intervals": [
+      0,
+      3,
+      5,
+      6,
+      7,
+      10
+    ],
+    "description": "Adds grit and soul with the blues note",
+    "relatedChords": [
+      "C Dim",
+      "D# Dim",
+      "F Dim",
+      "F# Dim",
+      "G Dim",
+      "A# Dim"
+    ],
+    "commonUsage": "Blues, jazz, rock, soul"
+  },
+  {
+    "name": "C Harmonic Minor",
+    "root": "C",
+    "type": "harmonicMinor",
+    "category": "Scales",
+    "intervals": [
+      0,
+      2,
+      3,
+      5,
+      7,
+      8,
+      11
+    ],
+    "description": "Exotic minor with raised 7th, tense and dramatic",
+    "relatedChords": [
+      "C Dim",
+      "D Dim",
+      "D# Dim",
+      "F Dim",
+      "G Dim",
+      "G# Dim",
+      "B Dim"
+    ],
+    "commonUsage": "Classical, flamenco, metal"
+  },
+  {
+    "name": "C Melodic Minor",
+    "root": "C",
+    "type": "melodicMinor",
+    "category": "Scales",
+    "intervals": [
+      0,
+      2,
+      3,
+      5,
+      7,
+      9,
+      11
+    ],
+    "description": "Jazz-friendly minor with ascending brightness",
+    "relatedChords": [
+      "C Dim",
+      "D Dim",
+      "D# Dim",
+      "F Dim",
+      "G Dim",
+      "A Dim",
+      "B Dim"
+    ],
+    "commonUsage": "Jazz, classical, fusion"
+  },
+  {
+    "name": "C Whole Tone",
+    "root": "C",
+    "type": "wholeTone",
+    "category": "Scales",
+    "intervals": [
+      0,
+      2,
+      4,
+      6,
+      8,
+      10
+    ],
+    "description": "Dreamlike and ambiguous with no strong tonal center",
+    "relatedChords": [
+      "C Dim",
+      "D Dim",
+      "E Dim",
+      "F# Dim",
+      "G# Dim",
+      "A# Dim"
+    ],
+    "commonUsage": "Jazz, impressionist, film"
+  },
+  {
+    "name": "C# Major",
+    "root": "C#",
+    "type": "major",
+    "category": "Scales",
+    "intervals": [
+      0,
+      2,
+      4,
+      5,
+      7,
+      9,
+      11
+    ],
+    "description": "Bright and happy character, foundational scale",
+    "relatedChords": [
+      "C# Dim",
+      "D# Dim",
+      "F Dim",
+      "F# Dim",
+      "G# Dim",
+      "A# Dim",
+      "C Dim"
+    ],
+    "commonUsage": "Pop, rock, classical, country"
+  },
+  {
+    "name": "C# Natural Minor",
+    "root": "C#",
+    "type": "naturalMinor",
+    "category": "Scales",
+    "intervals": [
+      0,
+      2,
+      3,
+      5,
+      7,
+      8,
+      10
+    ],
+    "description": "Dark and melancholic, emotionally rich",
+    "relatedChords": [
+      "C# Dim",
+      "D# Dim",
+      "E Dim",
+      "F# Dim",
+      "G# Dim",
+      "A Dim",
+      "B Dim"
+    ],
+    "commonUsage": "Rock, metal, blues, classical"
+  },
+  {
+    "name": "C# Pentatonic Major",
+    "root": "C#",
+    "type": "pentatonicMajor",
+    "category": "Scales",
+    "intervals": [
+      0,
+      2,
+      4,
+      7,
+      9
+    ],
+    "description": "Universally pleasing, great for improvisation",
+    "relatedChords": [
+      "C# Dim",
+      "D# Dim",
+      "F Dim",
+      "G# Dim",
+      "A# Dim"
+    ],
+    "commonUsage": "Country, rock, pop, blues"
+  },
+  {
+    "name": "C# Pentatonic Minor",
+    "root": "C#",
+    "type": "pentatonicMinor",
+    "category": "Scales",
+    "intervals": [
+      0,
+      3,
+      5,
+      7,
+      10
+    ],
+    "description": "Soulful and expressive, core of blues and rock",
+    "relatedChords": [
+      "C# Dim",
+      "E Dim",
+      "F# Dim",
+      "G# Dim",
+      "B Dim"
+    ],
+    "commonUsage": "Blues, rock, jazz, pop"
+  },
+  {
+    "name": "C# Blues",
+    "root": "C#",
+    "type": "blues",
+    "category": "Scales",
+    "intervals": [
+      0,
+      3,
+      5,
+      6,
+      7,
+      10
+    ],
+    "description": "Adds grit and soul with the blues note",
+    "relatedChords": [
+      "C# Dim",
+      "E Dim",
+      "F# Dim",
+      "G Dim",
+      "G# Dim",
+      "B Dim"
+    ],
+    "commonUsage": "Blues, jazz, rock, soul"
+  },
+  {
+    "name": "C# Harmonic Minor",
+    "root": "C#",
+    "type": "harmonicMinor",
+    "category": "Scales",
+    "intervals": [
+      0,
+      2,
+      3,
+      5,
+      7,
+      8,
+      11
+    ],
+    "description": "Exotic minor with raised 7th, tense and dramatic",
+    "relatedChords": [
+      "C# Dim",
+      "D# Dim",
+      "E Dim",
+      "F# Dim",
+      "G# Dim",
+      "A Dim",
+      "C Dim"
+    ],
+    "commonUsage": "Classical, flamenco, metal"
+  },
+  {
+    "name": "C# Melodic Minor",
+    "root": "C#",
+    "type": "melodicMinor",
+    "category": "Scales",
+    "intervals": [
+      0,
+      2,
+      3,
+      5,
+      7,
+      9,
+      11
+    ],
+    "description": "Jazz-friendly minor with ascending brightness",
+    "relatedChords": [
+      "C# Dim",
+      "D# Dim",
+      "E Dim",
+      "F# Dim",
+      "G# Dim",
+      "A# Dim",
+      "C Dim"
+    ],
+    "commonUsage": "Jazz, classical, fusion"
+  },
+  {
+    "name": "C# Whole Tone",
+    "root": "C#",
+    "type": "wholeTone",
+    "category": "Scales",
+    "intervals": [
+      0,
+      2,
+      4,
+      6,
+      8,
+      10
+    ],
+    "description": "Dreamlike and ambiguous with no strong tonal center",
+    "relatedChords": [
+      "C# Dim",
+      "D# Dim",
+      "F Dim",
+      "G Dim",
+      "A Dim",
+      "B Dim"
+    ],
+    "commonUsage": "Jazz, impressionist, film"
+  },
+  {
+    "name": "D Major",
+    "root": "D",
+    "type": "major",
+    "category": "Scales",
+    "intervals": [
+      0,
+      2,
+      4,
+      5,
+      7,
+      9,
+      11
+    ],
+    "description": "Bright and happy character, foundational scale",
+    "relatedChords": [
+      "D Dim",
+      "E Dim",
+      "F# Dim",
+      "G Dim",
+      "A Dim",
+      "B Dim",
+      "C# Dim"
+    ],
+    "commonUsage": "Pop, rock, classical, country"
+  },
+  {
+    "name": "D Natural Minor",
+    "root": "D",
+    "type": "naturalMinor",
+    "category": "Scales",
+    "intervals": [
+      0,
+      2,
+      3,
+      5,
+      7,
+      8,
+      10
+    ],
+    "description": "Dark and melancholic, emotionally rich",
+    "relatedChords": [
+      "D Dim",
+      "E Dim",
+      "F Dim",
+      "G Dim",
+      "A Dim",
+      "A# Dim",
+      "C Dim"
+    ],
+    "commonUsage": "Rock, metal, blues, classical"
+  },
+  {
+    "name": "D Pentatonic Major",
+    "root": "D",
+    "type": "pentatonicMajor",
+    "category": "Scales",
+    "intervals": [
+      0,
+      2,
+      4,
+      7,
+      9
+    ],
+    "description": "Universally pleasing, great for improvisation",
+    "relatedChords": [
+      "D Dim",
+      "E Dim",
+      "F# Dim",
+      "A Dim",
+      "B Dim"
+    ],
+    "commonUsage": "Country, rock, pop, blues"
+  },
+  {
+    "name": "D Pentatonic Minor",
+    "root": "D",
+    "type": "pentatonicMinor",
+    "category": "Scales",
+    "intervals": [
+      0,
+      3,
+      5,
+      7,
+      10
+    ],
+    "description": "Soulful and expressive, core of blues and rock",
+    "relatedChords": [
+      "D Dim",
+      "F Dim",
+      "G Dim",
+      "A Dim",
+      "C Dim"
+    ],
+    "commonUsage": "Blues, rock, jazz, pop"
+  },
+  {
+    "name": "D Blues",
+    "root": "D",
+    "type": "blues",
+    "category": "Scales",
+    "intervals": [
+      0,
+      3,
+      5,
+      6,
+      7,
+      10
+    ],
+    "description": "Adds grit and soul with the blues note",
+    "relatedChords": [
+      "D Dim",
+      "F Dim",
+      "G Dim",
+      "G# Dim",
+      "A Dim",
+      "C Dim"
+    ],
+    "commonUsage": "Blues, jazz, rock, soul"
+  },
+  {
+    "name": "D Harmonic Minor",
+    "root": "D",
+    "type": "harmonicMinor",
+    "category": "Scales",
+    "intervals": [
+      0,
+      2,
+      3,
+      5,
+      7,
+      8,
+      11
+    ],
+    "description": "Exotic minor with raised 7th, tense and dramatic",
+    "relatedChords": [
+      "D Dim",
+      "E Dim",
+      "F Dim",
+      "G Dim",
+      "A Dim",
+      "A# Dim",
+      "C# Dim"
+    ],
+    "commonUsage": "Classical, flamenco, metal"
+  },
+  {
+    "name": "D Melodic Minor",
+    "root": "D",
+    "type": "melodicMinor",
+    "category": "Scales",
+    "intervals": [
+      0,
+      2,
+      3,
+      5,
+      7,
+      9,
+      11
+    ],
+    "description": "Jazz-friendly minor with ascending brightness",
+    "relatedChords": [
+      "D Dim",
+      "E Dim",
+      "F Dim",
+      "G Dim",
+      "A Dim",
+      "B Dim",
+      "C# Dim"
+    ],
+    "commonUsage": "Jazz, classical, fusion"
+  },
+  {
+    "name": "D Whole Tone",
+    "root": "D",
+    "type": "wholeTone",
+    "category": "Scales",
+    "intervals": [
+      0,
+      2,
+      4,
+      6,
+      8,
+      10
+    ],
+    "description": "Dreamlike and ambiguous with no strong tonal center",
+    "relatedChords": [
+      "D Dim",
+      "E Dim",
+      "F# Dim",
+      "G# Dim",
+      "A# Dim",
+      "C Dim"
+    ],
+    "commonUsage": "Jazz, impressionist, film"
+  },
+  {
+    "name": "D# Major",
+    "root": "D#",
+    "type": "major",
+    "category": "Scales",
+    "intervals": [
+      0,
+      2,
+      4,
+      5,
+      7,
+      9,
+      11
+    ],
+    "description": "Bright and happy character, foundational scale",
+    "relatedChords": [
+      "D# Dim",
+      "F Dim",
+      "G Dim",
+      "G# Dim",
+      "A# Dim",
+      "C Dim",
+      "D Dim"
+    ],
+    "commonUsage": "Pop, rock, classical, country"
+  },
+  {
+    "name": "D# Natural Minor",
+    "root": "D#",
+    "type": "naturalMinor",
+    "category": "Scales",
+    "intervals": [
+      0,
+      2,
+      3,
+      5,
+      7,
+      8,
+      10
+    ],
+    "description": "Dark and melancholic, emotionally rich",
+    "relatedChords": [
+      "D# Dim",
+      "F Dim",
+      "F# Dim",
+      "G# Dim",
+      "A# Dim",
+      "B Dim",
+      "C# Dim"
+    ],
+    "commonUsage": "Rock, metal, blues, classical"
+  },
+  {
+    "name": "D# Pentatonic Major",
+    "root": "D#",
+    "type": "pentatonicMajor",
+    "category": "Scales",
+    "intervals": [
+      0,
+      2,
+      4,
+      7,
+      9
+    ],
+    "description": "Universally pleasing, great for improvisation",
+    "relatedChords": [
+      "D# Dim",
+      "F Dim",
+      "G Dim",
+      "A# Dim",
+      "C Dim"
+    ],
+    "commonUsage": "Country, rock, pop, blues"
+  },
+  {
+    "name": "D# Pentatonic Minor",
+    "root": "D#",
+    "type": "pentatonicMinor",
+    "category": "Scales",
+    "intervals": [
+      0,
+      3,
+      5,
+      7,
+      10
+    ],
+    "description": "Soulful and expressive, core of blues and rock",
+    "relatedChords": [
+      "D# Dim",
+      "F# Dim",
+      "G# Dim",
+      "A# Dim",
+      "C# Dim"
+    ],
+    "commonUsage": "Blues, rock, jazz, pop"
+  },
+  {
+    "name": "D# Blues",
+    "root": "D#",
+    "type": "blues",
+    "category": "Scales",
+    "intervals": [
+      0,
+      3,
+      5,
+      6,
+      7,
+      10
+    ],
+    "description": "Adds grit and soul with the blues note",
+    "relatedChords": [
+      "D# Dim",
+      "F# Dim",
+      "G# Dim",
+      "A Dim",
+      "A# Dim",
+      "C# Dim"
+    ],
+    "commonUsage": "Blues, jazz, rock, soul"
+  },
+  {
+    "name": "D# Harmonic Minor",
+    "root": "D#",
+    "type": "harmonicMinor",
+    "category": "Scales",
+    "intervals": [
+      0,
+      2,
+      3,
+      5,
+      7,
+      8,
+      11
+    ],
+    "description": "Exotic minor with raised 7th, tense and dramatic",
+    "relatedChords": [
+      "D# Dim",
+      "F Dim",
+      "F# Dim",
+      "G# Dim",
+      "A# Dim",
+      "B Dim",
+      "D Dim"
+    ],
+    "commonUsage": "Classical, flamenco, metal"
+  },
+  {
+    "name": "D# Melodic Minor",
+    "root": "D#",
+    "type": "melodicMinor",
+    "category": "Scales",
+    "intervals": [
+      0,
+      2,
+      3,
+      5,
+      7,
+      9,
+      11
+    ],
+    "description": "Jazz-friendly minor with ascending brightness",
+    "relatedChords": [
+      "D# Dim",
+      "F Dim",
+      "F# Dim",
+      "G# Dim",
+      "A# Dim",
+      "C Dim",
+      "D Dim"
+    ],
+    "commonUsage": "Jazz, classical, fusion"
+  },
+  {
+    "name": "D# Whole Tone",
+    "root": "D#",
+    "type": "wholeTone",
+    "category": "Scales",
+    "intervals": [
+      0,
+      2,
+      4,
+      6,
+      8,
+      10
+    ],
+    "description": "Dreamlike and ambiguous with no strong tonal center",
+    "relatedChords": [
+      "D# Dim",
+      "F Dim",
+      "G Dim",
+      "A Dim",
+      "B Dim",
+      "C# Dim"
+    ],
+    "commonUsage": "Jazz, impressionist, film"
+  },
+  {
+    "name": "E Major",
+    "root": "E",
+    "type": "major",
+    "category": "Scales",
+    "intervals": [
+      0,
+      2,
+      4,
+      5,
+      7,
+      9,
+      11
+    ],
+    "description": "Bright and happy character, foundational scale",
+    "relatedChords": [
+      "E Dim",
+      "F# Dim",
+      "G# Dim",
+      "A Dim",
+      "B Dim",
+      "C# Dim",
+      "D# Dim"
+    ],
+    "commonUsage": "Pop, rock, classical, country"
+  },
+  {
+    "name": "E Natural Minor",
+    "root": "E",
+    "type": "naturalMinor",
+    "category": "Scales",
+    "intervals": [
+      0,
+      2,
+      3,
+      5,
+      7,
+      8,
+      10
+    ],
+    "description": "Dark and melancholic, emotionally rich",
+    "relatedChords": [
+      "E Dim",
+      "F# Dim",
+      "G Dim",
+      "A Dim",
+      "B Dim",
+      "C Dim",
+      "D Dim"
+    ],
+    "commonUsage": "Rock, metal, blues, classical"
+  },
+  {
+    "name": "E Pentatonic Major",
+    "root": "E",
+    "type": "pentatonicMajor",
+    "category": "Scales",
+    "intervals": [
+      0,
+      2,
+      4,
+      7,
+      9
+    ],
+    "description": "Universally pleasing, great for improvisation",
+    "relatedChords": [
+      "E Dim",
+      "F# Dim",
+      "G# Dim",
+      "B Dim",
+      "C# Dim"
+    ],
+    "commonUsage": "Country, rock, pop, blues"
+  },
+  {
+    "name": "E Pentatonic Minor",
+    "root": "E",
+    "type": "pentatonicMinor",
+    "category": "Scales",
+    "intervals": [
+      0,
+      3,
+      5,
+      7,
+      10
+    ],
+    "description": "Soulful and expressive, core of blues and rock",
+    "relatedChords": [
+      "E Dim",
+      "G Dim",
+      "A Dim",
+      "B Dim",
+      "D Dim"
+    ],
+    "commonUsage": "Blues, rock, jazz, pop"
+  },
+  {
+    "name": "E Blues",
+    "root": "E",
+    "type": "blues",
+    "category": "Scales",
+    "intervals": [
+      0,
+      3,
+      5,
+      6,
+      7,
+      10
+    ],
+    "description": "Adds grit and soul with the blues note",
+    "relatedChords": [
+      "E Dim",
+      "G Dim",
+      "A Dim",
+      "A# Dim",
+      "B Dim",
+      "D Dim"
+    ],
+    "commonUsage": "Blues, jazz, rock, soul"
+  },
+  {
+    "name": "E Harmonic Minor",
+    "root": "E",
+    "type": "harmonicMinor",
+    "category": "Scales",
+    "intervals": [
+      0,
+      2,
+      3,
+      5,
+      7,
+      8,
+      11
+    ],
+    "description": "Exotic minor with raised 7th, tense and dramatic",
+    "relatedChords": [
+      "E Dim",
+      "F# Dim",
+      "G Dim",
+      "A Dim",
+      "B Dim",
+      "C Dim",
+      "D# Dim"
+    ],
+    "commonUsage": "Classical, flamenco, metal"
+  },
+  {
+    "name": "E Melodic Minor",
+    "root": "E",
+    "type": "melodicMinor",
+    "category": "Scales",
+    "intervals": [
+      0,
+      2,
+      3,
+      5,
+      7,
+      9,
+      11
+    ],
+    "description": "Jazz-friendly minor with ascending brightness",
+    "relatedChords": [
+      "E Dim",
+      "F# Dim",
+      "G Dim",
+      "A Dim",
+      "B Dim",
+      "C# Dim",
+      "D# Dim"
+    ],
+    "commonUsage": "Jazz, classical, fusion"
+  },
+  {
+    "name": "E Whole Tone",
+    "root": "E",
+    "type": "wholeTone",
+    "category": "Scales",
+    "intervals": [
+      0,
+      2,
+      4,
+      6,
+      8,
+      10
+    ],
+    "description": "Dreamlike and ambiguous with no strong tonal center",
+    "relatedChords": [
+      "E Dim",
+      "F# Dim",
+      "G# Dim",
+      "A# Dim",
+      "C Dim",
+      "D Dim"
+    ],
+    "commonUsage": "Jazz, impressionist, film"
+  },
+  {
+    "name": "F Major",
+    "root": "F",
+    "type": "major",
+    "category": "Scales",
+    "intervals": [
+      0,
+      2,
+      4,
+      5,
+      7,
+      9,
+      11
+    ],
+    "description": "Bright and happy character, foundational scale",
+    "relatedChords": [
+      "F Dim",
+      "G Dim",
+      "A Dim",
+      "A# Dim",
+      "C Dim",
+      "D Dim",
+      "E Dim"
+    ],
+    "commonUsage": "Pop, rock, classical, country"
+  },
+  {
+    "name": "F Natural Minor",
+    "root": "F",
+    "type": "naturalMinor",
+    "category": "Scales",
+    "intervals": [
+      0,
+      2,
+      3,
+      5,
+      7,
+      8,
+      10
+    ],
+    "description": "Dark and melancholic, emotionally rich",
+    "relatedChords": [
+      "F Dim",
+      "G Dim",
+      "G# Dim",
+      "A# Dim",
+      "C Dim",
+      "C# Dim",
+      "D# Dim"
+    ],
+    "commonUsage": "Rock, metal, blues, classical"
+  },
+  {
+    "name": "F Pentatonic Major",
+    "root": "F",
+    "type": "pentatonicMajor",
+    "category": "Scales",
+    "intervals": [
+      0,
+      2,
+      4,
+      7,
+      9
+    ],
+    "description": "Universally pleasing, great for improvisation",
+    "relatedChords": [
+      "F Dim",
+      "G Dim",
+      "A Dim",
+      "C Dim",
+      "D Dim"
+    ],
+    "commonUsage": "Country, rock, pop, blues"
+  },
+  {
+    "name": "F Pentatonic Minor",
+    "root": "F",
+    "type": "pentatonicMinor",
+    "category": "Scales",
+    "intervals": [
+      0,
+      3,
+      5,
+      7,
+      10
+    ],
+    "description": "Soulful and expressive, core of blues and rock",
+    "relatedChords": [
+      "F Dim",
+      "G# Dim",
+      "A# Dim",
+      "C Dim",
+      "D# Dim"
+    ],
+    "commonUsage": "Blues, rock, jazz, pop"
+  },
+  {
+    "name": "F Blues",
+    "root": "F",
+    "type": "blues",
+    "category": "Scales",
+    "intervals": [
+      0,
+      3,
+      5,
+      6,
+      7,
+      10
+    ],
+    "description": "Adds grit and soul with the blues note",
+    "relatedChords": [
+      "F Dim",
+      "G# Dim",
+      "A# Dim",
+      "B Dim",
+      "C Dim",
+      "D# Dim"
+    ],
+    "commonUsage": "Blues, jazz, rock, soul"
+  },
+  {
+    "name": "F Harmonic Minor",
+    "root": "F",
+    "type": "harmonicMinor",
+    "category": "Scales",
+    "intervals": [
+      0,
+      2,
+      3,
+      5,
+      7,
+      8,
+      11
+    ],
+    "description": "Exotic minor with raised 7th, tense and dramatic",
+    "relatedChords": [
+      "F Dim",
+      "G Dim",
+      "G# Dim",
+      "A# Dim",
+      "C Dim",
+      "C# Dim",
+      "E Dim"
+    ],
+    "commonUsage": "Classical, flamenco, metal"
+  },
+  {
+    "name": "F Melodic Minor",
+    "root": "F",
+    "type": "melodicMinor",
+    "category": "Scales",
+    "intervals": [
+      0,
+      2,
+      3,
+      5,
+      7,
+      9,
+      11
+    ],
+    "description": "Jazz-friendly minor with ascending brightness",
+    "relatedChords": [
+      "F Dim",
+      "G Dim",
+      "G# Dim",
+      "A# Dim",
+      "C Dim",
+      "D Dim",
+      "E Dim"
+    ],
+    "commonUsage": "Jazz, classical, fusion"
+  },
+  {
+    "name": "F Whole Tone",
+    "root": "F",
+    "type": "wholeTone",
+    "category": "Scales",
+    "intervals": [
+      0,
+      2,
+      4,
+      6,
+      8,
+      10
+    ],
+    "description": "Dreamlike and ambiguous with no strong tonal center",
+    "relatedChords": [
+      "F Dim",
+      "G Dim",
+      "A Dim",
+      "B Dim",
+      "C# Dim",
+      "D# Dim"
+    ],
+    "commonUsage": "Jazz, impressionist, film"
+  },
+  {
+    "name": "F# Major",
+    "root": "F#",
+    "type": "major",
+    "category": "Scales",
+    "intervals": [
+      0,
+      2,
+      4,
+      5,
+      7,
+      9,
+      11
+    ],
+    "description": "Bright and happy character, foundational scale",
+    "relatedChords": [
+      "F# Dim",
+      "G# Dim",
+      "A# Dim",
+      "B Dim",
+      "C# Dim",
+      "D# Dim",
+      "F Dim"
+    ],
+    "commonUsage": "Pop, rock, classical, country"
+  },
+  {
+    "name": "F# Natural Minor",
+    "root": "F#",
+    "type": "naturalMinor",
+    "category": "Scales",
+    "intervals": [
+      0,
+      2,
+      3,
+      5,
+      7,
+      8,
+      10
+    ],
+    "description": "Dark and melancholic, emotionally rich",
+    "relatedChords": [
+      "F# Dim",
+      "G# Dim",
+      "A Dim",
+      "B Dim",
+      "C# Dim",
+      "D Dim",
+      "E Dim"
+    ],
+    "commonUsage": "Rock, metal, blues, classical"
+  },
+  {
+    "name": "F# Pentatonic Major",
+    "root": "F#",
+    "type": "pentatonicMajor",
+    "category": "Scales",
+    "intervals": [
+      0,
+      2,
+      4,
+      7,
+      9
+    ],
+    "description": "Universally pleasing, great for improvisation",
+    "relatedChords": [
+      "F# Dim",
+      "G# Dim",
+      "A# Dim",
+      "C# Dim",
+      "D# Dim"
+    ],
+    "commonUsage": "Country, rock, pop, blues"
+  },
+  {
+    "name": "F# Pentatonic Minor",
+    "root": "F#",
+    "type": "pentatonicMinor",
+    "category": "Scales",
+    "intervals": [
+      0,
+      3,
+      5,
+      7,
+      10
+    ],
+    "description": "Soulful and expressive, core of blues and rock",
+    "relatedChords": [
+      "F# Dim",
+      "A Dim",
+      "B Dim",
+      "C# Dim",
+      "E Dim"
+    ],
+    "commonUsage": "Blues, rock, jazz, pop"
+  },
+  {
+    "name": "F# Blues",
+    "root": "F#",
+    "type": "blues",
+    "category": "Scales",
+    "intervals": [
+      0,
+      3,
+      5,
+      6,
+      7,
+      10
+    ],
+    "description": "Adds grit and soul with the blues note",
+    "relatedChords": [
+      "F# Dim",
+      "A Dim",
+      "B Dim",
+      "C Dim",
+      "C# Dim",
+      "E Dim"
+    ],
+    "commonUsage": "Blues, jazz, rock, soul"
+  },
+  {
+    "name": "F# Harmonic Minor",
+    "root": "F#",
+    "type": "harmonicMinor",
+    "category": "Scales",
+    "intervals": [
+      0,
+      2,
+      3,
+      5,
+      7,
+      8,
+      11
+    ],
+    "description": "Exotic minor with raised 7th, tense and dramatic",
+    "relatedChords": [
+      "F# Dim",
+      "G# Dim",
+      "A Dim",
+      "B Dim",
+      "C# Dim",
+      "D Dim",
+      "F Dim"
+    ],
+    "commonUsage": "Classical, flamenco, metal"
+  },
+  {
+    "name": "F# Melodic Minor",
+    "root": "F#",
+    "type": "melodicMinor",
+    "category": "Scales",
+    "intervals": [
+      0,
+      2,
+      3,
+      5,
+      7,
+      9,
+      11
+    ],
+    "description": "Jazz-friendly minor with ascending brightness",
+    "relatedChords": [
+      "F# Dim",
+      "G# Dim",
+      "A Dim",
+      "B Dim",
+      "C# Dim",
+      "D# Dim",
+      "F Dim"
+    ],
+    "commonUsage": "Jazz, classical, fusion"
+  },
+  {
+    "name": "F# Whole Tone",
+    "root": "F#",
+    "type": "wholeTone",
+    "category": "Scales",
+    "intervals": [
+      0,
+      2,
+      4,
+      6,
+      8,
+      10
+    ],
+    "description": "Dreamlike and ambiguous with no strong tonal center",
+    "relatedChords": [
+      "F# Dim",
+      "G# Dim",
+      "A# Dim",
+      "C Dim",
+      "D Dim",
+      "E Dim"
+    ],
+    "commonUsage": "Jazz, impressionist, film"
+  },
+  {
+    "name": "G Major",
+    "root": "G",
+    "type": "major",
+    "category": "Scales",
+    "intervals": [
+      0,
+      2,
+      4,
+      5,
+      7,
+      9,
+      11
+    ],
+    "description": "Bright and happy character, foundational scale",
+    "relatedChords": [
+      "G Dim",
+      "A Dim",
+      "B Dim",
+      "C Dim",
+      "D Dim",
+      "E Dim",
+      "F# Dim"
+    ],
+    "commonUsage": "Pop, rock, classical, country"
+  },
+  {
+    "name": "G Natural Minor",
+    "root": "G",
+    "type": "naturalMinor",
+    "category": "Scales",
+    "intervals": [
+      0,
+      2,
+      3,
+      5,
+      7,
+      8,
+      10
+    ],
+    "description": "Dark and melancholic, emotionally rich",
+    "relatedChords": [
+      "G Dim",
+      "A Dim",
+      "A# Dim",
+      "C Dim",
+      "D Dim",
+      "D# Dim",
+      "F Dim"
+    ],
+    "commonUsage": "Rock, metal, blues, classical"
+  },
+  {
+    "name": "G Pentatonic Major",
+    "root": "G",
+    "type": "pentatonicMajor",
+    "category": "Scales",
+    "intervals": [
+      0,
+      2,
+      4,
+      7,
+      9
+    ],
+    "description": "Universally pleasing, great for improvisation",
+    "relatedChords": [
+      "G Dim",
+      "A Dim",
+      "B Dim",
+      "D Dim",
+      "E Dim"
+    ],
+    "commonUsage": "Country, rock, pop, blues"
+  },
+  {
+    "name": "G Pentatonic Minor",
+    "root": "G",
+    "type": "pentatonicMinor",
+    "category": "Scales",
+    "intervals": [
+      0,
+      3,
+      5,
+      7,
+      10
+    ],
+    "description": "Soulful and expressive, core of blues and rock",
+    "relatedChords": [
+      "G Dim",
+      "A# Dim",
+      "C Dim",
+      "D Dim",
+      "F Dim"
+    ],
+    "commonUsage": "Blues, rock, jazz, pop"
+  },
+  {
+    "name": "G Blues",
+    "root": "G",
+    "type": "blues",
+    "category": "Scales",
+    "intervals": [
+      0,
+      3,
+      5,
+      6,
+      7,
+      10
+    ],
+    "description": "Adds grit and soul with the blues note",
+    "relatedChords": [
+      "G Dim",
+      "A# Dim",
+      "C Dim",
+      "C# Dim",
+      "D Dim",
+      "F Dim"
+    ],
+    "commonUsage": "Blues, jazz, rock, soul"
+  },
+  {
+    "name": "G Harmonic Minor",
+    "root": "G",
+    "type": "harmonicMinor",
+    "category": "Scales",
+    "intervals": [
+      0,
+      2,
+      3,
+      5,
+      7,
+      8,
+      11
+    ],
+    "description": "Exotic minor with raised 7th, tense and dramatic",
+    "relatedChords": [
+      "G Dim",
+      "A Dim",
+      "A# Dim",
+      "C Dim",
+      "D Dim",
+      "D# Dim",
+      "F# Dim"
+    ],
+    "commonUsage": "Classical, flamenco, metal"
+  },
+  {
+    "name": "G Melodic Minor",
+    "root": "G",
+    "type": "melodicMinor",
+    "category": "Scales",
+    "intervals": [
+      0,
+      2,
+      3,
+      5,
+      7,
+      9,
+      11
+    ],
+    "description": "Jazz-friendly minor with ascending brightness",
+    "relatedChords": [
+      "G Dim",
+      "A Dim",
+      "A# Dim",
+      "C Dim",
+      "D Dim",
+      "E Dim",
+      "F# Dim"
+    ],
+    "commonUsage": "Jazz, classical, fusion"
+  },
+  {
+    "name": "G Whole Tone",
+    "root": "G",
+    "type": "wholeTone",
+    "category": "Scales",
+    "intervals": [
+      0,
+      2,
+      4,
+      6,
+      8,
+      10
+    ],
+    "description": "Dreamlike and ambiguous with no strong tonal center",
+    "relatedChords": [
+      "G Dim",
+      "A Dim",
+      "B Dim",
+      "C# Dim",
+      "D# Dim",
+      "F Dim"
+    ],
+    "commonUsage": "Jazz, impressionist, film"
+  },
+  {
+    "name": "G# Major",
+    "root": "G#",
+    "type": "major",
+    "category": "Scales",
+    "intervals": [
+      0,
+      2,
+      4,
+      5,
+      7,
+      9,
+      11
+    ],
+    "description": "Bright and happy character, foundational scale",
+    "relatedChords": [
+      "G# Dim",
+      "A# Dim",
+      "C Dim",
+      "C# Dim",
+      "D# Dim",
+      "F Dim",
+      "G Dim"
+    ],
+    "commonUsage": "Pop, rock, classical, country"
+  },
+  {
+    "name": "G# Natural Minor",
+    "root": "G#",
+    "type": "naturalMinor",
+    "category": "Scales",
+    "intervals": [
+      0,
+      2,
+      3,
+      5,
+      7,
+      8,
+      10
+    ],
+    "description": "Dark and melancholic, emotionally rich",
+    "relatedChords": [
+      "G# Dim",
+      "A# Dim",
+      "B Dim",
+      "C# Dim",
+      "D# Dim",
+      "E Dim",
+      "F# Dim"
+    ],
+    "commonUsage": "Rock, metal, blues, classical"
+  },
+  {
+    "name": "G# Pentatonic Major",
+    "root": "G#",
+    "type": "pentatonicMajor",
+    "category": "Scales",
+    "intervals": [
+      0,
+      2,
+      4,
+      7,
+      9
+    ],
+    "description": "Universally pleasing, great for improvisation",
+    "relatedChords": [
+      "G# Dim",
+      "A# Dim",
+      "C Dim",
+      "D# Dim",
+      "F Dim"
+    ],
+    "commonUsage": "Country, rock, pop, blues"
+  },
+  {
+    "name": "G# Pentatonic Minor",
+    "root": "G#",
+    "type": "pentatonicMinor",
+    "category": "Scales",
+    "intervals": [
+      0,
+      3,
+      5,
+      7,
+      10
+    ],
+    "description": "Soulful and expressive, core of blues and rock",
+    "relatedChords": [
+      "G# Dim",
+      "B Dim",
+      "C# Dim",
+      "D# Dim",
+      "F# Dim"
+    ],
+    "commonUsage": "Blues, rock, jazz, pop"
+  },
+  {
+    "name": "G# Blues",
+    "root": "G#",
+    "type": "blues",
+    "category": "Scales",
+    "intervals": [
+      0,
+      3,
+      5,
+      6,
+      7,
+      10
+    ],
+    "description": "Adds grit and soul with the blues note",
+    "relatedChords": [
+      "G# Dim",
+      "B Dim",
+      "C# Dim",
+      "D Dim",
+      "D# Dim",
+      "F# Dim"
+    ],
+    "commonUsage": "Blues, jazz, rock, soul"
+  },
+  {
+    "name": "G# Harmonic Minor",
+    "root": "G#",
+    "type": "harmonicMinor",
+    "category": "Scales",
+    "intervals": [
+      0,
+      2,
+      3,
+      5,
+      7,
+      8,
+      11
+    ],
+    "description": "Exotic minor with raised 7th, tense and dramatic",
+    "relatedChords": [
+      "G# Dim",
+      "A# Dim",
+      "B Dim",
+      "C# Dim",
+      "D# Dim",
+      "E Dim",
+      "G Dim"
+    ],
+    "commonUsage": "Classical, flamenco, metal"
+  },
+  {
+    "name": "G# Melodic Minor",
+    "root": "G#",
+    "type": "melodicMinor",
+    "category": "Scales",
+    "intervals": [
+      0,
+      2,
+      3,
+      5,
+      7,
+      9,
+      11
+    ],
+    "description": "Jazz-friendly minor with ascending brightness",
+    "relatedChords": [
+      "G# Dim",
+      "A# Dim",
+      "B Dim",
+      "C# Dim",
+      "D# Dim",
+      "F Dim",
+      "G Dim"
+    ],
+    "commonUsage": "Jazz, classical, fusion"
+  },
+  {
+    "name": "G# Whole Tone",
+    "root": "G#",
+    "type": "wholeTone",
+    "category": "Scales",
+    "intervals": [
+      0,
+      2,
+      4,
+      6,
+      8,
+      10
+    ],
+    "description": "Dreamlike and ambiguous with no strong tonal center",
+    "relatedChords": [
+      "G# Dim",
+      "A# Dim",
+      "C Dim",
+      "D Dim",
+      "E Dim",
+      "F# Dim"
+    ],
+    "commonUsage": "Jazz, impressionist, film"
+  },
+  {
+    "name": "A Major",
+    "root": "A",
+    "type": "major",
+    "category": "Scales",
+    "intervals": [
+      0,
+      2,
+      4,
+      5,
+      7,
+      9,
+      11
+    ],
+    "description": "Bright and happy character, foundational scale",
+    "relatedChords": [
+      "A Dim",
+      "B Dim",
+      "C# Dim",
+      "D Dim",
+      "E Dim",
+      "F# Dim",
+      "G# Dim"
+    ],
+    "commonUsage": "Pop, rock, classical, country"
+  },
+  {
+    "name": "A Natural Minor",
+    "root": "A",
+    "type": "naturalMinor",
+    "category": "Scales",
+    "intervals": [
+      0,
+      2,
+      3,
+      5,
+      7,
+      8,
+      10
+    ],
+    "description": "Dark and melancholic, emotionally rich",
+    "relatedChords": [
+      "A Dim",
+      "B Dim",
+      "C Dim",
+      "D Dim",
+      "E Dim",
+      "F Dim",
+      "G Dim"
+    ],
+    "commonUsage": "Rock, metal, blues, classical"
+  },
+  {
+    "name": "A Pentatonic Major",
+    "root": "A",
+    "type": "pentatonicMajor",
+    "category": "Scales",
+    "intervals": [
+      0,
+      2,
+      4,
+      7,
+      9
+    ],
+    "description": "Universally pleasing, great for improvisation",
+    "relatedChords": [
+      "A Dim",
+      "B Dim",
+      "C# Dim",
+      "E Dim",
+      "F# Dim"
+    ],
+    "commonUsage": "Country, rock, pop, blues"
+  },
+  {
+    "name": "A Pentatonic Minor",
+    "root": "A",
+    "type": "pentatonicMinor",
+    "category": "Scales",
+    "intervals": [
+      0,
+      3,
+      5,
+      7,
+      10
+    ],
+    "description": "Soulful and expressive, core of blues and rock",
+    "relatedChords": [
+      "A Dim",
+      "C Dim",
+      "D Dim",
+      "E Dim",
+      "G Dim"
+    ],
+    "commonUsage": "Blues, rock, jazz, pop"
+  },
+  {
+    "name": "A Blues",
+    "root": "A",
+    "type": "blues",
+    "category": "Scales",
+    "intervals": [
+      0,
+      3,
+      5,
+      6,
+      7,
+      10
+    ],
+    "description": "Adds grit and soul with the blues note",
+    "relatedChords": [
+      "A Dim",
+      "C Dim",
+      "D Dim",
+      "D# Dim",
+      "E Dim",
+      "G Dim"
+    ],
+    "commonUsage": "Blues, jazz, rock, soul"
+  },
+  {
+    "name": "A Harmonic Minor",
+    "root": "A",
+    "type": "harmonicMinor",
+    "category": "Scales",
+    "intervals": [
+      0,
+      2,
+      3,
+      5,
+      7,
+      8,
+      11
+    ],
+    "description": "Exotic minor with raised 7th, tense and dramatic",
+    "relatedChords": [
+      "A Dim",
+      "B Dim",
+      "C Dim",
+      "D Dim",
+      "E Dim",
+      "F Dim",
+      "G# Dim"
+    ],
+    "commonUsage": "Classical, flamenco, metal"
+  },
+  {
+    "name": "A Melodic Minor",
+    "root": "A",
+    "type": "melodicMinor",
+    "category": "Scales",
+    "intervals": [
+      0,
+      2,
+      3,
+      5,
+      7,
+      9,
+      11
+    ],
+    "description": "Jazz-friendly minor with ascending brightness",
+    "relatedChords": [
+      "A Dim",
+      "B Dim",
+      "C Dim",
+      "D Dim",
+      "E Dim",
+      "F# Dim",
+      "G# Dim"
+    ],
+    "commonUsage": "Jazz, classical, fusion"
+  },
+  {
+    "name": "A Whole Tone",
+    "root": "A",
+    "type": "wholeTone",
+    "category": "Scales",
+    "intervals": [
+      0,
+      2,
+      4,
+      6,
+      8,
+      10
+    ],
+    "description": "Dreamlike and ambiguous with no strong tonal center",
+    "relatedChords": [
+      "A Dim",
+      "B Dim",
+      "C# Dim",
+      "D# Dim",
+      "F Dim",
+      "G Dim"
+    ],
+    "commonUsage": "Jazz, impressionist, film"
+  },
+  {
+    "name": "A# Major",
+    "root": "A#",
+    "type": "major",
+    "category": "Scales",
+    "intervals": [
+      0,
+      2,
+      4,
+      5,
+      7,
+      9,
+      11
+    ],
+    "description": "Bright and happy character, foundational scale",
+    "relatedChords": [
+      "A# Dim",
+      "C Dim",
+      "D Dim",
+      "D# Dim",
+      "F Dim",
+      "G Dim",
+      "A Dim"
+    ],
+    "commonUsage": "Pop, rock, classical, country"
+  },
+  {
+    "name": "A# Natural Minor",
+    "root": "A#",
+    "type": "naturalMinor",
+    "category": "Scales",
+    "intervals": [
+      0,
+      2,
+      3,
+      5,
+      7,
+      8,
+      10
+    ],
+    "description": "Dark and melancholic, emotionally rich",
+    "relatedChords": [
+      "A# Dim",
+      "C Dim",
+      "C# Dim",
+      "D# Dim",
+      "F Dim",
+      "F# Dim",
+      "G# Dim"
+    ],
+    "commonUsage": "Rock, metal, blues, classical"
+  },
+  {
+    "name": "A# Pentatonic Major",
+    "root": "A#",
+    "type": "pentatonicMajor",
+    "category": "Scales",
+    "intervals": [
+      0,
+      2,
+      4,
+      7,
+      9
+    ],
+    "description": "Universally pleasing, great for improvisation",
+    "relatedChords": [
+      "A# Dim",
+      "C Dim",
+      "D Dim",
+      "F Dim",
+      "G Dim"
+    ],
+    "commonUsage": "Country, rock, pop, blues"
+  },
+  {
+    "name": "A# Pentatonic Minor",
+    "root": "A#",
+    "type": "pentatonicMinor",
+    "category": "Scales",
+    "intervals": [
+      0,
+      3,
+      5,
+      7,
+      10
+    ],
+    "description": "Soulful and expressive, core of blues and rock",
+    "relatedChords": [
+      "A# Dim",
+      "C# Dim",
+      "D# Dim",
+      "F Dim",
+      "G# Dim"
+    ],
+    "commonUsage": "Blues, rock, jazz, pop"
+  },
+  {
+    "name": "A# Blues",
+    "root": "A#",
+    "type": "blues",
+    "category": "Scales",
+    "intervals": [
+      0,
+      3,
+      5,
+      6,
+      7,
+      10
+    ],
+    "description": "Adds grit and soul with the blues note",
+    "relatedChords": [
+      "A# Dim",
+      "C# Dim",
+      "D# Dim",
+      "E Dim",
+      "F Dim",
+      "G# Dim"
+    ],
+    "commonUsage": "Blues, jazz, rock, soul"
+  },
+  {
+    "name": "A# Harmonic Minor",
+    "root": "A#",
+    "type": "harmonicMinor",
+    "category": "Scales",
+    "intervals": [
+      0,
+      2,
+      3,
+      5,
+      7,
+      8,
+      11
+    ],
+    "description": "Exotic minor with raised 7th, tense and dramatic",
+    "relatedChords": [
+      "A# Dim",
+      "C Dim",
+      "C# Dim",
+      "D# Dim",
+      "F Dim",
+      "F# Dim",
+      "A Dim"
+    ],
+    "commonUsage": "Classical, flamenco, metal"
+  },
+  {
+    "name": "A# Melodic Minor",
+    "root": "A#",
+    "type": "melodicMinor",
+    "category": "Scales",
+    "intervals": [
+      0,
+      2,
+      3,
+      5,
+      7,
+      9,
+      11
+    ],
+    "description": "Jazz-friendly minor with ascending brightness",
+    "relatedChords": [
+      "A# Dim",
+      "C Dim",
+      "C# Dim",
+      "D# Dim",
+      "F Dim",
+      "G Dim",
+      "A Dim"
+    ],
+    "commonUsage": "Jazz, classical, fusion"
+  },
+  {
+    "name": "A# Whole Tone",
+    "root": "A#",
+    "type": "wholeTone",
+    "category": "Scales",
+    "intervals": [
+      0,
+      2,
+      4,
+      6,
+      8,
+      10
+    ],
+    "description": "Dreamlike and ambiguous with no strong tonal center",
+    "relatedChords": [
+      "A# Dim",
+      "C Dim",
+      "D Dim",
+      "E Dim",
+      "F# Dim",
+      "G# Dim"
+    ],
+    "commonUsage": "Jazz, impressionist, film"
+  },
+  {
+    "name": "B Major",
+    "root": "B",
+    "type": "major",
+    "category": "Scales",
+    "intervals": [
+      0,
+      2,
+      4,
+      5,
+      7,
+      9,
+      11
+    ],
+    "description": "Bright and happy character, foundational scale",
+    "relatedChords": [
+      "B Dim",
+      "C# Dim",
+      "D# Dim",
+      "E Dim",
+      "F# Dim",
+      "G# Dim",
+      "A# Dim"
+    ],
+    "commonUsage": "Pop, rock, classical, country"
+  },
+  {
+    "name": "B Natural Minor",
+    "root": "B",
+    "type": "naturalMinor",
+    "category": "Scales",
+    "intervals": [
+      0,
+      2,
+      3,
+      5,
+      7,
+      8,
+      10
+    ],
+    "description": "Dark and melancholic, emotionally rich",
+    "relatedChords": [
+      "B Dim",
+      "C# Dim",
+      "D Dim",
+      "E Dim",
+      "F# Dim",
+      "G Dim",
+      "A Dim"
+    ],
+    "commonUsage": "Rock, metal, blues, classical"
+  },
+  {
+    "name": "B Pentatonic Major",
+    "root": "B",
+    "type": "pentatonicMajor",
+    "category": "Scales",
+    "intervals": [
+      0,
+      2,
+      4,
+      7,
+      9
+    ],
+    "description": "Universally pleasing, great for improvisation",
+    "relatedChords": [
+      "B Dim",
+      "C# Dim",
+      "D# Dim",
+      "F# Dim",
+      "G# Dim"
+    ],
+    "commonUsage": "Country, rock, pop, blues"
+  },
+  {
+    "name": "B Pentatonic Minor",
+    "root": "B",
+    "type": "pentatonicMinor",
+    "category": "Scales",
+    "intervals": [
+      0,
+      3,
+      5,
+      7,
+      10
+    ],
+    "description": "Soulful and expressive, core of blues and rock",
+    "relatedChords": [
+      "B Dim",
+      "D Dim",
+      "E Dim",
+      "F# Dim",
+      "A Dim"
+    ],
+    "commonUsage": "Blues, rock, jazz, pop"
+  },
+  {
+    "name": "B Blues",
+    "root": "B",
+    "type": "blues",
+    "category": "Scales",
+    "intervals": [
+      0,
+      3,
+      5,
+      6,
+      7,
+      10
+    ],
+    "description": "Adds grit and soul with the blues note",
+    "relatedChords": [
+      "B Dim",
+      "D Dim",
+      "E Dim",
+      "F Dim",
+      "F# Dim",
+      "A Dim"
+    ],
+    "commonUsage": "Blues, jazz, rock, soul"
+  },
+  {
+    "name": "B Harmonic Minor",
+    "root": "B",
+    "type": "harmonicMinor",
+    "category": "Scales",
+    "intervals": [
+      0,
+      2,
+      3,
+      5,
+      7,
+      8,
+      11
+    ],
+    "description": "Exotic minor with raised 7th, tense and dramatic",
+    "relatedChords": [
+      "B Dim",
+      "C# Dim",
+      "D Dim",
+      "E Dim",
+      "F# Dim",
+      "G Dim",
+      "A# Dim"
+    ],
+    "commonUsage": "Classical, flamenco, metal"
+  },
+  {
+    "name": "B Melodic Minor",
+    "root": "B",
+    "type": "melodicMinor",
+    "category": "Scales",
+    "intervals": [
+      0,
+      2,
+      3,
+      5,
+      7,
+      9,
+      11
+    ],
+    "description": "Jazz-friendly minor with ascending brightness",
+    "relatedChords": [
+      "B Dim",
+      "C# Dim",
+      "D Dim",
+      "E Dim",
+      "F# Dim",
+      "G# Dim",
+      "A# Dim"
+    ],
+    "commonUsage": "Jazz, classical, fusion"
+  },
+  {
+    "name": "B Whole Tone",
+    "root": "B",
+    "type": "wholeTone",
+    "category": "Scales",
+    "intervals": [
+      0,
+      2,
+      4,
+      6,
+      8,
+      10
+    ],
+    "description": "Dreamlike and ambiguous with no strong tonal center",
+    "relatedChords": [
+      "B Dim",
+      "C# Dim",
+      "D# Dim",
+      "F Dim",
+      "G Dim",
+      "A Dim"
+    ],
+    "commonUsage": "Jazz, impressionist, film"
+  },
+  {
+    "name": "C Ionian",
+    "root": "C",
+    "type": "ionian",
+    "category": "Modes",
+    "intervals": [
+      0,
+      2,
+      4,
+      5,
+      7,
+      9,
+      11
+    ],
+    "description": "Bright, happy, uplifting \u2014 the natural major scale",
+    "relatedChords": [],
+    "commonUsage": "Beethoven - Ode to Joy, John Denver - Take Me Home Country Roads"
+  },
+  {
+    "name": "C Dorian",
+    "root": "C",
+    "type": "dorian",
+    "category": "Modes",
+    "intervals": [
+      0,
+      2,
+      3,
+      5,
+      7,
+      9,
+      10
+    ],
+    "description": "Minor with raised 6th \u2014 cool, jazzy, slightly hopeful",
+    "relatedChords": [],
+    "commonUsage": "Santana - Oye Como Va, Miles Davis - So What, The Beatles - Eleanor Rigby"
+  },
+  {
+    "name": "C Phrygian",
+    "root": "C",
+    "type": "phrygian",
+    "category": "Modes",
+    "intervals": [
+      0,
+      1,
+      3,
+      5,
+      7,
+      8,
+      10
+    ],
+    "description": "Dark and Spanish-flavored, exotic and intense",
+    "relatedChords": [],
+    "commonUsage": "Metallica - Wherever I May Roam, Flamenco music"
+  },
+  {
+    "name": "C Lydian",
+    "root": "C",
+    "type": "lydian",
+    "category": "Modes",
+    "intervals": [
+      0,
+      2,
+      4,
+      6,
+      7,
+      9,
+      11
+    ],
+    "description": "Ethereal and dreamy, otherworldly brightness",
+    "relatedChords": [],
+    "commonUsage": "John Williams - Superman Theme, Simpsons theme"
+  },
+  {
+    "name": "C Mixolydian",
+    "root": "C",
+    "type": "mixolydian",
+    "category": "Modes",
+    "intervals": [
+      0,
+      2,
+      4,
+      5,
+      7,
+      9,
+      10
+    ],
+    "description": "Bluesy major \u2014 dominant, rock-friendly, funky",
+    "relatedChords": [],
+    "commonUsage": "Sweet Home Chicago, Norwegian Wood - Beatles, Clocks - Coldplay"
+  },
+  {
+    "name": "C Aeolian",
+    "root": "C",
+    "type": "aeolian",
+    "category": "Modes",
+    "intervals": [
+      0,
+      2,
+      3,
+      5,
+      7,
+      8,
+      10
+    ],
+    "description": "Dark and emotional \u2014 the natural minor scale",
+    "relatedChords": [],
+    "commonUsage": "Stairway to Heaven - Led Zeppelin, Losing My Religion - REM"
+  },
+  {
+    "name": "C Locrian",
+    "root": "C",
+    "type": "locrian",
+    "category": "Modes",
+    "intervals": [
+      0,
+      1,
+      3,
+      5,
+      6,
+      8,
+      10
+    ],
+    "description": "Dissonant and unstable, rarely used \u2014 darkest mode",
+    "relatedChords": [],
+    "commonUsage": "Bj\u00f6rk - Army of Me, Some metal compositions"
+  },
+  {
+    "name": "C# Ionian",
+    "root": "C#",
+    "type": "ionian",
+    "category": "Modes",
+    "intervals": [
+      0,
+      2,
+      4,
+      5,
+      7,
+      9,
+      11
+    ],
+    "description": "Bright, happy, uplifting \u2014 the natural major scale",
+    "relatedChords": [],
+    "commonUsage": "Beethoven - Ode to Joy, John Denver - Take Me Home Country Roads"
+  },
+  {
+    "name": "C# Dorian",
+    "root": "C#",
+    "type": "dorian",
+    "category": "Modes",
+    "intervals": [
+      0,
+      2,
+      3,
+      5,
+      7,
+      9,
+      10
+    ],
+    "description": "Minor with raised 6th \u2014 cool, jazzy, slightly hopeful",
+    "relatedChords": [],
+    "commonUsage": "Santana - Oye Como Va, Miles Davis - So What, The Beatles - Eleanor Rigby"
+  },
+  {
+    "name": "C# Phrygian",
+    "root": "C#",
+    "type": "phrygian",
+    "category": "Modes",
+    "intervals": [
+      0,
+      1,
+      3,
+      5,
+      7,
+      8,
+      10
+    ],
+    "description": "Dark and Spanish-flavored, exotic and intense",
+    "relatedChords": [],
+    "commonUsage": "Metallica - Wherever I May Roam, Flamenco music"
+  },
+  {
+    "name": "C# Lydian",
+    "root": "C#",
+    "type": "lydian",
+    "category": "Modes",
+    "intervals": [
+      0,
+      2,
+      4,
+      6,
+      7,
+      9,
+      11
+    ],
+    "description": "Ethereal and dreamy, otherworldly brightness",
+    "relatedChords": [],
+    "commonUsage": "John Williams - Superman Theme, Simpsons theme"
+  },
+  {
+    "name": "C# Mixolydian",
+    "root": "C#",
+    "type": "mixolydian",
+    "category": "Modes",
+    "intervals": [
+      0,
+      2,
+      4,
+      5,
+      7,
+      9,
+      10
+    ],
+    "description": "Bluesy major \u2014 dominant, rock-friendly, funky",
+    "relatedChords": [],
+    "commonUsage": "Sweet Home Chicago, Norwegian Wood - Beatles, Clocks - Coldplay"
+  },
+  {
+    "name": "C# Aeolian",
+    "root": "C#",
+    "type": "aeolian",
+    "category": "Modes",
+    "intervals": [
+      0,
+      2,
+      3,
+      5,
+      7,
+      8,
+      10
+    ],
+    "description": "Dark and emotional \u2014 the natural minor scale",
+    "relatedChords": [],
+    "commonUsage": "Stairway to Heaven - Led Zeppelin, Losing My Religion - REM"
+  },
+  {
+    "name": "C# Locrian",
+    "root": "C#",
+    "type": "locrian",
+    "category": "Modes",
+    "intervals": [
+      0,
+      1,
+      3,
+      5,
+      6,
+      8,
+      10
+    ],
+    "description": "Dissonant and unstable, rarely used \u2014 darkest mode",
+    "relatedChords": [],
+    "commonUsage": "Bj\u00f6rk - Army of Me, Some metal compositions"
+  },
+  {
+    "name": "D Ionian",
+    "root": "D",
+    "type": "ionian",
+    "category": "Modes",
+    "intervals": [
+      0,
+      2,
+      4,
+      5,
+      7,
+      9,
+      11
+    ],
+    "description": "Bright, happy, uplifting \u2014 the natural major scale",
+    "relatedChords": [],
+    "commonUsage": "Beethoven - Ode to Joy, John Denver - Take Me Home Country Roads"
+  },
+  {
+    "name": "D Dorian",
+    "root": "D",
+    "type": "dorian",
+    "category": "Modes",
+    "intervals": [
+      0,
+      2,
+      3,
+      5,
+      7,
+      9,
+      10
+    ],
+    "description": "Minor with raised 6th \u2014 cool, jazzy, slightly hopeful",
+    "relatedChords": [],
+    "commonUsage": "Santana - Oye Como Va, Miles Davis - So What, The Beatles - Eleanor Rigby"
+  },
+  {
+    "name": "D Phrygian",
+    "root": "D",
+    "type": "phrygian",
+    "category": "Modes",
+    "intervals": [
+      0,
+      1,
+      3,
+      5,
+      7,
+      8,
+      10
+    ],
+    "description": "Dark and Spanish-flavored, exotic and intense",
+    "relatedChords": [],
+    "commonUsage": "Metallica - Wherever I May Roam, Flamenco music"
+  },
+  {
+    "name": "D Lydian",
+    "root": "D",
+    "type": "lydian",
+    "category": "Modes",
+    "intervals": [
+      0,
+      2,
+      4,
+      6,
+      7,
+      9,
+      11
+    ],
+    "description": "Ethereal and dreamy, otherworldly brightness",
+    "relatedChords": [],
+    "commonUsage": "John Williams - Superman Theme, Simpsons theme"
+  },
+  {
+    "name": "D Mixolydian",
+    "root": "D",
+    "type": "mixolydian",
+    "category": "Modes",
+    "intervals": [
+      0,
+      2,
+      4,
+      5,
+      7,
+      9,
+      10
+    ],
+    "description": "Bluesy major \u2014 dominant, rock-friendly, funky",
+    "relatedChords": [],
+    "commonUsage": "Sweet Home Chicago, Norwegian Wood - Beatles, Clocks - Coldplay"
+  },
+  {
+    "name": "D Aeolian",
+    "root": "D",
+    "type": "aeolian",
+    "category": "Modes",
+    "intervals": [
+      0,
+      2,
+      3,
+      5,
+      7,
+      8,
+      10
+    ],
+    "description": "Dark and emotional \u2014 the natural minor scale",
+    "relatedChords": [],
+    "commonUsage": "Stairway to Heaven - Led Zeppelin, Losing My Religion - REM"
+  },
+  {
+    "name": "D Locrian",
+    "root": "D",
+    "type": "locrian",
+    "category": "Modes",
+    "intervals": [
+      0,
+      1,
+      3,
+      5,
+      6,
+      8,
+      10
+    ],
+    "description": "Dissonant and unstable, rarely used \u2014 darkest mode",
+    "relatedChords": [],
+    "commonUsage": "Bj\u00f6rk - Army of Me, Some metal compositions"
+  },
+  {
+    "name": "D# Ionian",
+    "root": "D#",
+    "type": "ionian",
+    "category": "Modes",
+    "intervals": [
+      0,
+      2,
+      4,
+      5,
+      7,
+      9,
+      11
+    ],
+    "description": "Bright, happy, uplifting \u2014 the natural major scale",
+    "relatedChords": [],
+    "commonUsage": "Beethoven - Ode to Joy, John Denver - Take Me Home Country Roads"
+  },
+  {
+    "name": "D# Dorian",
+    "root": "D#",
+    "type": "dorian",
+    "category": "Modes",
+    "intervals": [
+      0,
+      2,
+      3,
+      5,
+      7,
+      9,
+      10
+    ],
+    "description": "Minor with raised 6th \u2014 cool, jazzy, slightly hopeful",
+    "relatedChords": [],
+    "commonUsage": "Santana - Oye Como Va, Miles Davis - So What, The Beatles - Eleanor Rigby"
+  },
+  {
+    "name": "D# Phrygian",
+    "root": "D#",
+    "type": "phrygian",
+    "category": "Modes",
+    "intervals": [
+      0,
+      1,
+      3,
+      5,
+      7,
+      8,
+      10
+    ],
+    "description": "Dark and Spanish-flavored, exotic and intense",
+    "relatedChords": [],
+    "commonUsage": "Metallica - Wherever I May Roam, Flamenco music"
+  },
+  {
+    "name": "D# Lydian",
+    "root": "D#",
+    "type": "lydian",
+    "category": "Modes",
+    "intervals": [
+      0,
+      2,
+      4,
+      6,
+      7,
+      9,
+      11
+    ],
+    "description": "Ethereal and dreamy, otherworldly brightness",
+    "relatedChords": [],
+    "commonUsage": "John Williams - Superman Theme, Simpsons theme"
+  },
+  {
+    "name": "D# Mixolydian",
+    "root": "D#",
+    "type": "mixolydian",
+    "category": "Modes",
+    "intervals": [
+      0,
+      2,
+      4,
+      5,
+      7,
+      9,
+      10
+    ],
+    "description": "Bluesy major \u2014 dominant, rock-friendly, funky",
+    "relatedChords": [],
+    "commonUsage": "Sweet Home Chicago, Norwegian Wood - Beatles, Clocks - Coldplay"
+  },
+  {
+    "name": "D# Aeolian",
+    "root": "D#",
+    "type": "aeolian",
+    "category": "Modes",
+    "intervals": [
+      0,
+      2,
+      3,
+      5,
+      7,
+      8,
+      10
+    ],
+    "description": "Dark and emotional \u2014 the natural minor scale",
+    "relatedChords": [],
+    "commonUsage": "Stairway to Heaven - Led Zeppelin, Losing My Religion - REM"
+  },
+  {
+    "name": "D# Locrian",
+    "root": "D#",
+    "type": "locrian",
+    "category": "Modes",
+    "intervals": [
+      0,
+      1,
+      3,
+      5,
+      6,
+      8,
+      10
+    ],
+    "description": "Dissonant and unstable, rarely used \u2014 darkest mode",
+    "relatedChords": [],
+    "commonUsage": "Bj\u00f6rk - Army of Me, Some metal compositions"
+  },
+  {
+    "name": "E Ionian",
+    "root": "E",
+    "type": "ionian",
+    "category": "Modes",
+    "intervals": [
+      0,
+      2,
+      4,
+      5,
+      7,
+      9,
+      11
+    ],
+    "description": "Bright, happy, uplifting \u2014 the natural major scale",
+    "relatedChords": [],
+    "commonUsage": "Beethoven - Ode to Joy, John Denver - Take Me Home Country Roads"
+  },
+  {
+    "name": "E Dorian",
+    "root": "E",
+    "type": "dorian",
+    "category": "Modes",
+    "intervals": [
+      0,
+      2,
+      3,
+      5,
+      7,
+      9,
+      10
+    ],
+    "description": "Minor with raised 6th \u2014 cool, jazzy, slightly hopeful",
+    "relatedChords": [],
+    "commonUsage": "Santana - Oye Como Va, Miles Davis - So What, The Beatles - Eleanor Rigby"
+  },
+  {
+    "name": "E Phrygian",
+    "root": "E",
+    "type": "phrygian",
+    "category": "Modes",
+    "intervals": [
+      0,
+      1,
+      3,
+      5,
+      7,
+      8,
+      10
+    ],
+    "description": "Dark and Spanish-flavored, exotic and intense",
+    "relatedChords": [],
+    "commonUsage": "Metallica - Wherever I May Roam, Flamenco music"
+  },
+  {
+    "name": "E Lydian",
+    "root": "E",
+    "type": "lydian",
+    "category": "Modes",
+    "intervals": [
+      0,
+      2,
+      4,
+      6,
+      7,
+      9,
+      11
+    ],
+    "description": "Ethereal and dreamy, otherworldly brightness",
+    "relatedChords": [],
+    "commonUsage": "John Williams - Superman Theme, Simpsons theme"
+  },
+  {
+    "name": "E Mixolydian",
+    "root": "E",
+    "type": "mixolydian",
+    "category": "Modes",
+    "intervals": [
+      0,
+      2,
+      4,
+      5,
+      7,
+      9,
+      10
+    ],
+    "description": "Bluesy major \u2014 dominant, rock-friendly, funky",
+    "relatedChords": [],
+    "commonUsage": "Sweet Home Chicago, Norwegian Wood - Beatles, Clocks - Coldplay"
+  },
+  {
+    "name": "E Aeolian",
+    "root": "E",
+    "type": "aeolian",
+    "category": "Modes",
+    "intervals": [
+      0,
+      2,
+      3,
+      5,
+      7,
+      8,
+      10
+    ],
+    "description": "Dark and emotional \u2014 the natural minor scale",
+    "relatedChords": [],
+    "commonUsage": "Stairway to Heaven - Led Zeppelin, Losing My Religion - REM"
+  },
+  {
+    "name": "E Locrian",
+    "root": "E",
+    "type": "locrian",
+    "category": "Modes",
+    "intervals": [
+      0,
+      1,
+      3,
+      5,
+      6,
+      8,
+      10
+    ],
+    "description": "Dissonant and unstable, rarely used \u2014 darkest mode",
+    "relatedChords": [],
+    "commonUsage": "Bj\u00f6rk - Army of Me, Some metal compositions"
+  },
+  {
+    "name": "F Ionian",
+    "root": "F",
+    "type": "ionian",
+    "category": "Modes",
+    "intervals": [
+      0,
+      2,
+      4,
+      5,
+      7,
+      9,
+      11
+    ],
+    "description": "Bright, happy, uplifting \u2014 the natural major scale",
+    "relatedChords": [],
+    "commonUsage": "Beethoven - Ode to Joy, John Denver - Take Me Home Country Roads"
+  },
+  {
+    "name": "F Dorian",
+    "root": "F",
+    "type": "dorian",
+    "category": "Modes",
+    "intervals": [
+      0,
+      2,
+      3,
+      5,
+      7,
+      9,
+      10
+    ],
+    "description": "Minor with raised 6th \u2014 cool, jazzy, slightly hopeful",
+    "relatedChords": [],
+    "commonUsage": "Santana - Oye Como Va, Miles Davis - So What, The Beatles - Eleanor Rigby"
+  },
+  {
+    "name": "F Phrygian",
+    "root": "F",
+    "type": "phrygian",
+    "category": "Modes",
+    "intervals": [
+      0,
+      1,
+      3,
+      5,
+      7,
+      8,
+      10
+    ],
+    "description": "Dark and Spanish-flavored, exotic and intense",
+    "relatedChords": [],
+    "commonUsage": "Metallica - Wherever I May Roam, Flamenco music"
+  },
+  {
+    "name": "F Lydian",
+    "root": "F",
+    "type": "lydian",
+    "category": "Modes",
+    "intervals": [
+      0,
+      2,
+      4,
+      6,
+      7,
+      9,
+      11
+    ],
+    "description": "Ethereal and dreamy, otherworldly brightness",
+    "relatedChords": [],
+    "commonUsage": "John Williams - Superman Theme, Simpsons theme"
+  },
+  {
+    "name": "F Mixolydian",
+    "root": "F",
+    "type": "mixolydian",
+    "category": "Modes",
+    "intervals": [
+      0,
+      2,
+      4,
+      5,
+      7,
+      9,
+      10
+    ],
+    "description": "Bluesy major \u2014 dominant, rock-friendly, funky",
+    "relatedChords": [],
+    "commonUsage": "Sweet Home Chicago, Norwegian Wood - Beatles, Clocks - Coldplay"
+  },
+  {
+    "name": "F Aeolian",
+    "root": "F",
+    "type": "aeolian",
+    "category": "Modes",
+    "intervals": [
+      0,
+      2,
+      3,
+      5,
+      7,
+      8,
+      10
+    ],
+    "description": "Dark and emotional \u2014 the natural minor scale",
+    "relatedChords": [],
+    "commonUsage": "Stairway to Heaven - Led Zeppelin, Losing My Religion - REM"
+  },
+  {
+    "name": "F Locrian",
+    "root": "F",
+    "type": "locrian",
+    "category": "Modes",
+    "intervals": [
+      0,
+      1,
+      3,
+      5,
+      6,
+      8,
+      10
+    ],
+    "description": "Dissonant and unstable, rarely used \u2014 darkest mode",
+    "relatedChords": [],
+    "commonUsage": "Bj\u00f6rk - Army of Me, Some metal compositions"
+  },
+  {
+    "name": "F# Ionian",
+    "root": "F#",
+    "type": "ionian",
+    "category": "Modes",
+    "intervals": [
+      0,
+      2,
+      4,
+      5,
+      7,
+      9,
+      11
+    ],
+    "description": "Bright, happy, uplifting \u2014 the natural major scale",
+    "relatedChords": [],
+    "commonUsage": "Beethoven - Ode to Joy, John Denver - Take Me Home Country Roads"
+  },
+  {
+    "name": "F# Dorian",
+    "root": "F#",
+    "type": "dorian",
+    "category": "Modes",
+    "intervals": [
+      0,
+      2,
+      3,
+      5,
+      7,
+      9,
+      10
+    ],
+    "description": "Minor with raised 6th \u2014 cool, jazzy, slightly hopeful",
+    "relatedChords": [],
+    "commonUsage": "Santana - Oye Como Va, Miles Davis - So What, The Beatles - Eleanor Rigby"
+  },
+  {
+    "name": "F# Phrygian",
+    "root": "F#",
+    "type": "phrygian",
+    "category": "Modes",
+    "intervals": [
+      0,
+      1,
+      3,
+      5,
+      7,
+      8,
+      10
+    ],
+    "description": "Dark and Spanish-flavored, exotic and intense",
+    "relatedChords": [],
+    "commonUsage": "Metallica - Wherever I May Roam, Flamenco music"
+  },
+  {
+    "name": "F# Lydian",
+    "root": "F#",
+    "type": "lydian",
+    "category": "Modes",
+    "intervals": [
+      0,
+      2,
+      4,
+      6,
+      7,
+      9,
+      11
+    ],
+    "description": "Ethereal and dreamy, otherworldly brightness",
+    "relatedChords": [],
+    "commonUsage": "John Williams - Superman Theme, Simpsons theme"
+  },
+  {
+    "name": "F# Mixolydian",
+    "root": "F#",
+    "type": "mixolydian",
+    "category": "Modes",
+    "intervals": [
+      0,
+      2,
+      4,
+      5,
+      7,
+      9,
+      10
+    ],
+    "description": "Bluesy major \u2014 dominant, rock-friendly, funky",
+    "relatedChords": [],
+    "commonUsage": "Sweet Home Chicago, Norwegian Wood - Beatles, Clocks - Coldplay"
+  },
+  {
+    "name": "F# Aeolian",
+    "root": "F#",
+    "type": "aeolian",
+    "category": "Modes",
+    "intervals": [
+      0,
+      2,
+      3,
+      5,
+      7,
+      8,
+      10
+    ],
+    "description": "Dark and emotional \u2014 the natural minor scale",
+    "relatedChords": [],
+    "commonUsage": "Stairway to Heaven - Led Zeppelin, Losing My Religion - REM"
+  },
+  {
+    "name": "F# Locrian",
+    "root": "F#",
+    "type": "locrian",
+    "category": "Modes",
+    "intervals": [
+      0,
+      1,
+      3,
+      5,
+      6,
+      8,
+      10
+    ],
+    "description": "Dissonant and unstable, rarely used \u2014 darkest mode",
+    "relatedChords": [],
+    "commonUsage": "Bj\u00f6rk - Army of Me, Some metal compositions"
+  },
+  {
+    "name": "G Ionian",
+    "root": "G",
+    "type": "ionian",
+    "category": "Modes",
+    "intervals": [
+      0,
+      2,
+      4,
+      5,
+      7,
+      9,
+      11
+    ],
+    "description": "Bright, happy, uplifting \u2014 the natural major scale",
+    "relatedChords": [],
+    "commonUsage": "Beethoven - Ode to Joy, John Denver - Take Me Home Country Roads"
+  },
+  {
+    "name": "G Dorian",
+    "root": "G",
+    "type": "dorian",
+    "category": "Modes",
+    "intervals": [
+      0,
+      2,
+      3,
+      5,
+      7,
+      9,
+      10
+    ],
+    "description": "Minor with raised 6th \u2014 cool, jazzy, slightly hopeful",
+    "relatedChords": [],
+    "commonUsage": "Santana - Oye Como Va, Miles Davis - So What, The Beatles - Eleanor Rigby"
+  },
+  {
+    "name": "G Phrygian",
+    "root": "G",
+    "type": "phrygian",
+    "category": "Modes",
+    "intervals": [
+      0,
+      1,
+      3,
+      5,
+      7,
+      8,
+      10
+    ],
+    "description": "Dark and Spanish-flavored, exotic and intense",
+    "relatedChords": [],
+    "commonUsage": "Metallica - Wherever I May Roam, Flamenco music"
+  },
+  {
+    "name": "G Lydian",
+    "root": "G",
+    "type": "lydian",
+    "category": "Modes",
+    "intervals": [
+      0,
+      2,
+      4,
+      6,
+      7,
+      9,
+      11
+    ],
+    "description": "Ethereal and dreamy, otherworldly brightness",
+    "relatedChords": [],
+    "commonUsage": "John Williams - Superman Theme, Simpsons theme"
+  },
+  {
+    "name": "G Mixolydian",
+    "root": "G",
+    "type": "mixolydian",
+    "category": "Modes",
+    "intervals": [
+      0,
+      2,
+      4,
+      5,
+      7,
+      9,
+      10
+    ],
+    "description": "Bluesy major \u2014 dominant, rock-friendly, funky",
+    "relatedChords": [],
+    "commonUsage": "Sweet Home Chicago, Norwegian Wood - Beatles, Clocks - Coldplay"
+  },
+  {
+    "name": "G Aeolian",
+    "root": "G",
+    "type": "aeolian",
+    "category": "Modes",
+    "intervals": [
+      0,
+      2,
+      3,
+      5,
+      7,
+      8,
+      10
+    ],
+    "description": "Dark and emotional \u2014 the natural minor scale",
+    "relatedChords": [],
+    "commonUsage": "Stairway to Heaven - Led Zeppelin, Losing My Religion - REM"
+  },
+  {
+    "name": "G Locrian",
+    "root": "G",
+    "type": "locrian",
+    "category": "Modes",
+    "intervals": [
+      0,
+      1,
+      3,
+      5,
+      6,
+      8,
+      10
+    ],
+    "description": "Dissonant and unstable, rarely used \u2014 darkest mode",
+    "relatedChords": [],
+    "commonUsage": "Bj\u00f6rk - Army of Me, Some metal compositions"
+  },
+  {
+    "name": "G# Ionian",
+    "root": "G#",
+    "type": "ionian",
+    "category": "Modes",
+    "intervals": [
+      0,
+      2,
+      4,
+      5,
+      7,
+      9,
+      11
+    ],
+    "description": "Bright, happy, uplifting \u2014 the natural major scale",
+    "relatedChords": [],
+    "commonUsage": "Beethoven - Ode to Joy, John Denver - Take Me Home Country Roads"
+  },
+  {
+    "name": "G# Dorian",
+    "root": "G#",
+    "type": "dorian",
+    "category": "Modes",
+    "intervals": [
+      0,
+      2,
+      3,
+      5,
+      7,
+      9,
+      10
+    ],
+    "description": "Minor with raised 6th \u2014 cool, jazzy, slightly hopeful",
+    "relatedChords": [],
+    "commonUsage": "Santana - Oye Como Va, Miles Davis - So What, The Beatles - Eleanor Rigby"
+  },
+  {
+    "name": "G# Phrygian",
+    "root": "G#",
+    "type": "phrygian",
+    "category": "Modes",
+    "intervals": [
+      0,
+      1,
+      3,
+      5,
+      7,
+      8,
+      10
+    ],
+    "description": "Dark and Spanish-flavored, exotic and intense",
+    "relatedChords": [],
+    "commonUsage": "Metallica - Wherever I May Roam, Flamenco music"
+  },
+  {
+    "name": "G# Lydian",
+    "root": "G#",
+    "type": "lydian",
+    "category": "Modes",
+    "intervals": [
+      0,
+      2,
+      4,
+      6,
+      7,
+      9,
+      11
+    ],
+    "description": "Ethereal and dreamy, otherworldly brightness",
+    "relatedChords": [],
+    "commonUsage": "John Williams - Superman Theme, Simpsons theme"
+  },
+  {
+    "name": "G# Mixolydian",
+    "root": "G#",
+    "type": "mixolydian",
+    "category": "Modes",
+    "intervals": [
+      0,
+      2,
+      4,
+      5,
+      7,
+      9,
+      10
+    ],
+    "description": "Bluesy major \u2014 dominant, rock-friendly, funky",
+    "relatedChords": [],
+    "commonUsage": "Sweet Home Chicago, Norwegian Wood - Beatles, Clocks - Coldplay"
+  },
+  {
+    "name": "G# Aeolian",
+    "root": "G#",
+    "type": "aeolian",
+    "category": "Modes",
+    "intervals": [
+      0,
+      2,
+      3,
+      5,
+      7,
+      8,
+      10
+    ],
+    "description": "Dark and emotional \u2014 the natural minor scale",
+    "relatedChords": [],
+    "commonUsage": "Stairway to Heaven - Led Zeppelin, Losing My Religion - REM"
+  },
+  {
+    "name": "G# Locrian",
+    "root": "G#",
+    "type": "locrian",
+    "category": "Modes",
+    "intervals": [
+      0,
+      1,
+      3,
+      5,
+      6,
+      8,
+      10
+    ],
+    "description": "Dissonant and unstable, rarely used \u2014 darkest mode",
+    "relatedChords": [],
+    "commonUsage": "Bj\u00f6rk - Army of Me, Some metal compositions"
+  },
+  {
+    "name": "A Ionian",
+    "root": "A",
+    "type": "ionian",
+    "category": "Modes",
+    "intervals": [
+      0,
+      2,
+      4,
+      5,
+      7,
+      9,
+      11
+    ],
+    "description": "Bright, happy, uplifting \u2014 the natural major scale",
+    "relatedChords": [],
+    "commonUsage": "Beethoven - Ode to Joy, John Denver - Take Me Home Country Roads"
+  },
+  {
+    "name": "A Dorian",
+    "root": "A",
+    "type": "dorian",
+    "category": "Modes",
+    "intervals": [
+      0,
+      2,
+      3,
+      5,
+      7,
+      9,
+      10
+    ],
+    "description": "Minor with raised 6th \u2014 cool, jazzy, slightly hopeful",
+    "relatedChords": [],
+    "commonUsage": "Santana - Oye Como Va, Miles Davis - So What, The Beatles - Eleanor Rigby"
+  },
+  {
+    "name": "A Phrygian",
+    "root": "A",
+    "type": "phrygian",
+    "category": "Modes",
+    "intervals": [
+      0,
+      1,
+      3,
+      5,
+      7,
+      8,
+      10
+    ],
+    "description": "Dark and Spanish-flavored, exotic and intense",
+    "relatedChords": [],
+    "commonUsage": "Metallica - Wherever I May Roam, Flamenco music"
+  },
+  {
+    "name": "A Lydian",
+    "root": "A",
+    "type": "lydian",
+    "category": "Modes",
+    "intervals": [
+      0,
+      2,
+      4,
+      6,
+      7,
+      9,
+      11
+    ],
+    "description": "Ethereal and dreamy, otherworldly brightness",
+    "relatedChords": [],
+    "commonUsage": "John Williams - Superman Theme, Simpsons theme"
+  },
+  {
+    "name": "A Mixolydian",
+    "root": "A",
+    "type": "mixolydian",
+    "category": "Modes",
+    "intervals": [
+      0,
+      2,
+      4,
+      5,
+      7,
+      9,
+      10
+    ],
+    "description": "Bluesy major \u2014 dominant, rock-friendly, funky",
+    "relatedChords": [],
+    "commonUsage": "Sweet Home Chicago, Norwegian Wood - Beatles, Clocks - Coldplay"
+  },
+  {
+    "name": "A Aeolian",
+    "root": "A",
+    "type": "aeolian",
+    "category": "Modes",
+    "intervals": [
+      0,
+      2,
+      3,
+      5,
+      7,
+      8,
+      10
+    ],
+    "description": "Dark and emotional \u2014 the natural minor scale",
+    "relatedChords": [],
+    "commonUsage": "Stairway to Heaven - Led Zeppelin, Losing My Religion - REM"
+  },
+  {
+    "name": "A Locrian",
+    "root": "A",
+    "type": "locrian",
+    "category": "Modes",
+    "intervals": [
+      0,
+      1,
+      3,
+      5,
+      6,
+      8,
+      10
+    ],
+    "description": "Dissonant and unstable, rarely used \u2014 darkest mode",
+    "relatedChords": [],
+    "commonUsage": "Bj\u00f6rk - Army of Me, Some metal compositions"
+  },
+  {
+    "name": "A# Ionian",
+    "root": "A#",
+    "type": "ionian",
+    "category": "Modes",
+    "intervals": [
+      0,
+      2,
+      4,
+      5,
+      7,
+      9,
+      11
+    ],
+    "description": "Bright, happy, uplifting \u2014 the natural major scale",
+    "relatedChords": [],
+    "commonUsage": "Beethoven - Ode to Joy, John Denver - Take Me Home Country Roads"
+  },
+  {
+    "name": "A# Dorian",
+    "root": "A#",
+    "type": "dorian",
+    "category": "Modes",
+    "intervals": [
+      0,
+      2,
+      3,
+      5,
+      7,
+      9,
+      10
+    ],
+    "description": "Minor with raised 6th \u2014 cool, jazzy, slightly hopeful",
+    "relatedChords": [],
+    "commonUsage": "Santana - Oye Como Va, Miles Davis - So What, The Beatles - Eleanor Rigby"
+  },
+  {
+    "name": "A# Phrygian",
+    "root": "A#",
+    "type": "phrygian",
+    "category": "Modes",
+    "intervals": [
+      0,
+      1,
+      3,
+      5,
+      7,
+      8,
+      10
+    ],
+    "description": "Dark and Spanish-flavored, exotic and intense",
+    "relatedChords": [],
+    "commonUsage": "Metallica - Wherever I May Roam, Flamenco music"
+  },
+  {
+    "name": "A# Lydian",
+    "root": "A#",
+    "type": "lydian",
+    "category": "Modes",
+    "intervals": [
+      0,
+      2,
+      4,
+      6,
+      7,
+      9,
+      11
+    ],
+    "description": "Ethereal and dreamy, otherworldly brightness",
+    "relatedChords": [],
+    "commonUsage": "John Williams - Superman Theme, Simpsons theme"
+  },
+  {
+    "name": "A# Mixolydian",
+    "root": "A#",
+    "type": "mixolydian",
+    "category": "Modes",
+    "intervals": [
+      0,
+      2,
+      4,
+      5,
+      7,
+      9,
+      10
+    ],
+    "description": "Bluesy major \u2014 dominant, rock-friendly, funky",
+    "relatedChords": [],
+    "commonUsage": "Sweet Home Chicago, Norwegian Wood - Beatles, Clocks - Coldplay"
+  },
+  {
+    "name": "A# Aeolian",
+    "root": "A#",
+    "type": "aeolian",
+    "category": "Modes",
+    "intervals": [
+      0,
+      2,
+      3,
+      5,
+      7,
+      8,
+      10
+    ],
+    "description": "Dark and emotional \u2014 the natural minor scale",
+    "relatedChords": [],
+    "commonUsage": "Stairway to Heaven - Led Zeppelin, Losing My Religion - REM"
+  },
+  {
+    "name": "A# Locrian",
+    "root": "A#",
+    "type": "locrian",
+    "category": "Modes",
+    "intervals": [
+      0,
+      1,
+      3,
+      5,
+      6,
+      8,
+      10
+    ],
+    "description": "Dissonant and unstable, rarely used \u2014 darkest mode",
+    "relatedChords": [],
+    "commonUsage": "Bj\u00f6rk - Army of Me, Some metal compositions"
+  },
+  {
+    "name": "B Ionian",
+    "root": "B",
+    "type": "ionian",
+    "category": "Modes",
+    "intervals": [
+      0,
+      2,
+      4,
+      5,
+      7,
+      9,
+      11
+    ],
+    "description": "Bright, happy, uplifting \u2014 the natural major scale",
+    "relatedChords": [],
+    "commonUsage": "Beethoven - Ode to Joy, John Denver - Take Me Home Country Roads"
+  },
+  {
+    "name": "B Dorian",
+    "root": "B",
+    "type": "dorian",
+    "category": "Modes",
+    "intervals": [
+      0,
+      2,
+      3,
+      5,
+      7,
+      9,
+      10
+    ],
+    "description": "Minor with raised 6th \u2014 cool, jazzy, slightly hopeful",
+    "relatedChords": [],
+    "commonUsage": "Santana - Oye Como Va, Miles Davis - So What, The Beatles - Eleanor Rigby"
+  },
+  {
+    "name": "B Phrygian",
+    "root": "B",
+    "type": "phrygian",
+    "category": "Modes",
+    "intervals": [
+      0,
+      1,
+      3,
+      5,
+      7,
+      8,
+      10
+    ],
+    "description": "Dark and Spanish-flavored, exotic and intense",
+    "relatedChords": [],
+    "commonUsage": "Metallica - Wherever I May Roam, Flamenco music"
+  },
+  {
+    "name": "B Lydian",
+    "root": "B",
+    "type": "lydian",
+    "category": "Modes",
+    "intervals": [
+      0,
+      2,
+      4,
+      6,
+      7,
+      9,
+      11
+    ],
+    "description": "Ethereal and dreamy, otherworldly brightness",
+    "relatedChords": [],
+    "commonUsage": "John Williams - Superman Theme, Simpsons theme"
+  },
+  {
+    "name": "B Mixolydian",
+    "root": "B",
+    "type": "mixolydian",
+    "category": "Modes",
+    "intervals": [
+      0,
+      2,
+      4,
+      5,
+      7,
+      9,
+      10
+    ],
+    "description": "Bluesy major \u2014 dominant, rock-friendly, funky",
+    "relatedChords": [],
+    "commonUsage": "Sweet Home Chicago, Norwegian Wood - Beatles, Clocks - Coldplay"
+  },
+  {
+    "name": "B Aeolian",
+    "root": "B",
+    "type": "aeolian",
+    "category": "Modes",
+    "intervals": [
+      0,
+      2,
+      3,
+      5,
+      7,
+      8,
+      10
+    ],
+    "description": "Dark and emotional \u2014 the natural minor scale",
+    "relatedChords": [],
+    "commonUsage": "Stairway to Heaven - Led Zeppelin, Losing My Religion - REM"
+  },
+  {
+    "name": "B Locrian",
+    "root": "B",
+    "type": "locrian",
+    "category": "Modes",
+    "intervals": [
+      0,
+      1,
+      3,
+      5,
+      6,
+      8,
+      10
+    ],
+    "description": "Dissonant and unstable, rarely used \u2014 darkest mode",
+    "relatedChords": [],
+    "commonUsage": "Bj\u00f6rk - Army of Me, Some metal compositions"
+  },
+  {
+    "name": "C Hungarian Minor",
+    "root": "C",
+    "type": "hungarianMinor",
+    "category": "Exotic",
+    "intervals": [
+      0,
+      2,
+      3,
+      6,
+      7,
+      8,
+      11
+    ],
+    "description": "Mysterious and Eastern European flavor",
+    "relatedChords": [],
+    "commonUsage": "Eastern European folk, flamenco"
+  },
+  {
+    "name": "C Phrygian Dominant",
+    "root": "C",
+    "type": "phrygianDominant",
+    "category": "Exotic",
+    "intervals": [
+      0,
+      1,
+      4,
+      5,
+      7,
+      8,
+      10
+    ],
+    "description": "Spanish and Middle Eastern character",
+    "relatedChords": [],
+    "commonUsage": "Flamenco, Middle Eastern, metal"
+  },
+  {
+    "name": "C Double Harmonic",
+    "root": "C",
+    "type": "doubleHarmonic",
+    "category": "Exotic",
+    "intervals": [
+      0,
+      1,
+      4,
+      5,
+      7,
+      8,
+      11
+    ],
+    "description": "Byzantine scale \u2014 dense and exotic",
+    "relatedChords": [],
+    "commonUsage": "Byzantine, Middle Eastern, world music"
+  },
+  {
+    "name": "C Neapolitan",
+    "root": "C",
+    "type": "neapolitan",
+    "category": "Exotic",
+    "intervals": [
+      0,
+      1,
+      3,
+      5,
+      7,
+      9,
+      11
+    ],
+    "description": "Italian classical flavor with minor 2nd",
+    "relatedChords": [],
+    "commonUsage": "Classical, neoclassical metal"
+  },
+  {
+    "name": "C# Hungarian Minor",
+    "root": "C#",
+    "type": "hungarianMinor",
+    "category": "Exotic",
+    "intervals": [
+      0,
+      2,
+      3,
+      6,
+      7,
+      8,
+      11
+    ],
+    "description": "Mysterious and Eastern European flavor",
+    "relatedChords": [],
+    "commonUsage": "Eastern European folk, flamenco"
+  },
+  {
+    "name": "C# Phrygian Dominant",
+    "root": "C#",
+    "type": "phrygianDominant",
+    "category": "Exotic",
+    "intervals": [
+      0,
+      1,
+      4,
+      5,
+      7,
+      8,
+      10
+    ],
+    "description": "Spanish and Middle Eastern character",
+    "relatedChords": [],
+    "commonUsage": "Flamenco, Middle Eastern, metal"
+  },
+  {
+    "name": "C# Double Harmonic",
+    "root": "C#",
+    "type": "doubleHarmonic",
+    "category": "Exotic",
+    "intervals": [
+      0,
+      1,
+      4,
+      5,
+      7,
+      8,
+      11
+    ],
+    "description": "Byzantine scale \u2014 dense and exotic",
+    "relatedChords": [],
+    "commonUsage": "Byzantine, Middle Eastern, world music"
+  },
+  {
+    "name": "C# Neapolitan",
+    "root": "C#",
+    "type": "neapolitan",
+    "category": "Exotic",
+    "intervals": [
+      0,
+      1,
+      3,
+      5,
+      7,
+      9,
+      11
+    ],
+    "description": "Italian classical flavor with minor 2nd",
+    "relatedChords": [],
+    "commonUsage": "Classical, neoclassical metal"
+  },
+  {
+    "name": "D Hungarian Minor",
+    "root": "D",
+    "type": "hungarianMinor",
+    "category": "Exotic",
+    "intervals": [
+      0,
+      2,
+      3,
+      6,
+      7,
+      8,
+      11
+    ],
+    "description": "Mysterious and Eastern European flavor",
+    "relatedChords": [],
+    "commonUsage": "Eastern European folk, flamenco"
+  },
+  {
+    "name": "D Phrygian Dominant",
+    "root": "D",
+    "type": "phrygianDominant",
+    "category": "Exotic",
+    "intervals": [
+      0,
+      1,
+      4,
+      5,
+      7,
+      8,
+      10
+    ],
+    "description": "Spanish and Middle Eastern character",
+    "relatedChords": [],
+    "commonUsage": "Flamenco, Middle Eastern, metal"
+  },
+  {
+    "name": "D Double Harmonic",
+    "root": "D",
+    "type": "doubleHarmonic",
+    "category": "Exotic",
+    "intervals": [
+      0,
+      1,
+      4,
+      5,
+      7,
+      8,
+      11
+    ],
+    "description": "Byzantine scale \u2014 dense and exotic",
+    "relatedChords": [],
+    "commonUsage": "Byzantine, Middle Eastern, world music"
+  },
+  {
+    "name": "D Neapolitan",
+    "root": "D",
+    "type": "neapolitan",
+    "category": "Exotic",
+    "intervals": [
+      0,
+      1,
+      3,
+      5,
+      7,
+      9,
+      11
+    ],
+    "description": "Italian classical flavor with minor 2nd",
+    "relatedChords": [],
+    "commonUsage": "Classical, neoclassical metal"
+  },
+  {
+    "name": "D# Hungarian Minor",
+    "root": "D#",
+    "type": "hungarianMinor",
+    "category": "Exotic",
+    "intervals": [
+      0,
+      2,
+      3,
+      6,
+      7,
+      8,
+      11
+    ],
+    "description": "Mysterious and Eastern European flavor",
+    "relatedChords": [],
+    "commonUsage": "Eastern European folk, flamenco"
+  },
+  {
+    "name": "D# Phrygian Dominant",
+    "root": "D#",
+    "type": "phrygianDominant",
+    "category": "Exotic",
+    "intervals": [
+      0,
+      1,
+      4,
+      5,
+      7,
+      8,
+      10
+    ],
+    "description": "Spanish and Middle Eastern character",
+    "relatedChords": [],
+    "commonUsage": "Flamenco, Middle Eastern, metal"
+  },
+  {
+    "name": "D# Double Harmonic",
+    "root": "D#",
+    "type": "doubleHarmonic",
+    "category": "Exotic",
+    "intervals": [
+      0,
+      1,
+      4,
+      5,
+      7,
+      8,
+      11
+    ],
+    "description": "Byzantine scale \u2014 dense and exotic",
+    "relatedChords": [],
+    "commonUsage": "Byzantine, Middle Eastern, world music"
+  },
+  {
+    "name": "D# Neapolitan",
+    "root": "D#",
+    "type": "neapolitan",
+    "category": "Exotic",
+    "intervals": [
+      0,
+      1,
+      3,
+      5,
+      7,
+      9,
+      11
+    ],
+    "description": "Italian classical flavor with minor 2nd",
+    "relatedChords": [],
+    "commonUsage": "Classical, neoclassical metal"
+  },
+  {
+    "name": "E Hungarian Minor",
+    "root": "E",
+    "type": "hungarianMinor",
+    "category": "Exotic",
+    "intervals": [
+      0,
+      2,
+      3,
+      6,
+      7,
+      8,
+      11
+    ],
+    "description": "Mysterious and Eastern European flavor",
+    "relatedChords": [],
+    "commonUsage": "Eastern European folk, flamenco"
+  },
+  {
+    "name": "E Phrygian Dominant",
+    "root": "E",
+    "type": "phrygianDominant",
+    "category": "Exotic",
+    "intervals": [
+      0,
+      1,
+      4,
+      5,
+      7,
+      8,
+      10
+    ],
+    "description": "Spanish and Middle Eastern character",
+    "relatedChords": [],
+    "commonUsage": "Flamenco, Middle Eastern, metal"
+  },
+  {
+    "name": "E Double Harmonic",
+    "root": "E",
+    "type": "doubleHarmonic",
+    "category": "Exotic",
+    "intervals": [
+      0,
+      1,
+      4,
+      5,
+      7,
+      8,
+      11
+    ],
+    "description": "Byzantine scale \u2014 dense and exotic",
+    "relatedChords": [],
+    "commonUsage": "Byzantine, Middle Eastern, world music"
+  },
+  {
+    "name": "E Neapolitan",
+    "root": "E",
+    "type": "neapolitan",
+    "category": "Exotic",
+    "intervals": [
+      0,
+      1,
+      3,
+      5,
+      7,
+      9,
+      11
+    ],
+    "description": "Italian classical flavor with minor 2nd",
+    "relatedChords": [],
+    "commonUsage": "Classical, neoclassical metal"
+  },
+  {
+    "name": "F Hungarian Minor",
+    "root": "F",
+    "type": "hungarianMinor",
+    "category": "Exotic",
+    "intervals": [
+      0,
+      2,
+      3,
+      6,
+      7,
+      8,
+      11
+    ],
+    "description": "Mysterious and Eastern European flavor",
+    "relatedChords": [],
+    "commonUsage": "Eastern European folk, flamenco"
+  },
+  {
+    "name": "F Phrygian Dominant",
+    "root": "F",
+    "type": "phrygianDominant",
+    "category": "Exotic",
+    "intervals": [
+      0,
+      1,
+      4,
+      5,
+      7,
+      8,
+      10
+    ],
+    "description": "Spanish and Middle Eastern character",
+    "relatedChords": [],
+    "commonUsage": "Flamenco, Middle Eastern, metal"
+  },
+  {
+    "name": "F Double Harmonic",
+    "root": "F",
+    "type": "doubleHarmonic",
+    "category": "Exotic",
+    "intervals": [
+      0,
+      1,
+      4,
+      5,
+      7,
+      8,
+      11
+    ],
+    "description": "Byzantine scale \u2014 dense and exotic",
+    "relatedChords": [],
+    "commonUsage": "Byzantine, Middle Eastern, world music"
+  },
+  {
+    "name": "F Neapolitan",
+    "root": "F",
+    "type": "neapolitan",
+    "category": "Exotic",
+    "intervals": [
+      0,
+      1,
+      3,
+      5,
+      7,
+      9,
+      11
+    ],
+    "description": "Italian classical flavor with minor 2nd",
+    "relatedChords": [],
+    "commonUsage": "Classical, neoclassical metal"
+  },
+  {
+    "name": "F# Hungarian Minor",
+    "root": "F#",
+    "type": "hungarianMinor",
+    "category": "Exotic",
+    "intervals": [
+      0,
+      2,
+      3,
+      6,
+      7,
+      8,
+      11
+    ],
+    "description": "Mysterious and Eastern European flavor",
+    "relatedChords": [],
+    "commonUsage": "Eastern European folk, flamenco"
+  },
+  {
+    "name": "F# Phrygian Dominant",
+    "root": "F#",
+    "type": "phrygianDominant",
+    "category": "Exotic",
+    "intervals": [
+      0,
+      1,
+      4,
+      5,
+      7,
+      8,
+      10
+    ],
+    "description": "Spanish and Middle Eastern character",
+    "relatedChords": [],
+    "commonUsage": "Flamenco, Middle Eastern, metal"
+  },
+  {
+    "name": "F# Double Harmonic",
+    "root": "F#",
+    "type": "doubleHarmonic",
+    "category": "Exotic",
+    "intervals": [
+      0,
+      1,
+      4,
+      5,
+      7,
+      8,
+      11
+    ],
+    "description": "Byzantine scale \u2014 dense and exotic",
+    "relatedChords": [],
+    "commonUsage": "Byzantine, Middle Eastern, world music"
+  },
+  {
+    "name": "F# Neapolitan",
+    "root": "F#",
+    "type": "neapolitan",
+    "category": "Exotic",
+    "intervals": [
+      0,
+      1,
+      3,
+      5,
+      7,
+      9,
+      11
+    ],
+    "description": "Italian classical flavor with minor 2nd",
+    "relatedChords": [],
+    "commonUsage": "Classical, neoclassical metal"
+  },
+  {
+    "name": "G Hungarian Minor",
+    "root": "G",
+    "type": "hungarianMinor",
+    "category": "Exotic",
+    "intervals": [
+      0,
+      2,
+      3,
+      6,
+      7,
+      8,
+      11
+    ],
+    "description": "Mysterious and Eastern European flavor",
+    "relatedChords": [],
+    "commonUsage": "Eastern European folk, flamenco"
+  },
+  {
+    "name": "G Phrygian Dominant",
+    "root": "G",
+    "type": "phrygianDominant",
+    "category": "Exotic",
+    "intervals": [
+      0,
+      1,
+      4,
+      5,
+      7,
+      8,
+      10
+    ],
+    "description": "Spanish and Middle Eastern character",
+    "relatedChords": [],
+    "commonUsage": "Flamenco, Middle Eastern, metal"
+  },
+  {
+    "name": "G Double Harmonic",
+    "root": "G",
+    "type": "doubleHarmonic",
+    "category": "Exotic",
+    "intervals": [
+      0,
+      1,
+      4,
+      5,
+      7,
+      8,
+      11
+    ],
+    "description": "Byzantine scale \u2014 dense and exotic",
+    "relatedChords": [],
+    "commonUsage": "Byzantine, Middle Eastern, world music"
+  },
+  {
+    "name": "G Neapolitan",
+    "root": "G",
+    "type": "neapolitan",
+    "category": "Exotic",
+    "intervals": [
+      0,
+      1,
+      3,
+      5,
+      7,
+      9,
+      11
+    ],
+    "description": "Italian classical flavor with minor 2nd",
+    "relatedChords": [],
+    "commonUsage": "Classical, neoclassical metal"
+  },
+  {
+    "name": "G# Hungarian Minor",
+    "root": "G#",
+    "type": "hungarianMinor",
+    "category": "Exotic",
+    "intervals": [
+      0,
+      2,
+      3,
+      6,
+      7,
+      8,
+      11
+    ],
+    "description": "Mysterious and Eastern European flavor",
+    "relatedChords": [],
+    "commonUsage": "Eastern European folk, flamenco"
+  },
+  {
+    "name": "G# Phrygian Dominant",
+    "root": "G#",
+    "type": "phrygianDominant",
+    "category": "Exotic",
+    "intervals": [
+      0,
+      1,
+      4,
+      5,
+      7,
+      8,
+      10
+    ],
+    "description": "Spanish and Middle Eastern character",
+    "relatedChords": [],
+    "commonUsage": "Flamenco, Middle Eastern, metal"
+  },
+  {
+    "name": "G# Double Harmonic",
+    "root": "G#",
+    "type": "doubleHarmonic",
+    "category": "Exotic",
+    "intervals": [
+      0,
+      1,
+      4,
+      5,
+      7,
+      8,
+      11
+    ],
+    "description": "Byzantine scale \u2014 dense and exotic",
+    "relatedChords": [],
+    "commonUsage": "Byzantine, Middle Eastern, world music"
+  },
+  {
+    "name": "G# Neapolitan",
+    "root": "G#",
+    "type": "neapolitan",
+    "category": "Exotic",
+    "intervals": [
+      0,
+      1,
+      3,
+      5,
+      7,
+      9,
+      11
+    ],
+    "description": "Italian classical flavor with minor 2nd",
+    "relatedChords": [],
+    "commonUsage": "Classical, neoclassical metal"
+  },
+  {
+    "name": "A Hungarian Minor",
+    "root": "A",
+    "type": "hungarianMinor",
+    "category": "Exotic",
+    "intervals": [
+      0,
+      2,
+      3,
+      6,
+      7,
+      8,
+      11
+    ],
+    "description": "Mysterious and Eastern European flavor",
+    "relatedChords": [],
+    "commonUsage": "Eastern European folk, flamenco"
+  },
+  {
+    "name": "A Phrygian Dominant",
+    "root": "A",
+    "type": "phrygianDominant",
+    "category": "Exotic",
+    "intervals": [
+      0,
+      1,
+      4,
+      5,
+      7,
+      8,
+      10
+    ],
+    "description": "Spanish and Middle Eastern character",
+    "relatedChords": [],
+    "commonUsage": "Flamenco, Middle Eastern, metal"
+  },
+  {
+    "name": "A Double Harmonic",
+    "root": "A",
+    "type": "doubleHarmonic",
+    "category": "Exotic",
+    "intervals": [
+      0,
+      1,
+      4,
+      5,
+      7,
+      8,
+      11
+    ],
+    "description": "Byzantine scale \u2014 dense and exotic",
+    "relatedChords": [],
+    "commonUsage": "Byzantine, Middle Eastern, world music"
+  },
+  {
+    "name": "A Neapolitan",
+    "root": "A",
+    "type": "neapolitan",
+    "category": "Exotic",
+    "intervals": [
+      0,
+      1,
+      3,
+      5,
+      7,
+      9,
+      11
+    ],
+    "description": "Italian classical flavor with minor 2nd",
+    "relatedChords": [],
+    "commonUsage": "Classical, neoclassical metal"
+  },
+  {
+    "name": "A# Hungarian Minor",
+    "root": "A#",
+    "type": "hungarianMinor",
+    "category": "Exotic",
+    "intervals": [
+      0,
+      2,
+      3,
+      6,
+      7,
+      8,
+      11
+    ],
+    "description": "Mysterious and Eastern European flavor",
+    "relatedChords": [],
+    "commonUsage": "Eastern European folk, flamenco"
+  },
+  {
+    "name": "A# Phrygian Dominant",
+    "root": "A#",
+    "type": "phrygianDominant",
+    "category": "Exotic",
+    "intervals": [
+      0,
+      1,
+      4,
+      5,
+      7,
+      8,
+      10
+    ],
+    "description": "Spanish and Middle Eastern character",
+    "relatedChords": [],
+    "commonUsage": "Flamenco, Middle Eastern, metal"
+  },
+  {
+    "name": "A# Double Harmonic",
+    "root": "A#",
+    "type": "doubleHarmonic",
+    "category": "Exotic",
+    "intervals": [
+      0,
+      1,
+      4,
+      5,
+      7,
+      8,
+      11
+    ],
+    "description": "Byzantine scale \u2014 dense and exotic",
+    "relatedChords": [],
+    "commonUsage": "Byzantine, Middle Eastern, world music"
+  },
+  {
+    "name": "A# Neapolitan",
+    "root": "A#",
+    "type": "neapolitan",
+    "category": "Exotic",
+    "intervals": [
+      0,
+      1,
+      3,
+      5,
+      7,
+      9,
+      11
+    ],
+    "description": "Italian classical flavor with minor 2nd",
+    "relatedChords": [],
+    "commonUsage": "Classical, neoclassical metal"
+  },
+  {
+    "name": "B Hungarian Minor",
+    "root": "B",
+    "type": "hungarianMinor",
+    "category": "Exotic",
+    "intervals": [
+      0,
+      2,
+      3,
+      6,
+      7,
+      8,
+      11
+    ],
+    "description": "Mysterious and Eastern European flavor",
+    "relatedChords": [],
+    "commonUsage": "Eastern European folk, flamenco"
+  },
+  {
+    "name": "B Phrygian Dominant",
+    "root": "B",
+    "type": "phrygianDominant",
+    "category": "Exotic",
+    "intervals": [
+      0,
+      1,
+      4,
+      5,
+      7,
+      8,
+      10
+    ],
+    "description": "Spanish and Middle Eastern character",
+    "relatedChords": [],
+    "commonUsage": "Flamenco, Middle Eastern, metal"
+  },
+  {
+    "name": "B Double Harmonic",
+    "root": "B",
+    "type": "doubleHarmonic",
+    "category": "Exotic",
+    "intervals": [
+      0,
+      1,
+      4,
+      5,
+      7,
+      8,
+      11
+    ],
+    "description": "Byzantine scale \u2014 dense and exotic",
+    "relatedChords": [],
+    "commonUsage": "Byzantine, Middle Eastern, world music"
+  },
+  {
+    "name": "B Neapolitan",
+    "root": "B",
+    "type": "neapolitan",
+    "category": "Exotic",
+    "intervals": [
+      0,
+      1,
+      3,
+      5,
+      7,
+      9,
+      11
+    ],
+    "description": "Italian classical flavor with minor 2nd",
+    "relatedChords": [],
+    "commonUsage": "Classical, neoclassical metal"
+  }
+]
