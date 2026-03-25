@@ -33,7 +33,7 @@ jobs:
         if: steps.sonar_ready.outputs.enabled == 'true'
         with:
           fetch-depth: 0
-      - uses: SonarSource/sonarqube-scan-action@v5 # v5.1.0
+      - uses: SonarSource/sonarqube-scan-action@v6 # v5.1.0
         if: steps.sonar_ready.outputs.enabled == 'true'
         env:
           SONAR_TOKEN: ${{ secrets.SONAR_TOKEN }}
