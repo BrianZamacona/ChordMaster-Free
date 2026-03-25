@@ -8,8 +8,7 @@ class EarTrainingScreen extends StatelessWidget {
   const EarTrainingScreen({super.key});
 
   @override
-  Widget build(BuildContext context) {
-    return Scaffold(
+  Widget build(BuildContext context) => Scaffold(
       appBar: AppBar(title: const Text(AppStrings.moduleEarTraining)),
       body: Center(
         child: Text(
@@ -18,5 +17,4 @@ class EarTrainingScreen extends StatelessWidget {
         ),
       ),
     );
-  }
 }

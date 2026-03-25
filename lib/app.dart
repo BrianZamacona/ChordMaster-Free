@@ -10,8 +10,7 @@ class ChordMasterApp extends ConsumerWidget {
   const ChordMasterApp({super.key});
 
   @override
-  Widget build(BuildContext context, WidgetRef ref) {
-    return MaterialApp.router(
+  Widget build(BuildContext context, WidgetRef ref) => MaterialApp.router(
       title: 'ChordMaster Free',
       theme: lightTheme,
       darkTheme: darkTheme,
@@ -19,5 +18,4 @@ class ChordMasterApp extends ConsumerWidget {
       routerConfig: appRouter,
       debugShowCheckedModeBanner: false,
     );
-  }
 }

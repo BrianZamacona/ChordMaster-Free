@@ -1,12 +1,11 @@
 import 'dart:math' as math;
 
-import 'package:flutter/material.dart';
-import 'package:flutter_riverpod/flutter_riverpod.dart';
-
 import 'package:chordmaster_free/core/constants/app_colors.dart';
 import 'package:chordmaster_free/core/constants/app_strings.dart';
 import 'package:chordmaster_free/core/widgets/donation_button.dart';
 import 'package:chordmaster_free/services/achievement_service.dart';
+import 'package:flutter/material.dart';
+import 'package:flutter_riverpod/flutter_riverpod.dart';
 
 import 'tuner_viewmodel.dart';
 
@@ -106,8 +105,7 @@ class _PermissionDeniedView extends StatelessWidget {
   final VoidCallback onGrant;
 
   @override
-  Widget build(BuildContext context) {
-    return Center(
+  Widget build(BuildContext context) => Center(
       child: Padding(
         padding: const EdgeInsets.all(32),
         child: Column(
@@ -116,7 +114,7 @@ class _PermissionDeniedView extends StatelessWidget {
             const Icon(Icons.mic_off, color: AppColors.error, size: 64),
             const SizedBox(height: 16),
             const Text(
-              AppStrings.microphonePermissionExplanation,
+              'Microphone access is required to use the tuner. Please grant permission.',
               textAlign: TextAlign.center,
               style: TextStyle(color: AppColors.textSecondary, fontSize: 16),
             ),
@@ -134,8 +132,7 @@ class _PermissionDeniedView extends StatelessWidget {
         ),
       ),
     );
-  }
-}
+} 
 
 class _NeedleGauge extends StatelessWidget {
   const _NeedleGauge({required this.cents, required this.color});
@@ -272,8 +269,7 @@ class _ReferenceChips extends StatelessWidget {
   static const _options = [432.0, 440.0, 442.0, 444.0];
 
   @override
-  Widget build(BuildContext context) {
-    return Column(
+  Widget build(BuildContext context) => Column(
       crossAxisAlignment: CrossAxisAlignment.start,
       children: [
         const Text(
@@ -299,7 +295,6 @@ class _ReferenceChips extends StatelessWidget {
         ),
       ],
     );
-  }
 }
 
 class _GuitarStringsRow extends StatelessWidget {
@@ -308,8 +303,7 @@ class _GuitarStringsRow extends StatelessWidget {
   static const _strings = ['E2', 'A2', 'D3', 'G3', 'B3', 'E4'];
 
   @override
-  Widget build(BuildContext context) {
-    return Column(
+  Widget build(BuildContext context) => Column(
       crossAxisAlignment: CrossAxisAlignment.start,
       children: [
         const Text(
@@ -319,8 +313,7 @@ class _GuitarStringsRow extends StatelessWidget {
         const SizedBox(height: 8),
         Row(
           mainAxisAlignment: MainAxisAlignment.spaceEvenly,
-          children: _strings.map((s) {
-            return Container(
+          children: _strings.map((s) => Container(
               width: 44,
               height: 44,
               decoration: BoxDecoration(
@@ -337,10 +330,8 @@ class _GuitarStringsRow extends StatelessWidget {
                   fontWeight: FontWeight.bold,
                 ),
               ),
-            );
-          }).toList(),
+            )).toList(),
         ),
       ],
     );
-  }
 }

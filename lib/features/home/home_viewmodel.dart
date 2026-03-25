@@ -5,6 +5,14 @@ import '../../services/storage_service.dart';
 
 /// Immutable state for [HomeViewModel].
 class HomeState {
+
+  const HomeState({
+    this.streak = 0,
+    this.lastModule = '',
+    this.dailyChallenge = '',
+    this.recentAchievements = const [],
+    this.isLoading = true,
+  });
   /// Consecutive practice day count.
   final int streak;
 
@@ -20,29 +28,19 @@ class HomeState {
   /// Whether state is being loaded.
   final bool isLoading;
 
-  const HomeState({
-    this.streak = 0,
-    this.lastModule = '',
-    this.dailyChallenge = '',
-    this.recentAchievements = const [],
-    this.isLoading = true,
-  });
-
   HomeState copyWith({
     int? streak,
     String? lastModule,
     String? dailyChallenge,
     List<String>? recentAchievements,
     bool? isLoading,
-  }) {
-    return HomeState(
+  }) => HomeState(
       streak: streak ?? this.streak,
       lastModule: lastModule ?? this.lastModule,
       dailyChallenge: dailyChallenge ?? this.dailyChallenge,
       recentAchievements: recentAchievements ?? this.recentAchievements,
       isLoading: isLoading ?? this.isLoading,
     );
-  }
 }
 
 /// Provider for [HomeViewModel].
@@ -116,7 +114,7 @@ class HomeViewModel extends StateNotifier<HomeState> {
       final updatedStreak = await _updateStreak(streak);
 
       final dayOfYear = DateTime.now().difference(
-            DateTime(DateTime.now().year, 1, 1),
+            DateTime(DateTime.now().year),
           ).inDays %
           _dailyChallenges.length;
       final challenge = _dailyChallenges[dayOfYear];

@@ -13,7 +13,7 @@ class AudioUtils {
   AudioUtils._();
 
   /// The reference frequency for A4 in Hz.
-  static const double a4Frequency = 440.0;
+  static const double a4Frequency = 440;
 
   /// The MIDI number of A4.
   static const int a4Midi = 69;
@@ -32,9 +32,7 @@ class AudioUtils {
   /// Converts a MIDI note number to its equal-temperament frequency in Hz.
   ///
   /// Uses `f = 440 × 2^((midi − 69) / 12)`.
-  static double midiToFrequency(int midi) {
-    return a4Frequency * math.pow(2, (midi - a4Midi) / 12).toDouble();
-  }
+  static double midiToFrequency(int midi) => a4Frequency * math.pow(2, (midi - a4Midi) / 12).toDouble();
 
   /// Converts a [frequency] to the name of the nearest note (e.g. `"A4"`).
   static String frequencyToNote(double frequency) {
@@ -56,23 +54,21 @@ class AudioUtils {
   /// Returns `0.0` if [targetNote] is unrecognised.
   static double centsDeviation(double frequency, String targetNote) {
     try {
-      if (frequency <= 0) return 0.0;
+      if (frequency <= 0) return 0;
       final midi = _noteToMidi(targetNote);
-      if (midi < 0) return 0.0;
+      if (midi < 0) return 0;
       final targetFreq = midiToFrequency(midi);
       return 1200 * (math.log(frequency / targetFreq) / math.ln2);
     } catch (e, st) {
       debugPrint('AudioUtils.centsDeviation error: $e\n$st');
-      return 0.0;
+      return 0;
     }
   }
 
   /// Returns `true` when [cents] deviation is within [threshold] cents.
   ///
   /// Default [threshold] is ±5 cents, matching typical professional tuners.
-  static bool isInTune(double cents, {double threshold = 5.0}) {
-    return cents.abs() <= threshold;
-  }
+  static bool isInTune(double cents, {double threshold = 5.0}) => cents.abs() <= threshold;
 
   /// Returns the note name for a given MIDI number (e.g. MIDI 69 → `"A4"`).
   ///

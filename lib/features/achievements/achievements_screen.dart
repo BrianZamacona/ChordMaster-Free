@@ -8,8 +8,7 @@ class AchievementsScreen extends StatelessWidget {
   const AchievementsScreen({super.key});
 
   @override
-  Widget build(BuildContext context) {
-    return Scaffold(
+  Widget build(BuildContext context) => Scaffold(
       appBar: AppBar(title: const Text(AppStrings.moduleAchievements)),
       body: Center(
         child: Text(
@@ -18,5 +17,4 @@ class AchievementsScreen extends StatelessWidget {
         ),
       ),
     );
-  }
 }

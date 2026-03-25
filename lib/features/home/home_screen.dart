@@ -157,8 +157,7 @@ class _StreakBadge extends StatelessWidget {
   final AnimationController controller;
 
   @override
-  Widget build(BuildContext context) {
-    return ScaleTransition(
+  Widget build(BuildContext context) => ScaleTransition(
       scale: pulseAnimation(controller),
       child: Container(
         padding: const EdgeInsets.symmetric(horizontal: 10, vertical: 4),
@@ -183,7 +182,6 @@ class _StreakBadge extends StatelessWidget {
         ),
       ),
     );
-  }
 }
 
 class _DailyChallengeCard extends StatelessWidget {
@@ -192,8 +190,7 @@ class _DailyChallengeCard extends StatelessWidget {
   final String challenge;
 
   @override
-  Widget build(BuildContext context) {
-    return Padding(
+  Widget build(BuildContext context) => Padding(
       padding: const EdgeInsets.fromLTRB(16, 16, 16, 0),
       child: Card(
         elevation: 0,
@@ -249,7 +246,6 @@ class _DailyChallengeCard extends StatelessWidget {
         ),
       ),
     );
-  }
 }
 
 class _ModuleInfo {
@@ -336,8 +332,7 @@ class _ModuleCard extends StatelessWidget {
   final VoidCallback onTap;
 
   @override
-  Widget build(BuildContext context) {
-    return GestureDetector(
+  Widget build(BuildContext context) => GestureDetector(
       onTap: onTap,
       child: Card(
         elevation: 3,
@@ -384,5 +379,4 @@ class _ModuleCard extends StatelessWidget {
         ),
       ),
     );
-  }
 }

@@ -8,8 +8,7 @@ class ImprovScreen extends StatelessWidget {
   const ImprovScreen({super.key});
 
   @override
-  Widget build(BuildContext context) {
-    return Scaffold(
+  Widget build(BuildContext context) => Scaffold(
       appBar: AppBar(title: const Text(AppStrings.moduleImprovisation)),
       body: Center(
         child: Text(
@@ -18,5 +17,4 @@ class ImprovScreen extends StatelessWidget {
         ),
       ),
     );
-  }
 }

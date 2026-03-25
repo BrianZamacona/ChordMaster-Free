@@ -9,8 +9,7 @@ class SongDetailScreen extends StatelessWidget {
   final String songId;
 
   @override
-  Widget build(BuildContext context) {
-    return Scaffold(
+  Widget build(BuildContext context) => Scaffold(
       appBar: AppBar(title: Text(songId)),
       body: Center(
         child: Text(
@@ -19,5 +18,4 @@ class SongDetailScreen extends StatelessWidget {
         ),
       ),
     );
-  }
 }

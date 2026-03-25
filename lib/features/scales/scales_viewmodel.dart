@@ -35,6 +35,16 @@ class ScaleCategory {
 
 /// Immutable state for [ScalesViewModel].
 class ScalesState {
+
+  const ScalesState({
+    this.allScales = const [],
+    this.filteredScales = const [],
+    this.selectedRoot = 'C',
+    this.selectedCategory = ScaleCategory.scales,
+    this.selectedScale,
+    this.isLoading = true,
+    this.errorMessage,
+  });
   /// All scales loaded from the asset bundle.
   final List<Scale> allScales;
 
@@ -56,16 +66,6 @@ class ScalesState {
   /// Non-null error message if the last operation failed.
   final String? errorMessage;
 
-  const ScalesState({
-    this.allScales = const [],
-    this.filteredScales = const [],
-    this.selectedRoot = 'C',
-    this.selectedCategory = ScaleCategory.scales,
-    this.selectedScale,
-    this.isLoading = true,
-    this.errorMessage,
-  });
-
   ScalesState copyWith({
     List<Scale>? allScales,
     List<Scale>? filteredScales,
@@ -74,8 +74,7 @@ class ScalesState {
     Object? selectedScale = _unset,
     bool? isLoading,
     Object? errorMessage = _unset,
-  }) {
-    return ScalesState(
+  }) => ScalesState(
       allScales: allScales ?? this.allScales,
       filteredScales: filteredScales ?? this.filteredScales,
       selectedRoot: selectedRoot ?? this.selectedRoot,
@@ -88,7 +87,6 @@ class ScalesState {
           ? this.errorMessage
           : errorMessage as String?,
     );
-  }
 
   static const Object _unset = Object();
 }
@@ -155,11 +153,9 @@ class ScalesViewModel extends StateNotifier<ScalesState> {
     state = state.copyWith(selectedScale: null);
   }
 
-  List<Scale> _filter(List<Scale> all, String root, String category) {
-    return all
+  List<Scale> _filter(List<Scale> all, String root, String category) => all
         .where((s) =>
             s.root == root &&
             ScaleCategory.fromType(s.type) == category)
         .toList();
-  }
 }

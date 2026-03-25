@@ -148,7 +148,6 @@ class _ChordDetailScreenState extends ConsumerState<ChordDetailScreen> {
                 ChordDiagramWidget(
                   chordName: chord.name,
                   fretPositions: chord.fretPositions,
-                  size: 200,
                 ),
               ),
             ),
@@ -233,11 +232,9 @@ class _ChordDetailScreenState extends ConsumerState<ChordDetailScreen> {
     );
   }
 
-  String _buildFormulaText(Chord chord) {
-    return chord.intervals
+  String _buildFormulaText(Chord chord) => chord.intervals
         .map((i) => intervalNames[i] ?? '$i semitones')
         .join(' — ');
-  }
 
   List<String> _relatedScales(Chord chord) {
     final scales = <String>[];
@@ -270,8 +267,7 @@ class _PlayButton extends StatelessWidget {
   final VoidCallback onTap;
 
   @override
-  Widget build(BuildContext context) {
-    return GestureDetector(
+  Widget build(BuildContext context) => GestureDetector(
       onTap: onTap,
       child: Container(
         width: 64,
@@ -294,7 +290,6 @@ class _PlayButton extends StatelessWidget {
         ),
       ),
     );
-  }
 }
 
 class _DifficultyRow extends StatelessWidget {
@@ -303,8 +298,7 @@ class _DifficultyRow extends StatelessWidget {
   final int difficulty;
 
   @override
-  Widget build(BuildContext context) {
-    return Row(
+  Widget build(BuildContext context) => Row(
       mainAxisSize: MainAxisSize.min,
       children: [
         Text(
@@ -321,7 +315,6 @@ class _DifficultyRow extends StatelessWidget {
         ),
       ],
     );
-  }
 }
 
 class _SectionCard extends StatelessWidget {
@@ -331,8 +324,7 @@ class _SectionCard extends StatelessWidget {
   final Widget child;
 
   @override
-  Widget build(BuildContext context) {
-    return Card(
+  Widget build(BuildContext context) => Card(
       child: Padding(
         padding: const EdgeInsets.all(14),
         child: Column(
@@ -351,7 +343,6 @@ class _SectionCard extends StatelessWidget {
         ),
       ),
     );
-  }
 }
 
 class _FretPositionRow extends StatelessWidget {
@@ -362,8 +353,7 @@ class _FretPositionRow extends StatelessWidget {
   static const _stringLabels = ['E', 'A', 'D', 'G', 'B', 'e'];
 
   @override
-  Widget build(BuildContext context) {
-    return Row(
+  Widget build(BuildContext context) => Row(
       mainAxisAlignment: MainAxisAlignment.spaceEvenly,
       children: List.generate(6, (i) {
         final fret = fretPositions[i];
@@ -407,7 +397,6 @@ class _FretPositionRow extends StatelessWidget {
         );
       }),
     );
-  }
 }
 
 class _RelatedChordChip extends StatelessWidget {
@@ -417,8 +406,7 @@ class _RelatedChordChip extends StatelessWidget {
   final VoidCallback onTap;
 
   @override
-  Widget build(BuildContext context) {
-    return GestureDetector(
+  Widget build(BuildContext context) => GestureDetector(
       onTap: onTap,
       child: Container(
         padding: const EdgeInsets.symmetric(horizontal: 12, vertical: 8),
@@ -437,5 +425,4 @@ class _RelatedChordChip extends StatelessWidget {
         ),
       ),
     );
-  }
 }

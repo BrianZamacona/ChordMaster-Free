@@ -48,12 +48,9 @@ class ChordDiagramWidget extends StatefulWidget {
 
 class _ChordDiagramWidgetState extends State<ChordDiagramWidget> {
   @override
-  Widget build(BuildContext context) {
-    return AnimatedSwitcher(
+  Widget build(BuildContext context) => AnimatedSwitcher(
       duration: const Duration(milliseconds: 300),
-      transitionBuilder: (child, animation) {
-        return FadeTransition(opacity: animation, child: child);
-      },
+      transitionBuilder: (child, animation) => FadeTransition(opacity: animation, child: child),
       child: CustomPaint(
         key: ValueKey('${widget.chordName}-${widget.fretPositions.join(',')}'),
         size: Size(widget.size, widget.size * 1.25),
@@ -63,7 +60,6 @@ class _ChordDiagramWidgetState extends State<ChordDiagramWidget> {
         ),
       ),
     );
-  }
 }
 
 /// [CustomPainter] responsible for drawing the chord diagram.
@@ -140,7 +136,6 @@ class _ChordDiagramPainter extends CustomPainter {
           nutY + fretSpacing * 0.25,
         ),
         fontSize: size.width * 0.08,
-        bold: false,
         color: Colors.black87,
       );
     }
@@ -274,8 +269,6 @@ class _ChordDiagramPainter extends CustomPainter {
   }
 
   @override
-  bool shouldRepaint(_ChordDiagramPainter oldDelegate) {
-    return oldDelegate.chordName != chordName ||
+  bool shouldRepaint(_ChordDiagramPainter oldDelegate) => oldDelegate.chordName != chordName ||
         oldDelegate.fretPositions.toString() != fretPositions.toString();
-  }
 }

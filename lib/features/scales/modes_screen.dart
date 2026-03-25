@@ -418,9 +418,7 @@ class _ModeCard extends StatelessWidget {
     return intervals.map((i) => chromaticNotes[(rootIdx + i) % 12]).toList();
   }
 
-  List<int> _intervalsFor(String type) {
-    return modeFormulas[type] ?? [];
-  }
+  List<int> _intervalsFor(String type) => modeFormulas[type] ?? [];
 
   /// Returns the root of the parent major scale for [root] at [degree].
   String _parentScaleOf(String root, int degree) {

@@ -33,8 +33,7 @@ class DonationButton extends StatelessWidget {
   }
 
   @override
-  Widget build(BuildContext context) {
-    return OutlinedButton.icon(
+  Widget build(BuildContext context) => OutlinedButton.icon(
       onPressed: _launch,
       icon: const Icon(Icons.favorite, color: Colors.amber),
       label: const Text(AppStrings.supportApp),
@@ -43,5 +42,4 @@ class DonationButton extends StatelessWidget {
         side: const BorderSide(color: Colors.amber),
       ),
     );
-  }
 }

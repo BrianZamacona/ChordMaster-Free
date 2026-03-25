@@ -8,8 +8,7 @@ class HealthScreen extends StatelessWidget {
   const HealthScreen({super.key});
 
   @override
-  Widget build(BuildContext context) {
-    return Scaffold(
+  Widget build(BuildContext context) => Scaffold(
       appBar: AppBar(title: const Text(AppStrings.moduleHealth)),
       body: Center(
         child: Text(
@@ -18,5 +17,4 @@ class HealthScreen extends StatelessWidget {
         ),
       ),
     );
-  }
 }

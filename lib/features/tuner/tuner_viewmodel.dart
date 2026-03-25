@@ -1,17 +1,11 @@
 import 'dart:async';
 
+import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 
 import '../../services/pitch_service.dart';
 
 class TunerState {
-  final String? note;
-  final double? frequency;
-  final double? cents;
-  final bool isInTune;
-  final bool hasPermission;
-  final bool isListening;
-  final double referenceHz;
 
   const TunerState({
     this.note,
@@ -22,6 +16,13 @@ class TunerState {
     this.isListening = false,
     this.referenceHz = 440.0,
   });
+  final String? note;
+  final double? frequency;
+  final double? cents;
+  final bool isInTune;
+  final bool hasPermission;
+  final bool isListening;
+  final double referenceHz;
 
   TunerState copyWith({
     String? note,
@@ -31,8 +32,7 @@ class TunerState {
     bool? hasPermission,
     bool? isListening,
     double? referenceHz,
-  }) {
-    return TunerState(
+  }) => TunerState(
       note: note ?? this.note,
       frequency: frequency ?? this.frequency,
       cents: cents ?? this.cents,
@@ -41,7 +41,6 @@ class TunerState {
       isListening: isListening ?? this.isListening,
       referenceHz: referenceHz ?? this.referenceHz,
     );
-  }
 }
 
 class TunerViewModel extends StateNotifier<TunerState> {

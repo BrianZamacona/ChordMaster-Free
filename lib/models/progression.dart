@@ -8,6 +8,28 @@ part 'progression.g.dart';
 /// Stored persistently via Hive (type id 3) and serialisable to/from JSON.
 @HiveType(typeId: 3)
 class Progression {
+
+  /// Creates a [Progression] with all required fields.
+  const Progression({
+    required this.id,
+    required this.name,
+    required this.style,
+    required this.numerals,
+    required this.chords,
+    required this.key,
+    required this.isMajor,
+  });
+
+  /// Deserialises a [Progression] from a JSON map.
+  factory Progression.fromJson(Map<String, dynamic> json) => Progression(
+      id: json['id'] as String,
+      name: json['name'] as String,
+      style: json['style'] as String,
+      numerals: List<String>.from(json['numerals'] as List),
+      chords: List<String>.from(json['chords'] as List),
+      key: json['key'] as String,
+      isMajor: json['isMajor'] as bool,
+    );
   /// Unique identifier (UUID).
   @HiveField(0)
   final String id;
@@ -36,30 +58,6 @@ class Progression {
   @HiveField(6)
   final bool isMajor;
 
-  /// Creates a [Progression] with all required fields.
-  const Progression({
-    required this.id,
-    required this.name,
-    required this.style,
-    required this.numerals,
-    required this.chords,
-    required this.key,
-    required this.isMajor,
-  });
-
-  /// Deserialises a [Progression] from a JSON map.
-  factory Progression.fromJson(Map<String, dynamic> json) {
-    return Progression(
-      id: json['id'] as String,
-      name: json['name'] as String,
-      style: json['style'] as String,
-      numerals: List<String>.from(json['numerals'] as List),
-      chords: List<String>.from(json['chords'] as List),
-      key: json['key'] as String,
-      isMajor: json['isMajor'] as bool,
-    );
-  }
-
   /// Serialises this [Progression] to a JSON map.
   Map<String, dynamic> toJson() => {
         'id': id,
@@ -80,8 +78,7 @@ class Progression {
     List<String>? chords,
     String? key,
     bool? isMajor,
-  }) {
-    return Progression(
+  }) => Progression(
       id: id ?? this.id,
       name: name ?? this.name,
       style: style ?? this.style,
@@ -90,7 +87,6 @@ class Progression {
       key: key ?? this.key,
       isMajor: isMajor ?? this.isMajor,
     );
-  }
 
   @override
   bool operator ==(Object other) {

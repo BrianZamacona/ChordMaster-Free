@@ -10,6 +10,14 @@ final achievementServiceProvider =
 
 /// Immutable descriptor for a single achievement.
 class AchievementDefinition {
+
+  /// Creates an [AchievementDefinition].
+  const AchievementDefinition({
+    required this.id,
+    required this.title,
+    required this.description,
+    required this.emoji,
+  });
   /// Unique string identifier used for persistence.
   final String id;
 
@@ -21,14 +29,6 @@ class AchievementDefinition {
 
   /// Emoji icon that represents the achievement.
   final String emoji;
-
-  /// Creates an [AchievementDefinition].
-  const AchievementDefinition({
-    required this.id,
-    required this.title,
-    required this.description,
-    required this.emoji,
-  });
 
   @override
   String toString() => 'AchievementDefinition(id: $id, title: $title)';
@@ -51,13 +51,13 @@ class AchievementDefinition {
 /// final hasIt   = await AchievementService.instance.isUnlocked('tuned_up');
 /// ```
 class AchievementService {
-  /// The singleton instance.
-  static final AchievementService instance = AchievementService._internal();
 
   /// Factory constructor always returns [instance].
   factory AchievementService() => instance;
 
   AchievementService._internal();
+  /// The singleton instance.
+  static final AchievementService instance = AchievementService._internal();
 
   final StorageService _storage = StorageService();
 

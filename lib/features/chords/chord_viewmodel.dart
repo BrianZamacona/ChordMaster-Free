@@ -8,6 +8,16 @@ import '../../models/chord.dart';
 
 /// Immutable state for [ChordViewModel].
 class ChordState {
+
+  const ChordState({
+    this.allChords = const [],
+    this.filteredChords = const [],
+    this.searchQuery = '',
+    this.selectedRoot,
+    this.selectedType,
+    this.isLoading = true,
+    this.errorMessage,
+  });
   /// All chords loaded from the asset bundle.
   final List<Chord> allChords;
 
@@ -29,16 +39,6 @@ class ChordState {
   /// Non-null error message if the last operation failed.
   final String? errorMessage;
 
-  const ChordState({
-    this.allChords = const [],
-    this.filteredChords = const [],
-    this.searchQuery = '',
-    this.selectedRoot,
-    this.selectedType,
-    this.isLoading = true,
-    this.errorMessage,
-  });
-
   ChordState copyWith({
     List<Chord>? allChords,
     List<Chord>? filteredChords,
@@ -47,8 +47,7 @@ class ChordState {
     Object? selectedType = _unset,
     bool? isLoading,
     Object? errorMessage = _unset,
-  }) {
-    return ChordState(
+  }) => ChordState(
       allChords: allChords ?? this.allChords,
       filteredChords: filteredChords ?? this.filteredChords,
       searchQuery: searchQuery ?? this.searchQuery,
@@ -60,7 +59,6 @@ class ChordState {
       errorMessage:
           identical(errorMessage, _unset) ? this.errorMessage : errorMessage as String?,
     );
-  }
 
   static const Object _unset = Object();
 }
@@ -181,9 +179,7 @@ class ChordViewModel extends StateNotifier<ChordState> {
   }
 
   /// Returns all chords sharing the same root as [chord].
-  List<Chord> relatedByRoot(Chord chord) {
-    return state.allChords
+  List<Chord> relatedByRoot(Chord chord) => state.allChords
         .where((c) => c.root == chord.root && c.name != chord.name)
         .toList();
-  }
 }

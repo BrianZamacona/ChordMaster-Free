@@ -119,7 +119,7 @@ class _MetronomeScreenState extends ConsumerState<MetronomeScreen>
                     backgroundColor: AppColors.secondary,
                     foregroundColor: Colors.black,
                   ),
-                  child: const Text(AppStrings.tapTempo),
+                  child: const Text(AppStrings.tap),
                 ),
                 const SizedBox(width: 16),
                 IconButton.filled(
@@ -137,14 +137,12 @@ class _MetronomeScreenState extends ConsumerState<MetronomeScreen>
             const SizedBox(height: 8),
             Wrap(
               spacing: 8,
-              children: timeSigs.map((ts) {
-                return ChoiceChip(
+              children: timeSigs.map((ts) => ChoiceChip(
                   label: Text(ts),
                   selected: state.timeSignature == ts,
                   selectedColor: AppColors.metronome,
                   onSelected: (_) => vm.setTimeSignature(ts),
-                );
-              }).toList(),
+                )).toList(),
             ),
             const SizedBox(height: 16),
 
@@ -154,14 +152,12 @@ class _MetronomeScreenState extends ConsumerState<MetronomeScreen>
             const SizedBox(height: 8),
             Wrap(
               spacing: 8,
-              children: List.generate(subdivisions.length, (i) {
-                return ChoiceChip(
+              children: List.generate(subdivisions.length, (i) => ChoiceChip(
                   label: Text(subdivisionLabels[i]),
                   selected: state.subdivision == subdivisions[i],
                   selectedColor: AppColors.metronome,
                   onSelected: (_) => vm.setSubdivision(subdivisions[i]),
-                );
-              }),
+                )),
             ),
             const SizedBox(height: 24),
             const DonationButton(),
@@ -187,8 +183,7 @@ class _BeatIndicator extends StatelessWidget {
   final AnimationController beatController;
 
   @override
-  Widget build(BuildContext context) {
-    return SizedBox(
+  Widget build(BuildContext context) => SizedBox(
       height: 60,
       child: Row(
         mainAxisAlignment: MainAxisAlignment.center,
@@ -217,5 +212,4 @@ class _BeatIndicator extends StatelessWidget {
         }),
       ),
     );
-  }
 }

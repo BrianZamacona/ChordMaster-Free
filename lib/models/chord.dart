@@ -9,6 +9,30 @@ part 'chord.g.dart';
 /// serialised to/from JSON for asset bundling and network interchange.
 @HiveType(typeId: 0)
 class Chord {
+
+  /// Creates a [Chord] with all required fields.
+  const Chord({
+    required this.name,
+    required this.root,
+    required this.type,
+    required this.intervals,
+    required this.fretPositions,
+    required this.fingerPositions,
+    this.audioFile,
+    this.difficulty = 1,
+  });
+
+  /// Deserialises a [Chord] from a JSON map.
+  factory Chord.fromJson(Map<String, dynamic> json) => Chord(
+      name: json['name'] as String,
+      root: json['root'] as String,
+      type: json['type'] as String,
+      intervals: List<int>.from(json['intervals'] as List),
+      fretPositions: List<int>.from(json['fretPositions'] as List),
+      fingerPositions: List<int>.from(json['fingerPositions'] as List),
+      audioFile: json['audioFile'] as String?,
+      difficulty: json['difficulty'] as int? ?? 1,
+    );
   /// Display name of the chord (e.g. `"C Major"`).
   @HiveField(0)
   final String name;
@@ -45,32 +69,6 @@ class Chord {
   @HiveField(7)
   final int difficulty;
 
-  /// Creates a [Chord] with all required fields.
-  const Chord({
-    required this.name,
-    required this.root,
-    required this.type,
-    required this.intervals,
-    required this.fretPositions,
-    required this.fingerPositions,
-    this.audioFile,
-    this.difficulty = 1,
-  });
-
-  /// Deserialises a [Chord] from a JSON map.
-  factory Chord.fromJson(Map<String, dynamic> json) {
-    return Chord(
-      name: json['name'] as String,
-      root: json['root'] as String,
-      type: json['type'] as String,
-      intervals: List<int>.from(json['intervals'] as List),
-      fretPositions: List<int>.from(json['fretPositions'] as List),
-      fingerPositions: List<int>.from(json['fingerPositions'] as List),
-      audioFile: json['audioFile'] as String?,
-      difficulty: json['difficulty'] as int? ?? 1,
-    );
-  }
-
   /// Serialises this [Chord] to a JSON map.
   Map<String, dynamic> toJson() => {
         'name': name,
@@ -99,8 +97,7 @@ class Chord {
     List<int>? fingerPositions,
     Object? audioFile = _unset,
     int? difficulty,
-  }) {
-    return Chord(
+  }) => Chord(
       name: name ?? this.name,
       root: root ?? this.root,
       type: type ?? this.type,
@@ -112,7 +109,6 @@ class Chord {
           : audioFile as String?,
       difficulty: difficulty ?? this.difficulty,
     );
-  }
 
   @override
   bool operator ==(Object other) {

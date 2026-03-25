@@ -8,8 +8,7 @@ class CommunityScreen extends StatelessWidget {
   const CommunityScreen({super.key});
 
   @override
-  Widget build(BuildContext context) {
-    return Scaffold(
+  Widget build(BuildContext context) => Scaffold(
       appBar: AppBar(title: const Text(AppStrings.moduleCommunity)),
       body: Center(
         child: Text(
@@ -18,5 +17,4 @@ class CommunityScreen extends StatelessWidget {
         ),
       ),
     );
-  }
 }

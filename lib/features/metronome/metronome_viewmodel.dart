@@ -1,10 +1,18 @@
 import 'dart:async';
-import 'package:flutter/foundation.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import '../../services/audio_service.dart';
 
 /// State for [MetronomeViewModel].
 class MetronomeState {
+
+  const MetronomeState({
+    this.bpm = 120,
+    this.timeSignature = '4/4',
+    this.subdivision = 'quarter',
+    this.isPlaying = false,
+    this.currentBeat = 0,
+    this.totalBeats = 4,
+  });
   /// Current BPM (20–300).
   final int bpm;
 
@@ -22,15 +30,6 @@ class MetronomeState {
 
   /// Total beats per bar (numerator of time signature).
   final int totalBeats;
-
-  const MetronomeState({
-    this.bpm = 120,
-    this.timeSignature = '4/4',
-    this.subdivision = 'quarter',
-    this.isPlaying = false,
-    this.currentBeat = 0,
-    this.totalBeats = 4,
-  });
 
   /// Creates a copy with the given fields replaced.
   MetronomeState copyWith({

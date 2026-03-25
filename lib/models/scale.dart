@@ -8,6 +8,28 @@ part 'scale.g.dart';
 /// Stored persistently via Hive (type id 1) and serialisable to/from JSON.
 @HiveType(typeId: 1)
 class Scale {
+
+  /// Creates a [Scale] with all required fields.
+  const Scale({
+    required this.name,
+    required this.root,
+    required this.type,
+    required this.intervals,
+    required this.description,
+    required this.relatedChords,
+    required this.commonUsage,
+  });
+
+  /// Deserialises a [Scale] from a JSON map.
+  factory Scale.fromJson(Map<String, dynamic> json) => Scale(
+      name: json['name'] as String,
+      root: json['root'] as String,
+      type: json['type'] as String,
+      intervals: List<int>.from(json['intervals'] as List),
+      description: json['description'] as String,
+      relatedChords: List<String>.from(json['relatedChords'] as List),
+      commonUsage: json['commonUsage'] as String,
+    );
   /// Display name of the scale (e.g. `"C Major"`).
   @HiveField(0)
   final String name;
@@ -36,30 +58,6 @@ class Scale {
   @HiveField(6)
   final String commonUsage;
 
-  /// Creates a [Scale] with all required fields.
-  const Scale({
-    required this.name,
-    required this.root,
-    required this.type,
-    required this.intervals,
-    required this.description,
-    required this.relatedChords,
-    required this.commonUsage,
-  });
-
-  /// Deserialises a [Scale] from a JSON map.
-  factory Scale.fromJson(Map<String, dynamic> json) {
-    return Scale(
-      name: json['name'] as String,
-      root: json['root'] as String,
-      type: json['type'] as String,
-      intervals: List<int>.from(json['intervals'] as List),
-      description: json['description'] as String,
-      relatedChords: List<String>.from(json['relatedChords'] as List),
-      commonUsage: json['commonUsage'] as String,
-    );
-  }
-
   /// Serialises this [Scale] to a JSON map.
   Map<String, dynamic> toJson() => {
         'name': name,
@@ -80,8 +78,7 @@ class Scale {
     String? description,
     List<String>? relatedChords,
     String? commonUsage,
-  }) {
-    return Scale(
+  }) => Scale(
       name: name ?? this.name,
       root: root ?? this.root,
       type: type ?? this.type,
@@ -90,7 +87,6 @@ class Scale {
       relatedChords: relatedChords ?? this.relatedChords,
       commonUsage: commonUsage ?? this.commonUsage,
     );
-  }
 
   @override
   bool operator ==(Object other) {

@@ -9,32 +9,6 @@ part 'community_post.g.dart';
 /// [maxContentLength] characters.  Stored via Hive (type id 5).
 @HiveType(typeId: 5)
 class CommunityPost {
-  /// Unique identifier (UUID v4).
-  @HiveField(0)
-  final String id;
-
-  /// Display name of the post author.
-  @HiveField(1)
-  final String author;
-
-  /// The sanitised post body (max [maxContentLength] characters, no HTML).
-  @HiveField(2)
-  final String content;
-
-  /// UTC timestamp of when the post was created.
-  @HiveField(3)
-  final DateTime timestamp;
-
-  /// Number of likes received.
-  @HiveField(4)
-  final int likes;
-
-  /// Freeform tags associated with the post.
-  @HiveField(5)
-  final List<String> tags;
-
-  /// Maximum allowed length for [content].
-  static const int maxContentLength = 500;
 
   /// Creates a [CommunityPost].
   ///
@@ -63,8 +37,7 @@ class CommunityPost {
   /// Deserialises a [CommunityPost] from a JSON map.
   ///
   /// [timestamp] is expected as an ISO 8601 string.
-  factory CommunityPost.fromJson(Map<String, dynamic> json) {
-    return CommunityPost(
+  factory CommunityPost.fromJson(Map<String, dynamic> json) => CommunityPost(
       id: json['id'] as String,
       author: json['author'] as String,
       content: json['content'] as String,
@@ -72,7 +45,32 @@ class CommunityPost {
       likes: json['likes'] as int? ?? 0,
       tags: List<String>.from(json['tags'] as List? ?? []),
     );
-  }
+  /// Unique identifier (UUID v4).
+  @HiveField(0)
+  final String id;
+
+  /// Display name of the post author.
+  @HiveField(1)
+  final String author;
+
+  /// The sanitised post body (max [maxContentLength] characters, no HTML).
+  @HiveField(2)
+  final String content;
+
+  /// UTC timestamp of when the post was created.
+  @HiveField(3)
+  final DateTime timestamp;
+
+  /// Number of likes received.
+  @HiveField(4)
+  final int likes;
+
+  /// Freeform tags associated with the post.
+  @HiveField(5)
+  final List<String> tags;
+
+  /// Maximum allowed length for [content].
+  static const int maxContentLength = 500;
 
   /// Serialises this [CommunityPost] to a JSON map.
   ///
@@ -123,7 +121,7 @@ class CommunityPost {
   /// Strips HTML tags from [raw] and truncates to [maxContentLength].
   static String _sanitise(String raw) {
     // Remove anything that looks like an HTML tag.
-    final stripped = raw.replaceAll(RegExp(r'<[^>]*>'), '');
+    final stripped = raw.replaceAll(RegExp('<[^>]*>'), '');
     if (stripped.length <= maxContentLength) return stripped;
     return stripped.substring(0, maxContentLength);
   }

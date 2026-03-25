@@ -14,6 +14,14 @@ import '../core/utils/permission_utils.dart';
 /// the [centsDeviation] from the nearest equal-tempered pitch, and a
 /// convenience [isInTune] flag (within ±5 cents).
 class PitchResult {
+
+  /// Creates a [PitchResult].
+  const PitchResult({
+    required this.noteName,
+    required this.frequency,
+    required this.centsDeviation,
+    required this.isInTune,
+  });
   /// The name of the nearest note, e.g. `"A4"` or `"C#3"`.
   final String noteName;
 
@@ -27,14 +35,6 @@ class PitchResult {
 
   /// Whether the frequency is within ±5 cents of the nearest note.
   final bool isInTune;
-
-  /// Creates a [PitchResult].
-  const PitchResult({
-    required this.noteName,
-    required this.frequency,
-    required this.centsDeviation,
-    required this.isInTune,
-  });
 
   @override
   String toString() =>
@@ -62,13 +62,13 @@ class PitchResult {
 /// await PitchService().stopListening();
 /// ```
 class PitchService {
-  /// The singleton instance.
-  static final PitchService instance = PitchService._internal();
 
   /// Factory constructor always returns [instance].
   factory PitchService() => instance;
 
   PitchService._internal();
+  /// The singleton instance.
+  static final PitchService instance = PitchService._internal();
 
   /// Override to change the A4 reference frequency (default 440 Hz).
   double referenceA4 = AudioUtils.a4Frequency;
@@ -117,7 +117,7 @@ class PitchService {
     try {
       final granted = await PermissionUtils.requestMicrophonePermission();
       if (!granted) {
-        throw PermissionFailure(
+        throw const PermissionFailure(
           message:
               'Microphone permission denied. Please enable it in app settings.',
         );
@@ -128,7 +128,7 @@ class PitchService {
       // pipeline for now.
       final hasPermission = await _recorder.hasPermission();
       if (!hasPermission) {
-        throw PermissionFailure(
+        throw const PermissionFailure(
           message: 'Record package could not obtain microphone permission.',
         );
       }

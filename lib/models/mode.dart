@@ -8,6 +8,26 @@ part 'mode.g.dart';
 /// Stored persistently via Hive (type id 2) and serialisable to/from JSON.
 @HiveType(typeId: 2)
 class Mode {
+
+  /// Creates a [Mode] with all required fields.
+  const Mode({
+    required this.name,
+    required this.degree,
+    required this.intervals,
+    required this.mood,
+    required this.examples,
+    required this.parentScale,
+  });
+
+  /// Deserialises a [Mode] from a JSON map.
+  factory Mode.fromJson(Map<String, dynamic> json) => Mode(
+      name: json['name'] as String,
+      degree: json['degree'] as int,
+      intervals: List<int>.from(json['intervals'] as List),
+      mood: json['mood'] as String,
+      examples: List<String>.from(json['examples'] as List),
+      parentScale: json['parentScale'] as String,
+    );
   /// Display name of the mode (e.g. `"Dorian"`).
   @HiveField(0)
   final String name;
@@ -32,28 +52,6 @@ class Mode {
   @HiveField(5)
   final String parentScale;
 
-  /// Creates a [Mode] with all required fields.
-  const Mode({
-    required this.name,
-    required this.degree,
-    required this.intervals,
-    required this.mood,
-    required this.examples,
-    required this.parentScale,
-  });
-
-  /// Deserialises a [Mode] from a JSON map.
-  factory Mode.fromJson(Map<String, dynamic> json) {
-    return Mode(
-      name: json['name'] as String,
-      degree: json['degree'] as int,
-      intervals: List<int>.from(json['intervals'] as List),
-      mood: json['mood'] as String,
-      examples: List<String>.from(json['examples'] as List),
-      parentScale: json['parentScale'] as String,
-    );
-  }
-
   /// Serialises this [Mode] to a JSON map.
   Map<String, dynamic> toJson() => {
         'name': name,
@@ -72,8 +70,7 @@ class Mode {
     String? mood,
     List<String>? examples,
     String? parentScale,
-  }) {
-    return Mode(
+  }) => Mode(
       name: name ?? this.name,
       degree: degree ?? this.degree,
       intervals: intervals ?? this.intervals,
@@ -81,7 +78,6 @@ class Mode {
       examples: examples ?? this.examples,
       parentScale: parentScale ?? this.parentScale,
     );
-  }
 
   @override
   bool operator ==(Object other) {

@@ -8,8 +8,7 @@ class RhythmGameScreen extends StatelessWidget {
   const RhythmGameScreen({super.key});
 
   @override
-  Widget build(BuildContext context) {
-    return Scaffold(
+  Widget build(BuildContext context) => Scaffold(
       appBar: AppBar(title: const Text(AppStrings.moduleRhythmGame)),
       body: Center(
         child: Text(
@@ -18,5 +17,4 @@ class RhythmGameScreen extends StatelessWidget {
         ),
       ),
     );
-  }
 }

@@ -7,16 +7,12 @@ import 'package:flutter/material.dart';
 Widget fadeIn(
   Widget child, {
   Duration duration = const Duration(milliseconds: 400),
-}) {
-  return TweenAnimationBuilder<double>(
+}) => TweenAnimationBuilder<double>(
     tween: Tween<double>(begin: 0, end: 1),
     duration: duration,
-    builder: (context, value, builtChild) {
-      return Opacity(opacity: value, child: builtChild);
-    },
+    builder: (context, value, builtChild) => Opacity(opacity: value, child: builtChild),
     child: child,
   );
-}
 
 /// Returns [child] wrapped in a [TweenAnimationBuilder] that slides it up
 /// from 24 logical pixels below its final position while simultaneously
@@ -24,8 +20,7 @@ Widget fadeIn(
 Widget slideUpFade(
   Widget child, {
   Duration duration = const Duration(milliseconds: 500),
-}) {
-  return TweenAnimationBuilder<double>(
+}) => TweenAnimationBuilder<double>(
     tween: Tween<double>(begin: 0, end: 1),
     duration: duration,
     curve: Curves.easeOut,
@@ -38,41 +33,34 @@ Widget slideUpFade(
     },
     child: child,
   );
-}
 
 /// Returns [child] wrapped in a [TweenAnimationBuilder] that scales it in
 /// from `0` to `1` with a slight fade, over [duration].
 Widget scaleIn(
   Widget child, {
   Duration duration = const Duration(milliseconds: 350),
-}) {
-  return TweenAnimationBuilder<double>(
+}) => TweenAnimationBuilder<double>(
     tween: Tween<double>(begin: 0, end: 1),
     duration: duration,
     curve: Curves.easeOutBack,
-    builder: (context, value, builtChild) {
-      return Transform.scale(
+    builder: (context, value, builtChild) => Transform.scale(
         scale: value,
         child: Opacity(
           opacity: value.clamp(0.0, 1.0),
           child: builtChild,
         ),
-      );
-    },
+      ),
     child: child,
   );
-}
 
 /// Returns an [Animation] that produces a repeating scale pulse from `1.0`
 /// to `1.08` using [Curves.easeInOut].
 ///
 /// Pair with [ScaleTransition] to create a heartbeat-style pulse effect.
 /// The [controller] must be a repeating [AnimationController].
-Animation<double> pulseAnimation(AnimationController controller) {
-  return Tween<double>(begin: 1.0, end: 1.08).animate(
+Animation<double> pulseAnimation(AnimationController controller) => Tween<double>(begin: 1.0, end: 1.08).animate(
     CurvedAnimation(parent: controller, curve: Curves.easeInOut),
   );
-}
 
 /// Returns a list of 12 small animated coloured dots for a confetti effect.
 ///
@@ -88,9 +76,9 @@ Animation<double> pulseAnimation(AnimationController controller) {
 /// ```
 List<Widget> confettiParticles(AnimationController controller) {
   const int count = 12;
-  const double containerSize = 120.0;
-  const double dotSize = 8.0;
-  const double radius = 50.0;
+  const double containerSize = 120;
+  const double dotSize = 8;
+  const double radius = 50;
 
   return List<Widget>.generate(count, (index) {
     final double angle = (index / count) * 2 * math.pi;

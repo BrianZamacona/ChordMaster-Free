@@ -8,8 +8,7 @@ class ProgressionsScreen extends StatelessWidget {
   const ProgressionsScreen({super.key});
 
   @override
-  Widget build(BuildContext context) {
-    return Scaffold(
+  Widget build(BuildContext context) => Scaffold(
       appBar: AppBar(title: const Text(AppStrings.moduleProgressions)),
       body: Center(
         child: Text(
@@ -18,5 +17,4 @@ class ProgressionsScreen extends StatelessWidget {
         ),
       ),
     );
-  }
 }

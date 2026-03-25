@@ -1,6 +1,6 @@
-import 'package:flutter/material.dart';
 import 'package:go_router/go_router.dart';
 
+import '../core/widgets/app_scaffold.dart';
 import '../features/achievements/achievements_screen.dart';
 import '../features/chords/chord_detail_screen.dart';
 import '../features/chords/chord_library_screen.dart';
@@ -17,7 +17,6 @@ import '../features/scales/scales_screen.dart';
 import '../features/songs/song_detail_screen.dart';
 import '../features/songs/songs_screen.dart';
 import '../features/tuner/tuner_screen.dart';
-import '../core/widgets/app_scaffold.dart';
 
 /// The global [GoRouter] instance for ChordMaster Free.
 ///
@@ -28,16 +27,14 @@ final GoRouter appRouter = GoRouter(
   initialLocation: '/',
   routes: [
     StatefulShellRoute.indexedStack(
-      builder: (context, state, navigationShell) {
-        return AppScaffold(
+      builder: (context, state, navigationShell) => AppScaffold(
           body: navigationShell,
           currentIndex: navigationShell.currentIndex,
           onIndexChange: (index) => navigationShell.goBranch(
             index,
             initialLocation: index == navigationShell.currentIndex,
           ),
-        );
-      },
+        ),
       branches: [
         StatefulShellBranch(
           routes: [

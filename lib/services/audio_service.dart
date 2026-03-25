@@ -14,13 +14,13 @@ final audioServiceProvider = Provider<AudioService>((ref) => AudioService());
 /// methods swallow exceptions internally and log them with [debugPrint] so
 /// that audio errors never crash the UI.
 class AudioService {
-  /// The singleton instance.
-  static final AudioService instance = AudioService._internal();
 
   /// Factory constructor always returns [instance].
   factory AudioService() => instance;
 
   AudioService._internal();
+  /// The singleton instance.
+  static final AudioService instance = AudioService._internal();
 
   AudioPlayer? _player;
 

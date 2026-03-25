@@ -20,13 +20,13 @@ import 'package:flutter_local_notifications/flutter_local_notifications.dart';
 /// }
 /// ```
 class NotificationService {
-  /// The singleton instance.
-  static final NotificationService instance = NotificationService._internal();
 
   /// Factory constructor always returns [instance].
   factory NotificationService() => instance;
 
   NotificationService._internal();
+  /// The singleton instance.
+  static final NotificationService instance = NotificationService._internal();
 
   final FlutterLocalNotificationsPlugin _notifications =
       FlutterLocalNotificationsPlugin();

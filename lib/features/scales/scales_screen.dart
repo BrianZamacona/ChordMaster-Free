@@ -1,6 +1,5 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
-import 'package:go_router/go_router.dart';
 
 import '../../core/constants/app_colors.dart';
 import '../../core/constants/app_strings.dart';
@@ -74,9 +73,9 @@ class _ScalesScreenState extends ConsumerState<ScalesScreen>
             child: TabBarView(
               controller: _tabController,
               children: [
-                _ScalesTabContent(category: ScaleCategory.scales),
+                const _ScalesTabContent(category: ScaleCategory.scales),
                 const ModesScreen(),
-                _ScalesTabContent(category: ScaleCategory.exotic),
+                const _ScalesTabContent(category: ScaleCategory.exotic),
               ],
             ),
           ),
@@ -96,8 +95,7 @@ class _RootNoteSelector extends StatelessWidget {
   final ValueChanged<String> onSelected;
 
   @override
-  Widget build(BuildContext context) {
-    return Container(
+  Widget build(BuildContext context) => Container(
       color: AppColors.scales.withAlpha(20),
       height: 52,
       child: ListView.separated(
@@ -122,7 +120,6 @@ class _RootNoteSelector extends StatelessWidget {
         },
       ),
     );
-  }
 }
 
 /// Renders the list of scales for a given category tab.
@@ -359,8 +356,7 @@ class _PlayScaleButtonState extends State<_PlayScaleButton> {
   }
 
   @override
-  Widget build(BuildContext context) {
-    return IconButton(
+  Widget build(BuildContext context) => IconButton(
       icon: Icon(
         _isPlaying ? Icons.volume_up : Icons.play_circle_outline,
         color: AppColors.scales,
@@ -369,5 +365,4 @@ class _PlayScaleButtonState extends State<_PlayScaleButton> {
       tooltip: AppStrings.play,
       onPressed: _play,
     );
-  }
 }

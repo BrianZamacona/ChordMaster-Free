@@ -2,6 +2,24 @@
 ///
 /// Used by the ear training module to teach interval recognition.
 class IntervalModel {
+
+  /// Creates an [IntervalModel] with all required fields.
+  const IntervalModel({
+    required this.name,
+    required this.shortName,
+    required this.semitones,
+    required this.sound,
+    required this.examples,
+  });
+
+  /// Deserialises an [IntervalModel] from a JSON map.
+  factory IntervalModel.fromJson(Map<String, dynamic> json) => IntervalModel(
+      name: json['name'] as String,
+      shortName: json['shortName'] as String,
+      semitones: json['semitones'] as int,
+      sound: json['sound'] as String,
+      examples: List<String>.from(json['examples'] as List),
+    );
   /// Full name of the interval (e.g. `"Perfect Fifth"`).
   final String name;
 
@@ -16,26 +34,6 @@ class IntervalModel {
 
   /// Famous songs that open with or prominently feature this interval.
   final List<String> examples;
-
-  /// Creates an [IntervalModel] with all required fields.
-  const IntervalModel({
-    required this.name,
-    required this.shortName,
-    required this.semitones,
-    required this.sound,
-    required this.examples,
-  });
-
-  /// Deserialises an [IntervalModel] from a JSON map.
-  factory IntervalModel.fromJson(Map<String, dynamic> json) {
-    return IntervalModel(
-      name: json['name'] as String,
-      shortName: json['shortName'] as String,
-      semitones: json['semitones'] as int,
-      sound: json['sound'] as String,
-      examples: List<String>.from(json['examples'] as List),
-    );
-  }
 
   /// Serialises this [IntervalModel] to a JSON map.
   Map<String, dynamic> toJson() => {
@@ -53,15 +51,13 @@ class IntervalModel {
     int? semitones,
     String? sound,
     List<String>? examples,
-  }) {
-    return IntervalModel(
+  }) => IntervalModel(
       name: name ?? this.name,
       shortName: shortName ?? this.shortName,
       semitones: semitones ?? this.semitones,
       sound: sound ?? this.sound,
       examples: examples ?? this.examples,
     );
-  }
 
   @override
   bool operator ==(Object other) {
@@ -142,7 +138,7 @@ const List<Map<String, dynamic>> defaultIntervals = [
     'shortName': 'm6',
     'semitones': 8,
     'sound': 'Bittersweet, slightly dark',
-    'examples': ["The Entertainer", 'Theme from Schindler\'s List'],
+    'examples': ['The Entertainer', 'Theme from Schindler\'s List'],
   },
   {
     'name': 'Major 6th',

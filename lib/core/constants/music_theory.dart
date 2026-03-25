@@ -1,4 +1,3 @@
-import 'dart:math' as math;
 
 /// Music theory constants and helper functions for ChordMaster Free.
 ///
@@ -155,7 +154,6 @@ String transposeNote(String note, int semitones) {
     final lastChar = note[note.length - 1];
     final octave = int.tryParse(lastChar);
     if (octave != null) {
-      final notePart = note.substring(0, note.length - 1);
       final midi = noteNameToMidi(note);
       if (midi != -1) {
         return noteNameFromMidi(midi + semitones);

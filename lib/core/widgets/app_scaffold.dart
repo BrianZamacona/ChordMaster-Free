@@ -75,8 +75,7 @@ class _AppScaffoldState extends State<AppScaffold> {
   }
 
   @override
-  Widget build(BuildContext context) {
-    return Scaffold(
+  Widget build(BuildContext context) => Scaffold(
       key: _scaffoldKey,
       appBar: AppBar(
         title: Text(widget.title ?? AppStrings.appName),
@@ -116,7 +115,6 @@ class _AppScaffoldState extends State<AppScaffold> {
         ],
       ),
     );
-  }
 }
 
 /// The end drawer that exposes the remaining feature modules.
@@ -179,8 +177,7 @@ class _AppEndDrawer extends StatelessWidget {
   ];
 
   @override
-  Widget build(BuildContext context) {
-    return Drawer(
+  Widget build(BuildContext context) => Drawer(
       child: SafeArea(
         child: ListView(
           padding: EdgeInsets.zero,
@@ -226,7 +223,6 @@ class _AppEndDrawer extends StatelessWidget {
         ),
       ),
     );
-  }
 }
 
 /// Data holder for a single end-drawer list tile.

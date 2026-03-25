@@ -3,14 +3,14 @@
 /// All domain-level errors are represented as [Failure] subclasses rather
 /// than raw exceptions, making error handling exhaustive and explicit.
 sealed class Failure {
+
+  /// Creates a [Failure] with the given [message] and optional [stackTrace].
+  const Failure({required this.message, this.stackTrace});
   /// Human-readable description of the failure.
   final String message;
 
   /// Optional Dart [StackTrace] captured at the failure site.
   final StackTrace? stackTrace;
-
-  /// Creates a [Failure] with the given [message] and optional [stackTrace].
-  const Failure({required this.message, this.stackTrace});
 }
 
 /// Failure originating from the audio engine or audio session management.

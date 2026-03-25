@@ -8,8 +8,7 @@ class CompositionScreen extends StatelessWidget {
   const CompositionScreen({super.key});
 
   @override
-  Widget build(BuildContext context) {
-    return Scaffold(
+  Widget build(BuildContext context) => Scaffold(
       appBar: AppBar(title: const Text(AppStrings.moduleComposition)),
       body: Center(
         child: Text(
@@ -18,5 +17,4 @@ class CompositionScreen extends StatelessWidget {
         ),
       ),
     );
-  }
 }

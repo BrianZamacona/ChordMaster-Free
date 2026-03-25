@@ -129,8 +129,7 @@ class _SearchBar extends StatelessWidget {
   final ValueChanged<String> onChanged;
 
   @override
-  Widget build(BuildContext context) {
-    return Padding(
+  Widget build(BuildContext context) => Padding(
       padding: const EdgeInsets.fromLTRB(16, 12, 16, 4),
       child: TextField(
         controller: controller,
@@ -156,7 +155,6 @@ class _SearchBar extends StatelessWidget {
         ),
       ),
     );
-  }
 }
 
 class _RootFilterRow extends StatelessWidget {
@@ -166,8 +164,7 @@ class _RootFilterRow extends StatelessWidget {
   final ValueChanged<String?> onSelected;
 
   @override
-  Widget build(BuildContext context) {
-    return SizedBox(
+  Widget build(BuildContext context) => SizedBox(
       height: 44,
       child: ListView.separated(
         scrollDirection: Axis.horizontal,
@@ -190,7 +187,6 @@ class _RootFilterRow extends StatelessWidget {
         },
       ),
     );
-  }
 }
 
 class _TypeFilterRow extends StatelessWidget {
@@ -200,8 +196,7 @@ class _TypeFilterRow extends StatelessWidget {
   final ValueChanged<String?> onSelected;
 
   @override
-  Widget build(BuildContext context) {
-    return SizedBox(
+  Widget build(BuildContext context) => SizedBox(
       height: 44,
       child: ListView.separated(
         scrollDirection: Axis.horizontal,
@@ -225,7 +220,6 @@ class _TypeFilterRow extends StatelessWidget {
         },
       ),
     );
-  }
 }
 
 class _ChordGrid extends StatelessWidget {
@@ -234,8 +228,7 @@ class _ChordGrid extends StatelessWidget {
   final List<Chord> chords;
 
   @override
-  Widget build(BuildContext context) {
-    return GridView.builder(
+  Widget build(BuildContext context) => GridView.builder(
       padding: const EdgeInsets.all(12),
       gridDelegate: const SliverGridDelegateWithFixedCrossAxisCount(
         crossAxisCount: 2,
@@ -252,7 +245,6 @@ class _ChordGrid extends StatelessWidget {
         );
       },
     );
-  }
 }
 
 class _ChordCard extends StatelessWidget {
@@ -307,8 +299,7 @@ class _DifficultyStars extends StatelessWidget {
   final int difficulty;
 
   @override
-  Widget build(BuildContext context) {
-    return Row(
+  Widget build(BuildContext context) => Row(
       mainAxisAlignment: MainAxisAlignment.center,
       mainAxisSize: MainAxisSize.min,
       children: List.generate(
@@ -320,5 +311,4 @@ class _DifficultyStars extends StatelessWidget {
         ),
       ),
     );
-  }
 }
