@@ -22,7 +22,7 @@ jobs:
       matrix:
         language: [actions]
     steps:
-      - uses: actions/checkout@v5 # v5.0.0
+      - uses: actions/checkout@v6 # v5.0.0
       - uses: github/codeql-action/init@v4 # v3.28.16
         with:
           languages: ${{ matrix.language }}
