@@ -1,0 +1,23 @@
+name: Release APK
+on:
+  push:
+    tags: ['v*']
+
+jobs:
+  build:
+    runs-on: ubuntu-latest
+    timeout-minutes: 30
+    permissions:
+      contents: read
+    steps:
+      - uses: actions/checkout@v5 # v5.0.0
+      - uses: subosito/flutter-action@v2 # v2.22.0
+        with:
+          flutter-version: '3.41.5'
+          channel: 'stable'
+      - run: flutter pub get
+      - run: flutter build apk --release
+      - uses: actions/upload-artifact@v4 # v4.6.2
+        with:
+          name: release-apk
+          path: build/app/outputs/flutter-apk/app-release.apk

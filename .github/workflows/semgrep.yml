@@ -1,0 +1,24 @@
+name: Semgrep
+
+on:
+  push:
+    branches: [main, develop]
+  pull_request:
+    branches: [main, develop]
+
+permissions:
+  contents: read
+  security-events: write
+
+jobs:
+  semgrep:
+    runs-on: ubuntu-latest
+    timeout-minutes: 20
+    steps:
+      - uses: actions/checkout@v5
+      - uses: semgrep/semgrep-action@v1 # Última versión estable (soporta .semgrepignore)
+        with:
+          config: >-
+            p/owasp-top-ten
+            p/security-audit
+            p/secrets
