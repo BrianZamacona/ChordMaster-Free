@@ -15,8 +15,8 @@ jobs:
     runs-on: ubuntu-latest
     timeout-minutes: 20
     steps:
-      - uses: actions/checkout@08c6903cd8c0fde910a37f88322edcfb5dd907a8 # v5.0.0
-      - uses: semgrep/semgrep-action@713efdd345f3035192eaa63f56867b88e63e4e5d # v1
+      - uses: actions/checkout@v5
+      - uses: semgrep/semgrep-action@v1 # Última versión estable (soporta .semgrepignore)
         with:
           config: >-
             p/owasp-top-ten

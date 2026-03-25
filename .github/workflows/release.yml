@@ -10,14 +10,14 @@ jobs:
     permissions:
       contents: read
     steps:
-      - uses: actions/checkout@08c6903cd8c0fde910a37f88322edcfb5dd907a8 # v5.0.0
-      - uses: subosito/flutter-action@0ca7a949e71ae44c8e688a51c5e7e93b2c87e295 # v2.22.0
+      - uses: actions/checkout@v5 # v5.0.0
+      - uses: subosito/flutter-action@v2 # v2.22.0
         with:
           flutter-version: '3.41.5'
           channel: 'stable'
       - run: flutter pub get
       - run: flutter build apk --release
-      - uses: actions/upload-artifact@ea165f8d65b6e75b540449e92b4886f43607fa02 # v4.6.2
+      - uses: actions/upload-artifact@v4 # v4.6.2
         with:
           name: release-apk
           path: build/app/outputs/flutter-apk/app-release.apk
