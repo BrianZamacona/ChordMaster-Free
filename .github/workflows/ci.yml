@@ -19,6 +19,10 @@ jobs:
           cache: true
       - name: Get dependencies
         run: flutter pub get
+      - name: Generate code
+        run: dart run build_runner build --delete-conflicting-outputs
+      - name: Verify generated files are committed
+        run: git diff --exit-code || (echo "Generated files are out of date. Run 'dart run build_runner build --delete-conflicting-outputs' and commit the results." && exit 1)
       - name: Analyze
         run: flutter analyze --no-fatal-infos
       - name: Run tests
