@@ -1,28 +1,15 @@
-name: Dependency Review
-
+name: "dependency review"
 on:
   pull_request:
     branches: [main, develop]
-
 permissions:
   contents: read
-
 jobs:
   dependency-review:
     runs-on: ubuntu-latest
-# Workflow desactivado temporalmente: Dependency Review solo funciona en repos públicos o privados con Advanced Security
-# name: 'Dependency Review'
-# on:
-#   pull_request:
-#     branches: [main, develop]
-# permissions:
-#   contents: read
-# jobs:
-#   dependency-review:
-#     runs-on: ubuntu-latest
-#     timeout-minutes: 10
-#     steps:
-#       - uses: actions/checkout@v5 # v5.0.0
-#       - uses: actions/dependency-review-action@v4 # v4.8.0
-#         with:
-#           fail-on-severity: moderate
+    timeout-minutes: 10
+    steps:
+      - uses: actions/checkout@v5 # v5.0.0
+      - uses: actions/dependency-review-action@v4 # v4.8.0
+        with:
+          fail-on-severity: moderate
