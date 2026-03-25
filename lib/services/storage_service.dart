@@ -1,4 +1,9 @@
+import 'dart:convert';
+import 'dart:math';
+
+import 'package:flutter/foundation.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
+import 'package:flutter_secure_storage/flutter_secure_storage.dart';
 import 'package:hive_flutter/hive_flutter.dart';
 
 import '../core/errors/failures.dart';
@@ -34,6 +39,15 @@ class StorageService {
   /// Box name for application settings.
   static const String settingsBox = 'settings';
 
+  static const String _encKeyName = 'cmf_hive_encryption_key_v1';
+
+  static const FlutterSecureStorage _secureStorage = FlutterSecureStorage(
+    aOptions: AndroidOptions(encryptedSharedPreferences: true),
+    iOptions: IOSOptions(
+      accessibility: KeychainAccessibility.first_unlock_this_device,
+    ),
+  );
+
   // ── Box Lifecycle ─────────────────────────────────────────────────────────
 
   /// Opens all four Hive boxes.
@@ -42,12 +56,12 @@ class StorageService {
   /// Throws [StorageFailure] if any box fails to open.
   Future<void> openBoxes() async {
     try {
-      await Future.wait([
-        Hive.openBox<dynamic>(userProgressBox),
-        Hive.openBox<dynamic>(communityPostsBox),
-        Hive.openBox<dynamic>(achievementsBox),
-        Hive.openBox<dynamic>(settingsBox),
-      ]);
+      final enc = await _loadEncryptionContext();
+
+      await _openBoxSecure(userProgressBox, enc);
+      await _openBoxSecure(communityPostsBox, enc);
+      await _openBoxSecure(achievementsBox, enc);
+      await _openBoxSecure(settingsBox, enc);
     } catch (e, st) {
       throw StorageFailure(
         message: 'Failed to open Hive boxes: $e',
@@ -151,4 +165,78 @@ class StorageService {
     }
     return Hive.box<dynamic>(name);
   }
+
+  Future<_EncryptionContext> _loadEncryptionContext() async {
+    if (kIsWeb) {
+      // Web does not support flutter_secure_storage; fall back to default Hive.
+      return const _EncryptionContext(cipher: null, keyWasCreated: false);
+    }
+
+    final existing = await _secureStorage.read(key: _encKeyName);
+    if (existing != null && existing.isNotEmpty) {
+      final bytes = base64Decode(existing);
+      if (bytes.length != 32) {
+        throw const StorageFailure(
+          message: 'Stored Hive encryption key has invalid length.',
+        );
+      }
+      return _EncryptionContext(
+        cipher: HiveAesCipher(bytes),
+        keyWasCreated: false,
+      );
+    }
+
+    final key = List<int>.generate(32, (_) => Random.secure().nextInt(256));
+    await _secureStorage.write(key: _encKeyName, value: base64Encode(key));
+    return _EncryptionContext(
+      cipher: HiveAesCipher(key),
+      keyWasCreated: true,
+    );
+  }
+
+  Future<void> _openBoxSecure(String name, _EncryptionContext enc) async {
+    // Web keeps default (unencrypted) boxes because secure storage and
+    // consistent key management are not available across browsers.
+    if (enc.cipher == null) {
+      await Hive.openBox<dynamic>(name);
+      return;
+    }
+
+    try {
+      await Hive.openBox<dynamic>(name, encryptionCipher: enc.cipher);
+      return;
+    } catch (_) {
+      // If the key already existed, this indicates corruption/wrong key and
+      // should not auto-migrate to avoid data loss.
+      if (!enc.keyWasCreated) {
+        rethrow;
+      }
+    }
+
+    // One-time migration path: existing plaintext box -> encrypted box.
+    if (!await Hive.boxExists(name)) {
+      await Hive.openBox<dynamic>(name, encryptionCipher: enc.cipher);
+      return;
+    }
+
+    final legacy = await Hive.openBox<dynamic>(name);
+    final entries = Map<dynamic, dynamic>.from(legacy.toMap());
+    await legacy.close();
+    await Hive.deleteBoxFromDisk(name);
+
+    final encrypted = await Hive.openBox<dynamic>(
+      name,
+      encryptionCipher: enc.cipher,
+    );
+    if (entries.isNotEmpty) {
+      await encrypted.putAll(entries);
+    }
+  }
+}
+
+class _EncryptionContext {
+  const _EncryptionContext({required this.cipher, required this.keyWasCreated});
+
+  final HiveCipher? cipher;
+  final bool keyWasCreated;
 }

@@ -1,8 +1,8 @@
 # 🎸 ChordMaster Free
 
-[![CI](https://github.com/your-org/ChordMaster-Free/actions/workflows/ci.yml/badge.svg)](https://github.com/your-org/ChordMaster-Free/actions/workflows/ci.yml)
+[![CI](https://github.com/BrianZamacona/ChordMaster-Free/actions/workflows/ci.yml/badge.svg)](https://github.com/BrianZamacona/ChordMaster-Free/actions/workflows/ci.yml)
 [![License: MIT](https://img.shields.io/badge/License-MIT-yellow.svg)](LICENSE)
-[![Flutter](https://img.shields.io/badge/Flutter-3.22.0-blue.svg)](https://flutter.dev)
+[![Flutter](https://img.shields.io/badge/Flutter-3.41.5-blue.svg)](https://flutter.dev)
 
 > **Free, offline-first music learning app for guitarists, pianists and musicians of all levels.**  
 > No subscription. No internet required. Just music.
@@ -68,16 +68,16 @@ ChordMaster Free follows **Clean Architecture** with a strict separation of conc
 
 | Technology | Version | Purpose |
 |------------|---------|---------|
-| [Flutter](https://flutter.dev) | 3.22.0 | Cross-platform UI framework |
-| [Riverpod](https://riverpod.dev) | ^2.5.1 | Compile-safe state management |
-| [Hive](https://docs.hivedb.dev) | ^2.2.3 | Fast, lightweight local database |
-| [just_audio](https://pub.dev/packages/just_audio) | ^0.9.39 | High-quality audio playback |
-| [record](https://pub.dev/packages/record) | ^5.1.0 | Microphone capture for tuner |
-| [fl_chart](https://pub.dev/packages/fl_chart) | ^0.68.0 | Pitch and progress visualisations |
-| [go_router](https://pub.dev/packages/go_router) | ^13.2.4 | Declarative routing and deep links |
-| [google_fonts](https://pub.dev/packages/google_fonts) | ^6.2.1 | Beautiful typography (cached locally) |
-| [lottie](https://pub.dev/packages/lottie) | ^3.1.0 | Smooth achievement animations |
-| [flutter_local_notifications](https://pub.dev/packages/flutter_local_notifications) | ^17.2.2 | Practice reminders |
+| [Flutter](https://flutter.dev) | 3.41.5 | Cross-platform UI framework |
+| [Riverpod](https://riverpod.dev) | 2.6.1 | Compile-safe state management |
+| [Hive](https://docs.hivedb.dev) | 2.2.3 | Fast, lightweight local database |
+| [just_audio](https://pub.dev/packages/just_audio) | 0.9.46 | High-quality audio playback |
+| [record](https://pub.dev/packages/record) | 5.2.1 | Microphone capture for tuner |
+| [fl_chart](https://pub.dev/packages/fl_chart) | 0.68.0 | Pitch and progress visualisations |
+| [go_router](https://pub.dev/packages/go_router) | 13.2.5 | Declarative routing and deep links |
+| [google_fonts](https://pub.dev/packages/google_fonts) | 6.3.3 | Beautiful typography (cached locally) |
+| [lottie](https://pub.dev/packages/lottie) | 3.3.2 | Smooth achievement animations |
+| [flutter_local_notifications](https://pub.dev/packages/flutter_local_notifications) | 17.2.4 | Practice reminders |
 
 ---
 
@@ -85,20 +85,17 @@ ChordMaster Free follows **Clean Architecture** with a strict separation of conc
 
 ```bash
 # 1. Clone the repository
-git clone https://github.com/your-org/ChordMaster-Free.git
+git clone https://github.com/BrianZamacona/ChordMaster-Free.git
 cd ChordMaster-Free
 
 # 2. Install dependencies
 flutter pub get
 
-# 3. Run code generators (Hive adapters)
-dart run build_runner build --delete-conflicting-outputs
-
-# 4. Launch on a connected device or emulator
+# 3. Launch on a connected device or emulator
 flutter run
 ```
 
-> **Requirements:** Flutter SDK ≥ 3.22.0, Dart SDK ≥ 3.0.0
+> **Requirements:** Flutter SDK ≥ 3.41.5, Dart SDK ≥ 3.11.0
 
 ---
 
