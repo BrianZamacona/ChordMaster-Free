@@ -1,12 +1,6 @@
-// ignore_for_file: invalid_annotation_target
-import 'package:hive/hive.dart';
-
-part 'progression.g.dart';
-
 /// Represents a chord progression with its theoretical context.
 ///
-/// Stored persistently via Hive (type id 3) and serialisable to/from JSON.
-@HiveType(typeId: 3)
+/// Serializable to/from JSON for assets and Hive-backed storage.
 class Progression {
 
   /// Creates a [Progression] with all required fields.
@@ -31,31 +25,24 @@ class Progression {
       isMajor: json['isMajor'] as bool,
     );
   /// Unique identifier (UUID).
-  @HiveField(0)
   final String id;
 
   /// Display name of the progression (e.g. `"I–V–vi–IV"`).
-  @HiveField(1)
   final String name;
 
   /// Musical style or genre (e.g. `"Pop"`, `"Jazz"`, `"Blues"`).
-  @HiveField(2)
   final String style;
 
   /// Roman numeral notation for each chord in the progression.
-  @HiveField(3)
   final List<String> numerals;
 
   /// Concrete chord names in the current [key] (e.g. `["C", "G", "Am", "F"]`).
-  @HiveField(4)
   final List<String> chords;
 
   /// The tonic / key note (e.g. `"C"`).
-  @HiveField(5)
   final String key;
 
   /// Whether the progression is in a major (`true`) or minor (`false`) key.
-  @HiveField(6)
   final bool isMajor;
 
   /// Serialises this [Progression] to a JSON map.

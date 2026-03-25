@@ -1,12 +1,6 @@
-// ignore_for_file: invalid_annotation_target
-import 'package:hive/hive.dart';
-
-part 'scale.g.dart';
-
 /// Represents a musical scale with its theory metadata.
 ///
-/// Stored persistently via Hive (type id 1) and serialisable to/from JSON.
-@HiveType(typeId: 1)
+/// Serializable to/from JSON for assets and Hive-backed storage.
 class Scale {
 
   /// Creates a [Scale] with all required fields.
@@ -31,31 +25,24 @@ class Scale {
       commonUsage: json['commonUsage'] as String,
     );
   /// Display name of the scale (e.g. `"C Major"`).
-  @HiveField(0)
   final String name;
 
   /// Root note (e.g. `"C"`).
-  @HiveField(1)
   final String root;
 
   /// Scale type key matching [scaleFormulas] (e.g. `"major"`).
-  @HiveField(2)
   final String type;
 
   /// Semitone intervals from the root.
-  @HiveField(3)
   final List<int> intervals;
 
   /// Short description of the scale's sound / character.
-  @HiveField(4)
   final String description;
 
   /// Names of chords naturally derived from this scale.
-  @HiveField(5)
   final List<String> relatedChords;
 
   /// Description of common musical contexts where this scale is used.
-  @HiveField(6)
   final String commonUsage;
 
   /// Serialises this [Scale] to a JSON map.

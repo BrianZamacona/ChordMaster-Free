@@ -1,13 +1,8 @@
-// ignore_for_file: invalid_annotation_target
-import 'package:hive/hive.dart';
-
-part 'community_post.g.dart';
-
 /// Represents a user-generated post in the ChordMaster Free community feed.
 ///
 /// Content is sanitised on assignment (HTML tags stripped) and capped at
-/// [maxContentLength] characters.  Stored via Hive (type id 5).
-@HiveType(typeId: 5)
+/// [maxContentLength] characters. It can be serialized to JSON for
+/// Hive-backed storage.
 class CommunityPost {
 
   /// Creates a [CommunityPost].
@@ -46,27 +41,21 @@ class CommunityPost {
       tags: List<String>.from(json['tags'] as List? ?? []),
     );
   /// Unique identifier (UUID v4).
-  @HiveField(0)
   final String id;
 
   /// Display name of the post author.
-  @HiveField(1)
   final String author;
 
   /// The sanitised post body (max [maxContentLength] characters, no HTML).
-  @HiveField(2)
   final String content;
 
   /// UTC timestamp of when the post was created.
-  @HiveField(3)
   final DateTime timestamp;
 
   /// Number of likes received.
-  @HiveField(4)
   final int likes;
 
   /// Freeform tags associated with the post.
-  @HiveField(5)
   final List<String> tags;
 
   /// Maximum allowed length for [content].

@@ -1,13 +1,7 @@
-// ignore_for_file: invalid_annotation_target
-import 'package:hive/hive.dart';
-
-part 'chord.g.dart';
-
 /// Represents a guitar chord with its theory, fingering, and metadata.
 ///
-/// Chord objects are stored persistently via Hive (type id 0) and can be
-/// serialised to/from JSON for asset bundling and network interchange.
-@HiveType(typeId: 0)
+/// Chord objects can be serialised to/from JSON for asset bundling and
+/// persistence in Hive-backed storage.
 class Chord {
 
   /// Creates a [Chord] with all required fields.
@@ -34,39 +28,31 @@ class Chord {
       difficulty: json['difficulty'] as int? ?? 1,
     );
   /// Display name of the chord (e.g. `"C Major"`).
-  @HiveField(0)
   final String name;
 
   /// Root note of the chord (e.g. `"C"`).
-  @HiveField(1)
   final String root;
 
   /// Quality / type of the chord (e.g. `"major"`, `"minor7"`).
-  @HiveField(2)
   final String type;
 
   /// Semitone intervals that make up the chord, relative to the root.
-  @HiveField(3)
   final List<int> intervals;
 
   /// Six fret positions, one per guitar string (low E → high E).
   ///
   /// `-1` means the string is muted; `0` means open.
-  @HiveField(4)
   final List<int> fretPositions;
 
   /// Suggested finger numbers (1–4) for each fret position.
   ///
   /// `0` means no finger (open or muted).
-  @HiveField(5)
   final List<int> fingerPositions;
 
   /// Optional path to a bundled audio preview file.
-  @HiveField(6)
   final String? audioFile;
 
   /// Subjective difficulty rating from 1 (easy) to 5 (expert).
-  @HiveField(7)
   final int difficulty;
 
   /// Serialises this [Chord] to a JSON map.

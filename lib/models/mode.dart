@@ -1,12 +1,6 @@
-// ignore_for_file: invalid_annotation_target
-import 'package:hive/hive.dart';
-
-part 'mode.g.dart';
-
 /// Represents a Greek / church mode with its theoretical properties.
 ///
-/// Stored persistently via Hive (type id 2) and serialisable to/from JSON.
-@HiveType(typeId: 2)
+/// Serializable to/from JSON for assets and Hive-backed storage.
 class Mode {
 
   /// Creates a [Mode] with all required fields.
@@ -29,27 +23,21 @@ class Mode {
       parentScale: json['parentScale'] as String,
     );
   /// Display name of the mode (e.g. `"Dorian"`).
-  @HiveField(0)
   final String name;
 
   /// Modal degree relative to the parent major scale (1–7).
-  @HiveField(1)
   final int degree;
 
   /// Semitone intervals from the tonic.
-  @HiveField(2)
   final List<int> intervals;
 
   /// Emotional / tonal character description (e.g. `"dark, mysterious"`).
-  @HiveField(3)
   final String mood;
 
   /// Well-known songs or pieces that prominently feature this mode.
-  @HiveField(4)
   final List<String> examples;
 
   /// The name of the parent major scale this mode is derived from.
-  @HiveField(5)
   final String parentScale;
 
   /// Serialises this [Mode] to a JSON map.

@@ -1,12 +1,6 @@
-// ignore_for_file: invalid_annotation_target
-import 'package:hive/hive.dart';
-
-part 'song.g.dart';
-
 /// Represents a song in the ChordMaster Free song library.
 ///
-/// Stored persistently via Hive (type id 4) and serialisable to/from JSON.
-@HiveType(typeId: 4)
+/// Serializable to/from JSON for assets and Hive-backed storage.
 class Song {
 
   /// Creates a [Song] with all required fields.
@@ -37,43 +31,33 @@ class Song {
       notes: json['notes'] as String? ?? '',
     );
   /// Unique identifier (UUID).
-  @HiveField(0)
   final String id;
 
   /// Song title.
-  @HiveField(1)
   final String title;
 
   /// Artist or band name.
-  @HiveField(2)
   final String artist;
 
   /// Musical genre (e.g. `"Rock"`, `"Jazz"`).
-  @HiveField(3)
   final String genre;
 
   /// Ordered list of chord names that make up the main progression.
-  @HiveField(4)
   final List<String> chordProgression;
 
   /// Text description of the strumming pattern (e.g. `"D DU UDU"`).
-  @HiveField(5)
   final String strummingPattern;
 
   /// Song tempo in beats per minute.
-  @HiveField(6)
   final int tempo;
 
   /// Time signature as a string (e.g. `"4/4"`, `"3/4"`).
-  @HiveField(7)
   final String timeSignature;
 
   /// Subjective difficulty rating from 1 (beginner) to 5 (expert).
-  @HiveField(8)
   final int difficulty;
 
   /// Freeform practice notes for the learner.
-  @HiveField(9)
   final String notes;
 
   /// Serialises this [Song] to a JSON map.
