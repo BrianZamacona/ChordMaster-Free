@@ -136,7 +136,6 @@ class _ChordDiagramPainter extends CustomPainter {
           nutY + fretSpacing * 0.25,
         ),
         fontSize: size.width * 0.08,
-        color: Colors.black87,
       );
     }
 

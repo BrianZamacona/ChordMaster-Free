@@ -115,7 +115,7 @@ class AppColors {
   static const Color fretDotFill = primary;
 
   /// Open string indicator color.
-  static const Color fretDotOpen = Color(0xFF80FFFFFF);
+  static const Color fretDotOpen = Color(0x80FFFFFF);
 
   /// Muted string indicator color.
   static const Color fretDotMuted = error;

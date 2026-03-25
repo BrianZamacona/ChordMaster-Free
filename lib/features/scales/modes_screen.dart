@@ -224,8 +224,6 @@ class _ModeCard extends StatelessWidget {
             Container(
               decoration: BoxDecoration(
                 gradient: LinearGradient(
-                  begin: Alignment.centerLeft,
-                  end: Alignment.centerRight,
                   colors: [
                     mode.color,
                     mode.color.withAlpha(160),
@@ -306,8 +304,7 @@ class _ModeCard extends StatelessWidget {
                         decoration: BoxDecoration(
                           color: mode.color.withAlpha(25),
                           borderRadius: BorderRadius.circular(8),
-                          border: Border.all(
-                              color: mode.color.withAlpha(80)),
+                          border: Border.all(color: mode.color.withAlpha(80)),
                         ),
                         child: Text(
                           n,
@@ -361,8 +358,7 @@ class _ModeCard extends StatelessWidget {
                         padding: const EdgeInsets.only(bottom: 4),
                         child: Row(
                           children: [
-                            Icon(Icons.music_note,
-                                size: 12, color: mode.color),
+                            Icon(Icons.music_note, size: 12, color: mode.color),
                             const SizedBox(width: 6),
                             Expanded(
                               child: Text(

@@ -72,10 +72,10 @@ class _ScalesScreenState extends ConsumerState<ScalesScreen>
           Expanded(
             child: TabBarView(
               controller: _tabController,
-              children: [
-                const _ScalesTabContent(category: ScaleCategory.scales),
-                const ModesScreen(),
-                const _ScalesTabContent(category: ScaleCategory.exotic),
+              children: const [
+                _ScalesTabContent(category: ScaleCategory.scales),
+                ModesScreen(),
+                _ScalesTabContent(category: ScaleCategory.exotic),
               ],
             ),
           ),

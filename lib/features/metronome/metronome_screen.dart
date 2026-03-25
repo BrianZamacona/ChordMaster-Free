@@ -199,7 +199,7 @@ class _BeatIndicator extends StatelessWidget {
               shape: BoxShape.circle,
               color: isActive
                   ? AppColors.metronome
-                  : AppColors.metronome.withOpacity(0.2),
+                  : AppColors.metronome.withValues(alpha: 0.2),
               border: Border.all(
                 color: AppColors.metronome,
                 width: isAccent ? 3 : 1.5,

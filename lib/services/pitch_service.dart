@@ -167,7 +167,7 @@ class PitchService {
   Future<void> dispose() async {
     await stopListening();
     await _controller.close();
-    _recorder.dispose();
+    await _recorder.dispose();
   }
 
   // ── Simulation / DSP pipeline ─────────────────────────────────────────────

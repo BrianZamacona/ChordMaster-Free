@@ -2,7 +2,7 @@
 ///
 /// All domain-level errors are represented as [Failure] subclasses rather
 /// than raw exceptions, making error handling exhaustive and explicit.
-sealed class Failure {
+sealed class Failure implements Exception {
 
   /// Creates a [Failure] with the given [message] and optional [stackTrace].
   const Failure({required this.message, this.stackTrace});

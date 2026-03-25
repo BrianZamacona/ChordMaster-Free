@@ -58,7 +58,7 @@ Widget scaleIn(
 ///
 /// Pair with [ScaleTransition] to create a heartbeat-style pulse effect.
 /// The [controller] must be a repeating [AnimationController].
-Animation<double> pulseAnimation(AnimationController controller) => Tween<double>(begin: 1.0, end: 1.08).animate(
+Animation<double> pulseAnimation(AnimationController controller) => Tween<double>(begin: 1, end: 1.08).animate(
     CurvedAnimation(parent: controller, curve: Curves.easeInOut),
   );
 
@@ -100,7 +100,7 @@ List<Widget> confettiParticles(AnimationController controller) {
           top: dy,
           child: Opacity(
             opacity: opacity,
-            child: child!,
+            child: child,
           ),
         );
       },

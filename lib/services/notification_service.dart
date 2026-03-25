@@ -77,7 +77,6 @@ class NotificationService {
           _channelId,
           _channelName,
           description: _channelDesc,
-          importance: Importance.defaultImportance,
         );
         await _notifications
             .resolvePlatformSpecificImplementation<
@@ -156,15 +155,11 @@ class NotificationService {
         _channelId,
         _channelName,
         channelDescription: _channelDesc,
-        importance: Importance.defaultImportance,
-        priority: Priority.defaultPriority,
         icon: '@mipmap/ic_launcher',
       );
 
       const iosDetails = DarwinNotificationDetails(
-        presentAlert: true,
         presentBadge: false,
-        presentSound: true,
       );
 
       const notificationDetails = NotificationDetails(

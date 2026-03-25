@@ -14,7 +14,6 @@ class ChordMasterApp extends ConsumerWidget {
       title: 'ChordMaster Free',
       theme: lightTheme,
       darkTheme: darkTheme,
-      themeMode: ThemeMode.system,
       routerConfig: appRouter,
       debugShowCheckedModeBanner: false,
     );
