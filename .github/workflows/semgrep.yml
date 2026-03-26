@@ -15,7 +15,7 @@ jobs:
     runs-on: ubuntu-latest
     timeout-minutes: 20
     steps:
-      - uses: actions/checkout@v5
+      - uses: actions/checkout@v6
       - uses: semgrep/semgrep-action@v1 # Última versión estable (soporta .semgrepignore)
         with:
           config: >-
