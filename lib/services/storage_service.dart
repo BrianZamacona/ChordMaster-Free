@@ -23,6 +23,7 @@ final storageServiceProvider =
 ///
 /// ### Initialisation
 /// Call [openBoxes] once during app start-up (before using any other method):
+/// +
 /// ```dart
 /// await StorageService().openBoxes();
 /// ```
@@ -42,7 +43,6 @@ class StorageService {
   static const String _encKeyName = 'cmf_hive_encryption_key_v1';
 
   static const FlutterSecureStorage _secureStorage = FlutterSecureStorage(
-    aOptions: AndroidOptions(encryptedSharedPreferences: true),
     iOptions: IOSOptions(
       accessibility: KeychainAccessibility.first_unlock_this_device,
     ),
@@ -50,7 +50,7 @@ class StorageService {
 
   // ── Box Lifecycle ─────────────────────────────────────────────────────────
 
-  /// Opens all four Hive boxes.
+  ///Opens all four Hive boxes.
   ///
   /// Safe to call multiple times; Hive silently returns already-open boxes.
   /// Throws [StorageFailure] if any box fails to open.
