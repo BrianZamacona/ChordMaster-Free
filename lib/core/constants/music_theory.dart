@@ -1,9 +1,4 @@
-
-/// Music theory constants and helper functions for ChordMaster Free.
-///
-/// Provides chromatic notes, chord/scale/mode formulas, tuning presets,
-/// a precomputed fretboard map, and transposition utilities.
-library music_theory;
+// Music theory constants and helpers for ChordMaster Free.
 
 // ── Chromatic Notes ────────────────────────────────────────────────────────
 

@@ -3,6 +3,7 @@ import 'dart:convert';
 import 'package:flutter/foundation.dart';
 import 'package:flutter/services.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
+import 'package:riverpod/riverpod.dart';
 
 import '../../models/scale.dart';
 
@@ -93,14 +94,14 @@ class ScalesState {
 
 /// Provider for [ScalesViewModel].
 final scalesViewModelProvider =
-    StateNotifierProvider<ScalesViewModel, ScalesState>(
-  (ref) => ScalesViewModel(),
-);
+    NotifierProvider<ScalesViewModel, ScalesState>(ScalesViewModel.new);
 
 /// Manages scales screen state: loading, root/category filtering, selection.
-class ScalesViewModel extends StateNotifier<ScalesState> {
-  ScalesViewModel() : super(const ScalesState()) {
+class ScalesViewModel extends Notifier<ScalesState> {
+  @override
+  ScalesState build() {
     _load();
+    return const ScalesState();
   }
 
   Future<void> _load() async {
