@@ -2,6 +2,7 @@ import 'dart:async';
 
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
+import 'package:riverpod/riverpod.dart';
 
 import '../../services/pitch_service.dart';
 
@@ -43,8 +44,15 @@ class TunerState {
     );
 }
 
-class TunerViewModel extends StateNotifier<TunerState> {
-  TunerViewModel() : super(const TunerState());
+class TunerViewModel extends Notifier<TunerState> {
+  @override
+  TunerState build() {
+    ref.onDispose(() {
+      _debounce?.cancel();
+      _sub?.cancel();
+    });
+    return const TunerState();
+  }
 
   final PitchService _pitchService = PitchService();
   StreamSubscription<PitchResult>? _sub;
@@ -95,15 +103,8 @@ class TunerViewModel extends StateNotifier<TunerState> {
     state = state.copyWith(referenceHz: hz);
   }
 
-  @override
-  void dispose() {
-    _debounce?.cancel();
-    _sub?.cancel();
-    super.dispose();
-  }
+  
 }
 
 final tunerViewModelProvider =
-    StateNotifierProvider<TunerViewModel, TunerState>(
-  (ref) => TunerViewModel(),
-);
+    NotifierProvider<TunerViewModel, TunerState>(TunerViewModel.new);

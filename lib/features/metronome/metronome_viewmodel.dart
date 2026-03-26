@@ -1,5 +1,6 @@
 import 'dart:async';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
+import 'package:riverpod/riverpod.dart';
 import '../../services/audio_service.dart';
 
 /// State for [MetronomeViewModel].
@@ -51,8 +52,14 @@ class MetronomeState {
 }
 
 /// ViewModel for the Metronome feature.
-class MetronomeViewModel extends StateNotifier<MetronomeState> {
-  MetronomeViewModel() : super(const MetronomeState());
+class MetronomeViewModel extends Notifier<MetronomeState> {
+  @override
+  MetronomeState build() {
+    ref.onDispose(() {
+      _timer?.cancel();
+    });
+    return const MetronomeState();
+  }
 
   Timer? _timer;
   final List<DateTime> _taps = [];
@@ -152,15 +159,9 @@ class MetronomeViewModel extends StateNotifier<MetronomeState> {
     }
   }
 
-  @override
-  void dispose() {
-    _timer?.cancel();
-    super.dispose();
-  }
+  
 }
 
 /// Riverpod provider for [MetronomeViewModel].
 final metronomeViewModelProvider =
-    StateNotifierProvider<MetronomeViewModel, MetronomeState>(
-  (ref) => MetronomeViewModel(),
-);
+    NotifierProvider<MetronomeViewModel, MetronomeState>(MetronomeViewModel.new);

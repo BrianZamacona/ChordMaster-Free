@@ -1,5 +1,6 @@
 import 'package:flutter/foundation.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
+import 'package:riverpod/riverpod.dart';
 
 import '../../services/storage_service.dart';
 
@@ -45,17 +46,15 @@ class HomeState {
 
 /// Provider for [HomeViewModel].
 final homeViewModelProvider =
-    StateNotifierProvider<HomeViewModel, HomeState>(
-  (ref) => HomeViewModel(ref.read(storageServiceProvider)),
-);
+    NotifierProvider<HomeViewModel, HomeState>(HomeViewModel.new);
 
 /// Manages home screen state: streak, last module, daily challenge, achievements.
-class HomeViewModel extends StateNotifier<HomeState> {
-  HomeViewModel(this._storage) : super(const HomeState()) {
+class HomeViewModel extends Notifier<HomeState> {
+  @override
+  HomeState build() {
     loadData();
+    return const HomeState();
   }
-
-  final StorageService _storage;
 
   static const _keyStreak = 'streak';
   static const _keyLastModule = 'lastModule';
@@ -99,13 +98,14 @@ class HomeViewModel extends StateNotifier<HomeState> {
   /// Loads persisted data and calculates the daily challenge.
   Future<void> loadData() async {
     try {
-      final streak = await _storage.get<int>(
+      final storage = ref.read(storageServiceProvider);
+      final streak = await storage.get<int>(
             StorageService.userProgressBox, _keyStreak) ??
           0;
-      final lastModule = await _storage.get<String>(
+      final lastModule = await storage.get<String>(
             StorageService.userProgressBox, _keyLastModule) ??
           '';
-      final raw = await _storage.get<List>(
+      final raw = await storage.get<List>(
             StorageService.userProgressBox, _keyRecentAchievements) ??
           [];
       final recentAchievements = raw.cast<String>();
@@ -135,8 +135,9 @@ class HomeViewModel extends StateNotifier<HomeState> {
   /// Updates [lastModule] in state and persists the value.
   Future<void> updateLastModule(String route) async {
     try {
+      final storage = ref.read(storageServiceProvider);
       state = state.copyWith(lastModule: route);
-      await _storage.save(
+      await storage.save(
           StorageService.userProgressBox, _keyLastModule, route);
     } catch (e, st) {
       debugPrint('HomeViewModel.updateLastModule error: $e\n$st');
@@ -149,7 +150,8 @@ class HomeViewModel extends StateNotifier<HomeState> {
       final today = DateTime.now();
       final todayStr =
           '${today.year}-${today.month.toString().padLeft(2, '0')}-${today.day.toString().padLeft(2, '0')}';
-      final lastDate = await _storage.get<String>(
+        final storage = ref.read(storageServiceProvider);
+        final lastDate = await storage.get<String>(
           StorageService.userProgressBox, _keyLastPracticeDate);
       if (lastDate == todayStr) return currentStreak;
 
@@ -160,9 +162,9 @@ class HomeViewModel extends StateNotifier<HomeState> {
       final newStreak =
           (lastDate == yesterdayStr) ? currentStreak + 1 : 1;
 
-      await _storage.save(
+        await storage.save(
           StorageService.userProgressBox, _keyLastPracticeDate, todayStr);
-      await _storage.save(
+        await storage.save(
           StorageService.userProgressBox, _keyStreak, newStreak);
       return newStreak;
     } catch (e, st) {

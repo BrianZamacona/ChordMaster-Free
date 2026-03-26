@@ -32,7 +32,7 @@ class NotificationService {
         android: androidSettings,
         iOS: iosSettings,
       );
-      await _notifications.initialize(initSettings);
+      await _notifications.initialize(settings: initSettings);
       if (!kIsWeb && Platform.isAndroid) {
         const channel = AndroidNotificationChannel(
           _channelId,
@@ -87,11 +87,11 @@ class NotificationService {
       );
       final repeatInterval = _durationToRepeatInterval(interval);
       await _notifications.periodicallyShow(
-        _healthReminderId,
-        'ChordMaster Reminder',
-        'Time for a break! Stretch your hands 🎸',
-        repeatInterval,
-        notificationDetails,
+        id: _healthReminderId,
+        title: 'ChordMaster Reminder',
+        body: 'Time for a break! Stretch your hands 🎸',
+        repeatInterval: repeatInterval,
+        notificationDetails: notificationDetails,
         androidScheduleMode: AndroidScheduleMode.inexactAllowWhileIdle,
       );
     } catch (e, st) {
@@ -102,7 +102,7 @@ class NotificationService {
   /// Cancela todos los recordatorios de salud programados.
   Future<void> cancelAllReminders() async {
     try {
-      await _notifications.cancel(_healthReminderId);
+      await _notifications.cancel(id: _healthReminderId);
     } catch (e, st) {
       debugPrint('NotificationService.cancelAllReminders error: $e\n$st');
     }

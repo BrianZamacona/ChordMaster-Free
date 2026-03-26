@@ -3,6 +3,7 @@ import 'dart:convert';
 import 'package:flutter/foundation.dart';
 import 'package:flutter/services.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
+import 'package:riverpod/riverpod.dart';
 
 import '../../models/chord.dart';
 
@@ -65,17 +66,17 @@ class ChordState {
 
 /// Provider for [ChordViewModel].
 final chordViewModelProvider =
-    StateNotifierProvider<ChordViewModel, ChordState>(
-  (ref) => ChordViewModel(),
-);
+    NotifierProvider<ChordViewModel, ChordState>(ChordViewModel.new);
 
 /// Manages chord library state: loading, filtering by root/type, and search.
 ///
 /// Uses a precomputed index [Map<String, List<Chord>>] keyed by
 /// `"$root|$type"` for O(1) lookup before applying text-query filtering.
-class ChordViewModel extends StateNotifier<ChordState> {
-  ChordViewModel() : super(const ChordState()) {
+class ChordViewModel extends Notifier<ChordState> {
+  @override
+  ChordState build() {
     _load();
+    return const ChordState();
   }
 
   /// Index: "root|type" → list of matching chords for O(1) filtering.
