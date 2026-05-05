@@ -235,7 +235,7 @@ class _AppEndDrawer extends ConsumerWidget {
               value: isDark,
               onChanged: (value) {
                 ref.read(settingsViewModelProvider.notifier).setThemeMode(
-                      value ? ThemeMode.dark : ThemeMode.light,
+                      value ? ThemeMode.dark : ThemeMode.system,
                     );
               },
             ),
