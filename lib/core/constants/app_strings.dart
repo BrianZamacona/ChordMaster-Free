@@ -125,6 +125,9 @@ class AppStrings {
   /// Open app settings action.
   static const String openSettings = 'Open Settings';
 
+  /// Dark mode toggle label.
+  static const String darkMode = 'Dark Mode';
+
   /// Support the developer action (shown in donation prompts).
   static const String supportApp = 'Support ChordMaster ♥';
 

@@ -1,6 +1,8 @@
 import 'package:flutter/material.dart';
+import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:go_router/go_router.dart';
 
+import '../../features/settings/settings_viewmodel.dart';
 import '../constants/app_strings.dart';
 
 /// The root scaffold for all shell-route screens.
@@ -118,7 +120,7 @@ class _AppScaffoldState extends State<AppScaffold> {
 }
 
 /// The end drawer that exposes the remaining feature modules.
-class _AppEndDrawer extends StatelessWidget {
+class _AppEndDrawer extends ConsumerWidget {
   const _AppEndDrawer({required this.scaffoldKey});
 
   final GlobalKey<ScaffoldState> scaffoldKey;
@@ -177,7 +179,14 @@ class _AppEndDrawer extends StatelessWidget {
   ];
 
   @override
-  Widget build(BuildContext context) => Drawer(
+  Widget build(BuildContext context, WidgetRef ref) {
+    final themeMode =
+        ref.watch(settingsViewModelProvider.select((s) => s.themeMode));
+    final isDark = themeMode == ThemeMode.dark ||
+        (themeMode == ThemeMode.system &&
+            MediaQuery.platformBrightnessOf(context) == Brightness.dark);
+
+    return Drawer(
       child: SafeArea(
         child: ListView(
           padding: EdgeInsets.zero,
@@ -219,10 +228,22 @@ class _AppEndDrawer extends StatelessWidget {
                 },
               ),
             ),
+            const Divider(),
+            SwitchListTile(
+              secondary: const Icon(Icons.dark_mode_outlined),
+              title: const Text(AppStrings.darkMode),
+              value: isDark,
+              onChanged: (value) {
+                ref.read(settingsViewModelProvider.notifier).setThemeMode(
+                      value ? ThemeMode.dark : ThemeMode.light,
+                    );
+              },
+            ),
           ],
         ),
       ),
     );
+  }
 }
 
 /// Data holder for a single end-drawer list tile.
