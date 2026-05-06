@@ -188,7 +188,7 @@ class RhythmGameScreen extends ConsumerWidget {
                 ),
               const SizedBox(height: 8),
               Text(
-                'Last ${state.tapResults.take(5).length} taps:',
+                'Last ${state.tapResults.take(10).length} taps:',
                 style: theme.textTheme.labelSmall,
               ),
               const SizedBox(height: 4),

@@ -100,7 +100,7 @@ class _SongDetailScreenState extends ConsumerState<SongDetailScreen> {
             // Info row
             Row(
               children: [
-                _InfoChip(label: '${song.tempo} BPM', icon: Icons.speed),
+                _InfoChip(label: '${song.tempo} BPM', icon: Icons.timer),
                 const SizedBox(width: 8),
                 _InfoChip(
                     label: song.timeSignature,
