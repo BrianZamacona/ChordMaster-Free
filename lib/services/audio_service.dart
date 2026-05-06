@@ -69,22 +69,25 @@ class AudioService {
   ///
   /// A separate [AudioPlayer] instance is created for each note so they can
   /// overlap naturally.  Players are disposed once playback completes.
+  /// At most 6 simultaneous players are created to prevent resource exhaustion.
   Future<void> playChord(List<String> noteFiles) async {
     if (noteFiles.isEmpty) return;
     try {
+      // OWASP A03 / resource cap: limit to 6 simultaneous players.
+      final limited = noteFiles.take(6).toList();
       final players = <AudioPlayer>[];
-      for (int i = 0; i < noteFiles.length; i++) {
+      for (int i = 0; i < limited.length; i++) {
         if (i > 0) {
           await Future<void>.delayed(const Duration(milliseconds: 30));
         }
         try {
           final p = AudioPlayer();
           players.add(p);
-          await p.setAsset(noteFiles[i]);
+          await p.setAsset(limited[i]);
           unawaited(p.play());
         } catch (e, st) {
           debugPrint(
-            'AudioService.playChord error for note ${noteFiles[i]}: $e\n$st',
+            'AudioService.playChord error for note ${limited[i]}: $e\n$st',
           );
         }
       }
