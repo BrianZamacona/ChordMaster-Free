@@ -79,10 +79,6 @@ class _AppScaffoldState extends State<AppScaffold> {
   @override
   Widget build(BuildContext context) => Scaffold(
       key: _scaffoldKey,
-      appBar: AppBar(
-        title: Text(widget.title ?? AppStrings.appName),
-        actions: widget.actions,
-      ),
       body: widget.body,
       floatingActionButton: widget.floatingActionButton,
       endDrawer: _AppEndDrawer(scaffoldKey: _scaffoldKey),
