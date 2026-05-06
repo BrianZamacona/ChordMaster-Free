@@ -3,7 +3,6 @@ import 'dart:convert';
 import 'package:flutter/foundation.dart';
 import 'package:flutter/services.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
-import 'package:riverpod/riverpod.dart';
 
 import '../../models/chord.dart';
 
@@ -90,7 +89,10 @@ class ChordViewModel extends Notifier<ChordState> {
       final chords =
           list.map((e) => Chord.fromJson(e as Map<String, dynamic>)).toList();
 
-      // Build precomputed index
+      // Rebuild the precomputed index from scratch so a Notifier rebuild
+      // (e.g. hot-reload or ProviderScope override in tests) never produces
+      // duplicate entries from a previous load cycle.
+      _index.clear();
       for (final chord in chords) {
         final key = '${chord.root}|${chord.type}';
         _index.putIfAbsent(key, () => []).add(chord);

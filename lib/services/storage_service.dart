@@ -9,8 +9,14 @@ import 'package:hive_flutter/hive_flutter.dart';
 import '../core/errors/failures.dart';
 
 /// Riverpod provider that exposes the [StorageService] singleton.
-final storageServiceProvider =
-    Provider<StorageService>((ref) => StorageService());
+///
+/// Marked [keepAlive] so the instance — and the open Hive boxes it wraps — is
+/// never automatically discarded while the app is running, regardless of
+/// whether any widget is currently watching it.
+final storageServiceProvider = Provider<StorageService>((ref) {
+  ref.keepAlive();
+  return StorageService();
+});
 
 /// Singleton service for all persistent key-value storage in ChordMaster Free.
 ///
@@ -187,9 +193,12 @@ class StorageService {
     }
 
     final key = List<int>.generate(32, (_) => Random.secure().nextInt(256));
+    // Build the cipher immediately so `key` does not need to outlive this
+    // scope; the raw bytes are no longer reachable once the cipher is created.
+    final cipher = HiveAesCipher(key);
     await _secureStorage.write(key: _encKeyName, value: base64Encode(key));
     return _EncryptionContext(
-      cipher: HiveAesCipher(key),
+      cipher: cipher,
       keyWasCreated: true,
     );
   }
