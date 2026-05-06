@@ -1,6 +1,5 @@
 import 'dart:async';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
-import 'package:riverpod/riverpod.dart';
 import '../../services/audio_service.dart';
 
 /// State for [MetronomeViewModel].
