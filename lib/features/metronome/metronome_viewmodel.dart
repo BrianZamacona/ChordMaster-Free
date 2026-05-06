@@ -88,9 +88,17 @@ class MetronomeViewModel extends Notifier<MetronomeState> {
   DateTime? _nextTick;
 
   void _scheduleNext() {
-    _nextTick ??= DateTime.now();
+    final now = DateTime.now();
+    _nextTick ??= now;
     _nextTick = _nextTick!.add(Duration(milliseconds: _tickInterval));
-    final delay = _nextTick!.difference(DateTime.now());
+    var delay = _nextTick!.difference(now);
+    // Safety valve: if the OS scheduler has starved us for more than one full
+    // tick interval (e.g. Android Doze, background throttling), reset the
+    // anchor so we never spin through a backlog of zero-delay timers.
+    if (delay < Duration(milliseconds: -_tickInterval)) {
+      _nextTick = now;
+      delay = Duration.zero;
+    }
     _timer = Timer(delay.isNegative ? Duration.zero : delay, _onTick);
   }
 
