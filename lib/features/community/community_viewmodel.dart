@@ -67,7 +67,7 @@ class CommunityViewModel extends Notifier<CommunityState> {
           .map((s) {
             try {
               return CommunityPost.fromJson(
-                  Map<String, dynamic>.from(jsonDecode(s) as Map));
+                  Map<String, dynamic>.from(jsonDecode(s) as Map<dynamic, dynamic>));
             } catch (_) {
               return null;
             }

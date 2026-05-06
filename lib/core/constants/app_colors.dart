@@ -23,6 +23,9 @@ class AppColors {
   /// Surface color for cards and bottom sheets.
   static const Color surface = Color(0xFF1A1A1A);
 
+  /// Darker surface used for nav bar and drawer backgrounds.
+  static const Color surfaceDark = Color(0xFF111111);
+
   /// Divider and outline color.
   static const Color outline = Color(0xFF2A2A2A);
 

@@ -97,11 +97,11 @@ final ThemeData darkTheme = ThemeData(
     scrolledUnderElevation: 0,
     surfaceTintColor: Colors.transparent,
     shape: Border(
-      bottom: BorderSide(color: Color(0xFFC0392B), width: 1),
+      bottom: BorderSide(color: AppColors.primary, width: 1),
     ),
   ),
   navigationBarTheme: NavigationBarThemeData(
-    backgroundColor: const Color(0xFF111111),
+    backgroundColor: AppColors.surfaceDark,
     indicatorColor: AppColors.primary.withAlpha(60),
     iconTheme: const WidgetStatePropertyAll(
       IconThemeData(color: AppColors.textSecondary),
@@ -122,7 +122,7 @@ final ThemeData darkTheme = ThemeData(
   ),
   bottomNavigationBarTheme: const BottomNavigationBarThemeData(
     type: BottomNavigationBarType.fixed,
-    backgroundColor: Color(0xFF111111),
+    backgroundColor: AppColors.surfaceDark,
   ),
   dividerTheme: const DividerThemeData(color: AppColors.outline),
 );

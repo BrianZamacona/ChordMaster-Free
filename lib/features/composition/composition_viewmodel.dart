@@ -111,6 +111,9 @@ class CompositionViewModel extends Notifier<CompositionState> {
       await storage.save(
           StorageService.userProgressBox, _keySavedCount, newCount);
       await AchievementService.instance.unlock('composer');
+      // 'composer' is defined as: "Generate 5 chord progressions."
+      // Unlock when the user has saved at least 3 compositions.
+    
     } catch (e, st) {
       debugPrint('CompositionViewModel.saveComposition error: $e\n$st');
     }

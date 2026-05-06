@@ -3,6 +3,7 @@ import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:go_router/go_router.dart';
 
 import '../../features/settings/settings_viewmodel.dart';
+import '../constants/app_colors.dart';
 import '../constants/app_strings.dart';
 
 /// The root scaffold for all shell-route screens.
@@ -183,7 +184,7 @@ class _AppEndDrawer extends ConsumerWidget {
             MediaQuery.platformBrightnessOf(context) == Brightness.dark);
 
     return Drawer(
-      backgroundColor: const Color(0xFF111111),
+      backgroundColor: AppColors.surfaceDark,
       child: SafeArea(
         child: ListView(
           padding: EdgeInsets.zero,

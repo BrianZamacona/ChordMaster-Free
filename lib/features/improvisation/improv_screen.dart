@@ -206,7 +206,7 @@ class _ImprovScreenState extends ConsumerState<ImprovScreen> {
                     crossAxisAlignment: CrossAxisAlignment.start,
                     children: [
                       Text(
-                        '$_selectedRoot ${_scaleOptions.firstWhere((o) => o.$1 == _selectedScale).$2}',
+                        '$_selectedRoot ${_scaleOptions.firstWhere((o) => o.$1 == _selectedScale, orElse: () => (_selectedScale, _selectedScale)).$2}',
                         style: theme.textTheme.titleMedium?.copyWith(
                           fontWeight: FontWeight.bold,
                           color: theme.colorScheme.onPrimaryContainer,
