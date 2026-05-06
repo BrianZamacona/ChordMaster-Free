@@ -129,7 +129,6 @@ class EarTrainingViewModel extends Notifier<EarTrainingState> {
       correctAnswers: correctAnswers,
       streak: streak,
       totalExercisesDone: totalExercisesDone,
-      lastAnswerCorrect: null,
       isLoading: false,
     );
   }

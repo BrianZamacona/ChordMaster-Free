@@ -73,9 +73,9 @@ class EarTrainingScreen extends ConsumerWidget {
                     vertical: 32, horizontal: 16),
                 child: Column(
                   children: [
-                    Text(
+                    const Text(
                       '🎵',
-                      style: const TextStyle(fontSize: 64),
+                      style: TextStyle(fontSize: 64),
                     ),
                     const SizedBox(height: 12),
                     Text(
@@ -198,7 +198,7 @@ class EarTrainingScreen extends ConsumerWidget {
               FilledButton.icon(
                 onPressed: vm.nextQuestion,
                 icon: const Icon(Icons.arrow_forward),
-                label: Text(AppStrings.next),
+                label: const Text(AppStrings.next),
               ),
             ],
           ],

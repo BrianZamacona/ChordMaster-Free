@@ -40,7 +40,7 @@ class _CommunityScreenState extends ConsumerState<CommunityScreen> {
       author: _authorController.text,
       content: _contentController.text,
     );
-    if (!mounted) return;
+    if (!context.mounted) return;
     if (error != null) {
       ScaffoldMessenger.of(context).showSnackBar(
         SnackBar(content: Text(error), backgroundColor: Colors.red),

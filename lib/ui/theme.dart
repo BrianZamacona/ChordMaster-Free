@@ -82,10 +82,10 @@ final ThemeData darkTheme = ThemeData(
   ),
   scaffoldBackgroundColor: AppColors.background,
   textTheme: _buildTextTheme(ThemeData.dark().textTheme),
-  cardTheme: CardThemeData(
+  cardTheme: const CardThemeData(
     elevation: 2,
     color: AppColors.surface,
-    shape: const RoundedRectangleBorder(
+    shape: RoundedRectangleBorder(
       borderRadius: BorderRadius.all(Radius.circular(12)),
       side: BorderSide(color: AppColors.outline, width: 0.5),
     ),
@@ -97,7 +97,7 @@ final ThemeData darkTheme = ThemeData(
     scrolledUnderElevation: 0,
     surfaceTintColor: Colors.transparent,
     shape: Border(
-      bottom: BorderSide(color: AppColors.primary, width: 1),
+      bottom: BorderSide(color: AppColors.primary),
     ),
   ),
   navigationBarTheme: NavigationBarThemeData(

@@ -241,7 +241,7 @@ class _AppEndDrawer extends ConsumerWidget {
               title: const Text(AppStrings.darkMode,
                   style: TextStyle(color: Color(0xFFF0F0F0))),
               value: isDark,
-              activeColor: const Color(0xFFC0392B),
+              activeThumbColor: const Color(0xFFC0392B),
               onChanged: (value) {
                 ref.read(settingsViewModelProvider.notifier).setThemeMode(
                       value ? ThemeMode.dark : ThemeMode.system,

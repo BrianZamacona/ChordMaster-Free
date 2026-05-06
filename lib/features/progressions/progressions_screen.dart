@@ -50,7 +50,7 @@ class ProgressionsScreen extends ConsumerWidget {
                   child: ChoiceChip(
                     label: const Center(child: Text('Major')),
                     selected: state.isMajor,
-                    onSelected: (_) => vm.setMajor(true),
+                    onSelected: (_) => vm.setMajor(isMajor: true),
                   ),
                 ),
                 const SizedBox(width: 8),
@@ -58,7 +58,7 @@ class ProgressionsScreen extends ConsumerWidget {
                   child: ChoiceChip(
                     label: const Center(child: Text('Minor')),
                     selected: !state.isMajor,
-                    onSelected: (_) => vm.setMajor(false),
+                    onSelected: (_) => vm.setMajor(isMajor: false),
                   ),
                 ),
               ],
@@ -67,7 +67,7 @@ class ProgressionsScreen extends ConsumerWidget {
             FilledButton.icon(
               onPressed: vm.generate,
               icon: const Icon(Icons.auto_awesome),
-              label: Text(AppStrings.generate),
+              label: const Text(AppStrings.generate),
             ),
             if (state.progressionsGenerated >= 5)
               Padding(

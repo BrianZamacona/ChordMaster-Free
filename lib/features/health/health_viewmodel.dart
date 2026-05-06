@@ -98,7 +98,7 @@ class HealthViewModel extends Notifier<HealthState> {
   }
 
   /// Toggles break reminders on/off.
-  Future<void> toggleReminders(bool enabled) async {
+  Future<void> toggleReminders({required bool enabled}) async {
     try {
       final storage = ref.read(storageServiceProvider);
       state = state.copyWith(remindersEnabled: enabled);

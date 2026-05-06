@@ -362,7 +362,7 @@ class _ModuleCard extends StatelessWidget {
                 child: Text(
                   module.label,
                   textAlign: TextAlign.center,
-                  style: TextStyle(
+                  style: const TextStyle(
                     color: AppColors.textPrimary,
                     fontWeight: FontWeight.bold,
                     fontSize: 12,

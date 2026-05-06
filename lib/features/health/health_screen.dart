@@ -1,5 +1,3 @@
-import 'dart:ui';
-
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 
@@ -118,7 +116,7 @@ class HealthScreen extends ConsumerWidget {
                       title: const Text('Enable reminders'),
                       subtitle: const Text('Get notified to rest your hands'),
                       value: state.remindersEnabled,
-                      onChanged: vm.toggleReminders,
+                      onChanged: (v) => vm.toggleReminders(enabled: v),
                     ),
                     if (state.remindersEnabled) ...[
                       Text('Remind every:',

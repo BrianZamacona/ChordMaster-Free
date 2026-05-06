@@ -1,7 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 
-import '../../models/song.dart';
 import 'songs_viewmodel.dart';
 
 /// Detail screen for a single song.

@@ -176,7 +176,7 @@ class _ImprovScreenState extends ConsumerState<ImprovScreen> {
             Text('Scale / Mode', style: theme.textTheme.titleSmall),
             const SizedBox(height: 8),
             DropdownButtonFormField<String>(
-              value: _selectedScale,
+              initialValue: _selectedScale,
               decoration: InputDecoration(
                 border: OutlineInputBorder(
                     borderRadius: BorderRadius.circular(12)),

@@ -16,7 +16,6 @@ const List<Song> _catalogue = [
     strummingPattern: 'D DU UDU',
     tempo: 72,
     timeSignature: '4/4',
-    difficulty: 1,
     notes:
         'Great beginner song. Focus on smooth chord transitions between G and D.',
   ),
@@ -66,7 +65,6 @@ const List<Song> _catalogue = [
     strummingPattern: 'D DU DU',
     tempo: 75,
     timeSignature: '4/4',
-    difficulty: 1,
     notes: 'Classic I-V-vi-IV progression in C major. Perfect for beginners.',
   ),
   Song(
@@ -116,7 +114,6 @@ const List<Song> _catalogue = [
     strummingPattern: 'D DU DU',
     tempo: 82,
     timeSignature: '4/4',
-    difficulty: 1,
     notes:
         'Capo 2nd fret to play in the original key. Simple, friendly chord shapes.',
   ),

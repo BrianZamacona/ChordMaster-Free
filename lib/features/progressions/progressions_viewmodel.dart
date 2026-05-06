@@ -72,7 +72,7 @@ class ProgressionsViewModel extends Notifier<ProgressionsState> {
   }
 
   void setKey(String key) => state = state.copyWith(selectedKey: key);
-  void setMajor(bool isMajor) => state = state.copyWith(isMajor: isMajor);
+  void setMajor({required bool isMajor}) => state = state.copyWith(isMajor: isMajor);
 
   /// Generates common progressions for the selected key/mode.
   Future<void> generate() async {
