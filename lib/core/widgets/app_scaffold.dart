@@ -3,6 +3,7 @@ import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:go_router/go_router.dart';
 
 import '../../features/settings/settings_viewmodel.dart';
+import '../constants/app_colors.dart';
 import '../constants/app_strings.dart';
 
 /// The root scaffold for all shell-route screens.
@@ -79,10 +80,6 @@ class _AppScaffoldState extends State<AppScaffold> {
   @override
   Widget build(BuildContext context) => Scaffold(
       key: _scaffoldKey,
-      appBar: AppBar(
-        title: Text(widget.title ?? AppStrings.appName),
-        actions: widget.actions,
-      ),
       body: widget.body,
       floatingActionButton: widget.floatingActionButton,
       endDrawer: _AppEndDrawer(scaffoldKey: _scaffoldKey),
@@ -187,52 +184,64 @@ class _AppEndDrawer extends ConsumerWidget {
             MediaQuery.platformBrightnessOf(context) == Brightness.dark);
 
     return Drawer(
+      backgroundColor: AppColors.surfaceDark,
       child: SafeArea(
         child: ListView(
           padding: EdgeInsets.zero,
           children: [
             DrawerHeader(
-              decoration: BoxDecoration(
-                color: Theme.of(context).colorScheme.primaryContainer,
+              padding: EdgeInsets.zero,
+              decoration: const BoxDecoration(
+                gradient: LinearGradient(
+                  begin: Alignment.topLeft,
+                  end: Alignment.bottomRight,
+                  colors: [Color(0xFF8B0000), Color(0xFF0D0D0D)],
+                ),
               ),
-              child: Column(
-                crossAxisAlignment: CrossAxisAlignment.start,
-                mainAxisAlignment: MainAxisAlignment.end,
-                children: [
-                  Text(
-                    AppStrings.appName,
-                    style: Theme.of(context).textTheme.titleLarge?.copyWith(
-                      color:
-                          Theme.of(context).colorScheme.onPrimaryContainer,
-                      fontWeight: FontWeight.bold,
+              child: Padding(
+                padding: const EdgeInsets.fromLTRB(16, 0, 16, 16),
+                child: Column(
+                  crossAxisAlignment: CrossAxisAlignment.start,
+                  mainAxisAlignment: MainAxisAlignment.end,
+                  children: [
+                    Text(
+                      AppStrings.appName,
+                      style: Theme.of(context).textTheme.titleLarge?.copyWith(
+                        color: Colors.white,
+                        fontWeight: FontWeight.bold,
+                        letterSpacing: 1.2,
+                      ),
                     ),
-                  ),
-                  const SizedBox(height: 4),
-                  Text(
-                    AppStrings.appTagline,
-                    style: Theme.of(context).textTheme.bodySmall?.copyWith(
-                      color:
-                          Theme.of(context).colorScheme.onPrimaryContainer,
+                    const SizedBox(height: 4),
+                    Text(
+                      AppStrings.appTagline,
+                      style: Theme.of(context).textTheme.bodySmall?.copyWith(
+                        color: Colors.white70,
+                      ),
                     ),
-                  ),
-                ],
+                  ],
+                ),
               ),
             ),
             ..._items.map(
               (item) => ListTile(
-                leading: Icon(item.icon),
-                title: Text(item.label),
+                leading: Icon(item.icon, color: const Color(0xFF888888)),
+                title: Text(item.label,
+                    style: const TextStyle(color: Color(0xFFF0F0F0))),
                 onTap: () {
                   Navigator.pop(context);
                   context.go(item.route);
                 },
               ),
             ),
-            const Divider(),
+            const Divider(color: Color(0xFF2A2A2A)),
             SwitchListTile(
-              secondary: const Icon(Icons.dark_mode_outlined),
-              title: const Text(AppStrings.darkMode),
+              secondary:
+                  const Icon(Icons.dark_mode_outlined, color: Color(0xFF888888)),
+              title: const Text(AppStrings.darkMode,
+                  style: TextStyle(color: Color(0xFFF0F0F0))),
               value: isDark,
+              activeColor: const Color(0xFFC0392B),
               onChanged: (value) {
                 ref.read(settingsViewModelProvider.notifier).setThemeMode(
                       value ? ThemeMode.dark : ThemeMode.system,

@@ -335,18 +335,14 @@ class _ModuleCard extends StatelessWidget {
   Widget build(BuildContext context) => GestureDetector(
       onTap: onTap,
       child: Card(
-        elevation: 3,
+        elevation: 2,
         shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(16)),
         clipBehavior: Clip.antiAlias,
         child: Container(
           decoration: BoxDecoration(
-            gradient: LinearGradient(
-              begin: Alignment.topLeft,
-              end: Alignment.bottomRight,
-              colors: [
-                module.color,
-                module.color.withAlpha(180),
-              ],
+            color: AppColors.surface,
+            border: Border(
+              left: BorderSide(color: module.color, width: 4),
             ),
           ),
           child: Column(
@@ -355,10 +351,10 @@ class _ModuleCard extends StatelessWidget {
               Container(
                 padding: const EdgeInsets.all(12),
                 decoration: BoxDecoration(
-                  color: Colors.white24,
+                  color: module.color.withAlpha(30),
                   borderRadius: BorderRadius.circular(14),
                 ),
-                child: Icon(module.icon, color: Colors.white, size: 28),
+                child: Icon(module.icon, color: module.color, size: 28),
               ),
               const SizedBox(height: 10),
               Padding(
@@ -366,8 +362,8 @@ class _ModuleCard extends StatelessWidget {
                 child: Text(
                   module.label,
                   textAlign: TextAlign.center,
-                  style: const TextStyle(
-                    color: Colors.white,
+                  style: TextStyle(
+                    color: AppColors.textPrimary,
                     fontWeight: FontWeight.bold,
                     fontSize: 12,
                     height: 1.2,
