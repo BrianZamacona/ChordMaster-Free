@@ -163,8 +163,8 @@ class ChordViewModel extends Notifier<ChordState> {
       final list = json.decode(jsonStr) as List<dynamic>;
       final chords = list
           .map((entry) => Chord.fromJson(entry as Map<String, dynamic>))
-          .toList(growable: false)
-        ..sort(_compareChords);
+          .toList();
+      chords.sort(_compareChords);
 
       _nameIndex
         ..clear()
