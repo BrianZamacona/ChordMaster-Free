@@ -23,9 +23,22 @@ const Map<String, List<int>> chordFormulas = {
   'sus2':         [0, 2, 7],
   'sus4':         [0, 5, 7],
   'add9':         [0, 4, 7, 14],
+  'sixth':        [0, 4, 7, 9],
+  'minor6':       [0, 3, 7, 9],
+  'sixth9':       [0, 4, 7, 9, 14],
   'ninth':        [0, 4, 7, 10, 14],
+  'dominant9':    [0, 4, 7, 10, 14],
+  'major9':       [0, 4, 7, 11, 14],
+  'minor9':       [0, 3, 7, 10, 14],
   'eleventh':     [0, 4, 7, 10, 14, 17],
+  'minor11':      [0, 3, 7, 10, 14, 17],
   'thirteenth':   [0, 4, 7, 10, 14, 17, 21],
+  'halfDiminished': [0, 3, 6, 10],
+  'diminished7':  [0, 3, 6, 9],
+  'major7Sharp11': [0, 4, 7, 11, 18],
+  'dominant7Flat9': [0, 4, 7, 10, 13],
+  'dominant7Sharp9': [0, 4, 7, 10, 15],
+  'power5':       [0, 7],
 };
 
 // ── Scale Formulas ─────────────────────────────────────────────────────────
@@ -178,6 +191,29 @@ const Map<int, String> intervalNames = {
   12: 'Octave',
 };
 
+/// Short interval symbols commonly used in chord formulas.
+const Map<int, String> intervalSymbols = {
+  0:  '1',
+  1:  'b2',
+  2:  '2',
+  3:  'b3',
+  4:  '3',
+  5:  '4',
+  6:  'b5/#4',
+  7:  '5',
+  8:  '#5/b6',
+  9:  '6',
+  10: 'b7',
+  11: '7',
+  12: '8',
+  13: 'b9',
+  14: '9',
+  15: '#9',
+  17: '11',
+  18: '#11',
+  21: '13',
+};
+
 // ── Chord Quality Display Names ────────────────────────────────────────────
 
 /// Human-readable display names for chord quality keys.
@@ -192,9 +228,22 @@ const Map<String, String> chordQualityDisplayNames = {
   'sus2':         'Sus2',
   'sus4':         'Sus4',
   'add9':         'Add 9',
+  'sixth':        '6th',
+  'minor6':       'Minor 6th',
+  'sixth9':       '6/9',
   'ninth':        '9th',
+  'dominant9':    'Dominant 9th',
+  'major9':       'Major 9th',
+  'minor9':       'Minor 9th',
   'eleventh':     '11th',
+  'minor11':      'Minor 11th',
   'thirteenth':   '13th',
+  'halfDiminished': 'Half-Diminished',
+  'diminished7':  'Diminished 7th',
+  'major7Sharp11': 'Maj7#11',
+  'dominant7Flat9': '7b9',
+  'dominant7Sharp9': '7#9',
+  'power5':       'Power Chord',
 };
 
 // ── Scale Quality Display Names ────────────────────────────────────────────
