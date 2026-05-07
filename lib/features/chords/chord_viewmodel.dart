@@ -135,7 +135,11 @@ bool _matchesChordSearch({
 }
 
 int _compareChords(Chord a, Chord b) {
-  final rootCompare = chromaticNotes.indexOf(a.root).compareTo(chromaticNotes.indexOf(b.root));
+  final aRootIndex = chromaticNotes.indexOf(a.root);
+  final bRootIndex = chromaticNotes.indexOf(b.root);
+  final normalizedARootIndex = aRootIndex == -1 ? chromaticNotes.length : aRootIndex;
+  final normalizedBRootIndex = bRootIndex == -1 ? chromaticNotes.length : bRootIndex;
+  final rootCompare = normalizedARootIndex.compareTo(normalizedBRootIndex);
   if (rootCompare != 0) return rootCompare;
   final typeCompare =
       (chordTypeMetadata[a.type]?.order ?? 999).compareTo(chordTypeMetadata[b.type]?.order ?? 999);
