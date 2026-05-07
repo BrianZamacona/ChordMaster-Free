@@ -315,7 +315,7 @@ class _ChordDetailScreenState extends ConsumerState<ChordDetailScreen> {
 
   String _buildFormulaText(Chord chord) {
     final symbols = chord.intervals
-        .map((interval) => intervalSymbols[interval] ?? '$interval st')
+        .map((interval) => intervalSymbols[interval] ?? '$interval semitones')
         .join(' • ');
     final names = chord.intervals
         .map((interval) => intervalNames[interval] ?? '$interval semitones')

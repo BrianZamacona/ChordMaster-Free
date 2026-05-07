@@ -39,6 +39,10 @@ class _ChordLibraryScreenState extends ConsumerState<ChordLibraryScreen> {
     final availableTypes = orderedChordTypes(
       state.allChords.map((chord) => chord.type),
     );
+    final hasActiveFilters = state.searchQuery.isNotEmpty ||
+        state.selectedRoot != null ||
+        state.selectedType != null ||
+        state.selectedTag != null;
     final availableTags = chordPrimaryTagOrder
         .where(
           (tag) => state.allChords.any(
@@ -87,15 +91,12 @@ class _ChordLibraryScreenState extends ConsumerState<ChordLibraryScreen> {
                 ),
                 const Spacer(),
                 TextButton.icon(
-                  onPressed: state.searchQuery.isEmpty &&
-                          state.selectedRoot == null &&
-                          state.selectedType == null &&
-                          state.selectedTag == null
-                      ? null
-                      : () {
+                  onPressed: hasActiveFilters
+                      ? () {
                           _searchController.clear();
                           vm.clearFilters();
                         },
+                      : null,
                   icon: const Icon(Icons.filter_alt_off),
                   label: const Text(AppStrings.reset),
                 ),

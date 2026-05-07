@@ -99,26 +99,39 @@ List<Chord> filterChords({
     }
     if (query.isEmpty) return true;
 
-    final haystack = <String>{
-      chord.name,
-      chordDisplayName(
-        root: chord.root,
-        type: chord.type,
-        explicitDisplayName: chord.displayName,
-      ),
-      chord.root,
-      chord.type,
-      chordTypeLabel(chord.type),
-      ...chordAliases(chord.type, chord.aliases),
-      ...resolvedTags,
-      ...resolvedTags.map(chordTagLabel),
-    }.join(' ').toLowerCase();
-
-    return haystack.contains(query);
+    return _matchesChordSearch(
+      chord: chord,
+      query: query,
+      resolvedTags: resolvedTags,
+    );
   }).toList(growable: false)
     ..sort(_compareChords);
 
   return results;
+}
+
+bool _matchesChordSearch({
+  required Chord chord,
+  required String query,
+  required List<String> resolvedTags,
+}) {
+  final searchableFields = <String>[
+    chord.name,
+    chordDisplayName(
+      root: chord.root,
+      type: chord.type,
+      explicitDisplayName: chord.displayName,
+    ),
+    chord.root,
+    chord.type,
+    chordTypeLabel(chord.type),
+    ...chordAliases(chord.type, chord.aliases),
+    ...resolvedTags,
+    ...resolvedTags.map(chordTagLabel),
+  ];
+  return searchableFields.any(
+    (field) => field.toLowerCase().contains(query),
+  );
 }
 
 int _compareChords(Chord a, Chord b) {

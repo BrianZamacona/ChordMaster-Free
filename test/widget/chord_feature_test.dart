@@ -6,7 +6,7 @@ import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:flutter_test/flutter_test.dart';
 
 void main() {
-  testWidgets('chord library exposes category filters and hides painter titles',
+  testWidgets('chord library exposes category filters and hides diagram titles',
       (tester) async {
     await tester.pumpWidget(
       const ProviderScope(

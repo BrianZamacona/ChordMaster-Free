@@ -220,7 +220,9 @@ class Chord {
   static List<int> _readFixedIntList(Map<String, dynamic> json, String key) {
     final values = _readIntList(json, key);
     if (values.length != 6) {
-      throw FormatException('$key must contain exactly 6 values');
+      throw FormatException(
+        '$key must contain exactly 6 values (one per guitar string)',
+      );
     }
     return values;
   }

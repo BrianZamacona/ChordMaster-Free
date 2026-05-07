@@ -281,6 +281,11 @@ String chordTypeLabel(String type) =>
 String chordShortLabel(String type) =>
     chordTypeMetadata[type]?.shortLabel ?? chordTypeLabel(type);
 
+/// Returns the merged alias list for a chord [type].
+///
+/// Default aliases from the central metadata are combined with any
+/// [explicitAliases] coming from the dataset, preserving order and removing
+/// duplicates.
 List<String> chordAliases(String type, [List<String> explicitAliases = const []]) {
   final aliases = <String>[];
   final seen = <String>{};
