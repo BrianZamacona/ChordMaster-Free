@@ -97,6 +97,8 @@ final scalesViewModelProvider =
 
 /// Manages scales screen state: loading, root/category filtering, selection.
 class ScalesViewModel extends Notifier<ScalesState> {
+  final Map<String, Scale> _nameIndex = {};
+
   @override
   ScalesState build() {
     _load();
@@ -110,6 +112,10 @@ class ScalesViewModel extends Notifier<ScalesState> {
       final list = json.decode(jsonStr) as List<dynamic>;
       final scales =
           list.map((e) => Scale.fromJson(e as Map<String, dynamic>)).toList();
+
+      _nameIndex
+        ..clear()
+        ..addEntries(scales.map((s) => MapEntry(s.name, s)));
 
       state = state.copyWith(
         allScales: scales,
@@ -154,12 +160,7 @@ class ScalesViewModel extends Notifier<ScalesState> {
   }
 
   /// Returns a [Scale] whose name matches [name], or `null` if not found.
-  Scale? findByName(String name) {
-    for (final s in state.allScales) {
-      if (s.name == name) return s;
-    }
-    return null;
-  }
+  Scale? findByName(String name) => _nameIndex[name];
 
   List<Scale> _filter(List<Scale> all, String root, String category) => all
         .where((s) =>

@@ -46,7 +46,7 @@ class ScaleDetailScreen extends ConsumerWidget {
 
     final notes = _computeNotes(scale.root, scale.intervals);
     final intervalLabels = scale.intervals
-        .map((i) => intervalNames[i] ?? '$i st')
+        .map((i) => intervalNames[i] ?? '$i semitones')
         .toList();
     final typeName = scaleDisplayNames[scale.type] ?? scale.type;
 
