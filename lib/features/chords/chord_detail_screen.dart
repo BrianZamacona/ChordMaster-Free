@@ -107,6 +107,16 @@ class _ChordDetailScreenState extends ConsumerState<ChordDetailScreen> {
         backgroundColor: AppColors.chords,
         foregroundColor: Colors.white,
         elevation: 0,
+        actions: [
+          IconButton(
+            tooltip: AppStrings.chordExplorer,
+            onPressed: () {
+              final encoded = Uri.encodeComponent(chord.name);
+              context.go('/chords/$encoded/explorer');
+            },
+            icon: const Icon(Icons.explore_outlined),
+          ),
+        ],
       ),
       body: SingleChildScrollView(
         padding: const EdgeInsets.all(16),

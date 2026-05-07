@@ -18,6 +18,16 @@ void main() {
         'description': 'Altered dominant color.',
         'baseFret': 3,
         'voicingName': 'Movable voicing',
+        'cagedPositions': [
+          {
+            'title': 'A Form',
+            'shape': 'A',
+            'description': 'Movable form.',
+            'fretPositions': [-1, 3, 5, 5, 5, 3],
+            'fingerPositions': [0, 1, 3, 4, 2, 1],
+            'baseFret': 3,
+          },
+        ],
       });
 
       expect(chord.displayName, 'C7#9');
@@ -26,6 +36,9 @@ void main() {
       expect(chord.description, 'Altered dominant color.');
       expect(chord.baseFret, 3);
       expect(chord.voicingName, 'Movable voicing');
+      expect(chord.cagedPositions, hasLength(1));
+      expect(chord.cagedPositions.first.title, 'A Form');
+      expect(chord.cagedPositions.first.shape, 'A');
     });
 
     test('keeps backward compatibility for legacy chord JSON', () {
@@ -45,6 +58,10 @@ void main() {
       expect(chord.baseFret, isNull);
       expect(chord.voicingName, isNull);
       expect(chord.difficulty, 1);
+      expect(chord.cagedPositions, isEmpty);
+      expect(chord.voicings, isEmpty);
+      expect(chord.triadInversions, isEmpty);
+      expect(chord.advancedInversions, isEmpty);
     });
 
     test('rejects invalid fret list length', () {
@@ -56,6 +73,27 @@ void main() {
           'intervals': [0, 4, 7],
           'fretPositions': [0, 1, 2],
           'fingerPositions': [0, 1, 2, 3, 4, 0],
+        }),
+        throwsFormatException,
+      );
+    });
+
+    test('rejects invalid explorer item payload', () {
+      expect(
+        () => Chord.fromJson({
+          'name': 'Broken Explorer Chord',
+          'root': 'C',
+          'type': 'major',
+          'intervals': [0, 4, 7],
+          'fretPositions': [-1, 3, 2, 0, 1, 0],
+          'fingerPositions': [0, 3, 2, 0, 1, 0],
+          'cagedPositions': [
+            {
+              'title': 'Bad Entry',
+              'fretPositions': [3, 5, 5],
+              'fingerPositions': [1, 3, 4, 2, 1, 1],
+            },
+          ],
         }),
         throwsFormatException,
       );

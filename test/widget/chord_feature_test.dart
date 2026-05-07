@@ -1,5 +1,6 @@
 import 'package:chordmaster_free/core/widgets/chord_diagram.dart';
 import 'package:chordmaster_free/features/chords/chord_detail_screen.dart';
+import 'package:chordmaster_free/features/chords/chord_explorer_screen.dart';
 import 'package:chordmaster_free/features/chords/chord_library_screen.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
@@ -52,5 +53,26 @@ void main() {
       find.byType(ChordDiagramWidget).first,
     );
     expect(diagram.showChordName, isFalse);
+  });
+
+  testWidgets('chord explorer renders CAGED and inversion sections', (tester) async {
+    await tester.pumpWidget(
+      ProviderScope(
+        child: MaterialApp(
+          home: ChordExplorerScreen(
+            chordId: Uri.encodeComponent('C Major'),
+          ),
+        ),
+      ),
+    );
+
+    await tester.pumpAndSettle();
+
+    expect(find.text('CAGED Positions'), findsOneWidget);
+    expect(find.text('Voicings'), findsOneWidget);
+    expect(find.text('Triad Inversions'), findsOneWidget);
+    expect(find.text('Advanced Inversions'), findsOneWidget);
+    expect(find.text('C Form'), findsOneWidget);
+    expect(find.byType(ChordDiagramWidget), findsWidgets);
   });
 }

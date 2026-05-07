@@ -62,5 +62,18 @@ void main() {
         }
       }
     });
+
+    test('priority chord families include explorer sections', () {
+      const priorityTypes = {'major', 'minor', 'dominant7', 'major7', 'minor7'};
+      final priorityChords =
+          chords.where((chord) => priorityTypes.contains(chord.type)).toList();
+      expect(priorityChords, isNotEmpty);
+      for (final chord in priorityChords) {
+        expect(chord.cagedPositions, isNotEmpty, reason: '${chord.name} missing CAGED');
+        expect(chord.voicings, isNotEmpty, reason: '${chord.name} missing voicings');
+        expect(chord.triadInversions, isNotEmpty,
+            reason: '${chord.name} missing triad inversions');
+      }
+    });
   });
 }

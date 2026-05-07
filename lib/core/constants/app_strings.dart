@@ -230,6 +230,31 @@ class AppStrings {
   /// Chord style matches label.
   static const String styleMatches = 'Style Matches';
 
+  /// Chord explorer screen title.
+  static const String chordExplorer = 'Explorer';
+
+  /// CAGED positions section label.
+  static const String cagedPositions = 'CAGED Positions';
+
+  /// Curated voicings section label.
+  static const String curatedVoicings = 'Voicings';
+
+  /// Triad inversion section label.
+  static const String triadInversions = 'Triad Inversions';
+
+  /// Advanced inversion section label.
+  static const String advancedInversions = 'Advanced Inversions';
+
+  /// Explorer empty message for unsupported chords.
+  static const String chordExplorerEmpty =
+      'This chord has no explorer data yet.';
+
+  /// Generic no-data label.
+  static const String noDataAvailable = 'No data available.';
+
+  /// Label for CAGED/voicing shape metadata.
+  static const String shapeLabel = 'Shape';
+
   // ── Scales ────────────────────────────────────────────────────────────────
 
   /// Scale type selector label.
