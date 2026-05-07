@@ -99,5 +99,26 @@ void main() {
         throwsFormatException,
       );
     });
+
+    test('accepts valid explorer item payload', () {
+      final chord = Chord.fromJson({
+        'name': 'Explorer Chord',
+        'root': 'C',
+        'type': 'major',
+        'intervals': [0, 4, 7],
+        'fretPositions': [-1, 3, 2, 0, 1, 0],
+        'fingerPositions': [0, 3, 2, 0, 1, 0],
+        'cagedPositions': [
+          {
+            'title': 'Valid Entry',
+            'fretPositions': [-1, 3, 5, 5, 5, 3],
+            'fingerPositions': [0, 1, 3, 4, 2, 1],
+          },
+        ],
+      });
+
+      expect(chord.cagedPositions, hasLength(1));
+      expect(chord.cagedPositions.first.title, 'Valid Entry');
+    });
   });
 }
