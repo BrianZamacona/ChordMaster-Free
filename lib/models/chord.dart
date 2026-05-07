@@ -2,6 +2,56 @@
 ///
 /// Chord objects can be serialised to/from JSON for asset bundling and
 /// persistence in Hive-backed storage.
+class ChordExplorerItem {
+  const ChordExplorerItem({
+    required this.title,
+    required this.fretPositions,
+    required this.fingerPositions,
+    this.baseFret,
+    this.shape,
+    this.description,
+  });
+
+  factory ChordExplorerItem.fromJson(Map<String, dynamic> json) {
+    final title = Chord._readRequiredString(json, 'title');
+    final fretPositions = Chord._readFixedIntList(json, 'fretPositions');
+    final fingerPositions = Chord._readFixedIntList(json, 'fingerPositions');
+    Chord._validateFretRange(
+      fretPositions,
+      errorMessage: 'explorer fretPositions values must be between -1 and 24',
+    );
+    Chord._validateFingerRange(
+      fingerPositions,
+      errorMessage: 'explorer fingerPositions values must be between 0 and 4',
+    );
+
+    return ChordExplorerItem(
+      title: title,
+      fretPositions: fretPositions,
+      fingerPositions: fingerPositions,
+      baseFret: (json['baseFret'] as num?)?.toInt(),
+      shape: Chord._readOptionalString(json, 'shape'),
+      description: Chord._readOptionalString(json, 'description'),
+    );
+  }
+
+  final String title;
+  final List<int> fretPositions;
+  final List<int> fingerPositions;
+  final int? baseFret;
+  final String? shape;
+  final String? description;
+
+  Map<String, dynamic> toJson() => {
+        'title': title,
+        'fretPositions': fretPositions,
+        'fingerPositions': fingerPositions,
+        'baseFret': baseFret,
+        'shape': shape,
+        'description': description,
+      };
+}
+
 class Chord {
   /// Creates a [Chord] with all required fields.
   const Chord({
@@ -19,6 +69,10 @@ class Chord {
     this.description,
     this.baseFret,
     this.voicingName,
+    this.cagedPositions = const [],
+    this.voicings = const [],
+    this.triadInversions = const [],
+    this.advancedInversions = const [],
   });
 
   /// Deserialises a [Chord] from a JSON map.
@@ -33,16 +87,14 @@ class Chord {
     if (difficulty < 1 || difficulty > 5) {
       throw const FormatException('difficulty must be between 1 and 5');
     }
-    for (final fret in fretPositions) {
-      if (fret < -1 || fret > 24) {
-        throw const FormatException('fretPositions values must be between -1 and 24');
-      }
-    }
-    for (final finger in fingerPositions) {
-      if (finger < 0 || finger > 4) {
-        throw const FormatException('fingerPositions values must be between 0 and 4');
-      }
-    }
+    _validateFretRange(
+      fretPositions,
+      errorMessage: 'fretPositions values must be between -1 and 24',
+    );
+    _validateFingerRange(
+      fingerPositions,
+      errorMessage: 'fingerPositions values must be between 0 and 4',
+    );
 
     return Chord(
       name: name,
@@ -59,6 +111,10 @@ class Chord {
       description: _readOptionalString(json, 'description'),
       baseFret: (json['baseFret'] as num?)?.toInt(),
       voicingName: _readOptionalString(json, 'voicingName'),
+      cagedPositions: _readExplorerList(json, 'cagedPositions'),
+      voicings: _readExplorerList(json, 'voicings'),
+      triadInversions: _readExplorerList(json, 'triadInversions'),
+      advancedInversions: _readExplorerList(json, 'advancedInversions'),
     );
   }
 
@@ -108,6 +164,25 @@ class Chord {
   /// Optional voicing label, e.g. open, movable, shell, or barre.
   final String? voicingName;
 
+  /// CAGED positions for this chord across the fretboard.
+  final List<ChordExplorerItem> cagedPositions;
+
+  /// Curated, playable voicings for this chord.
+  final List<ChordExplorerItem> voicings;
+
+  /// Triad inversions (root, first, second inversion).
+  final List<ChordExplorerItem> triadInversions;
+
+  /// Advanced inversions (typically tetrad-based voicings).
+  final List<ChordExplorerItem> advancedInversions;
+
+  /// True when any explorer section has content.
+  bool get hasExplorerData =>
+      cagedPositions.isNotEmpty ||
+      voicings.isNotEmpty ||
+      triadInversions.isNotEmpty ||
+      advancedInversions.isNotEmpty;
+
   /// Serialises this [Chord] to a JSON map.
   Map<String, dynamic> toJson() => {
         'name': name,
@@ -124,6 +199,12 @@ class Chord {
         'description': description,
         'baseFret': baseFret,
         'voicingName': voicingName,
+        'cagedPositions': cagedPositions.map((item) => item.toJson()).toList(),
+        'voicings': voicings.map((item) => item.toJson()).toList(),
+        'triadInversions': triadInversions.map((item) => item.toJson()).toList(),
+        'advancedInversions': advancedInversions
+            .map((item) => item.toJson())
+            .toList(),
       };
 
   /// Sentinel used by [copyWith] to distinguish "clear to null" from "keep existing".
@@ -145,6 +226,10 @@ class Chord {
     Object? description = _unset,
     Object? baseFret = _unset,
     Object? voicingName = _unset,
+    List<ChordExplorerItem>? cagedPositions,
+    List<ChordExplorerItem>? voicings,
+    List<ChordExplorerItem>? triadInversions,
+    List<ChordExplorerItem>? advancedInversions,
   }) =>
       Chord(
         name: name ?? this.name,
@@ -169,6 +254,10 @@ class Chord {
         voicingName: identical(voicingName, _unset)
             ? this.voicingName
             : voicingName as String?,
+        cagedPositions: cagedPositions ?? this.cagedPositions,
+        voicings: voicings ?? this.voicings,
+        triadInversions: triadInversions ?? this.triadInversions,
+        advancedInversions: advancedInversions ?? this.advancedInversions,
       );
 
   @override
@@ -239,5 +328,44 @@ class Chord {
       }
       return value.trim();
     }).where((value) => value.isNotEmpty).toSet().toList(growable: false);
+  }
+
+  static void _validateFretRange(
+    List<int> values, {
+    required String errorMessage,
+  }) {
+    for (final fret in values) {
+      if (fret < -1 || fret > 24) {
+        throw FormatException(errorMessage);
+      }
+    }
+  }
+
+  static void _validateFingerRange(
+    List<int> values, {
+    required String errorMessage,
+  }) {
+    for (final finger in values) {
+      if (finger < 0 || finger > 4) {
+        throw FormatException(errorMessage);
+      }
+    }
+  }
+
+  static List<ChordExplorerItem> _readExplorerList(
+    Map<String, dynamic> json,
+    String key,
+  ) {
+    final raw = json[key];
+    if (raw == null) return const [];
+    if (raw is! List) {
+      throw FormatException('$key must be a list');
+    }
+    return raw.map((value) {
+      if (value is! Map<String, dynamic>) {
+        throw FormatException('$key must contain only objects');
+      }
+      return ChordExplorerItem.fromJson(value);
+    }).toList(growable: false);
   }
 }

@@ -3,6 +3,7 @@ import 'package:go_router/go_router.dart';
 import '../core/widgets/app_scaffold.dart';
 import '../features/achievements/achievements_screen.dart';
 import '../features/chords/chord_detail_screen.dart';
+import '../features/chords/chord_explorer_screen.dart';
 import '../features/chords/chord_library_screen.dart';
 import '../features/community/community_screen.dart';
 import '../features/composition/composition_screen.dart';
@@ -55,6 +56,14 @@ final GoRouter appRouter = GoRouter(
                   builder: (_, state) => ChordDetailScreen(
                     chordId: state.pathParameters['id']!,
                   ),
+                  routes: [
+                    GoRoute(
+                      path: 'explorer',
+                      builder: (_, state) => ChordExplorerScreen(
+                        chordId: state.pathParameters['id']!,
+                      ),
+                    ),
+                  ],
                 ),
               ],
             ),
