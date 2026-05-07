@@ -25,7 +25,14 @@
       0
     ],
     "audioFile": null,
-    "difficulty": 1
+    "difficulty": 1,
+    "displayName": "C",
+    "aliases": [],
+    "tags": [
+      "standard"
+    ],
+    "description": "Bright, stable major triad.",
+    "baseFret": 1
   },
   {
     "name": "C Minor",
@@ -53,7 +60,14 @@
       1
     ],
     "audioFile": null,
-    "difficulty": 3
+    "difficulty": 3,
+    "displayName": "Cm",
+    "aliases": [],
+    "tags": [
+      "standard"
+    ],
+    "description": "Darker minor triad with a melancholic color.",
+    "baseFret": 3
   },
   {
     "name": "C Dom 7",
@@ -82,7 +96,16 @@
       0
     ],
     "audioFile": null,
-    "difficulty": 2
+    "difficulty": 2,
+    "displayName": "C7",
+    "aliases": [],
+    "tags": [
+      "standard",
+      "blues",
+      "rock"
+    ],
+    "description": "Classic tension chord for blues, rock, and cadences.",
+    "baseFret": 1
   },
   {
     "name": "C Maj 7",
@@ -111,7 +134,15 @@
       0
     ],
     "audioFile": null,
-    "difficulty": 2
+    "difficulty": 2,
+    "displayName": "Cmaj7",
+    "aliases": [],
+    "tags": [
+      "standard",
+      "jazz"
+    ],
+    "description": "Smooth and sophisticated major seventh sound.",
+    "baseFret": 1
   },
   {
     "name": "C Min 7",
@@ -140,7 +171,16 @@
       1
     ],
     "audioFile": null,
-    "difficulty": 3
+    "difficulty": 3,
+    "displayName": "Cm7",
+    "aliases": [],
+    "tags": [
+      "standard",
+      "jazz",
+      "blues"
+    ],
+    "description": "Warm, modal minor seventh used across jazz and soul.",
+    "baseFret": 3
   },
   {
     "name": "C Dim",
@@ -168,7 +208,16 @@
       0
     ],
     "audioFile": null,
-    "difficulty": 4
+    "difficulty": 4,
+    "displayName": "Cdim",
+    "aliases": [],
+    "tags": [
+      "standard",
+      "jazz",
+      "exotic"
+    ],
+    "description": "Tense diminished triad with unstable color.",
+    "baseFret": 3
   },
   {
     "name": "C Aug",
@@ -196,7 +245,16 @@
       0
     ],
     "audioFile": null,
-    "difficulty": 4
+    "difficulty": 4,
+    "displayName": "Caug",
+    "aliases": [],
+    "tags": [
+      "standard",
+      "jazz",
+      "exotic"
+    ],
+    "description": "Expansive augmented triad with raised fifth tension.",
+    "baseFret": 3
   },
   {
     "name": "C Sus2",
@@ -224,7 +282,15 @@
       1
     ],
     "audioFile": null,
-    "difficulty": 3
+    "difficulty": 3,
+    "displayName": "Csus2",
+    "aliases": [],
+    "tags": [
+      "standard",
+      "exotic"
+    ],
+    "description": "Open suspended color replacing the third with a second.",
+    "baseFret": 8
   },
   {
     "name": "C Sus4",
@@ -252,7 +318,610 @@
       1
     ],
     "audioFile": null,
-    "difficulty": 3
+    "difficulty": 3,
+    "displayName": "Csus4",
+    "aliases": [],
+    "tags": [
+      "standard",
+      "blues",
+      "rock",
+      "exotic"
+    ],
+    "description": "Suspended fourth tension resolving naturally to major.",
+    "baseFret": 8
+  },
+  {
+    "name": "C Add 9",
+    "root": "C",
+    "type": "add9",
+    "intervals": [
+      0,
+      4,
+      7,
+      14
+    ],
+    "fretPositions": [
+      -1,
+      3,
+      5,
+      7,
+      5,
+      3
+    ],
+    "fingerPositions": [
+      0,
+      1,
+      2,
+      4,
+      3,
+      1
+    ],
+    "audioFile": null,
+    "difficulty": 3,
+    "displayName": "Cadd9",
+    "aliases": [],
+    "tags": [
+      "standard",
+      "rock",
+      "exotic"
+    ],
+    "description": "Major triad colored with a bright ninth.",
+    "baseFret": 3,
+    "voicingName": "Movable voicing"
+  },
+  {
+    "name": "C 6",
+    "root": "C",
+    "type": "sixth",
+    "intervals": [
+      0,
+      4,
+      7,
+      9
+    ],
+    "fretPositions": [
+      -1,
+      3,
+      5,
+      5,
+      5,
+      5
+    ],
+    "fingerPositions": [
+      0,
+      1,
+      3,
+      3,
+      3,
+      3
+    ],
+    "audioFile": null,
+    "difficulty": 3,
+    "displayName": "C6",
+    "aliases": [],
+    "tags": [
+      "standard",
+      "jazz",
+      "blues"
+    ],
+    "description": "Swing-friendly major sixth voicing.",
+    "baseFret": 3,
+    "voicingName": "Movable voicing"
+  },
+  {
+    "name": "C Min 6",
+    "root": "C",
+    "type": "minor6",
+    "intervals": [
+      0,
+      3,
+      7,
+      9
+    ],
+    "fretPositions": [
+      -1,
+      3,
+      5,
+      5,
+      4,
+      5
+    ],
+    "fingerPositions": [
+      0,
+      1,
+      3,
+      4,
+      2,
+      4
+    ],
+    "audioFile": null,
+    "difficulty": 3,
+    "displayName": "Cm6",
+    "aliases": [],
+    "tags": [
+      "jazz",
+      "exotic"
+    ],
+    "description": "Minor chord with a bittersweet sixth extension.",
+    "baseFret": 3,
+    "voicingName": "Movable voicing"
+  },
+  {
+    "name": "C 6/9",
+    "root": "C",
+    "type": "sixth9",
+    "intervals": [
+      0,
+      4,
+      7,
+      9,
+      14
+    ],
+    "fretPositions": [
+      -1,
+      3,
+      5,
+      7,
+      5,
+      5
+    ],
+    "fingerPositions": [
+      0,
+      1,
+      2,
+      4,
+      3,
+      3
+    ],
+    "audioFile": null,
+    "difficulty": 3,
+    "displayName": "C6/9",
+    "aliases": [],
+    "tags": [
+      "jazz",
+      "blues"
+    ],
+    "description": "Lush major sixth chord with added ninth color.",
+    "baseFret": 3,
+    "voicingName": "Movable voicing"
+  },
+  {
+    "name": "C Dom 9",
+    "root": "C",
+    "type": "dominant9",
+    "intervals": [
+      0,
+      4,
+      7,
+      10,
+      14
+    ],
+    "fretPositions": [
+      -1,
+      3,
+      2,
+      3,
+      3,
+      3
+    ],
+    "fingerPositions": [
+      0,
+      2,
+      1,
+      3,
+      3,
+      3
+    ],
+    "audioFile": null,
+    "difficulty": 2,
+    "displayName": "C9",
+    "aliases": [],
+    "tags": [
+      "jazz",
+      "blues",
+      "funk"
+    ],
+    "description": "Extended dominant chord central to blues and funk comping.",
+    "baseFret": 2,
+    "voicingName": "Movable voicing"
+  },
+  {
+    "name": "C Maj 9",
+    "root": "C",
+    "type": "major9",
+    "intervals": [
+      0,
+      4,
+      7,
+      11,
+      14
+    ],
+    "fretPositions": [
+      -1,
+      3,
+      2,
+      4,
+      3,
+      3
+    ],
+    "fingerPositions": [
+      0,
+      2,
+      1,
+      4,
+      3,
+      3
+    ],
+    "audioFile": null,
+    "difficulty": 3,
+    "displayName": "Cmaj9",
+    "aliases": [],
+    "tags": [
+      "jazz"
+    ],
+    "description": "Glossy, modern major sound with a natural ninth.",
+    "baseFret": 2,
+    "voicingName": "Movable voicing"
+  },
+  {
+    "name": "C Min 9",
+    "root": "C",
+    "type": "minor9",
+    "intervals": [
+      0,
+      3,
+      7,
+      10,
+      14
+    ],
+    "fretPositions": [
+      -1,
+      3,
+      1,
+      3,
+      3,
+      3
+    ],
+    "fingerPositions": [
+      0,
+      3,
+      1,
+      2,
+      2,
+      2
+    ],
+    "audioFile": null,
+    "difficulty": 3,
+    "displayName": "Cm9",
+    "aliases": [],
+    "tags": [
+      "jazz",
+      "blues"
+    ],
+    "description": "Expressive minor ninth voicing used in neo-soul and jazz.",
+    "baseFret": 1,
+    "voicingName": "Movable voicing"
+  },
+  {
+    "name": "C Min 7b5",
+    "root": "C",
+    "type": "halfDiminished",
+    "intervals": [
+      0,
+      3,
+      6,
+      10
+    ],
+    "fretPositions": [
+      -1,
+      3,
+      4,
+      3,
+      4,
+      -1
+    ],
+    "fingerPositions": [
+      0,
+      1,
+      3,
+      2,
+      4,
+      0
+    ],
+    "audioFile": null,
+    "difficulty": 3,
+    "displayName": "Cm7b5",
+    "aliases": [
+      "Half-Diminished",
+      "Minor 7 Flat 5"
+    ],
+    "tags": [
+      "jazz",
+      "exotic"
+    ],
+    "description": "Minor seventh flat five sonority used in ii-V-i progressions.",
+    "baseFret": 3,
+    "voicingName": "Movable voicing"
+  },
+  {
+    "name": "C Dim 7",
+    "root": "C",
+    "type": "diminished7",
+    "intervals": [
+      0,
+      3,
+      6,
+      9
+    ],
+    "fretPositions": [
+      -1,
+      3,
+      4,
+      2,
+      4,
+      2
+    ],
+    "fingerPositions": [
+      0,
+      2,
+      3,
+      1,
+      4,
+      1
+    ],
+    "audioFile": null,
+    "difficulty": 3,
+    "displayName": "Cdim7",
+    "aliases": [],
+    "tags": [
+      "jazz",
+      "exotic"
+    ],
+    "description": "Symmetrical diminished seventh with strong passing tension.",
+    "baseFret": 2,
+    "voicingName": "Movable voicing"
+  },
+  {
+    "name": "C 7#9",
+    "root": "C",
+    "type": "dominant7Sharp9",
+    "intervals": [
+      0,
+      4,
+      7,
+      10,
+      15
+    ],
+    "fretPositions": [
+      -1,
+      3,
+      2,
+      3,
+      4,
+      -1
+    ],
+    "fingerPositions": [
+      0,
+      2,
+      1,
+      3,
+      4,
+      0
+    ],
+    "audioFile": null,
+    "difficulty": 3,
+    "displayName": "C7#9",
+    "aliases": [
+      "Hendrix Chord"
+    ],
+    "tags": [
+      "blues",
+      "jazz",
+      "rock",
+      "exotic"
+    ],
+    "description": "Altered dominant color famous in Hendrix, blues, and fusion.",
+    "baseFret": 2,
+    "voicingName": "Movable voicing"
+  },
+  {
+    "name": "C 13",
+    "root": "C",
+    "type": "thirteenth",
+    "intervals": [
+      0,
+      4,
+      7,
+      10,
+      14,
+      17,
+      21
+    ],
+    "fretPositions": [
+      -1,
+      3,
+      2,
+      3,
+      5,
+      5
+    ],
+    "fingerPositions": [
+      0,
+      2,
+      1,
+      3,
+      4,
+      4
+    ],
+    "audioFile": null,
+    "difficulty": 3,
+    "displayName": "C13",
+    "aliases": [],
+    "tags": [
+      "jazz",
+      "blues",
+      "funk"
+    ],
+    "description": "Full dominant extension with a smooth thirteenth color.",
+    "baseFret": 2,
+    "voicingName": "Movable voicing"
+  },
+  {
+    "name": "C Maj 7#11",
+    "root": "C",
+    "type": "major7Sharp11",
+    "intervals": [
+      0,
+      4,
+      7,
+      11,
+      18
+    ],
+    "fretPositions": [
+      -1,
+      3,
+      4,
+      4,
+      5,
+      3
+    ],
+    "fingerPositions": [
+      0,
+      1,
+      2,
+      2,
+      4,
+      1
+    ],
+    "audioFile": null,
+    "difficulty": 3,
+    "displayName": "Cmaj7#11",
+    "aliases": [],
+    "tags": [
+      "jazz",
+      "exotic"
+    ],
+    "description": "Lydian-flavored major seventh with raised eleventh shimmer.",
+    "baseFret": 3,
+    "voicingName": "Movable voicing"
+  },
+  {
+    "name": "C 7b9",
+    "root": "C",
+    "type": "dominant7Flat9",
+    "intervals": [
+      0,
+      4,
+      7,
+      10,
+      13
+    ],
+    "fretPositions": [
+      -1,
+      3,
+      2,
+      3,
+      2,
+      -1
+    ],
+    "fingerPositions": [
+      0,
+      2,
+      1,
+      3,
+      1,
+      0
+    ],
+    "audioFile": null,
+    "difficulty": 2,
+    "displayName": "C7b9",
+    "aliases": [],
+    "tags": [
+      "jazz",
+      "exotic"
+    ],
+    "description": "Altered dominant with a dramatic flat ninth bite.",
+    "baseFret": 2,
+    "voicingName": "Movable voicing"
+  },
+  {
+    "name": "C Min 11",
+    "root": "C",
+    "type": "minor11",
+    "intervals": [
+      0,
+      3,
+      7,
+      10,
+      14,
+      17
+    ],
+    "fretPositions": [
+      -1,
+      3,
+      3,
+      3,
+      4,
+      3
+    ],
+    "fingerPositions": [
+      0,
+      1,
+      1,
+      1,
+      2,
+      1
+    ],
+    "audioFile": null,
+    "difficulty": 3,
+    "displayName": "Cm11",
+    "aliases": [],
+    "tags": [
+      "jazz",
+      "blues"
+    ],
+    "description": "Modern minor extension blending ninth and eleventh color.",
+    "baseFret": 3,
+    "voicingName": "Movable voicing"
+  },
+  {
+    "name": "C 5",
+    "root": "C",
+    "type": "power5",
+    "intervals": [
+      0,
+      7
+    ],
+    "fretPositions": [
+      -1,
+      3,
+      5,
+      5,
+      -1,
+      3
+    ],
+    "fingerPositions": [
+      0,
+      1,
+      3,
+      4,
+      0,
+      1
+    ],
+    "audioFile": null,
+    "difficulty": 2,
+    "displayName": "C5",
+    "aliases": [
+      "Power Chord"
+    ],
+    "tags": [
+      "power",
+      "rock",
+      "blues"
+    ],
+    "description": "Root-and-fifth rock voicing with no third.",
+    "baseFret": 3,
+    "voicingName": "Movable voicing"
   },
   {
     "name": "C# Major",
@@ -280,7 +949,14 @@
       1
     ],
     "audioFile": null,
-    "difficulty": 3
+    "difficulty": 3,
+    "displayName": "C#",
+    "aliases": [],
+    "tags": [
+      "standard"
+    ],
+    "description": "Bright, stable major triad.",
+    "baseFret": 4
   },
   {
     "name": "C# Minor",
@@ -308,7 +984,14 @@
       1
     ],
     "audioFile": null,
-    "difficulty": 3
+    "difficulty": 3,
+    "displayName": "C#m",
+    "aliases": [],
+    "tags": [
+      "standard"
+    ],
+    "description": "Darker minor triad with a melancholic color.",
+    "baseFret": 4
   },
   {
     "name": "C# Dom 7",
@@ -337,7 +1020,16 @@
       1
     ],
     "audioFile": null,
-    "difficulty": 3
+    "difficulty": 3,
+    "displayName": "C#7",
+    "aliases": [],
+    "tags": [
+      "standard",
+      "blues",
+      "rock"
+    ],
+    "description": "Classic tension chord for blues, rock, and cadences.",
+    "baseFret": 4
   },
   {
     "name": "C# Maj 7",
@@ -366,7 +1058,15 @@
       1
     ],
     "audioFile": null,
-    "difficulty": 3
+    "difficulty": 3,
+    "displayName": "C#maj7",
+    "aliases": [],
+    "tags": [
+      "standard",
+      "jazz"
+    ],
+    "description": "Smooth and sophisticated major seventh sound.",
+    "baseFret": 4
   },
   {
     "name": "C# Min 7",
@@ -395,7 +1095,16 @@
       1
     ],
     "audioFile": null,
-    "difficulty": 3
+    "difficulty": 3,
+    "displayName": "C#m7",
+    "aliases": [],
+    "tags": [
+      "standard",
+      "jazz",
+      "blues"
+    ],
+    "description": "Warm, modal minor seventh used across jazz and soul.",
+    "baseFret": 4
   },
   {
     "name": "C# Dim",
@@ -423,7 +1132,16 @@
       0
     ],
     "audioFile": null,
-    "difficulty": 4
+    "difficulty": 4,
+    "displayName": "C#dim",
+    "aliases": [],
+    "tags": [
+      "standard",
+      "jazz",
+      "exotic"
+    ],
+    "description": "Tense diminished triad with unstable color.",
+    "baseFret": 4
   },
   {
     "name": "C# Aug",
@@ -451,7 +1169,16 @@
       0
     ],
     "audioFile": null,
-    "difficulty": 4
+    "difficulty": 4,
+    "displayName": "C#aug",
+    "aliases": [],
+    "tags": [
+      "standard",
+      "jazz",
+      "exotic"
+    ],
+    "description": "Expansive augmented triad with raised fifth tension.",
+    "baseFret": 4
   },
   {
     "name": "C# Sus2",
@@ -479,7 +1206,15 @@
       1
     ],
     "audioFile": null,
-    "difficulty": 3
+    "difficulty": 3,
+    "displayName": "C#sus2",
+    "aliases": [],
+    "tags": [
+      "standard",
+      "exotic"
+    ],
+    "description": "Open suspended color replacing the third with a second.",
+    "baseFret": 9
   },
   {
     "name": "C# Sus4",
@@ -507,7 +1242,610 @@
       1
     ],
     "audioFile": null,
-    "difficulty": 3
+    "difficulty": 3,
+    "displayName": "C#sus4",
+    "aliases": [],
+    "tags": [
+      "standard",
+      "blues",
+      "rock",
+      "exotic"
+    ],
+    "description": "Suspended fourth tension resolving naturally to major.",
+    "baseFret": 9
+  },
+  {
+    "name": "C# Add 9",
+    "root": "C#",
+    "type": "add9",
+    "intervals": [
+      0,
+      4,
+      7,
+      14
+    ],
+    "fretPositions": [
+      -1,
+      4,
+      6,
+      8,
+      6,
+      4
+    ],
+    "fingerPositions": [
+      0,
+      1,
+      2,
+      4,
+      3,
+      1
+    ],
+    "audioFile": null,
+    "difficulty": 3,
+    "displayName": "C#add9",
+    "aliases": [],
+    "tags": [
+      "standard",
+      "rock",
+      "exotic"
+    ],
+    "description": "Major triad colored with a bright ninth.",
+    "baseFret": 4,
+    "voicingName": "Movable voicing"
+  },
+  {
+    "name": "C# 6",
+    "root": "C#",
+    "type": "sixth",
+    "intervals": [
+      0,
+      4,
+      7,
+      9
+    ],
+    "fretPositions": [
+      -1,
+      4,
+      6,
+      6,
+      6,
+      6
+    ],
+    "fingerPositions": [
+      0,
+      1,
+      3,
+      3,
+      3,
+      3
+    ],
+    "audioFile": null,
+    "difficulty": 3,
+    "displayName": "C#6",
+    "aliases": [],
+    "tags": [
+      "standard",
+      "jazz",
+      "blues"
+    ],
+    "description": "Swing-friendly major sixth voicing.",
+    "baseFret": 4,
+    "voicingName": "Movable voicing"
+  },
+  {
+    "name": "C# Min 6",
+    "root": "C#",
+    "type": "minor6",
+    "intervals": [
+      0,
+      3,
+      7,
+      9
+    ],
+    "fretPositions": [
+      -1,
+      4,
+      6,
+      6,
+      5,
+      6
+    ],
+    "fingerPositions": [
+      0,
+      1,
+      3,
+      4,
+      2,
+      4
+    ],
+    "audioFile": null,
+    "difficulty": 3,
+    "displayName": "C#m6",
+    "aliases": [],
+    "tags": [
+      "jazz",
+      "exotic"
+    ],
+    "description": "Minor chord with a bittersweet sixth extension.",
+    "baseFret": 4,
+    "voicingName": "Movable voicing"
+  },
+  {
+    "name": "C# 6/9",
+    "root": "C#",
+    "type": "sixth9",
+    "intervals": [
+      0,
+      4,
+      7,
+      9,
+      14
+    ],
+    "fretPositions": [
+      -1,
+      4,
+      6,
+      8,
+      6,
+      6
+    ],
+    "fingerPositions": [
+      0,
+      1,
+      2,
+      4,
+      3,
+      3
+    ],
+    "audioFile": null,
+    "difficulty": 3,
+    "displayName": "C#6/9",
+    "aliases": [],
+    "tags": [
+      "jazz",
+      "blues"
+    ],
+    "description": "Lush major sixth chord with added ninth color.",
+    "baseFret": 4,
+    "voicingName": "Movable voicing"
+  },
+  {
+    "name": "C# Dom 9",
+    "root": "C#",
+    "type": "dominant9",
+    "intervals": [
+      0,
+      4,
+      7,
+      10,
+      14
+    ],
+    "fretPositions": [
+      -1,
+      4,
+      3,
+      4,
+      4,
+      4
+    ],
+    "fingerPositions": [
+      0,
+      2,
+      1,
+      3,
+      3,
+      3
+    ],
+    "audioFile": null,
+    "difficulty": 2,
+    "displayName": "C#9",
+    "aliases": [],
+    "tags": [
+      "jazz",
+      "blues",
+      "funk"
+    ],
+    "description": "Extended dominant chord central to blues and funk comping.",
+    "baseFret": 3,
+    "voicingName": "Movable voicing"
+  },
+  {
+    "name": "C# Maj 9",
+    "root": "C#",
+    "type": "major9",
+    "intervals": [
+      0,
+      4,
+      7,
+      11,
+      14
+    ],
+    "fretPositions": [
+      -1,
+      4,
+      3,
+      5,
+      4,
+      4
+    ],
+    "fingerPositions": [
+      0,
+      2,
+      1,
+      4,
+      3,
+      3
+    ],
+    "audioFile": null,
+    "difficulty": 3,
+    "displayName": "C#maj9",
+    "aliases": [],
+    "tags": [
+      "jazz"
+    ],
+    "description": "Glossy, modern major sound with a natural ninth.",
+    "baseFret": 3,
+    "voicingName": "Movable voicing"
+  },
+  {
+    "name": "C# Min 9",
+    "root": "C#",
+    "type": "minor9",
+    "intervals": [
+      0,
+      3,
+      7,
+      10,
+      14
+    ],
+    "fretPositions": [
+      -1,
+      4,
+      2,
+      4,
+      4,
+      4
+    ],
+    "fingerPositions": [
+      0,
+      3,
+      1,
+      2,
+      2,
+      2
+    ],
+    "audioFile": null,
+    "difficulty": 3,
+    "displayName": "C#m9",
+    "aliases": [],
+    "tags": [
+      "jazz",
+      "blues"
+    ],
+    "description": "Expressive minor ninth voicing used in neo-soul and jazz.",
+    "baseFret": 2,
+    "voicingName": "Movable voicing"
+  },
+  {
+    "name": "C# Min 7b5",
+    "root": "C#",
+    "type": "halfDiminished",
+    "intervals": [
+      0,
+      3,
+      6,
+      10
+    ],
+    "fretPositions": [
+      -1,
+      4,
+      5,
+      4,
+      5,
+      -1
+    ],
+    "fingerPositions": [
+      0,
+      1,
+      3,
+      2,
+      4,
+      0
+    ],
+    "audioFile": null,
+    "difficulty": 3,
+    "displayName": "C#m7b5",
+    "aliases": [
+      "Half-Diminished",
+      "Minor 7 Flat 5"
+    ],
+    "tags": [
+      "jazz",
+      "exotic"
+    ],
+    "description": "Minor seventh flat five sonority used in ii-V-i progressions.",
+    "baseFret": 4,
+    "voicingName": "Movable voicing"
+  },
+  {
+    "name": "C# Dim 7",
+    "root": "C#",
+    "type": "diminished7",
+    "intervals": [
+      0,
+      3,
+      6,
+      9
+    ],
+    "fretPositions": [
+      -1,
+      4,
+      5,
+      3,
+      5,
+      3
+    ],
+    "fingerPositions": [
+      0,
+      2,
+      3,
+      1,
+      4,
+      1
+    ],
+    "audioFile": null,
+    "difficulty": 3,
+    "displayName": "C#dim7",
+    "aliases": [],
+    "tags": [
+      "jazz",
+      "exotic"
+    ],
+    "description": "Symmetrical diminished seventh with strong passing tension.",
+    "baseFret": 3,
+    "voicingName": "Movable voicing"
+  },
+  {
+    "name": "C# 7#9",
+    "root": "C#",
+    "type": "dominant7Sharp9",
+    "intervals": [
+      0,
+      4,
+      7,
+      10,
+      15
+    ],
+    "fretPositions": [
+      -1,
+      4,
+      3,
+      4,
+      5,
+      -1
+    ],
+    "fingerPositions": [
+      0,
+      2,
+      1,
+      3,
+      4,
+      0
+    ],
+    "audioFile": null,
+    "difficulty": 3,
+    "displayName": "C#7#9",
+    "aliases": [
+      "Hendrix Chord"
+    ],
+    "tags": [
+      "blues",
+      "jazz",
+      "rock",
+      "exotic"
+    ],
+    "description": "Altered dominant color famous in Hendrix, blues, and fusion.",
+    "baseFret": 3,
+    "voicingName": "Movable voicing"
+  },
+  {
+    "name": "C# 13",
+    "root": "C#",
+    "type": "thirteenth",
+    "intervals": [
+      0,
+      4,
+      7,
+      10,
+      14,
+      17,
+      21
+    ],
+    "fretPositions": [
+      -1,
+      4,
+      3,
+      4,
+      6,
+      6
+    ],
+    "fingerPositions": [
+      0,
+      2,
+      1,
+      3,
+      4,
+      4
+    ],
+    "audioFile": null,
+    "difficulty": 3,
+    "displayName": "C#13",
+    "aliases": [],
+    "tags": [
+      "jazz",
+      "blues",
+      "funk"
+    ],
+    "description": "Full dominant extension with a smooth thirteenth color.",
+    "baseFret": 3,
+    "voicingName": "Movable voicing"
+  },
+  {
+    "name": "C# Maj 7#11",
+    "root": "C#",
+    "type": "major7Sharp11",
+    "intervals": [
+      0,
+      4,
+      7,
+      11,
+      18
+    ],
+    "fretPositions": [
+      -1,
+      4,
+      5,
+      5,
+      6,
+      4
+    ],
+    "fingerPositions": [
+      0,
+      1,
+      2,
+      2,
+      4,
+      1
+    ],
+    "audioFile": null,
+    "difficulty": 3,
+    "displayName": "C#maj7#11",
+    "aliases": [],
+    "tags": [
+      "jazz",
+      "exotic"
+    ],
+    "description": "Lydian-flavored major seventh with raised eleventh shimmer.",
+    "baseFret": 4,
+    "voicingName": "Movable voicing"
+  },
+  {
+    "name": "C# 7b9",
+    "root": "C#",
+    "type": "dominant7Flat9",
+    "intervals": [
+      0,
+      4,
+      7,
+      10,
+      13
+    ],
+    "fretPositions": [
+      -1,
+      4,
+      3,
+      4,
+      3,
+      -1
+    ],
+    "fingerPositions": [
+      0,
+      2,
+      1,
+      3,
+      1,
+      0
+    ],
+    "audioFile": null,
+    "difficulty": 2,
+    "displayName": "C#7b9",
+    "aliases": [],
+    "tags": [
+      "jazz",
+      "exotic"
+    ],
+    "description": "Altered dominant with a dramatic flat ninth bite.",
+    "baseFret": 3,
+    "voicingName": "Movable voicing"
+  },
+  {
+    "name": "C# Min 11",
+    "root": "C#",
+    "type": "minor11",
+    "intervals": [
+      0,
+      3,
+      7,
+      10,
+      14,
+      17
+    ],
+    "fretPositions": [
+      -1,
+      4,
+      4,
+      4,
+      5,
+      4
+    ],
+    "fingerPositions": [
+      0,
+      1,
+      1,
+      1,
+      2,
+      1
+    ],
+    "audioFile": null,
+    "difficulty": 3,
+    "displayName": "C#m11",
+    "aliases": [],
+    "tags": [
+      "jazz",
+      "blues"
+    ],
+    "description": "Modern minor extension blending ninth and eleventh color.",
+    "baseFret": 4,
+    "voicingName": "Movable voicing"
+  },
+  {
+    "name": "C# 5",
+    "root": "C#",
+    "type": "power5",
+    "intervals": [
+      0,
+      7
+    ],
+    "fretPositions": [
+      -1,
+      4,
+      6,
+      6,
+      -1,
+      4
+    ],
+    "fingerPositions": [
+      0,
+      1,
+      3,
+      4,
+      0,
+      1
+    ],
+    "audioFile": null,
+    "difficulty": 2,
+    "displayName": "C#5",
+    "aliases": [
+      "Power Chord"
+    ],
+    "tags": [
+      "power",
+      "rock",
+      "blues"
+    ],
+    "description": "Root-and-fifth rock voicing with no third.",
+    "baseFret": 4,
+    "voicingName": "Movable voicing"
   },
   {
     "name": "D Major",
@@ -535,7 +1873,14 @@
       2
     ],
     "audioFile": null,
-    "difficulty": 1
+    "difficulty": 1,
+    "displayName": "D",
+    "aliases": [],
+    "tags": [
+      "standard"
+    ],
+    "description": "Bright, stable major triad.",
+    "baseFret": 1
   },
   {
     "name": "D Minor",
@@ -563,7 +1908,14 @@
       1
     ],
     "audioFile": null,
-    "difficulty": 1
+    "difficulty": 1,
+    "displayName": "Dm",
+    "aliases": [],
+    "tags": [
+      "standard"
+    ],
+    "description": "Darker minor triad with a melancholic color.",
+    "baseFret": 1
   },
   {
     "name": "D Dom 7",
@@ -592,7 +1944,16 @@
       3
     ],
     "audioFile": null,
-    "difficulty": 2
+    "difficulty": 2,
+    "displayName": "D7",
+    "aliases": [],
+    "tags": [
+      "standard",
+      "blues",
+      "rock"
+    ],
+    "description": "Classic tension chord for blues, rock, and cadences.",
+    "baseFret": 1
   },
   {
     "name": "D Maj 7",
@@ -621,7 +1982,15 @@
       3
     ],
     "audioFile": null,
-    "difficulty": 2
+    "difficulty": 2,
+    "displayName": "Dmaj7",
+    "aliases": [],
+    "tags": [
+      "standard",
+      "jazz"
+    ],
+    "description": "Smooth and sophisticated major seventh sound.",
+    "baseFret": 1
   },
   {
     "name": "D Min 7",
@@ -650,7 +2019,16 @@
       1
     ],
     "audioFile": null,
-    "difficulty": 1
+    "difficulty": 1,
+    "displayName": "Dm7",
+    "aliases": [],
+    "tags": [
+      "standard",
+      "jazz",
+      "blues"
+    ],
+    "description": "Warm, modal minor seventh used across jazz and soul.",
+    "baseFret": 1
   },
   {
     "name": "D Dim",
@@ -678,7 +2056,16 @@
       0
     ],
     "audioFile": null,
-    "difficulty": 4
+    "difficulty": 4,
+    "displayName": "Ddim",
+    "aliases": [],
+    "tags": [
+      "standard",
+      "jazz",
+      "exotic"
+    ],
+    "description": "Tense diminished triad with unstable color.",
+    "baseFret": 5
   },
   {
     "name": "D Aug",
@@ -706,7 +2093,16 @@
       0
     ],
     "audioFile": null,
-    "difficulty": 4
+    "difficulty": 4,
+    "displayName": "Daug",
+    "aliases": [],
+    "tags": [
+      "standard",
+      "jazz",
+      "exotic"
+    ],
+    "description": "Expansive augmented triad with raised fifth tension.",
+    "baseFret": 5
   },
   {
     "name": "D Sus2",
@@ -734,7 +2130,15 @@
       1
     ],
     "audioFile": null,
-    "difficulty": 3
+    "difficulty": 3,
+    "displayName": "Dsus2",
+    "aliases": [],
+    "tags": [
+      "standard",
+      "exotic"
+    ],
+    "description": "Open suspended color replacing the third with a second.",
+    "baseFret": 10
   },
   {
     "name": "D Sus4",
@@ -762,7 +2166,610 @@
       1
     ],
     "audioFile": null,
-    "difficulty": 3
+    "difficulty": 3,
+    "displayName": "Dsus4",
+    "aliases": [],
+    "tags": [
+      "standard",
+      "blues",
+      "rock",
+      "exotic"
+    ],
+    "description": "Suspended fourth tension resolving naturally to major.",
+    "baseFret": 10
+  },
+  {
+    "name": "D Add 9",
+    "root": "D",
+    "type": "add9",
+    "intervals": [
+      0,
+      4,
+      7,
+      14
+    ],
+    "fretPositions": [
+      -1,
+      5,
+      7,
+      9,
+      7,
+      5
+    ],
+    "fingerPositions": [
+      0,
+      1,
+      2,
+      4,
+      3,
+      1
+    ],
+    "audioFile": null,
+    "difficulty": 3,
+    "displayName": "Dadd9",
+    "aliases": [],
+    "tags": [
+      "standard",
+      "rock",
+      "exotic"
+    ],
+    "description": "Major triad colored with a bright ninth.",
+    "baseFret": 5,
+    "voicingName": "Movable voicing"
+  },
+  {
+    "name": "D 6",
+    "root": "D",
+    "type": "sixth",
+    "intervals": [
+      0,
+      4,
+      7,
+      9
+    ],
+    "fretPositions": [
+      -1,
+      5,
+      7,
+      7,
+      7,
+      7
+    ],
+    "fingerPositions": [
+      0,
+      1,
+      3,
+      3,
+      3,
+      3
+    ],
+    "audioFile": null,
+    "difficulty": 3,
+    "displayName": "D6",
+    "aliases": [],
+    "tags": [
+      "standard",
+      "jazz",
+      "blues"
+    ],
+    "description": "Swing-friendly major sixth voicing.",
+    "baseFret": 5,
+    "voicingName": "Movable voicing"
+  },
+  {
+    "name": "D Min 6",
+    "root": "D",
+    "type": "minor6",
+    "intervals": [
+      0,
+      3,
+      7,
+      9
+    ],
+    "fretPositions": [
+      -1,
+      5,
+      7,
+      7,
+      6,
+      7
+    ],
+    "fingerPositions": [
+      0,
+      1,
+      3,
+      4,
+      2,
+      4
+    ],
+    "audioFile": null,
+    "difficulty": 3,
+    "displayName": "Dm6",
+    "aliases": [],
+    "tags": [
+      "jazz",
+      "exotic"
+    ],
+    "description": "Minor chord with a bittersweet sixth extension.",
+    "baseFret": 5,
+    "voicingName": "Movable voicing"
+  },
+  {
+    "name": "D 6/9",
+    "root": "D",
+    "type": "sixth9",
+    "intervals": [
+      0,
+      4,
+      7,
+      9,
+      14
+    ],
+    "fretPositions": [
+      -1,
+      5,
+      7,
+      9,
+      7,
+      7
+    ],
+    "fingerPositions": [
+      0,
+      1,
+      2,
+      4,
+      3,
+      3
+    ],
+    "audioFile": null,
+    "difficulty": 3,
+    "displayName": "D6/9",
+    "aliases": [],
+    "tags": [
+      "jazz",
+      "blues"
+    ],
+    "description": "Lush major sixth chord with added ninth color.",
+    "baseFret": 5,
+    "voicingName": "Movable voicing"
+  },
+  {
+    "name": "D Dom 9",
+    "root": "D",
+    "type": "dominant9",
+    "intervals": [
+      0,
+      4,
+      7,
+      10,
+      14
+    ],
+    "fretPositions": [
+      -1,
+      5,
+      4,
+      5,
+      5,
+      5
+    ],
+    "fingerPositions": [
+      0,
+      2,
+      1,
+      3,
+      3,
+      3
+    ],
+    "audioFile": null,
+    "difficulty": 2,
+    "displayName": "D9",
+    "aliases": [],
+    "tags": [
+      "jazz",
+      "blues",
+      "funk"
+    ],
+    "description": "Extended dominant chord central to blues and funk comping.",
+    "baseFret": 4,
+    "voicingName": "Movable voicing"
+  },
+  {
+    "name": "D Maj 9",
+    "root": "D",
+    "type": "major9",
+    "intervals": [
+      0,
+      4,
+      7,
+      11,
+      14
+    ],
+    "fretPositions": [
+      -1,
+      5,
+      4,
+      6,
+      5,
+      5
+    ],
+    "fingerPositions": [
+      0,
+      2,
+      1,
+      4,
+      3,
+      3
+    ],
+    "audioFile": null,
+    "difficulty": 3,
+    "displayName": "Dmaj9",
+    "aliases": [],
+    "tags": [
+      "jazz"
+    ],
+    "description": "Glossy, modern major sound with a natural ninth.",
+    "baseFret": 4,
+    "voicingName": "Movable voicing"
+  },
+  {
+    "name": "D Min 9",
+    "root": "D",
+    "type": "minor9",
+    "intervals": [
+      0,
+      3,
+      7,
+      10,
+      14
+    ],
+    "fretPositions": [
+      -1,
+      5,
+      3,
+      5,
+      5,
+      5
+    ],
+    "fingerPositions": [
+      0,
+      3,
+      1,
+      2,
+      2,
+      2
+    ],
+    "audioFile": null,
+    "difficulty": 3,
+    "displayName": "Dm9",
+    "aliases": [],
+    "tags": [
+      "jazz",
+      "blues"
+    ],
+    "description": "Expressive minor ninth voicing used in neo-soul and jazz.",
+    "baseFret": 3,
+    "voicingName": "Movable voicing"
+  },
+  {
+    "name": "D Min 7b5",
+    "root": "D",
+    "type": "halfDiminished",
+    "intervals": [
+      0,
+      3,
+      6,
+      10
+    ],
+    "fretPositions": [
+      -1,
+      5,
+      6,
+      5,
+      6,
+      -1
+    ],
+    "fingerPositions": [
+      0,
+      1,
+      3,
+      2,
+      4,
+      0
+    ],
+    "audioFile": null,
+    "difficulty": 3,
+    "displayName": "Dm7b5",
+    "aliases": [
+      "Half-Diminished",
+      "Minor 7 Flat 5"
+    ],
+    "tags": [
+      "jazz",
+      "exotic"
+    ],
+    "description": "Minor seventh flat five sonority used in ii-V-i progressions.",
+    "baseFret": 5,
+    "voicingName": "Movable voicing"
+  },
+  {
+    "name": "D Dim 7",
+    "root": "D",
+    "type": "diminished7",
+    "intervals": [
+      0,
+      3,
+      6,
+      9
+    ],
+    "fretPositions": [
+      -1,
+      5,
+      6,
+      4,
+      6,
+      4
+    ],
+    "fingerPositions": [
+      0,
+      2,
+      3,
+      1,
+      4,
+      1
+    ],
+    "audioFile": null,
+    "difficulty": 3,
+    "displayName": "Ddim7",
+    "aliases": [],
+    "tags": [
+      "jazz",
+      "exotic"
+    ],
+    "description": "Symmetrical diminished seventh with strong passing tension.",
+    "baseFret": 4,
+    "voicingName": "Movable voicing"
+  },
+  {
+    "name": "D 7#9",
+    "root": "D",
+    "type": "dominant7Sharp9",
+    "intervals": [
+      0,
+      4,
+      7,
+      10,
+      15
+    ],
+    "fretPositions": [
+      -1,
+      5,
+      4,
+      5,
+      6,
+      -1
+    ],
+    "fingerPositions": [
+      0,
+      2,
+      1,
+      3,
+      4,
+      0
+    ],
+    "audioFile": null,
+    "difficulty": 3,
+    "displayName": "D7#9",
+    "aliases": [
+      "Hendrix Chord"
+    ],
+    "tags": [
+      "blues",
+      "jazz",
+      "rock",
+      "exotic"
+    ],
+    "description": "Altered dominant color famous in Hendrix, blues, and fusion.",
+    "baseFret": 4,
+    "voicingName": "Movable voicing"
+  },
+  {
+    "name": "D 13",
+    "root": "D",
+    "type": "thirteenth",
+    "intervals": [
+      0,
+      4,
+      7,
+      10,
+      14,
+      17,
+      21
+    ],
+    "fretPositions": [
+      -1,
+      5,
+      4,
+      5,
+      7,
+      7
+    ],
+    "fingerPositions": [
+      0,
+      2,
+      1,
+      3,
+      4,
+      4
+    ],
+    "audioFile": null,
+    "difficulty": 3,
+    "displayName": "D13",
+    "aliases": [],
+    "tags": [
+      "jazz",
+      "blues",
+      "funk"
+    ],
+    "description": "Full dominant extension with a smooth thirteenth color.",
+    "baseFret": 4,
+    "voicingName": "Movable voicing"
+  },
+  {
+    "name": "D Maj 7#11",
+    "root": "D",
+    "type": "major7Sharp11",
+    "intervals": [
+      0,
+      4,
+      7,
+      11,
+      18
+    ],
+    "fretPositions": [
+      -1,
+      5,
+      6,
+      6,
+      7,
+      5
+    ],
+    "fingerPositions": [
+      0,
+      1,
+      2,
+      2,
+      4,
+      1
+    ],
+    "audioFile": null,
+    "difficulty": 3,
+    "displayName": "Dmaj7#11",
+    "aliases": [],
+    "tags": [
+      "jazz",
+      "exotic"
+    ],
+    "description": "Lydian-flavored major seventh with raised eleventh shimmer.",
+    "baseFret": 5,
+    "voicingName": "Movable voicing"
+  },
+  {
+    "name": "D 7b9",
+    "root": "D",
+    "type": "dominant7Flat9",
+    "intervals": [
+      0,
+      4,
+      7,
+      10,
+      13
+    ],
+    "fretPositions": [
+      -1,
+      5,
+      4,
+      5,
+      4,
+      -1
+    ],
+    "fingerPositions": [
+      0,
+      2,
+      1,
+      3,
+      1,
+      0
+    ],
+    "audioFile": null,
+    "difficulty": 2,
+    "displayName": "D7b9",
+    "aliases": [],
+    "tags": [
+      "jazz",
+      "exotic"
+    ],
+    "description": "Altered dominant with a dramatic flat ninth bite.",
+    "baseFret": 4,
+    "voicingName": "Movable voicing"
+  },
+  {
+    "name": "D Min 11",
+    "root": "D",
+    "type": "minor11",
+    "intervals": [
+      0,
+      3,
+      7,
+      10,
+      14,
+      17
+    ],
+    "fretPositions": [
+      -1,
+      5,
+      5,
+      5,
+      6,
+      5
+    ],
+    "fingerPositions": [
+      0,
+      1,
+      1,
+      1,
+      2,
+      1
+    ],
+    "audioFile": null,
+    "difficulty": 3,
+    "displayName": "Dm11",
+    "aliases": [],
+    "tags": [
+      "jazz",
+      "blues"
+    ],
+    "description": "Modern minor extension blending ninth and eleventh color.",
+    "baseFret": 5,
+    "voicingName": "Movable voicing"
+  },
+  {
+    "name": "D 5",
+    "root": "D",
+    "type": "power5",
+    "intervals": [
+      0,
+      7
+    ],
+    "fretPositions": [
+      -1,
+      5,
+      7,
+      7,
+      -1,
+      5
+    ],
+    "fingerPositions": [
+      0,
+      1,
+      3,
+      4,
+      0,
+      1
+    ],
+    "audioFile": null,
+    "difficulty": 2,
+    "displayName": "D5",
+    "aliases": [
+      "Power Chord"
+    ],
+    "tags": [
+      "power",
+      "rock",
+      "blues"
+    ],
+    "description": "Root-and-fifth rock voicing with no third.",
+    "baseFret": 5,
+    "voicingName": "Movable voicing"
   },
   {
     "name": "D# Major",
@@ -790,7 +2797,14 @@
       1
     ],
     "audioFile": null,
-    "difficulty": 3
+    "difficulty": 3,
+    "displayName": "D#",
+    "aliases": [],
+    "tags": [
+      "standard"
+    ],
+    "description": "Bright, stable major triad.",
+    "baseFret": 6
   },
   {
     "name": "D# Minor",
@@ -818,7 +2832,14 @@
       1
     ],
     "audioFile": null,
-    "difficulty": 3
+    "difficulty": 3,
+    "displayName": "D#m",
+    "aliases": [],
+    "tags": [
+      "standard"
+    ],
+    "description": "Darker minor triad with a melancholic color.",
+    "baseFret": 6
   },
   {
     "name": "D# Dom 7",
@@ -847,7 +2868,16 @@
       1
     ],
     "audioFile": null,
-    "difficulty": 3
+    "difficulty": 3,
+    "displayName": "D#7",
+    "aliases": [],
+    "tags": [
+      "standard",
+      "blues",
+      "rock"
+    ],
+    "description": "Classic tension chord for blues, rock, and cadences.",
+    "baseFret": 6
   },
   {
     "name": "D# Maj 7",
@@ -876,7 +2906,15 @@
       1
     ],
     "audioFile": null,
-    "difficulty": 3
+    "difficulty": 3,
+    "displayName": "D#maj7",
+    "aliases": [],
+    "tags": [
+      "standard",
+      "jazz"
+    ],
+    "description": "Smooth and sophisticated major seventh sound.",
+    "baseFret": 6
   },
   {
     "name": "D# Min 7",
@@ -905,7 +2943,16 @@
       1
     ],
     "audioFile": null,
-    "difficulty": 3
+    "difficulty": 3,
+    "displayName": "D#m7",
+    "aliases": [],
+    "tags": [
+      "standard",
+      "jazz",
+      "blues"
+    ],
+    "description": "Warm, modal minor seventh used across jazz and soul.",
+    "baseFret": 6
   },
   {
     "name": "D# Dim",
@@ -933,7 +2980,16 @@
       0
     ],
     "audioFile": null,
-    "difficulty": 4
+    "difficulty": 4,
+    "displayName": "D#dim",
+    "aliases": [],
+    "tags": [
+      "standard",
+      "jazz",
+      "exotic"
+    ],
+    "description": "Tense diminished triad with unstable color.",
+    "baseFret": 6
   },
   {
     "name": "D# Aug",
@@ -961,7 +3017,16 @@
       0
     ],
     "audioFile": null,
-    "difficulty": 4
+    "difficulty": 4,
+    "displayName": "D#aug",
+    "aliases": [],
+    "tags": [
+      "standard",
+      "jazz",
+      "exotic"
+    ],
+    "description": "Expansive augmented triad with raised fifth tension.",
+    "baseFret": 6
   },
   {
     "name": "D# Sus2",
@@ -989,7 +3054,15 @@
       1
     ],
     "audioFile": null,
-    "difficulty": 3
+    "difficulty": 3,
+    "displayName": "D#sus2",
+    "aliases": [],
+    "tags": [
+      "standard",
+      "exotic"
+    ],
+    "description": "Open suspended color replacing the third with a second.",
+    "baseFret": 11
   },
   {
     "name": "D# Sus4",
@@ -1017,7 +3090,610 @@
       1
     ],
     "audioFile": null,
-    "difficulty": 3
+    "difficulty": 3,
+    "displayName": "D#sus4",
+    "aliases": [],
+    "tags": [
+      "standard",
+      "blues",
+      "rock",
+      "exotic"
+    ],
+    "description": "Suspended fourth tension resolving naturally to major.",
+    "baseFret": 11
+  },
+  {
+    "name": "D# Add 9",
+    "root": "D#",
+    "type": "add9",
+    "intervals": [
+      0,
+      4,
+      7,
+      14
+    ],
+    "fretPositions": [
+      -1,
+      6,
+      8,
+      10,
+      8,
+      6
+    ],
+    "fingerPositions": [
+      0,
+      1,
+      2,
+      4,
+      3,
+      1
+    ],
+    "audioFile": null,
+    "difficulty": 3,
+    "displayName": "D#add9",
+    "aliases": [],
+    "tags": [
+      "standard",
+      "rock",
+      "exotic"
+    ],
+    "description": "Major triad colored with a bright ninth.",
+    "baseFret": 6,
+    "voicingName": "Movable voicing"
+  },
+  {
+    "name": "D# 6",
+    "root": "D#",
+    "type": "sixth",
+    "intervals": [
+      0,
+      4,
+      7,
+      9
+    ],
+    "fretPositions": [
+      -1,
+      6,
+      8,
+      8,
+      8,
+      8
+    ],
+    "fingerPositions": [
+      0,
+      1,
+      3,
+      3,
+      3,
+      3
+    ],
+    "audioFile": null,
+    "difficulty": 3,
+    "displayName": "D#6",
+    "aliases": [],
+    "tags": [
+      "standard",
+      "jazz",
+      "blues"
+    ],
+    "description": "Swing-friendly major sixth voicing.",
+    "baseFret": 6,
+    "voicingName": "Movable voicing"
+  },
+  {
+    "name": "D# Min 6",
+    "root": "D#",
+    "type": "minor6",
+    "intervals": [
+      0,
+      3,
+      7,
+      9
+    ],
+    "fretPositions": [
+      -1,
+      6,
+      8,
+      8,
+      7,
+      8
+    ],
+    "fingerPositions": [
+      0,
+      1,
+      3,
+      4,
+      2,
+      4
+    ],
+    "audioFile": null,
+    "difficulty": 3,
+    "displayName": "D#m6",
+    "aliases": [],
+    "tags": [
+      "jazz",
+      "exotic"
+    ],
+    "description": "Minor chord with a bittersweet sixth extension.",
+    "baseFret": 6,
+    "voicingName": "Movable voicing"
+  },
+  {
+    "name": "D# 6/9",
+    "root": "D#",
+    "type": "sixth9",
+    "intervals": [
+      0,
+      4,
+      7,
+      9,
+      14
+    ],
+    "fretPositions": [
+      -1,
+      6,
+      8,
+      10,
+      8,
+      8
+    ],
+    "fingerPositions": [
+      0,
+      1,
+      2,
+      4,
+      3,
+      3
+    ],
+    "audioFile": null,
+    "difficulty": 3,
+    "displayName": "D#6/9",
+    "aliases": [],
+    "tags": [
+      "jazz",
+      "blues"
+    ],
+    "description": "Lush major sixth chord with added ninth color.",
+    "baseFret": 6,
+    "voicingName": "Movable voicing"
+  },
+  {
+    "name": "D# Dom 9",
+    "root": "D#",
+    "type": "dominant9",
+    "intervals": [
+      0,
+      4,
+      7,
+      10,
+      14
+    ],
+    "fretPositions": [
+      -1,
+      6,
+      5,
+      6,
+      6,
+      6
+    ],
+    "fingerPositions": [
+      0,
+      2,
+      1,
+      3,
+      3,
+      3
+    ],
+    "audioFile": null,
+    "difficulty": 2,
+    "displayName": "D#9",
+    "aliases": [],
+    "tags": [
+      "jazz",
+      "blues",
+      "funk"
+    ],
+    "description": "Extended dominant chord central to blues and funk comping.",
+    "baseFret": 5,
+    "voicingName": "Movable voicing"
+  },
+  {
+    "name": "D# Maj 9",
+    "root": "D#",
+    "type": "major9",
+    "intervals": [
+      0,
+      4,
+      7,
+      11,
+      14
+    ],
+    "fretPositions": [
+      -1,
+      6,
+      5,
+      7,
+      6,
+      6
+    ],
+    "fingerPositions": [
+      0,
+      2,
+      1,
+      4,
+      3,
+      3
+    ],
+    "audioFile": null,
+    "difficulty": 3,
+    "displayName": "D#maj9",
+    "aliases": [],
+    "tags": [
+      "jazz"
+    ],
+    "description": "Glossy, modern major sound with a natural ninth.",
+    "baseFret": 5,
+    "voicingName": "Movable voicing"
+  },
+  {
+    "name": "D# Min 9",
+    "root": "D#",
+    "type": "minor9",
+    "intervals": [
+      0,
+      3,
+      7,
+      10,
+      14
+    ],
+    "fretPositions": [
+      -1,
+      6,
+      4,
+      6,
+      6,
+      6
+    ],
+    "fingerPositions": [
+      0,
+      3,
+      1,
+      2,
+      2,
+      2
+    ],
+    "audioFile": null,
+    "difficulty": 3,
+    "displayName": "D#m9",
+    "aliases": [],
+    "tags": [
+      "jazz",
+      "blues"
+    ],
+    "description": "Expressive minor ninth voicing used in neo-soul and jazz.",
+    "baseFret": 4,
+    "voicingName": "Movable voicing"
+  },
+  {
+    "name": "D# Min 7b5",
+    "root": "D#",
+    "type": "halfDiminished",
+    "intervals": [
+      0,
+      3,
+      6,
+      10
+    ],
+    "fretPositions": [
+      -1,
+      6,
+      7,
+      6,
+      7,
+      -1
+    ],
+    "fingerPositions": [
+      0,
+      1,
+      3,
+      2,
+      4,
+      0
+    ],
+    "audioFile": null,
+    "difficulty": 3,
+    "displayName": "D#m7b5",
+    "aliases": [
+      "Half-Diminished",
+      "Minor 7 Flat 5"
+    ],
+    "tags": [
+      "jazz",
+      "exotic"
+    ],
+    "description": "Minor seventh flat five sonority used in ii-V-i progressions.",
+    "baseFret": 6,
+    "voicingName": "Movable voicing"
+  },
+  {
+    "name": "D# Dim 7",
+    "root": "D#",
+    "type": "diminished7",
+    "intervals": [
+      0,
+      3,
+      6,
+      9
+    ],
+    "fretPositions": [
+      -1,
+      6,
+      7,
+      5,
+      7,
+      5
+    ],
+    "fingerPositions": [
+      0,
+      2,
+      3,
+      1,
+      4,
+      1
+    ],
+    "audioFile": null,
+    "difficulty": 3,
+    "displayName": "D#dim7",
+    "aliases": [],
+    "tags": [
+      "jazz",
+      "exotic"
+    ],
+    "description": "Symmetrical diminished seventh with strong passing tension.",
+    "baseFret": 5,
+    "voicingName": "Movable voicing"
+  },
+  {
+    "name": "D# 7#9",
+    "root": "D#",
+    "type": "dominant7Sharp9",
+    "intervals": [
+      0,
+      4,
+      7,
+      10,
+      15
+    ],
+    "fretPositions": [
+      -1,
+      6,
+      5,
+      6,
+      7,
+      -1
+    ],
+    "fingerPositions": [
+      0,
+      2,
+      1,
+      3,
+      4,
+      0
+    ],
+    "audioFile": null,
+    "difficulty": 3,
+    "displayName": "D#7#9",
+    "aliases": [
+      "Hendrix Chord"
+    ],
+    "tags": [
+      "blues",
+      "jazz",
+      "rock",
+      "exotic"
+    ],
+    "description": "Altered dominant color famous in Hendrix, blues, and fusion.",
+    "baseFret": 5,
+    "voicingName": "Movable voicing"
+  },
+  {
+    "name": "D# 13",
+    "root": "D#",
+    "type": "thirteenth",
+    "intervals": [
+      0,
+      4,
+      7,
+      10,
+      14,
+      17,
+      21
+    ],
+    "fretPositions": [
+      -1,
+      6,
+      5,
+      6,
+      8,
+      8
+    ],
+    "fingerPositions": [
+      0,
+      2,
+      1,
+      3,
+      4,
+      4
+    ],
+    "audioFile": null,
+    "difficulty": 3,
+    "displayName": "D#13",
+    "aliases": [],
+    "tags": [
+      "jazz",
+      "blues",
+      "funk"
+    ],
+    "description": "Full dominant extension with a smooth thirteenth color.",
+    "baseFret": 5,
+    "voicingName": "Movable voicing"
+  },
+  {
+    "name": "D# Maj 7#11",
+    "root": "D#",
+    "type": "major7Sharp11",
+    "intervals": [
+      0,
+      4,
+      7,
+      11,
+      18
+    ],
+    "fretPositions": [
+      -1,
+      6,
+      7,
+      7,
+      8,
+      6
+    ],
+    "fingerPositions": [
+      0,
+      1,
+      2,
+      2,
+      4,
+      1
+    ],
+    "audioFile": null,
+    "difficulty": 3,
+    "displayName": "D#maj7#11",
+    "aliases": [],
+    "tags": [
+      "jazz",
+      "exotic"
+    ],
+    "description": "Lydian-flavored major seventh with raised eleventh shimmer.",
+    "baseFret": 6,
+    "voicingName": "Movable voicing"
+  },
+  {
+    "name": "D# 7b9",
+    "root": "D#",
+    "type": "dominant7Flat9",
+    "intervals": [
+      0,
+      4,
+      7,
+      10,
+      13
+    ],
+    "fretPositions": [
+      -1,
+      6,
+      5,
+      6,
+      5,
+      -1
+    ],
+    "fingerPositions": [
+      0,
+      2,
+      1,
+      3,
+      1,
+      0
+    ],
+    "audioFile": null,
+    "difficulty": 2,
+    "displayName": "D#7b9",
+    "aliases": [],
+    "tags": [
+      "jazz",
+      "exotic"
+    ],
+    "description": "Altered dominant with a dramatic flat ninth bite.",
+    "baseFret": 5,
+    "voicingName": "Movable voicing"
+  },
+  {
+    "name": "D# Min 11",
+    "root": "D#",
+    "type": "minor11",
+    "intervals": [
+      0,
+      3,
+      7,
+      10,
+      14,
+      17
+    ],
+    "fretPositions": [
+      -1,
+      6,
+      6,
+      6,
+      7,
+      6
+    ],
+    "fingerPositions": [
+      0,
+      1,
+      1,
+      1,
+      2,
+      1
+    ],
+    "audioFile": null,
+    "difficulty": 3,
+    "displayName": "D#m11",
+    "aliases": [],
+    "tags": [
+      "jazz",
+      "blues"
+    ],
+    "description": "Modern minor extension blending ninth and eleventh color.",
+    "baseFret": 6,
+    "voicingName": "Movable voicing"
+  },
+  {
+    "name": "D# 5",
+    "root": "D#",
+    "type": "power5",
+    "intervals": [
+      0,
+      7
+    ],
+    "fretPositions": [
+      -1,
+      6,
+      8,
+      8,
+      -1,
+      6
+    ],
+    "fingerPositions": [
+      0,
+      1,
+      3,
+      4,
+      0,
+      1
+    ],
+    "audioFile": null,
+    "difficulty": 2,
+    "displayName": "D#5",
+    "aliases": [
+      "Power Chord"
+    ],
+    "tags": [
+      "power",
+      "rock",
+      "blues"
+    ],
+    "description": "Root-and-fifth rock voicing with no third.",
+    "baseFret": 6,
+    "voicingName": "Movable voicing"
   },
   {
     "name": "E Major",
@@ -1045,7 +3721,14 @@
       0
     ],
     "audioFile": null,
-    "difficulty": 1
+    "difficulty": 1,
+    "displayName": "E",
+    "aliases": [],
+    "tags": [
+      "standard"
+    ],
+    "description": "Bright, stable major triad.",
+    "baseFret": 1
   },
   {
     "name": "E Minor",
@@ -1073,7 +3756,14 @@
       0
     ],
     "audioFile": null,
-    "difficulty": 1
+    "difficulty": 1,
+    "displayName": "Em",
+    "aliases": [],
+    "tags": [
+      "standard"
+    ],
+    "description": "Darker minor triad with a melancholic color.",
+    "baseFret": 1
   },
   {
     "name": "E Dom 7",
@@ -1102,7 +3792,16 @@
       0
     ],
     "audioFile": null,
-    "difficulty": 1
+    "difficulty": 1,
+    "displayName": "E7",
+    "aliases": [],
+    "tags": [
+      "standard",
+      "blues",
+      "rock"
+    ],
+    "description": "Classic tension chord for blues, rock, and cadences.",
+    "baseFret": 1
   },
   {
     "name": "E Maj 7",
@@ -1131,7 +3830,15 @@
       0
     ],
     "audioFile": null,
-    "difficulty": 2
+    "difficulty": 2,
+    "displayName": "Emaj7",
+    "aliases": [],
+    "tags": [
+      "standard",
+      "jazz"
+    ],
+    "description": "Smooth and sophisticated major seventh sound.",
+    "baseFret": 1
   },
   {
     "name": "E Min 7",
@@ -1160,7 +3867,16 @@
       0
     ],
     "audioFile": null,
-    "difficulty": 1
+    "difficulty": 1,
+    "displayName": "Em7",
+    "aliases": [],
+    "tags": [
+      "standard",
+      "jazz",
+      "blues"
+    ],
+    "description": "Warm, modal minor seventh used across jazz and soul.",
+    "baseFret": 1
   },
   {
     "name": "E Dim",
@@ -1188,7 +3904,16 @@
       0
     ],
     "audioFile": null,
-    "difficulty": 3
+    "difficulty": 3,
+    "displayName": "Edim",
+    "aliases": [],
+    "tags": [
+      "standard",
+      "jazz",
+      "exotic"
+    ],
+    "description": "Tense diminished triad with unstable color.",
+    "baseFret": 1
   },
   {
     "name": "E Aug",
@@ -1216,7 +3941,16 @@
       0
     ],
     "audioFile": null,
-    "difficulty": 3
+    "difficulty": 3,
+    "displayName": "Eaug",
+    "aliases": [],
+    "tags": [
+      "standard",
+      "jazz",
+      "exotic"
+    ],
+    "description": "Expansive augmented triad with raised fifth tension.",
+    "baseFret": 1
   },
   {
     "name": "E Sus2",
@@ -1244,7 +3978,15 @@
       0
     ],
     "audioFile": null,
-    "difficulty": 2
+    "difficulty": 2,
+    "displayName": "Esus2",
+    "aliases": [],
+    "tags": [
+      "standard",
+      "exotic"
+    ],
+    "description": "Open suspended color replacing the third with a second.",
+    "baseFret": 1
   },
   {
     "name": "E Sus4",
@@ -1272,7 +4014,610 @@
       0
     ],
     "audioFile": null,
-    "difficulty": 1
+    "difficulty": 1,
+    "displayName": "Esus4",
+    "aliases": [],
+    "tags": [
+      "standard",
+      "blues",
+      "rock",
+      "exotic"
+    ],
+    "description": "Suspended fourth tension resolving naturally to major.",
+    "baseFret": 1
+  },
+  {
+    "name": "E Add 9",
+    "root": "E",
+    "type": "add9",
+    "intervals": [
+      0,
+      4,
+      7,
+      14
+    ],
+    "fretPositions": [
+      -1,
+      7,
+      9,
+      11,
+      9,
+      7
+    ],
+    "fingerPositions": [
+      0,
+      1,
+      2,
+      4,
+      3,
+      1
+    ],
+    "audioFile": null,
+    "difficulty": 3,
+    "displayName": "Eadd9",
+    "aliases": [],
+    "tags": [
+      "standard",
+      "rock",
+      "exotic"
+    ],
+    "description": "Major triad colored with a bright ninth.",
+    "baseFret": 7,
+    "voicingName": "Movable voicing"
+  },
+  {
+    "name": "E 6",
+    "root": "E",
+    "type": "sixth",
+    "intervals": [
+      0,
+      4,
+      7,
+      9
+    ],
+    "fretPositions": [
+      -1,
+      7,
+      9,
+      9,
+      9,
+      9
+    ],
+    "fingerPositions": [
+      0,
+      1,
+      3,
+      3,
+      3,
+      3
+    ],
+    "audioFile": null,
+    "difficulty": 3,
+    "displayName": "E6",
+    "aliases": [],
+    "tags": [
+      "standard",
+      "jazz",
+      "blues"
+    ],
+    "description": "Swing-friendly major sixth voicing.",
+    "baseFret": 7,
+    "voicingName": "Movable voicing"
+  },
+  {
+    "name": "E Min 6",
+    "root": "E",
+    "type": "minor6",
+    "intervals": [
+      0,
+      3,
+      7,
+      9
+    ],
+    "fretPositions": [
+      -1,
+      7,
+      9,
+      9,
+      8,
+      9
+    ],
+    "fingerPositions": [
+      0,
+      1,
+      3,
+      4,
+      2,
+      4
+    ],
+    "audioFile": null,
+    "difficulty": 3,
+    "displayName": "Em6",
+    "aliases": [],
+    "tags": [
+      "jazz",
+      "exotic"
+    ],
+    "description": "Minor chord with a bittersweet sixth extension.",
+    "baseFret": 7,
+    "voicingName": "Movable voicing"
+  },
+  {
+    "name": "E 6/9",
+    "root": "E",
+    "type": "sixth9",
+    "intervals": [
+      0,
+      4,
+      7,
+      9,
+      14
+    ],
+    "fretPositions": [
+      -1,
+      7,
+      9,
+      11,
+      9,
+      9
+    ],
+    "fingerPositions": [
+      0,
+      1,
+      2,
+      4,
+      3,
+      3
+    ],
+    "audioFile": null,
+    "difficulty": 3,
+    "displayName": "E6/9",
+    "aliases": [],
+    "tags": [
+      "jazz",
+      "blues"
+    ],
+    "description": "Lush major sixth chord with added ninth color.",
+    "baseFret": 7,
+    "voicingName": "Movable voicing"
+  },
+  {
+    "name": "E Dom 9",
+    "root": "E",
+    "type": "dominant9",
+    "intervals": [
+      0,
+      4,
+      7,
+      10,
+      14
+    ],
+    "fretPositions": [
+      -1,
+      7,
+      6,
+      7,
+      7,
+      7
+    ],
+    "fingerPositions": [
+      0,
+      2,
+      1,
+      3,
+      3,
+      3
+    ],
+    "audioFile": null,
+    "difficulty": 2,
+    "displayName": "E9",
+    "aliases": [],
+    "tags": [
+      "jazz",
+      "blues",
+      "funk"
+    ],
+    "description": "Extended dominant chord central to blues and funk comping.",
+    "baseFret": 6,
+    "voicingName": "Movable voicing"
+  },
+  {
+    "name": "E Maj 9",
+    "root": "E",
+    "type": "major9",
+    "intervals": [
+      0,
+      4,
+      7,
+      11,
+      14
+    ],
+    "fretPositions": [
+      -1,
+      7,
+      6,
+      8,
+      7,
+      7
+    ],
+    "fingerPositions": [
+      0,
+      2,
+      1,
+      4,
+      3,
+      3
+    ],
+    "audioFile": null,
+    "difficulty": 3,
+    "displayName": "Emaj9",
+    "aliases": [],
+    "tags": [
+      "jazz"
+    ],
+    "description": "Glossy, modern major sound with a natural ninth.",
+    "baseFret": 6,
+    "voicingName": "Movable voicing"
+  },
+  {
+    "name": "E Min 9",
+    "root": "E",
+    "type": "minor9",
+    "intervals": [
+      0,
+      3,
+      7,
+      10,
+      14
+    ],
+    "fretPositions": [
+      -1,
+      7,
+      5,
+      7,
+      7,
+      7
+    ],
+    "fingerPositions": [
+      0,
+      3,
+      1,
+      2,
+      2,
+      2
+    ],
+    "audioFile": null,
+    "difficulty": 3,
+    "displayName": "Em9",
+    "aliases": [],
+    "tags": [
+      "jazz",
+      "blues"
+    ],
+    "description": "Expressive minor ninth voicing used in neo-soul and jazz.",
+    "baseFret": 5,
+    "voicingName": "Movable voicing"
+  },
+  {
+    "name": "E Min 7b5",
+    "root": "E",
+    "type": "halfDiminished",
+    "intervals": [
+      0,
+      3,
+      6,
+      10
+    ],
+    "fretPositions": [
+      -1,
+      7,
+      8,
+      7,
+      8,
+      -1
+    ],
+    "fingerPositions": [
+      0,
+      1,
+      3,
+      2,
+      4,
+      0
+    ],
+    "audioFile": null,
+    "difficulty": 3,
+    "displayName": "Em7b5",
+    "aliases": [
+      "Half-Diminished",
+      "Minor 7 Flat 5"
+    ],
+    "tags": [
+      "jazz",
+      "exotic"
+    ],
+    "description": "Minor seventh flat five sonority used in ii-V-i progressions.",
+    "baseFret": 7,
+    "voicingName": "Movable voicing"
+  },
+  {
+    "name": "E Dim 7",
+    "root": "E",
+    "type": "diminished7",
+    "intervals": [
+      0,
+      3,
+      6,
+      9
+    ],
+    "fretPositions": [
+      -1,
+      7,
+      8,
+      6,
+      8,
+      6
+    ],
+    "fingerPositions": [
+      0,
+      2,
+      3,
+      1,
+      4,
+      1
+    ],
+    "audioFile": null,
+    "difficulty": 3,
+    "displayName": "Edim7",
+    "aliases": [],
+    "tags": [
+      "jazz",
+      "exotic"
+    ],
+    "description": "Symmetrical diminished seventh with strong passing tension.",
+    "baseFret": 6,
+    "voicingName": "Movable voicing"
+  },
+  {
+    "name": "E 7#9",
+    "root": "E",
+    "type": "dominant7Sharp9",
+    "intervals": [
+      0,
+      4,
+      7,
+      10,
+      15
+    ],
+    "fretPositions": [
+      -1,
+      7,
+      6,
+      7,
+      8,
+      -1
+    ],
+    "fingerPositions": [
+      0,
+      2,
+      1,
+      3,
+      4,
+      0
+    ],
+    "audioFile": null,
+    "difficulty": 3,
+    "displayName": "E7#9",
+    "aliases": [
+      "Hendrix Chord"
+    ],
+    "tags": [
+      "blues",
+      "jazz",
+      "rock",
+      "exotic"
+    ],
+    "description": "Altered dominant color famous in Hendrix, blues, and fusion.",
+    "baseFret": 6,
+    "voicingName": "Movable voicing"
+  },
+  {
+    "name": "E 13",
+    "root": "E",
+    "type": "thirteenth",
+    "intervals": [
+      0,
+      4,
+      7,
+      10,
+      14,
+      17,
+      21
+    ],
+    "fretPositions": [
+      -1,
+      7,
+      6,
+      7,
+      9,
+      9
+    ],
+    "fingerPositions": [
+      0,
+      2,
+      1,
+      3,
+      4,
+      4
+    ],
+    "audioFile": null,
+    "difficulty": 3,
+    "displayName": "E13",
+    "aliases": [],
+    "tags": [
+      "jazz",
+      "blues",
+      "funk"
+    ],
+    "description": "Full dominant extension with a smooth thirteenth color.",
+    "baseFret": 6,
+    "voicingName": "Movable voicing"
+  },
+  {
+    "name": "E Maj 7#11",
+    "root": "E",
+    "type": "major7Sharp11",
+    "intervals": [
+      0,
+      4,
+      7,
+      11,
+      18
+    ],
+    "fretPositions": [
+      -1,
+      7,
+      8,
+      8,
+      9,
+      7
+    ],
+    "fingerPositions": [
+      0,
+      1,
+      2,
+      2,
+      4,
+      1
+    ],
+    "audioFile": null,
+    "difficulty": 3,
+    "displayName": "Emaj7#11",
+    "aliases": [],
+    "tags": [
+      "jazz",
+      "exotic"
+    ],
+    "description": "Lydian-flavored major seventh with raised eleventh shimmer.",
+    "baseFret": 7,
+    "voicingName": "Movable voicing"
+  },
+  {
+    "name": "E 7b9",
+    "root": "E",
+    "type": "dominant7Flat9",
+    "intervals": [
+      0,
+      4,
+      7,
+      10,
+      13
+    ],
+    "fretPositions": [
+      -1,
+      7,
+      6,
+      7,
+      6,
+      -1
+    ],
+    "fingerPositions": [
+      0,
+      2,
+      1,
+      3,
+      1,
+      0
+    ],
+    "audioFile": null,
+    "difficulty": 2,
+    "displayName": "E7b9",
+    "aliases": [],
+    "tags": [
+      "jazz",
+      "exotic"
+    ],
+    "description": "Altered dominant with a dramatic flat ninth bite.",
+    "baseFret": 6,
+    "voicingName": "Movable voicing"
+  },
+  {
+    "name": "E Min 11",
+    "root": "E",
+    "type": "minor11",
+    "intervals": [
+      0,
+      3,
+      7,
+      10,
+      14,
+      17
+    ],
+    "fretPositions": [
+      -1,
+      7,
+      7,
+      7,
+      8,
+      7
+    ],
+    "fingerPositions": [
+      0,
+      1,
+      1,
+      1,
+      2,
+      1
+    ],
+    "audioFile": null,
+    "difficulty": 3,
+    "displayName": "Em11",
+    "aliases": [],
+    "tags": [
+      "jazz",
+      "blues"
+    ],
+    "description": "Modern minor extension blending ninth and eleventh color.",
+    "baseFret": 7,
+    "voicingName": "Movable voicing"
+  },
+  {
+    "name": "E 5",
+    "root": "E",
+    "type": "power5",
+    "intervals": [
+      0,
+      7
+    ],
+    "fretPositions": [
+      -1,
+      7,
+      9,
+      9,
+      -1,
+      7
+    ],
+    "fingerPositions": [
+      0,
+      1,
+      3,
+      4,
+      0,
+      1
+    ],
+    "audioFile": null,
+    "difficulty": 2,
+    "displayName": "E5",
+    "aliases": [
+      "Power Chord"
+    ],
+    "tags": [
+      "power",
+      "rock",
+      "blues"
+    ],
+    "description": "Root-and-fifth rock voicing with no third.",
+    "baseFret": 7,
+    "voicingName": "Movable voicing"
   },
   {
     "name": "F Major",
@@ -1300,7 +4645,14 @@
       1
     ],
     "audioFile": null,
-    "difficulty": 3
+    "difficulty": 3,
+    "displayName": "F",
+    "aliases": [],
+    "tags": [
+      "standard"
+    ],
+    "description": "Bright, stable major triad.",
+    "baseFret": 1
   },
   {
     "name": "F Minor",
@@ -1328,7 +4680,14 @@
       1
     ],
     "audioFile": null,
-    "difficulty": 3
+    "difficulty": 3,
+    "displayName": "Fm",
+    "aliases": [],
+    "tags": [
+      "standard"
+    ],
+    "description": "Darker minor triad with a melancholic color.",
+    "baseFret": 1
   },
   {
     "name": "F Dom 7",
@@ -1357,7 +4716,16 @@
       1
     ],
     "audioFile": null,
-    "difficulty": 3
+    "difficulty": 3,
+    "displayName": "F7",
+    "aliases": [],
+    "tags": [
+      "standard",
+      "blues",
+      "rock"
+    ],
+    "description": "Classic tension chord for blues, rock, and cadences.",
+    "baseFret": 1
   },
   {
     "name": "F Maj 7",
@@ -1386,7 +4754,15 @@
       0
     ],
     "audioFile": null,
-    "difficulty": 3
+    "difficulty": 3,
+    "displayName": "Fmaj7",
+    "aliases": [],
+    "tags": [
+      "standard",
+      "jazz"
+    ],
+    "description": "Smooth and sophisticated major seventh sound.",
+    "baseFret": 1
   },
   {
     "name": "F Min 7",
@@ -1415,7 +4791,16 @@
       1
     ],
     "audioFile": null,
-    "difficulty": 3
+    "difficulty": 3,
+    "displayName": "Fm7",
+    "aliases": [],
+    "tags": [
+      "standard",
+      "jazz",
+      "blues"
+    ],
+    "description": "Warm, modal minor seventh used across jazz and soul.",
+    "baseFret": 1
   },
   {
     "name": "F Dim",
@@ -1443,7 +4828,16 @@
       0
     ],
     "audioFile": null,
-    "difficulty": 4
+    "difficulty": 4,
+    "displayName": "Fdim",
+    "aliases": [],
+    "tags": [
+      "standard",
+      "jazz",
+      "exotic"
+    ],
+    "description": "Tense diminished triad with unstable color.",
+    "baseFret": 8
   },
   {
     "name": "F Aug",
@@ -1471,7 +4865,16 @@
       0
     ],
     "audioFile": null,
-    "difficulty": 4
+    "difficulty": 4,
+    "displayName": "Faug",
+    "aliases": [],
+    "tags": [
+      "standard",
+      "jazz",
+      "exotic"
+    ],
+    "description": "Expansive augmented triad with raised fifth tension.",
+    "baseFret": 8
   },
   {
     "name": "F Sus2",
@@ -1499,7 +4902,15 @@
       1
     ],
     "audioFile": null,
-    "difficulty": 3
+    "difficulty": 3,
+    "displayName": "Fsus2",
+    "aliases": [],
+    "tags": [
+      "standard",
+      "exotic"
+    ],
+    "description": "Open suspended color replacing the third with a second.",
+    "baseFret": 1
   },
   {
     "name": "F Sus4",
@@ -1527,7 +4938,610 @@
       1
     ],
     "audioFile": null,
-    "difficulty": 3
+    "difficulty": 3,
+    "displayName": "Fsus4",
+    "aliases": [],
+    "tags": [
+      "standard",
+      "blues",
+      "rock",
+      "exotic"
+    ],
+    "description": "Suspended fourth tension resolving naturally to major.",
+    "baseFret": 1
+  },
+  {
+    "name": "F Add 9",
+    "root": "F",
+    "type": "add9",
+    "intervals": [
+      0,
+      4,
+      7,
+      14
+    ],
+    "fretPositions": [
+      -1,
+      8,
+      10,
+      12,
+      10,
+      8
+    ],
+    "fingerPositions": [
+      0,
+      1,
+      2,
+      4,
+      3,
+      1
+    ],
+    "audioFile": null,
+    "difficulty": 3,
+    "displayName": "Fadd9",
+    "aliases": [],
+    "tags": [
+      "standard",
+      "rock",
+      "exotic"
+    ],
+    "description": "Major triad colored with a bright ninth.",
+    "baseFret": 8,
+    "voicingName": "Movable voicing"
+  },
+  {
+    "name": "F 6",
+    "root": "F",
+    "type": "sixth",
+    "intervals": [
+      0,
+      4,
+      7,
+      9
+    ],
+    "fretPositions": [
+      -1,
+      8,
+      10,
+      10,
+      10,
+      10
+    ],
+    "fingerPositions": [
+      0,
+      1,
+      3,
+      3,
+      3,
+      3
+    ],
+    "audioFile": null,
+    "difficulty": 3,
+    "displayName": "F6",
+    "aliases": [],
+    "tags": [
+      "standard",
+      "jazz",
+      "blues"
+    ],
+    "description": "Swing-friendly major sixth voicing.",
+    "baseFret": 8,
+    "voicingName": "Movable voicing"
+  },
+  {
+    "name": "F Min 6",
+    "root": "F",
+    "type": "minor6",
+    "intervals": [
+      0,
+      3,
+      7,
+      9
+    ],
+    "fretPositions": [
+      -1,
+      8,
+      10,
+      10,
+      9,
+      10
+    ],
+    "fingerPositions": [
+      0,
+      1,
+      3,
+      4,
+      2,
+      4
+    ],
+    "audioFile": null,
+    "difficulty": 3,
+    "displayName": "Fm6",
+    "aliases": [],
+    "tags": [
+      "jazz",
+      "exotic"
+    ],
+    "description": "Minor chord with a bittersweet sixth extension.",
+    "baseFret": 8,
+    "voicingName": "Movable voicing"
+  },
+  {
+    "name": "F 6/9",
+    "root": "F",
+    "type": "sixth9",
+    "intervals": [
+      0,
+      4,
+      7,
+      9,
+      14
+    ],
+    "fretPositions": [
+      -1,
+      8,
+      10,
+      12,
+      10,
+      10
+    ],
+    "fingerPositions": [
+      0,
+      1,
+      2,
+      4,
+      3,
+      3
+    ],
+    "audioFile": null,
+    "difficulty": 3,
+    "displayName": "F6/9",
+    "aliases": [],
+    "tags": [
+      "jazz",
+      "blues"
+    ],
+    "description": "Lush major sixth chord with added ninth color.",
+    "baseFret": 8,
+    "voicingName": "Movable voicing"
+  },
+  {
+    "name": "F Dom 9",
+    "root": "F",
+    "type": "dominant9",
+    "intervals": [
+      0,
+      4,
+      7,
+      10,
+      14
+    ],
+    "fretPositions": [
+      -1,
+      8,
+      7,
+      8,
+      8,
+      8
+    ],
+    "fingerPositions": [
+      0,
+      2,
+      1,
+      3,
+      3,
+      3
+    ],
+    "audioFile": null,
+    "difficulty": 2,
+    "displayName": "F9",
+    "aliases": [],
+    "tags": [
+      "jazz",
+      "blues",
+      "funk"
+    ],
+    "description": "Extended dominant chord central to blues and funk comping.",
+    "baseFret": 7,
+    "voicingName": "Movable voicing"
+  },
+  {
+    "name": "F Maj 9",
+    "root": "F",
+    "type": "major9",
+    "intervals": [
+      0,
+      4,
+      7,
+      11,
+      14
+    ],
+    "fretPositions": [
+      -1,
+      8,
+      7,
+      9,
+      8,
+      8
+    ],
+    "fingerPositions": [
+      0,
+      2,
+      1,
+      4,
+      3,
+      3
+    ],
+    "audioFile": null,
+    "difficulty": 3,
+    "displayName": "Fmaj9",
+    "aliases": [],
+    "tags": [
+      "jazz"
+    ],
+    "description": "Glossy, modern major sound with a natural ninth.",
+    "baseFret": 7,
+    "voicingName": "Movable voicing"
+  },
+  {
+    "name": "F Min 9",
+    "root": "F",
+    "type": "minor9",
+    "intervals": [
+      0,
+      3,
+      7,
+      10,
+      14
+    ],
+    "fretPositions": [
+      -1,
+      8,
+      6,
+      8,
+      8,
+      8
+    ],
+    "fingerPositions": [
+      0,
+      3,
+      1,
+      2,
+      2,
+      2
+    ],
+    "audioFile": null,
+    "difficulty": 3,
+    "displayName": "Fm9",
+    "aliases": [],
+    "tags": [
+      "jazz",
+      "blues"
+    ],
+    "description": "Expressive minor ninth voicing used in neo-soul and jazz.",
+    "baseFret": 6,
+    "voicingName": "Movable voicing"
+  },
+  {
+    "name": "F Min 7b5",
+    "root": "F",
+    "type": "halfDiminished",
+    "intervals": [
+      0,
+      3,
+      6,
+      10
+    ],
+    "fretPositions": [
+      -1,
+      8,
+      9,
+      8,
+      9,
+      -1
+    ],
+    "fingerPositions": [
+      0,
+      1,
+      3,
+      2,
+      4,
+      0
+    ],
+    "audioFile": null,
+    "difficulty": 3,
+    "displayName": "Fm7b5",
+    "aliases": [
+      "Half-Diminished",
+      "Minor 7 Flat 5"
+    ],
+    "tags": [
+      "jazz",
+      "exotic"
+    ],
+    "description": "Minor seventh flat five sonority used in ii-V-i progressions.",
+    "baseFret": 8,
+    "voicingName": "Movable voicing"
+  },
+  {
+    "name": "F Dim 7",
+    "root": "F",
+    "type": "diminished7",
+    "intervals": [
+      0,
+      3,
+      6,
+      9
+    ],
+    "fretPositions": [
+      -1,
+      8,
+      9,
+      7,
+      9,
+      7
+    ],
+    "fingerPositions": [
+      0,
+      2,
+      3,
+      1,
+      4,
+      1
+    ],
+    "audioFile": null,
+    "difficulty": 3,
+    "displayName": "Fdim7",
+    "aliases": [],
+    "tags": [
+      "jazz",
+      "exotic"
+    ],
+    "description": "Symmetrical diminished seventh with strong passing tension.",
+    "baseFret": 7,
+    "voicingName": "Movable voicing"
+  },
+  {
+    "name": "F 7#9",
+    "root": "F",
+    "type": "dominant7Sharp9",
+    "intervals": [
+      0,
+      4,
+      7,
+      10,
+      15
+    ],
+    "fretPositions": [
+      -1,
+      8,
+      7,
+      8,
+      9,
+      -1
+    ],
+    "fingerPositions": [
+      0,
+      2,
+      1,
+      3,
+      4,
+      0
+    ],
+    "audioFile": null,
+    "difficulty": 3,
+    "displayName": "F7#9",
+    "aliases": [
+      "Hendrix Chord"
+    ],
+    "tags": [
+      "blues",
+      "jazz",
+      "rock",
+      "exotic"
+    ],
+    "description": "Altered dominant color famous in Hendrix, blues, and fusion.",
+    "baseFret": 7,
+    "voicingName": "Movable voicing"
+  },
+  {
+    "name": "F 13",
+    "root": "F",
+    "type": "thirteenth",
+    "intervals": [
+      0,
+      4,
+      7,
+      10,
+      14,
+      17,
+      21
+    ],
+    "fretPositions": [
+      -1,
+      8,
+      7,
+      8,
+      10,
+      10
+    ],
+    "fingerPositions": [
+      0,
+      2,
+      1,
+      3,
+      4,
+      4
+    ],
+    "audioFile": null,
+    "difficulty": 3,
+    "displayName": "F13",
+    "aliases": [],
+    "tags": [
+      "jazz",
+      "blues",
+      "funk"
+    ],
+    "description": "Full dominant extension with a smooth thirteenth color.",
+    "baseFret": 7,
+    "voicingName": "Movable voicing"
+  },
+  {
+    "name": "F Maj 7#11",
+    "root": "F",
+    "type": "major7Sharp11",
+    "intervals": [
+      0,
+      4,
+      7,
+      11,
+      18
+    ],
+    "fretPositions": [
+      -1,
+      8,
+      9,
+      9,
+      10,
+      8
+    ],
+    "fingerPositions": [
+      0,
+      1,
+      2,
+      2,
+      4,
+      1
+    ],
+    "audioFile": null,
+    "difficulty": 3,
+    "displayName": "Fmaj7#11",
+    "aliases": [],
+    "tags": [
+      "jazz",
+      "exotic"
+    ],
+    "description": "Lydian-flavored major seventh with raised eleventh shimmer.",
+    "baseFret": 8,
+    "voicingName": "Movable voicing"
+  },
+  {
+    "name": "F 7b9",
+    "root": "F",
+    "type": "dominant7Flat9",
+    "intervals": [
+      0,
+      4,
+      7,
+      10,
+      13
+    ],
+    "fretPositions": [
+      -1,
+      8,
+      7,
+      8,
+      7,
+      -1
+    ],
+    "fingerPositions": [
+      0,
+      2,
+      1,
+      3,
+      1,
+      0
+    ],
+    "audioFile": null,
+    "difficulty": 2,
+    "displayName": "F7b9",
+    "aliases": [],
+    "tags": [
+      "jazz",
+      "exotic"
+    ],
+    "description": "Altered dominant with a dramatic flat ninth bite.",
+    "baseFret": 7,
+    "voicingName": "Movable voicing"
+  },
+  {
+    "name": "F Min 11",
+    "root": "F",
+    "type": "minor11",
+    "intervals": [
+      0,
+      3,
+      7,
+      10,
+      14,
+      17
+    ],
+    "fretPositions": [
+      -1,
+      8,
+      8,
+      8,
+      9,
+      8
+    ],
+    "fingerPositions": [
+      0,
+      1,
+      1,
+      1,
+      2,
+      1
+    ],
+    "audioFile": null,
+    "difficulty": 3,
+    "displayName": "Fm11",
+    "aliases": [],
+    "tags": [
+      "jazz",
+      "blues"
+    ],
+    "description": "Modern minor extension blending ninth and eleventh color.",
+    "baseFret": 8,
+    "voicingName": "Movable voicing"
+  },
+  {
+    "name": "F 5",
+    "root": "F",
+    "type": "power5",
+    "intervals": [
+      0,
+      7
+    ],
+    "fretPositions": [
+      -1,
+      8,
+      10,
+      10,
+      -1,
+      8
+    ],
+    "fingerPositions": [
+      0,
+      1,
+      3,
+      4,
+      0,
+      1
+    ],
+    "audioFile": null,
+    "difficulty": 2,
+    "displayName": "F5",
+    "aliases": [
+      "Power Chord"
+    ],
+    "tags": [
+      "power",
+      "rock",
+      "blues"
+    ],
+    "description": "Root-and-fifth rock voicing with no third.",
+    "baseFret": 8,
+    "voicingName": "Movable voicing"
   },
   {
     "name": "F# Major",
@@ -1555,7 +5569,14 @@
       1
     ],
     "audioFile": null,
-    "difficulty": 3
+    "difficulty": 3,
+    "displayName": "F#",
+    "aliases": [],
+    "tags": [
+      "standard"
+    ],
+    "description": "Bright, stable major triad.",
+    "baseFret": 9
   },
   {
     "name": "F# Minor",
@@ -1583,7 +5604,14 @@
       1
     ],
     "audioFile": null,
-    "difficulty": 3
+    "difficulty": 3,
+    "displayName": "F#m",
+    "aliases": [],
+    "tags": [
+      "standard"
+    ],
+    "description": "Darker minor triad with a melancholic color.",
+    "baseFret": 9
   },
   {
     "name": "F# Dom 7",
@@ -1612,7 +5640,16 @@
       1
     ],
     "audioFile": null,
-    "difficulty": 3
+    "difficulty": 3,
+    "displayName": "F#7",
+    "aliases": [],
+    "tags": [
+      "standard",
+      "blues",
+      "rock"
+    ],
+    "description": "Classic tension chord for blues, rock, and cadences.",
+    "baseFret": 9
   },
   {
     "name": "F# Maj 7",
@@ -1641,7 +5678,15 @@
       1
     ],
     "audioFile": null,
-    "difficulty": 3
+    "difficulty": 3,
+    "displayName": "F#maj7",
+    "aliases": [],
+    "tags": [
+      "standard",
+      "jazz"
+    ],
+    "description": "Smooth and sophisticated major seventh sound.",
+    "baseFret": 9
   },
   {
     "name": "F# Min 7",
@@ -1670,7 +5715,16 @@
       1
     ],
     "audioFile": null,
-    "difficulty": 3
+    "difficulty": 3,
+    "displayName": "F#m7",
+    "aliases": [],
+    "tags": [
+      "standard",
+      "jazz",
+      "blues"
+    ],
+    "description": "Warm, modal minor seventh used across jazz and soul.",
+    "baseFret": 9
   },
   {
     "name": "F# Dim",
@@ -1698,7 +5752,16 @@
       0
     ],
     "audioFile": null,
-    "difficulty": 4
+    "difficulty": 4,
+    "displayName": "F#dim",
+    "aliases": [],
+    "tags": [
+      "standard",
+      "jazz",
+      "exotic"
+    ],
+    "description": "Tense diminished triad with unstable color.",
+    "baseFret": 9
   },
   {
     "name": "F# Aug",
@@ -1726,7 +5789,16 @@
       0
     ],
     "audioFile": null,
-    "difficulty": 4
+    "difficulty": 4,
+    "displayName": "F#aug",
+    "aliases": [],
+    "tags": [
+      "standard",
+      "jazz",
+      "exotic"
+    ],
+    "description": "Expansive augmented triad with raised fifth tension.",
+    "baseFret": 9
   },
   {
     "name": "F# Sus2",
@@ -1754,7 +5826,15 @@
       1
     ],
     "audioFile": null,
-    "difficulty": 3
+    "difficulty": 3,
+    "displayName": "F#sus2",
+    "aliases": [],
+    "tags": [
+      "standard",
+      "exotic"
+    ],
+    "description": "Open suspended color replacing the third with a second.",
+    "baseFret": 2
   },
   {
     "name": "F# Sus4",
@@ -1782,7 +5862,610 @@
       1
     ],
     "audioFile": null,
-    "difficulty": 3
+    "difficulty": 3,
+    "displayName": "F#sus4",
+    "aliases": [],
+    "tags": [
+      "standard",
+      "blues",
+      "rock",
+      "exotic"
+    ],
+    "description": "Suspended fourth tension resolving naturally to major.",
+    "baseFret": 2
+  },
+  {
+    "name": "F# Add 9",
+    "root": "F#",
+    "type": "add9",
+    "intervals": [
+      0,
+      4,
+      7,
+      14
+    ],
+    "fretPositions": [
+      -1,
+      9,
+      11,
+      13,
+      11,
+      9
+    ],
+    "fingerPositions": [
+      0,
+      1,
+      2,
+      4,
+      3,
+      1
+    ],
+    "audioFile": null,
+    "difficulty": 3,
+    "displayName": "F#add9",
+    "aliases": [],
+    "tags": [
+      "standard",
+      "rock",
+      "exotic"
+    ],
+    "description": "Major triad colored with a bright ninth.",
+    "baseFret": 9,
+    "voicingName": "Movable voicing"
+  },
+  {
+    "name": "F# 6",
+    "root": "F#",
+    "type": "sixth",
+    "intervals": [
+      0,
+      4,
+      7,
+      9
+    ],
+    "fretPositions": [
+      -1,
+      9,
+      11,
+      11,
+      11,
+      11
+    ],
+    "fingerPositions": [
+      0,
+      1,
+      3,
+      3,
+      3,
+      3
+    ],
+    "audioFile": null,
+    "difficulty": 3,
+    "displayName": "F#6",
+    "aliases": [],
+    "tags": [
+      "standard",
+      "jazz",
+      "blues"
+    ],
+    "description": "Swing-friendly major sixth voicing.",
+    "baseFret": 9,
+    "voicingName": "Movable voicing"
+  },
+  {
+    "name": "F# Min 6",
+    "root": "F#",
+    "type": "minor6",
+    "intervals": [
+      0,
+      3,
+      7,
+      9
+    ],
+    "fretPositions": [
+      -1,
+      9,
+      11,
+      11,
+      10,
+      11
+    ],
+    "fingerPositions": [
+      0,
+      1,
+      3,
+      4,
+      2,
+      4
+    ],
+    "audioFile": null,
+    "difficulty": 3,
+    "displayName": "F#m6",
+    "aliases": [],
+    "tags": [
+      "jazz",
+      "exotic"
+    ],
+    "description": "Minor chord with a bittersweet sixth extension.",
+    "baseFret": 9,
+    "voicingName": "Movable voicing"
+  },
+  {
+    "name": "F# 6/9",
+    "root": "F#",
+    "type": "sixth9",
+    "intervals": [
+      0,
+      4,
+      7,
+      9,
+      14
+    ],
+    "fretPositions": [
+      -1,
+      9,
+      11,
+      13,
+      11,
+      11
+    ],
+    "fingerPositions": [
+      0,
+      1,
+      2,
+      4,
+      3,
+      3
+    ],
+    "audioFile": null,
+    "difficulty": 3,
+    "displayName": "F#6/9",
+    "aliases": [],
+    "tags": [
+      "jazz",
+      "blues"
+    ],
+    "description": "Lush major sixth chord with added ninth color.",
+    "baseFret": 9,
+    "voicingName": "Movable voicing"
+  },
+  {
+    "name": "F# Dom 9",
+    "root": "F#",
+    "type": "dominant9",
+    "intervals": [
+      0,
+      4,
+      7,
+      10,
+      14
+    ],
+    "fretPositions": [
+      -1,
+      9,
+      8,
+      9,
+      9,
+      9
+    ],
+    "fingerPositions": [
+      0,
+      2,
+      1,
+      3,
+      3,
+      3
+    ],
+    "audioFile": null,
+    "difficulty": 2,
+    "displayName": "F#9",
+    "aliases": [],
+    "tags": [
+      "jazz",
+      "blues",
+      "funk"
+    ],
+    "description": "Extended dominant chord central to blues and funk comping.",
+    "baseFret": 8,
+    "voicingName": "Movable voicing"
+  },
+  {
+    "name": "F# Maj 9",
+    "root": "F#",
+    "type": "major9",
+    "intervals": [
+      0,
+      4,
+      7,
+      11,
+      14
+    ],
+    "fretPositions": [
+      -1,
+      9,
+      8,
+      10,
+      9,
+      9
+    ],
+    "fingerPositions": [
+      0,
+      2,
+      1,
+      4,
+      3,
+      3
+    ],
+    "audioFile": null,
+    "difficulty": 3,
+    "displayName": "F#maj9",
+    "aliases": [],
+    "tags": [
+      "jazz"
+    ],
+    "description": "Glossy, modern major sound with a natural ninth.",
+    "baseFret": 8,
+    "voicingName": "Movable voicing"
+  },
+  {
+    "name": "F# Min 9",
+    "root": "F#",
+    "type": "minor9",
+    "intervals": [
+      0,
+      3,
+      7,
+      10,
+      14
+    ],
+    "fretPositions": [
+      -1,
+      9,
+      7,
+      9,
+      9,
+      9
+    ],
+    "fingerPositions": [
+      0,
+      3,
+      1,
+      2,
+      2,
+      2
+    ],
+    "audioFile": null,
+    "difficulty": 3,
+    "displayName": "F#m9",
+    "aliases": [],
+    "tags": [
+      "jazz",
+      "blues"
+    ],
+    "description": "Expressive minor ninth voicing used in neo-soul and jazz.",
+    "baseFret": 7,
+    "voicingName": "Movable voicing"
+  },
+  {
+    "name": "F# Min 7b5",
+    "root": "F#",
+    "type": "halfDiminished",
+    "intervals": [
+      0,
+      3,
+      6,
+      10
+    ],
+    "fretPositions": [
+      -1,
+      9,
+      10,
+      9,
+      10,
+      -1
+    ],
+    "fingerPositions": [
+      0,
+      1,
+      3,
+      2,
+      4,
+      0
+    ],
+    "audioFile": null,
+    "difficulty": 3,
+    "displayName": "F#m7b5",
+    "aliases": [
+      "Half-Diminished",
+      "Minor 7 Flat 5"
+    ],
+    "tags": [
+      "jazz",
+      "exotic"
+    ],
+    "description": "Minor seventh flat five sonority used in ii-V-i progressions.",
+    "baseFret": 9,
+    "voicingName": "Movable voicing"
+  },
+  {
+    "name": "F# Dim 7",
+    "root": "F#",
+    "type": "diminished7",
+    "intervals": [
+      0,
+      3,
+      6,
+      9
+    ],
+    "fretPositions": [
+      -1,
+      9,
+      10,
+      8,
+      10,
+      8
+    ],
+    "fingerPositions": [
+      0,
+      2,
+      3,
+      1,
+      4,
+      1
+    ],
+    "audioFile": null,
+    "difficulty": 3,
+    "displayName": "F#dim7",
+    "aliases": [],
+    "tags": [
+      "jazz",
+      "exotic"
+    ],
+    "description": "Symmetrical diminished seventh with strong passing tension.",
+    "baseFret": 8,
+    "voicingName": "Movable voicing"
+  },
+  {
+    "name": "F# 7#9",
+    "root": "F#",
+    "type": "dominant7Sharp9",
+    "intervals": [
+      0,
+      4,
+      7,
+      10,
+      15
+    ],
+    "fretPositions": [
+      -1,
+      9,
+      8,
+      9,
+      10,
+      -1
+    ],
+    "fingerPositions": [
+      0,
+      2,
+      1,
+      3,
+      4,
+      0
+    ],
+    "audioFile": null,
+    "difficulty": 3,
+    "displayName": "F#7#9",
+    "aliases": [
+      "Hendrix Chord"
+    ],
+    "tags": [
+      "blues",
+      "jazz",
+      "rock",
+      "exotic"
+    ],
+    "description": "Altered dominant color famous in Hendrix, blues, and fusion.",
+    "baseFret": 8,
+    "voicingName": "Movable voicing"
+  },
+  {
+    "name": "F# 13",
+    "root": "F#",
+    "type": "thirteenth",
+    "intervals": [
+      0,
+      4,
+      7,
+      10,
+      14,
+      17,
+      21
+    ],
+    "fretPositions": [
+      -1,
+      9,
+      8,
+      9,
+      11,
+      11
+    ],
+    "fingerPositions": [
+      0,
+      2,
+      1,
+      3,
+      4,
+      4
+    ],
+    "audioFile": null,
+    "difficulty": 3,
+    "displayName": "F#13",
+    "aliases": [],
+    "tags": [
+      "jazz",
+      "blues",
+      "funk"
+    ],
+    "description": "Full dominant extension with a smooth thirteenth color.",
+    "baseFret": 8,
+    "voicingName": "Movable voicing"
+  },
+  {
+    "name": "F# Maj 7#11",
+    "root": "F#",
+    "type": "major7Sharp11",
+    "intervals": [
+      0,
+      4,
+      7,
+      11,
+      18
+    ],
+    "fretPositions": [
+      -1,
+      9,
+      10,
+      10,
+      11,
+      9
+    ],
+    "fingerPositions": [
+      0,
+      1,
+      2,
+      2,
+      4,
+      1
+    ],
+    "audioFile": null,
+    "difficulty": 3,
+    "displayName": "F#maj7#11",
+    "aliases": [],
+    "tags": [
+      "jazz",
+      "exotic"
+    ],
+    "description": "Lydian-flavored major seventh with raised eleventh shimmer.",
+    "baseFret": 9,
+    "voicingName": "Movable voicing"
+  },
+  {
+    "name": "F# 7b9",
+    "root": "F#",
+    "type": "dominant7Flat9",
+    "intervals": [
+      0,
+      4,
+      7,
+      10,
+      13
+    ],
+    "fretPositions": [
+      -1,
+      9,
+      8,
+      9,
+      8,
+      -1
+    ],
+    "fingerPositions": [
+      0,
+      2,
+      1,
+      3,
+      1,
+      0
+    ],
+    "audioFile": null,
+    "difficulty": 2,
+    "displayName": "F#7b9",
+    "aliases": [],
+    "tags": [
+      "jazz",
+      "exotic"
+    ],
+    "description": "Altered dominant with a dramatic flat ninth bite.",
+    "baseFret": 8,
+    "voicingName": "Movable voicing"
+  },
+  {
+    "name": "F# Min 11",
+    "root": "F#",
+    "type": "minor11",
+    "intervals": [
+      0,
+      3,
+      7,
+      10,
+      14,
+      17
+    ],
+    "fretPositions": [
+      -1,
+      9,
+      9,
+      9,
+      10,
+      9
+    ],
+    "fingerPositions": [
+      0,
+      1,
+      1,
+      1,
+      2,
+      1
+    ],
+    "audioFile": null,
+    "difficulty": 3,
+    "displayName": "F#m11",
+    "aliases": [],
+    "tags": [
+      "jazz",
+      "blues"
+    ],
+    "description": "Modern minor extension blending ninth and eleventh color.",
+    "baseFret": 9,
+    "voicingName": "Movable voicing"
+  },
+  {
+    "name": "F# 5",
+    "root": "F#",
+    "type": "power5",
+    "intervals": [
+      0,
+      7
+    ],
+    "fretPositions": [
+      -1,
+      9,
+      11,
+      11,
+      -1,
+      9
+    ],
+    "fingerPositions": [
+      0,
+      1,
+      3,
+      4,
+      0,
+      1
+    ],
+    "audioFile": null,
+    "difficulty": 2,
+    "displayName": "F#5",
+    "aliases": [
+      "Power Chord"
+    ],
+    "tags": [
+      "power",
+      "rock",
+      "blues"
+    ],
+    "description": "Root-and-fifth rock voicing with no third.",
+    "baseFret": 9,
+    "voicingName": "Movable voicing"
   },
   {
     "name": "G Major",
@@ -1810,7 +6493,14 @@
       4
     ],
     "audioFile": null,
-    "difficulty": 2
+    "difficulty": 2,
+    "displayName": "G",
+    "aliases": [],
+    "tags": [
+      "standard"
+    ],
+    "description": "Bright, stable major triad.",
+    "baseFret": 1
   },
   {
     "name": "G Minor",
@@ -1838,7 +6528,14 @@
       1
     ],
     "audioFile": null,
-    "difficulty": 2
+    "difficulty": 2,
+    "displayName": "Gm",
+    "aliases": [],
+    "tags": [
+      "standard"
+    ],
+    "description": "Darker minor triad with a melancholic color.",
+    "baseFret": 3
   },
   {
     "name": "G Dom 7",
@@ -1867,7 +6564,16 @@
       1
     ],
     "audioFile": null,
-    "difficulty": 2
+    "difficulty": 2,
+    "displayName": "G7",
+    "aliases": [],
+    "tags": [
+      "standard",
+      "blues",
+      "rock"
+    ],
+    "description": "Classic tension chord for blues, rock, and cadences.",
+    "baseFret": 1
   },
   {
     "name": "G Maj 7",
@@ -1896,7 +6602,15 @@
       2
     ],
     "audioFile": null,
-    "difficulty": 2
+    "difficulty": 2,
+    "displayName": "Gmaj7",
+    "aliases": [],
+    "tags": [
+      "standard",
+      "jazz"
+    ],
+    "description": "Smooth and sophisticated major seventh sound.",
+    "baseFret": 1
   },
   {
     "name": "G Min 7",
@@ -1925,7 +6639,16 @@
       1
     ],
     "audioFile": null,
-    "difficulty": 2
+    "difficulty": 2,
+    "displayName": "Gm7",
+    "aliases": [],
+    "tags": [
+      "standard",
+      "jazz",
+      "blues"
+    ],
+    "description": "Warm, modal minor seventh used across jazz and soul.",
+    "baseFret": 3
   },
   {
     "name": "G Dim",
@@ -1953,7 +6676,16 @@
       0
     ],
     "audioFile": null,
-    "difficulty": 4
+    "difficulty": 4,
+    "displayName": "Gdim",
+    "aliases": [],
+    "tags": [
+      "standard",
+      "jazz",
+      "exotic"
+    ],
+    "description": "Tense diminished triad with unstable color.",
+    "baseFret": 10
   },
   {
     "name": "G Aug",
@@ -1981,7 +6713,16 @@
       0
     ],
     "audioFile": null,
-    "difficulty": 4
+    "difficulty": 4,
+    "displayName": "Gaug",
+    "aliases": [],
+    "tags": [
+      "standard",
+      "jazz",
+      "exotic"
+    ],
+    "description": "Expansive augmented triad with raised fifth tension.",
+    "baseFret": 10
   },
   {
     "name": "G Sus2",
@@ -2009,7 +6750,15 @@
       1
     ],
     "audioFile": null,
-    "difficulty": 3
+    "difficulty": 3,
+    "displayName": "Gsus2",
+    "aliases": [],
+    "tags": [
+      "standard",
+      "exotic"
+    ],
+    "description": "Open suspended color replacing the third with a second.",
+    "baseFret": 3
   },
   {
     "name": "G Sus4",
@@ -2037,7 +6786,610 @@
       1
     ],
     "audioFile": null,
-    "difficulty": 3
+    "difficulty": 3,
+    "displayName": "Gsus4",
+    "aliases": [],
+    "tags": [
+      "standard",
+      "blues",
+      "rock",
+      "exotic"
+    ],
+    "description": "Suspended fourth tension resolving naturally to major.",
+    "baseFret": 3
+  },
+  {
+    "name": "G Add 9",
+    "root": "G",
+    "type": "add9",
+    "intervals": [
+      0,
+      4,
+      7,
+      14
+    ],
+    "fretPositions": [
+      -1,
+      10,
+      12,
+      14,
+      12,
+      10
+    ],
+    "fingerPositions": [
+      0,
+      1,
+      2,
+      4,
+      3,
+      1
+    ],
+    "audioFile": null,
+    "difficulty": 3,
+    "displayName": "Gadd9",
+    "aliases": [],
+    "tags": [
+      "standard",
+      "rock",
+      "exotic"
+    ],
+    "description": "Major triad colored with a bright ninth.",
+    "baseFret": 10,
+    "voicingName": "Movable voicing"
+  },
+  {
+    "name": "G 6",
+    "root": "G",
+    "type": "sixth",
+    "intervals": [
+      0,
+      4,
+      7,
+      9
+    ],
+    "fretPositions": [
+      -1,
+      10,
+      12,
+      12,
+      12,
+      12
+    ],
+    "fingerPositions": [
+      0,
+      1,
+      3,
+      3,
+      3,
+      3
+    ],
+    "audioFile": null,
+    "difficulty": 3,
+    "displayName": "G6",
+    "aliases": [],
+    "tags": [
+      "standard",
+      "jazz",
+      "blues"
+    ],
+    "description": "Swing-friendly major sixth voicing.",
+    "baseFret": 10,
+    "voicingName": "Movable voicing"
+  },
+  {
+    "name": "G Min 6",
+    "root": "G",
+    "type": "minor6",
+    "intervals": [
+      0,
+      3,
+      7,
+      9
+    ],
+    "fretPositions": [
+      -1,
+      10,
+      12,
+      12,
+      11,
+      12
+    ],
+    "fingerPositions": [
+      0,
+      1,
+      3,
+      4,
+      2,
+      4
+    ],
+    "audioFile": null,
+    "difficulty": 3,
+    "displayName": "Gm6",
+    "aliases": [],
+    "tags": [
+      "jazz",
+      "exotic"
+    ],
+    "description": "Minor chord with a bittersweet sixth extension.",
+    "baseFret": 10,
+    "voicingName": "Movable voicing"
+  },
+  {
+    "name": "G 6/9",
+    "root": "G",
+    "type": "sixth9",
+    "intervals": [
+      0,
+      4,
+      7,
+      9,
+      14
+    ],
+    "fretPositions": [
+      -1,
+      10,
+      12,
+      14,
+      12,
+      12
+    ],
+    "fingerPositions": [
+      0,
+      1,
+      2,
+      4,
+      3,
+      3
+    ],
+    "audioFile": null,
+    "difficulty": 3,
+    "displayName": "G6/9",
+    "aliases": [],
+    "tags": [
+      "jazz",
+      "blues"
+    ],
+    "description": "Lush major sixth chord with added ninth color.",
+    "baseFret": 10,
+    "voicingName": "Movable voicing"
+  },
+  {
+    "name": "G Dom 9",
+    "root": "G",
+    "type": "dominant9",
+    "intervals": [
+      0,
+      4,
+      7,
+      10,
+      14
+    ],
+    "fretPositions": [
+      -1,
+      10,
+      9,
+      10,
+      10,
+      10
+    ],
+    "fingerPositions": [
+      0,
+      2,
+      1,
+      3,
+      3,
+      3
+    ],
+    "audioFile": null,
+    "difficulty": 2,
+    "displayName": "G9",
+    "aliases": [],
+    "tags": [
+      "jazz",
+      "blues",
+      "funk"
+    ],
+    "description": "Extended dominant chord central to blues and funk comping.",
+    "baseFret": 9,
+    "voicingName": "Movable voicing"
+  },
+  {
+    "name": "G Maj 9",
+    "root": "G",
+    "type": "major9",
+    "intervals": [
+      0,
+      4,
+      7,
+      11,
+      14
+    ],
+    "fretPositions": [
+      -1,
+      10,
+      9,
+      11,
+      10,
+      10
+    ],
+    "fingerPositions": [
+      0,
+      2,
+      1,
+      4,
+      3,
+      3
+    ],
+    "audioFile": null,
+    "difficulty": 3,
+    "displayName": "Gmaj9",
+    "aliases": [],
+    "tags": [
+      "jazz"
+    ],
+    "description": "Glossy, modern major sound with a natural ninth.",
+    "baseFret": 9,
+    "voicingName": "Movable voicing"
+  },
+  {
+    "name": "G Min 9",
+    "root": "G",
+    "type": "minor9",
+    "intervals": [
+      0,
+      3,
+      7,
+      10,
+      14
+    ],
+    "fretPositions": [
+      -1,
+      10,
+      8,
+      10,
+      10,
+      10
+    ],
+    "fingerPositions": [
+      0,
+      3,
+      1,
+      2,
+      2,
+      2
+    ],
+    "audioFile": null,
+    "difficulty": 3,
+    "displayName": "Gm9",
+    "aliases": [],
+    "tags": [
+      "jazz",
+      "blues"
+    ],
+    "description": "Expressive minor ninth voicing used in neo-soul and jazz.",
+    "baseFret": 8,
+    "voicingName": "Movable voicing"
+  },
+  {
+    "name": "G Min 7b5",
+    "root": "G",
+    "type": "halfDiminished",
+    "intervals": [
+      0,
+      3,
+      6,
+      10
+    ],
+    "fretPositions": [
+      -1,
+      10,
+      11,
+      10,
+      11,
+      -1
+    ],
+    "fingerPositions": [
+      0,
+      1,
+      3,
+      2,
+      4,
+      0
+    ],
+    "audioFile": null,
+    "difficulty": 3,
+    "displayName": "Gm7b5",
+    "aliases": [
+      "Half-Diminished",
+      "Minor 7 Flat 5"
+    ],
+    "tags": [
+      "jazz",
+      "exotic"
+    ],
+    "description": "Minor seventh flat five sonority used in ii-V-i progressions.",
+    "baseFret": 10,
+    "voicingName": "Movable voicing"
+  },
+  {
+    "name": "G Dim 7",
+    "root": "G",
+    "type": "diminished7",
+    "intervals": [
+      0,
+      3,
+      6,
+      9
+    ],
+    "fretPositions": [
+      -1,
+      10,
+      11,
+      9,
+      11,
+      9
+    ],
+    "fingerPositions": [
+      0,
+      2,
+      3,
+      1,
+      4,
+      1
+    ],
+    "audioFile": null,
+    "difficulty": 3,
+    "displayName": "Gdim7",
+    "aliases": [],
+    "tags": [
+      "jazz",
+      "exotic"
+    ],
+    "description": "Symmetrical diminished seventh with strong passing tension.",
+    "baseFret": 9,
+    "voicingName": "Movable voicing"
+  },
+  {
+    "name": "G 7#9",
+    "root": "G",
+    "type": "dominant7Sharp9",
+    "intervals": [
+      0,
+      4,
+      7,
+      10,
+      15
+    ],
+    "fretPositions": [
+      -1,
+      10,
+      9,
+      10,
+      11,
+      -1
+    ],
+    "fingerPositions": [
+      0,
+      2,
+      1,
+      3,
+      4,
+      0
+    ],
+    "audioFile": null,
+    "difficulty": 3,
+    "displayName": "G7#9",
+    "aliases": [
+      "Hendrix Chord"
+    ],
+    "tags": [
+      "blues",
+      "jazz",
+      "rock",
+      "exotic"
+    ],
+    "description": "Altered dominant color famous in Hendrix, blues, and fusion.",
+    "baseFret": 9,
+    "voicingName": "Movable voicing"
+  },
+  {
+    "name": "G 13",
+    "root": "G",
+    "type": "thirteenth",
+    "intervals": [
+      0,
+      4,
+      7,
+      10,
+      14,
+      17,
+      21
+    ],
+    "fretPositions": [
+      -1,
+      10,
+      9,
+      10,
+      12,
+      12
+    ],
+    "fingerPositions": [
+      0,
+      2,
+      1,
+      3,
+      4,
+      4
+    ],
+    "audioFile": null,
+    "difficulty": 3,
+    "displayName": "G13",
+    "aliases": [],
+    "tags": [
+      "jazz",
+      "blues",
+      "funk"
+    ],
+    "description": "Full dominant extension with a smooth thirteenth color.",
+    "baseFret": 9,
+    "voicingName": "Movable voicing"
+  },
+  {
+    "name": "G Maj 7#11",
+    "root": "G",
+    "type": "major7Sharp11",
+    "intervals": [
+      0,
+      4,
+      7,
+      11,
+      18
+    ],
+    "fretPositions": [
+      -1,
+      10,
+      11,
+      11,
+      12,
+      10
+    ],
+    "fingerPositions": [
+      0,
+      1,
+      2,
+      2,
+      4,
+      1
+    ],
+    "audioFile": null,
+    "difficulty": 3,
+    "displayName": "Gmaj7#11",
+    "aliases": [],
+    "tags": [
+      "jazz",
+      "exotic"
+    ],
+    "description": "Lydian-flavored major seventh with raised eleventh shimmer.",
+    "baseFret": 10,
+    "voicingName": "Movable voicing"
+  },
+  {
+    "name": "G 7b9",
+    "root": "G",
+    "type": "dominant7Flat9",
+    "intervals": [
+      0,
+      4,
+      7,
+      10,
+      13
+    ],
+    "fretPositions": [
+      -1,
+      10,
+      9,
+      10,
+      9,
+      -1
+    ],
+    "fingerPositions": [
+      0,
+      2,
+      1,
+      3,
+      1,
+      0
+    ],
+    "audioFile": null,
+    "difficulty": 2,
+    "displayName": "G7b9",
+    "aliases": [],
+    "tags": [
+      "jazz",
+      "exotic"
+    ],
+    "description": "Altered dominant with a dramatic flat ninth bite.",
+    "baseFret": 9,
+    "voicingName": "Movable voicing"
+  },
+  {
+    "name": "G Min 11",
+    "root": "G",
+    "type": "minor11",
+    "intervals": [
+      0,
+      3,
+      7,
+      10,
+      14,
+      17
+    ],
+    "fretPositions": [
+      -1,
+      10,
+      10,
+      10,
+      11,
+      10
+    ],
+    "fingerPositions": [
+      0,
+      1,
+      1,
+      1,
+      2,
+      1
+    ],
+    "audioFile": null,
+    "difficulty": 3,
+    "displayName": "Gm11",
+    "aliases": [],
+    "tags": [
+      "jazz",
+      "blues"
+    ],
+    "description": "Modern minor extension blending ninth and eleventh color.",
+    "baseFret": 10,
+    "voicingName": "Movable voicing"
+  },
+  {
+    "name": "G 5",
+    "root": "G",
+    "type": "power5",
+    "intervals": [
+      0,
+      7
+    ],
+    "fretPositions": [
+      -1,
+      10,
+      12,
+      12,
+      -1,
+      10
+    ],
+    "fingerPositions": [
+      0,
+      1,
+      3,
+      4,
+      0,
+      1
+    ],
+    "audioFile": null,
+    "difficulty": 2,
+    "displayName": "G5",
+    "aliases": [
+      "Power Chord"
+    ],
+    "tags": [
+      "power",
+      "rock",
+      "blues"
+    ],
+    "description": "Root-and-fifth rock voicing with no third.",
+    "baseFret": 10,
+    "voicingName": "Movable voicing"
   },
   {
     "name": "G# Major",
@@ -2065,7 +7417,14 @@
       1
     ],
     "audioFile": null,
-    "difficulty": 3
+    "difficulty": 3,
+    "displayName": "G#",
+    "aliases": [],
+    "tags": [
+      "standard"
+    ],
+    "description": "Bright, stable major triad.",
+    "baseFret": 11
   },
   {
     "name": "G# Minor",
@@ -2093,7 +7452,14 @@
       1
     ],
     "audioFile": null,
-    "difficulty": 3
+    "difficulty": 3,
+    "displayName": "G#m",
+    "aliases": [],
+    "tags": [
+      "standard"
+    ],
+    "description": "Darker minor triad with a melancholic color.",
+    "baseFret": 11
   },
   {
     "name": "G# Dom 7",
@@ -2122,7 +7488,16 @@
       1
     ],
     "audioFile": null,
-    "difficulty": 3
+    "difficulty": 3,
+    "displayName": "G#7",
+    "aliases": [],
+    "tags": [
+      "standard",
+      "blues",
+      "rock"
+    ],
+    "description": "Classic tension chord for blues, rock, and cadences.",
+    "baseFret": 11
   },
   {
     "name": "G# Maj 7",
@@ -2151,7 +7526,15 @@
       1
     ],
     "audioFile": null,
-    "difficulty": 3
+    "difficulty": 3,
+    "displayName": "G#maj7",
+    "aliases": [],
+    "tags": [
+      "standard",
+      "jazz"
+    ],
+    "description": "Smooth and sophisticated major seventh sound.",
+    "baseFret": 11
   },
   {
     "name": "G# Min 7",
@@ -2180,7 +7563,16 @@
       1
     ],
     "audioFile": null,
-    "difficulty": 3
+    "difficulty": 3,
+    "displayName": "G#m7",
+    "aliases": [],
+    "tags": [
+      "standard",
+      "jazz",
+      "blues"
+    ],
+    "description": "Warm, modal minor seventh used across jazz and soul.",
+    "baseFret": 11
   },
   {
     "name": "G# Dim",
@@ -2208,7 +7600,16 @@
       0
     ],
     "audioFile": null,
-    "difficulty": 4
+    "difficulty": 4,
+    "displayName": "G#dim",
+    "aliases": [],
+    "tags": [
+      "standard",
+      "jazz",
+      "exotic"
+    ],
+    "description": "Tense diminished triad with unstable color.",
+    "baseFret": 11
   },
   {
     "name": "G# Aug",
@@ -2236,7 +7637,16 @@
       0
     ],
     "audioFile": null,
-    "difficulty": 4
+    "difficulty": 4,
+    "displayName": "G#aug",
+    "aliases": [],
+    "tags": [
+      "standard",
+      "jazz",
+      "exotic"
+    ],
+    "description": "Expansive augmented triad with raised fifth tension.",
+    "baseFret": 11
   },
   {
     "name": "G# Sus2",
@@ -2264,7 +7674,15 @@
       1
     ],
     "audioFile": null,
-    "difficulty": 3
+    "difficulty": 3,
+    "displayName": "G#sus2",
+    "aliases": [],
+    "tags": [
+      "standard",
+      "exotic"
+    ],
+    "description": "Open suspended color replacing the third with a second.",
+    "baseFret": 4
   },
   {
     "name": "G# Sus4",
@@ -2292,7 +7710,610 @@
       1
     ],
     "audioFile": null,
-    "difficulty": 3
+    "difficulty": 3,
+    "displayName": "G#sus4",
+    "aliases": [],
+    "tags": [
+      "standard",
+      "blues",
+      "rock",
+      "exotic"
+    ],
+    "description": "Suspended fourth tension resolving naturally to major.",
+    "baseFret": 4
+  },
+  {
+    "name": "G# Add 9",
+    "root": "G#",
+    "type": "add9",
+    "intervals": [
+      0,
+      4,
+      7,
+      14
+    ],
+    "fretPositions": [
+      -1,
+      11,
+      13,
+      15,
+      13,
+      11
+    ],
+    "fingerPositions": [
+      0,
+      1,
+      2,
+      4,
+      3,
+      1
+    ],
+    "audioFile": null,
+    "difficulty": 3,
+    "displayName": "G#add9",
+    "aliases": [],
+    "tags": [
+      "standard",
+      "rock",
+      "exotic"
+    ],
+    "description": "Major triad colored with a bright ninth.",
+    "baseFret": 11,
+    "voicingName": "Movable voicing"
+  },
+  {
+    "name": "G# 6",
+    "root": "G#",
+    "type": "sixth",
+    "intervals": [
+      0,
+      4,
+      7,
+      9
+    ],
+    "fretPositions": [
+      -1,
+      11,
+      13,
+      13,
+      13,
+      13
+    ],
+    "fingerPositions": [
+      0,
+      1,
+      3,
+      3,
+      3,
+      3
+    ],
+    "audioFile": null,
+    "difficulty": 3,
+    "displayName": "G#6",
+    "aliases": [],
+    "tags": [
+      "standard",
+      "jazz",
+      "blues"
+    ],
+    "description": "Swing-friendly major sixth voicing.",
+    "baseFret": 11,
+    "voicingName": "Movable voicing"
+  },
+  {
+    "name": "G# Min 6",
+    "root": "G#",
+    "type": "minor6",
+    "intervals": [
+      0,
+      3,
+      7,
+      9
+    ],
+    "fretPositions": [
+      -1,
+      11,
+      13,
+      13,
+      12,
+      13
+    ],
+    "fingerPositions": [
+      0,
+      1,
+      3,
+      4,
+      2,
+      4
+    ],
+    "audioFile": null,
+    "difficulty": 3,
+    "displayName": "G#m6",
+    "aliases": [],
+    "tags": [
+      "jazz",
+      "exotic"
+    ],
+    "description": "Minor chord with a bittersweet sixth extension.",
+    "baseFret": 11,
+    "voicingName": "Movable voicing"
+  },
+  {
+    "name": "G# 6/9",
+    "root": "G#",
+    "type": "sixth9",
+    "intervals": [
+      0,
+      4,
+      7,
+      9,
+      14
+    ],
+    "fretPositions": [
+      -1,
+      11,
+      13,
+      15,
+      13,
+      13
+    ],
+    "fingerPositions": [
+      0,
+      1,
+      2,
+      4,
+      3,
+      3
+    ],
+    "audioFile": null,
+    "difficulty": 3,
+    "displayName": "G#6/9",
+    "aliases": [],
+    "tags": [
+      "jazz",
+      "blues"
+    ],
+    "description": "Lush major sixth chord with added ninth color.",
+    "baseFret": 11,
+    "voicingName": "Movable voicing"
+  },
+  {
+    "name": "G# Dom 9",
+    "root": "G#",
+    "type": "dominant9",
+    "intervals": [
+      0,
+      4,
+      7,
+      10,
+      14
+    ],
+    "fretPositions": [
+      -1,
+      11,
+      10,
+      11,
+      11,
+      11
+    ],
+    "fingerPositions": [
+      0,
+      2,
+      1,
+      3,
+      3,
+      3
+    ],
+    "audioFile": null,
+    "difficulty": 2,
+    "displayName": "G#9",
+    "aliases": [],
+    "tags": [
+      "jazz",
+      "blues",
+      "funk"
+    ],
+    "description": "Extended dominant chord central to blues and funk comping.",
+    "baseFret": 10,
+    "voicingName": "Movable voicing"
+  },
+  {
+    "name": "G# Maj 9",
+    "root": "G#",
+    "type": "major9",
+    "intervals": [
+      0,
+      4,
+      7,
+      11,
+      14
+    ],
+    "fretPositions": [
+      -1,
+      11,
+      10,
+      12,
+      11,
+      11
+    ],
+    "fingerPositions": [
+      0,
+      2,
+      1,
+      4,
+      3,
+      3
+    ],
+    "audioFile": null,
+    "difficulty": 3,
+    "displayName": "G#maj9",
+    "aliases": [],
+    "tags": [
+      "jazz"
+    ],
+    "description": "Glossy, modern major sound with a natural ninth.",
+    "baseFret": 10,
+    "voicingName": "Movable voicing"
+  },
+  {
+    "name": "G# Min 9",
+    "root": "G#",
+    "type": "minor9",
+    "intervals": [
+      0,
+      3,
+      7,
+      10,
+      14
+    ],
+    "fretPositions": [
+      -1,
+      11,
+      9,
+      11,
+      11,
+      11
+    ],
+    "fingerPositions": [
+      0,
+      3,
+      1,
+      2,
+      2,
+      2
+    ],
+    "audioFile": null,
+    "difficulty": 3,
+    "displayName": "G#m9",
+    "aliases": [],
+    "tags": [
+      "jazz",
+      "blues"
+    ],
+    "description": "Expressive minor ninth voicing used in neo-soul and jazz.",
+    "baseFret": 9,
+    "voicingName": "Movable voicing"
+  },
+  {
+    "name": "G# Min 7b5",
+    "root": "G#",
+    "type": "halfDiminished",
+    "intervals": [
+      0,
+      3,
+      6,
+      10
+    ],
+    "fretPositions": [
+      -1,
+      11,
+      12,
+      11,
+      12,
+      -1
+    ],
+    "fingerPositions": [
+      0,
+      1,
+      3,
+      2,
+      4,
+      0
+    ],
+    "audioFile": null,
+    "difficulty": 3,
+    "displayName": "G#m7b5",
+    "aliases": [
+      "Half-Diminished",
+      "Minor 7 Flat 5"
+    ],
+    "tags": [
+      "jazz",
+      "exotic"
+    ],
+    "description": "Minor seventh flat five sonority used in ii-V-i progressions.",
+    "baseFret": 11,
+    "voicingName": "Movable voicing"
+  },
+  {
+    "name": "G# Dim 7",
+    "root": "G#",
+    "type": "diminished7",
+    "intervals": [
+      0,
+      3,
+      6,
+      9
+    ],
+    "fretPositions": [
+      -1,
+      11,
+      12,
+      10,
+      12,
+      10
+    ],
+    "fingerPositions": [
+      0,
+      2,
+      3,
+      1,
+      4,
+      1
+    ],
+    "audioFile": null,
+    "difficulty": 3,
+    "displayName": "G#dim7",
+    "aliases": [],
+    "tags": [
+      "jazz",
+      "exotic"
+    ],
+    "description": "Symmetrical diminished seventh with strong passing tension.",
+    "baseFret": 10,
+    "voicingName": "Movable voicing"
+  },
+  {
+    "name": "G# 7#9",
+    "root": "G#",
+    "type": "dominant7Sharp9",
+    "intervals": [
+      0,
+      4,
+      7,
+      10,
+      15
+    ],
+    "fretPositions": [
+      -1,
+      11,
+      10,
+      11,
+      12,
+      -1
+    ],
+    "fingerPositions": [
+      0,
+      2,
+      1,
+      3,
+      4,
+      0
+    ],
+    "audioFile": null,
+    "difficulty": 3,
+    "displayName": "G#7#9",
+    "aliases": [
+      "Hendrix Chord"
+    ],
+    "tags": [
+      "blues",
+      "jazz",
+      "rock",
+      "exotic"
+    ],
+    "description": "Altered dominant color famous in Hendrix, blues, and fusion.",
+    "baseFret": 10,
+    "voicingName": "Movable voicing"
+  },
+  {
+    "name": "G# 13",
+    "root": "G#",
+    "type": "thirteenth",
+    "intervals": [
+      0,
+      4,
+      7,
+      10,
+      14,
+      17,
+      21
+    ],
+    "fretPositions": [
+      -1,
+      11,
+      10,
+      11,
+      13,
+      13
+    ],
+    "fingerPositions": [
+      0,
+      2,
+      1,
+      3,
+      4,
+      4
+    ],
+    "audioFile": null,
+    "difficulty": 3,
+    "displayName": "G#13",
+    "aliases": [],
+    "tags": [
+      "jazz",
+      "blues",
+      "funk"
+    ],
+    "description": "Full dominant extension with a smooth thirteenth color.",
+    "baseFret": 10,
+    "voicingName": "Movable voicing"
+  },
+  {
+    "name": "G# Maj 7#11",
+    "root": "G#",
+    "type": "major7Sharp11",
+    "intervals": [
+      0,
+      4,
+      7,
+      11,
+      18
+    ],
+    "fretPositions": [
+      -1,
+      11,
+      12,
+      12,
+      13,
+      11
+    ],
+    "fingerPositions": [
+      0,
+      1,
+      2,
+      2,
+      4,
+      1
+    ],
+    "audioFile": null,
+    "difficulty": 3,
+    "displayName": "G#maj7#11",
+    "aliases": [],
+    "tags": [
+      "jazz",
+      "exotic"
+    ],
+    "description": "Lydian-flavored major seventh with raised eleventh shimmer.",
+    "baseFret": 11,
+    "voicingName": "Movable voicing"
+  },
+  {
+    "name": "G# 7b9",
+    "root": "G#",
+    "type": "dominant7Flat9",
+    "intervals": [
+      0,
+      4,
+      7,
+      10,
+      13
+    ],
+    "fretPositions": [
+      -1,
+      11,
+      10,
+      11,
+      10,
+      -1
+    ],
+    "fingerPositions": [
+      0,
+      2,
+      1,
+      3,
+      1,
+      0
+    ],
+    "audioFile": null,
+    "difficulty": 2,
+    "displayName": "G#7b9",
+    "aliases": [],
+    "tags": [
+      "jazz",
+      "exotic"
+    ],
+    "description": "Altered dominant with a dramatic flat ninth bite.",
+    "baseFret": 10,
+    "voicingName": "Movable voicing"
+  },
+  {
+    "name": "G# Min 11",
+    "root": "G#",
+    "type": "minor11",
+    "intervals": [
+      0,
+      3,
+      7,
+      10,
+      14,
+      17
+    ],
+    "fretPositions": [
+      -1,
+      11,
+      11,
+      11,
+      12,
+      11
+    ],
+    "fingerPositions": [
+      0,
+      1,
+      1,
+      1,
+      2,
+      1
+    ],
+    "audioFile": null,
+    "difficulty": 3,
+    "displayName": "G#m11",
+    "aliases": [],
+    "tags": [
+      "jazz",
+      "blues"
+    ],
+    "description": "Modern minor extension blending ninth and eleventh color.",
+    "baseFret": 11,
+    "voicingName": "Movable voicing"
+  },
+  {
+    "name": "G# 5",
+    "root": "G#",
+    "type": "power5",
+    "intervals": [
+      0,
+      7
+    ],
+    "fretPositions": [
+      -1,
+      11,
+      13,
+      13,
+      -1,
+      11
+    ],
+    "fingerPositions": [
+      0,
+      1,
+      3,
+      4,
+      0,
+      1
+    ],
+    "audioFile": null,
+    "difficulty": 2,
+    "displayName": "G#5",
+    "aliases": [
+      "Power Chord"
+    ],
+    "tags": [
+      "power",
+      "rock",
+      "blues"
+    ],
+    "description": "Root-and-fifth rock voicing with no third.",
+    "baseFret": 11,
+    "voicingName": "Movable voicing"
   },
   {
     "name": "A Major",
@@ -2320,7 +8341,14 @@
       0
     ],
     "audioFile": null,
-    "difficulty": 1
+    "difficulty": 1,
+    "displayName": "A",
+    "aliases": [],
+    "tags": [
+      "standard"
+    ],
+    "description": "Bright, stable major triad.",
+    "baseFret": 1
   },
   {
     "name": "A Minor",
@@ -2348,7 +8376,14 @@
       0
     ],
     "audioFile": null,
-    "difficulty": 1
+    "difficulty": 1,
+    "displayName": "Am",
+    "aliases": [],
+    "tags": [
+      "standard"
+    ],
+    "description": "Darker minor triad with a melancholic color.",
+    "baseFret": 1
   },
   {
     "name": "A Dom 7",
@@ -2377,7 +8412,16 @@
       0
     ],
     "audioFile": null,
-    "difficulty": 1
+    "difficulty": 1,
+    "displayName": "A7",
+    "aliases": [],
+    "tags": [
+      "standard",
+      "blues",
+      "rock"
+    ],
+    "description": "Classic tension chord for blues, rock, and cadences.",
+    "baseFret": 1
   },
   {
     "name": "A Maj 7",
@@ -2406,7 +8450,15 @@
       0
     ],
     "audioFile": null,
-    "difficulty": 2
+    "difficulty": 2,
+    "displayName": "Amaj7",
+    "aliases": [],
+    "tags": [
+      "standard",
+      "jazz"
+    ],
+    "description": "Smooth and sophisticated major seventh sound.",
+    "baseFret": 1
   },
   {
     "name": "A Min 7",
@@ -2435,7 +8487,16 @@
       0
     ],
     "audioFile": null,
-    "difficulty": 1
+    "difficulty": 1,
+    "displayName": "Am7",
+    "aliases": [],
+    "tags": [
+      "standard",
+      "jazz",
+      "blues"
+    ],
+    "description": "Warm, modal minor seventh used across jazz and soul.",
+    "baseFret": 1
   },
   {
     "name": "A Dim",
@@ -2463,7 +8524,16 @@
       0
     ],
     "audioFile": null,
-    "difficulty": 4
+    "difficulty": 4,
+    "displayName": "Adim",
+    "aliases": [],
+    "tags": [
+      "standard",
+      "jazz",
+      "exotic"
+    ],
+    "description": "Tense diminished triad with unstable color.",
+    "baseFret": 1
   },
   {
     "name": "A Aug",
@@ -2491,7 +8561,16 @@
       0
     ],
     "audioFile": null,
-    "difficulty": 4
+    "difficulty": 4,
+    "displayName": "Aaug",
+    "aliases": [],
+    "tags": [
+      "standard",
+      "jazz",
+      "exotic"
+    ],
+    "description": "Expansive augmented triad with raised fifth tension.",
+    "baseFret": 1
   },
   {
     "name": "A Sus2",
@@ -2519,7 +8598,15 @@
       1
     ],
     "audioFile": null,
-    "difficulty": 3
+    "difficulty": 3,
+    "displayName": "Asus2",
+    "aliases": [],
+    "tags": [
+      "standard",
+      "exotic"
+    ],
+    "description": "Open suspended color replacing the third with a second.",
+    "baseFret": 5
   },
   {
     "name": "A Sus4",
@@ -2547,7 +8634,610 @@
       1
     ],
     "audioFile": null,
-    "difficulty": 3
+    "difficulty": 3,
+    "displayName": "Asus4",
+    "aliases": [],
+    "tags": [
+      "standard",
+      "blues",
+      "rock",
+      "exotic"
+    ],
+    "description": "Suspended fourth tension resolving naturally to major.",
+    "baseFret": 5
+  },
+  {
+    "name": "A Add 9",
+    "root": "A",
+    "type": "add9",
+    "intervals": [
+      0,
+      4,
+      7,
+      14
+    ],
+    "fretPositions": [
+      -1,
+      12,
+      14,
+      16,
+      14,
+      12
+    ],
+    "fingerPositions": [
+      0,
+      1,
+      2,
+      4,
+      3,
+      1
+    ],
+    "audioFile": null,
+    "difficulty": 3,
+    "displayName": "Aadd9",
+    "aliases": [],
+    "tags": [
+      "standard",
+      "rock",
+      "exotic"
+    ],
+    "description": "Major triad colored with a bright ninth.",
+    "baseFret": 12,
+    "voicingName": "Movable voicing"
+  },
+  {
+    "name": "A 6",
+    "root": "A",
+    "type": "sixth",
+    "intervals": [
+      0,
+      4,
+      7,
+      9
+    ],
+    "fretPositions": [
+      -1,
+      12,
+      14,
+      14,
+      14,
+      14
+    ],
+    "fingerPositions": [
+      0,
+      1,
+      3,
+      3,
+      3,
+      3
+    ],
+    "audioFile": null,
+    "difficulty": 3,
+    "displayName": "A6",
+    "aliases": [],
+    "tags": [
+      "standard",
+      "jazz",
+      "blues"
+    ],
+    "description": "Swing-friendly major sixth voicing.",
+    "baseFret": 12,
+    "voicingName": "Movable voicing"
+  },
+  {
+    "name": "A Min 6",
+    "root": "A",
+    "type": "minor6",
+    "intervals": [
+      0,
+      3,
+      7,
+      9
+    ],
+    "fretPositions": [
+      -1,
+      12,
+      14,
+      14,
+      13,
+      14
+    ],
+    "fingerPositions": [
+      0,
+      1,
+      3,
+      4,
+      2,
+      4
+    ],
+    "audioFile": null,
+    "difficulty": 3,
+    "displayName": "Am6",
+    "aliases": [],
+    "tags": [
+      "jazz",
+      "exotic"
+    ],
+    "description": "Minor chord with a bittersweet sixth extension.",
+    "baseFret": 12,
+    "voicingName": "Movable voicing"
+  },
+  {
+    "name": "A 6/9",
+    "root": "A",
+    "type": "sixth9",
+    "intervals": [
+      0,
+      4,
+      7,
+      9,
+      14
+    ],
+    "fretPositions": [
+      -1,
+      12,
+      14,
+      16,
+      14,
+      14
+    ],
+    "fingerPositions": [
+      0,
+      1,
+      2,
+      4,
+      3,
+      3
+    ],
+    "audioFile": null,
+    "difficulty": 3,
+    "displayName": "A6/9",
+    "aliases": [],
+    "tags": [
+      "jazz",
+      "blues"
+    ],
+    "description": "Lush major sixth chord with added ninth color.",
+    "baseFret": 12,
+    "voicingName": "Movable voicing"
+  },
+  {
+    "name": "A Dom 9",
+    "root": "A",
+    "type": "dominant9",
+    "intervals": [
+      0,
+      4,
+      7,
+      10,
+      14
+    ],
+    "fretPositions": [
+      -1,
+      12,
+      11,
+      12,
+      12,
+      12
+    ],
+    "fingerPositions": [
+      0,
+      2,
+      1,
+      3,
+      3,
+      3
+    ],
+    "audioFile": null,
+    "difficulty": 2,
+    "displayName": "A9",
+    "aliases": [],
+    "tags": [
+      "jazz",
+      "blues",
+      "funk"
+    ],
+    "description": "Extended dominant chord central to blues and funk comping.",
+    "baseFret": 11,
+    "voicingName": "Movable voicing"
+  },
+  {
+    "name": "A Maj 9",
+    "root": "A",
+    "type": "major9",
+    "intervals": [
+      0,
+      4,
+      7,
+      11,
+      14
+    ],
+    "fretPositions": [
+      -1,
+      12,
+      11,
+      13,
+      12,
+      12
+    ],
+    "fingerPositions": [
+      0,
+      2,
+      1,
+      4,
+      3,
+      3
+    ],
+    "audioFile": null,
+    "difficulty": 3,
+    "displayName": "Amaj9",
+    "aliases": [],
+    "tags": [
+      "jazz"
+    ],
+    "description": "Glossy, modern major sound with a natural ninth.",
+    "baseFret": 11,
+    "voicingName": "Movable voicing"
+  },
+  {
+    "name": "A Min 9",
+    "root": "A",
+    "type": "minor9",
+    "intervals": [
+      0,
+      3,
+      7,
+      10,
+      14
+    ],
+    "fretPositions": [
+      -1,
+      12,
+      10,
+      12,
+      12,
+      12
+    ],
+    "fingerPositions": [
+      0,
+      3,
+      1,
+      2,
+      2,
+      2
+    ],
+    "audioFile": null,
+    "difficulty": 3,
+    "displayName": "Am9",
+    "aliases": [],
+    "tags": [
+      "jazz",
+      "blues"
+    ],
+    "description": "Expressive minor ninth voicing used in neo-soul and jazz.",
+    "baseFret": 10,
+    "voicingName": "Movable voicing"
+  },
+  {
+    "name": "A Min 7b5",
+    "root": "A",
+    "type": "halfDiminished",
+    "intervals": [
+      0,
+      3,
+      6,
+      10
+    ],
+    "fretPositions": [
+      -1,
+      12,
+      13,
+      12,
+      13,
+      -1
+    ],
+    "fingerPositions": [
+      0,
+      1,
+      3,
+      2,
+      4,
+      0
+    ],
+    "audioFile": null,
+    "difficulty": 3,
+    "displayName": "Am7b5",
+    "aliases": [
+      "Half-Diminished",
+      "Minor 7 Flat 5"
+    ],
+    "tags": [
+      "jazz",
+      "exotic"
+    ],
+    "description": "Minor seventh flat five sonority used in ii-V-i progressions.",
+    "baseFret": 12,
+    "voicingName": "Movable voicing"
+  },
+  {
+    "name": "A Dim 7",
+    "root": "A",
+    "type": "diminished7",
+    "intervals": [
+      0,
+      3,
+      6,
+      9
+    ],
+    "fretPositions": [
+      -1,
+      12,
+      13,
+      11,
+      13,
+      11
+    ],
+    "fingerPositions": [
+      0,
+      2,
+      3,
+      1,
+      4,
+      1
+    ],
+    "audioFile": null,
+    "difficulty": 3,
+    "displayName": "Adim7",
+    "aliases": [],
+    "tags": [
+      "jazz",
+      "exotic"
+    ],
+    "description": "Symmetrical diminished seventh with strong passing tension.",
+    "baseFret": 11,
+    "voicingName": "Movable voicing"
+  },
+  {
+    "name": "A 7#9",
+    "root": "A",
+    "type": "dominant7Sharp9",
+    "intervals": [
+      0,
+      4,
+      7,
+      10,
+      15
+    ],
+    "fretPositions": [
+      -1,
+      12,
+      11,
+      12,
+      13,
+      -1
+    ],
+    "fingerPositions": [
+      0,
+      2,
+      1,
+      3,
+      4,
+      0
+    ],
+    "audioFile": null,
+    "difficulty": 3,
+    "displayName": "A7#9",
+    "aliases": [
+      "Hendrix Chord"
+    ],
+    "tags": [
+      "blues",
+      "jazz",
+      "rock",
+      "exotic"
+    ],
+    "description": "Altered dominant color famous in Hendrix, blues, and fusion.",
+    "baseFret": 11,
+    "voicingName": "Movable voicing"
+  },
+  {
+    "name": "A 13",
+    "root": "A",
+    "type": "thirteenth",
+    "intervals": [
+      0,
+      4,
+      7,
+      10,
+      14,
+      17,
+      21
+    ],
+    "fretPositions": [
+      -1,
+      12,
+      11,
+      12,
+      14,
+      14
+    ],
+    "fingerPositions": [
+      0,
+      2,
+      1,
+      3,
+      4,
+      4
+    ],
+    "audioFile": null,
+    "difficulty": 3,
+    "displayName": "A13",
+    "aliases": [],
+    "tags": [
+      "jazz",
+      "blues",
+      "funk"
+    ],
+    "description": "Full dominant extension with a smooth thirteenth color.",
+    "baseFret": 11,
+    "voicingName": "Movable voicing"
+  },
+  {
+    "name": "A Maj 7#11",
+    "root": "A",
+    "type": "major7Sharp11",
+    "intervals": [
+      0,
+      4,
+      7,
+      11,
+      18
+    ],
+    "fretPositions": [
+      -1,
+      12,
+      13,
+      13,
+      14,
+      12
+    ],
+    "fingerPositions": [
+      0,
+      1,
+      2,
+      2,
+      4,
+      1
+    ],
+    "audioFile": null,
+    "difficulty": 3,
+    "displayName": "Amaj7#11",
+    "aliases": [],
+    "tags": [
+      "jazz",
+      "exotic"
+    ],
+    "description": "Lydian-flavored major seventh with raised eleventh shimmer.",
+    "baseFret": 12,
+    "voicingName": "Movable voicing"
+  },
+  {
+    "name": "A 7b9",
+    "root": "A",
+    "type": "dominant7Flat9",
+    "intervals": [
+      0,
+      4,
+      7,
+      10,
+      13
+    ],
+    "fretPositions": [
+      -1,
+      12,
+      11,
+      12,
+      11,
+      -1
+    ],
+    "fingerPositions": [
+      0,
+      2,
+      1,
+      3,
+      1,
+      0
+    ],
+    "audioFile": null,
+    "difficulty": 2,
+    "displayName": "A7b9",
+    "aliases": [],
+    "tags": [
+      "jazz",
+      "exotic"
+    ],
+    "description": "Altered dominant with a dramatic flat ninth bite.",
+    "baseFret": 11,
+    "voicingName": "Movable voicing"
+  },
+  {
+    "name": "A Min 11",
+    "root": "A",
+    "type": "minor11",
+    "intervals": [
+      0,
+      3,
+      7,
+      10,
+      14,
+      17
+    ],
+    "fretPositions": [
+      -1,
+      12,
+      12,
+      12,
+      13,
+      12
+    ],
+    "fingerPositions": [
+      0,
+      1,
+      1,
+      1,
+      2,
+      1
+    ],
+    "audioFile": null,
+    "difficulty": 3,
+    "displayName": "Am11",
+    "aliases": [],
+    "tags": [
+      "jazz",
+      "blues"
+    ],
+    "description": "Modern minor extension blending ninth and eleventh color.",
+    "baseFret": 12,
+    "voicingName": "Movable voicing"
+  },
+  {
+    "name": "A 5",
+    "root": "A",
+    "type": "power5",
+    "intervals": [
+      0,
+      7
+    ],
+    "fretPositions": [
+      -1,
+      12,
+      14,
+      14,
+      -1,
+      12
+    ],
+    "fingerPositions": [
+      0,
+      1,
+      3,
+      4,
+      0,
+      1
+    ],
+    "audioFile": null,
+    "difficulty": 2,
+    "displayName": "A5",
+    "aliases": [
+      "Power Chord"
+    ],
+    "tags": [
+      "power",
+      "rock",
+      "blues"
+    ],
+    "description": "Root-and-fifth rock voicing with no third.",
+    "baseFret": 12,
+    "voicingName": "Movable voicing"
   },
   {
     "name": "A# Major",
@@ -2575,7 +9265,14 @@
       1
     ],
     "audioFile": null,
-    "difficulty": 3
+    "difficulty": 3,
+    "displayName": "A#",
+    "aliases": [],
+    "tags": [
+      "standard"
+    ],
+    "description": "Bright, stable major triad.",
+    "baseFret": 1
   },
   {
     "name": "A# Minor",
@@ -2603,7 +9300,14 @@
       1
     ],
     "audioFile": null,
-    "difficulty": 3
+    "difficulty": 3,
+    "displayName": "A#m",
+    "aliases": [],
+    "tags": [
+      "standard"
+    ],
+    "description": "Darker minor triad with a melancholic color.",
+    "baseFret": 1
   },
   {
     "name": "A# Dom 7",
@@ -2632,7 +9336,16 @@
       1
     ],
     "audioFile": null,
-    "difficulty": 3
+    "difficulty": 3,
+    "displayName": "A#7",
+    "aliases": [],
+    "tags": [
+      "standard",
+      "blues",
+      "rock"
+    ],
+    "description": "Classic tension chord for blues, rock, and cadences.",
+    "baseFret": 1
   },
   {
     "name": "A# Maj 7",
@@ -2661,7 +9374,15 @@
       1
     ],
     "audioFile": null,
-    "difficulty": 3
+    "difficulty": 3,
+    "displayName": "A#maj7",
+    "aliases": [],
+    "tags": [
+      "standard",
+      "jazz"
+    ],
+    "description": "Smooth and sophisticated major seventh sound.",
+    "baseFret": 1
   },
   {
     "name": "A# Min 7",
@@ -2690,7 +9411,16 @@
       1
     ],
     "audioFile": null,
-    "difficulty": 3
+    "difficulty": 3,
+    "displayName": "A#m7",
+    "aliases": [],
+    "tags": [
+      "standard",
+      "jazz",
+      "blues"
+    ],
+    "description": "Warm, modal minor seventh used across jazz and soul.",
+    "baseFret": 1
   },
   {
     "name": "A# Dim",
@@ -2718,7 +9448,16 @@
       0
     ],
     "audioFile": null,
-    "difficulty": 4
+    "difficulty": 4,
+    "displayName": "A#dim",
+    "aliases": [],
+    "tags": [
+      "standard",
+      "jazz",
+      "exotic"
+    ],
+    "description": "Tense diminished triad with unstable color.",
+    "baseFret": 1
   },
   {
     "name": "A# Aug",
@@ -2746,7 +9485,16 @@
       0
     ],
     "audioFile": null,
-    "difficulty": 4
+    "difficulty": 4,
+    "displayName": "A#aug",
+    "aliases": [],
+    "tags": [
+      "standard",
+      "jazz",
+      "exotic"
+    ],
+    "description": "Expansive augmented triad with raised fifth tension.",
+    "baseFret": 1
   },
   {
     "name": "A# Sus2",
@@ -2774,7 +9522,15 @@
       1
     ],
     "audioFile": null,
-    "difficulty": 3
+    "difficulty": 3,
+    "displayName": "A#sus2",
+    "aliases": [],
+    "tags": [
+      "standard",
+      "exotic"
+    ],
+    "description": "Open suspended color replacing the third with a second.",
+    "baseFret": 6
   },
   {
     "name": "A# Sus4",
@@ -2802,7 +9558,610 @@
       1
     ],
     "audioFile": null,
-    "difficulty": 3
+    "difficulty": 3,
+    "displayName": "A#sus4",
+    "aliases": [],
+    "tags": [
+      "standard",
+      "blues",
+      "rock",
+      "exotic"
+    ],
+    "description": "Suspended fourth tension resolving naturally to major.",
+    "baseFret": 6
+  },
+  {
+    "name": "A# Add 9",
+    "root": "A#",
+    "type": "add9",
+    "intervals": [
+      0,
+      4,
+      7,
+      14
+    ],
+    "fretPositions": [
+      -1,
+      13,
+      15,
+      17,
+      15,
+      13
+    ],
+    "fingerPositions": [
+      0,
+      1,
+      2,
+      4,
+      3,
+      1
+    ],
+    "audioFile": null,
+    "difficulty": 3,
+    "displayName": "A#add9",
+    "aliases": [],
+    "tags": [
+      "standard",
+      "rock",
+      "exotic"
+    ],
+    "description": "Major triad colored with a bright ninth.",
+    "baseFret": 13,
+    "voicingName": "Movable voicing"
+  },
+  {
+    "name": "A# 6",
+    "root": "A#",
+    "type": "sixth",
+    "intervals": [
+      0,
+      4,
+      7,
+      9
+    ],
+    "fretPositions": [
+      -1,
+      13,
+      15,
+      15,
+      15,
+      15
+    ],
+    "fingerPositions": [
+      0,
+      1,
+      3,
+      3,
+      3,
+      3
+    ],
+    "audioFile": null,
+    "difficulty": 3,
+    "displayName": "A#6",
+    "aliases": [],
+    "tags": [
+      "standard",
+      "jazz",
+      "blues"
+    ],
+    "description": "Swing-friendly major sixth voicing.",
+    "baseFret": 13,
+    "voicingName": "Movable voicing"
+  },
+  {
+    "name": "A# Min 6",
+    "root": "A#",
+    "type": "minor6",
+    "intervals": [
+      0,
+      3,
+      7,
+      9
+    ],
+    "fretPositions": [
+      -1,
+      13,
+      15,
+      15,
+      14,
+      15
+    ],
+    "fingerPositions": [
+      0,
+      1,
+      3,
+      4,
+      2,
+      4
+    ],
+    "audioFile": null,
+    "difficulty": 3,
+    "displayName": "A#m6",
+    "aliases": [],
+    "tags": [
+      "jazz",
+      "exotic"
+    ],
+    "description": "Minor chord with a bittersweet sixth extension.",
+    "baseFret": 13,
+    "voicingName": "Movable voicing"
+  },
+  {
+    "name": "A# 6/9",
+    "root": "A#",
+    "type": "sixth9",
+    "intervals": [
+      0,
+      4,
+      7,
+      9,
+      14
+    ],
+    "fretPositions": [
+      -1,
+      13,
+      15,
+      17,
+      15,
+      15
+    ],
+    "fingerPositions": [
+      0,
+      1,
+      2,
+      4,
+      3,
+      3
+    ],
+    "audioFile": null,
+    "difficulty": 3,
+    "displayName": "A#6/9",
+    "aliases": [],
+    "tags": [
+      "jazz",
+      "blues"
+    ],
+    "description": "Lush major sixth chord with added ninth color.",
+    "baseFret": 13,
+    "voicingName": "Movable voicing"
+  },
+  {
+    "name": "A# Dom 9",
+    "root": "A#",
+    "type": "dominant9",
+    "intervals": [
+      0,
+      4,
+      7,
+      10,
+      14
+    ],
+    "fretPositions": [
+      -1,
+      13,
+      12,
+      13,
+      13,
+      13
+    ],
+    "fingerPositions": [
+      0,
+      2,
+      1,
+      3,
+      3,
+      3
+    ],
+    "audioFile": null,
+    "difficulty": 2,
+    "displayName": "A#9",
+    "aliases": [],
+    "tags": [
+      "jazz",
+      "blues",
+      "funk"
+    ],
+    "description": "Extended dominant chord central to blues and funk comping.",
+    "baseFret": 12,
+    "voicingName": "Movable voicing"
+  },
+  {
+    "name": "A# Maj 9",
+    "root": "A#",
+    "type": "major9",
+    "intervals": [
+      0,
+      4,
+      7,
+      11,
+      14
+    ],
+    "fretPositions": [
+      -1,
+      13,
+      12,
+      14,
+      13,
+      13
+    ],
+    "fingerPositions": [
+      0,
+      2,
+      1,
+      4,
+      3,
+      3
+    ],
+    "audioFile": null,
+    "difficulty": 3,
+    "displayName": "A#maj9",
+    "aliases": [],
+    "tags": [
+      "jazz"
+    ],
+    "description": "Glossy, modern major sound with a natural ninth.",
+    "baseFret": 12,
+    "voicingName": "Movable voicing"
+  },
+  {
+    "name": "A# Min 9",
+    "root": "A#",
+    "type": "minor9",
+    "intervals": [
+      0,
+      3,
+      7,
+      10,
+      14
+    ],
+    "fretPositions": [
+      -1,
+      13,
+      11,
+      13,
+      13,
+      13
+    ],
+    "fingerPositions": [
+      0,
+      3,
+      1,
+      2,
+      2,
+      2
+    ],
+    "audioFile": null,
+    "difficulty": 3,
+    "displayName": "A#m9",
+    "aliases": [],
+    "tags": [
+      "jazz",
+      "blues"
+    ],
+    "description": "Expressive minor ninth voicing used in neo-soul and jazz.",
+    "baseFret": 11,
+    "voicingName": "Movable voicing"
+  },
+  {
+    "name": "A# Min 7b5",
+    "root": "A#",
+    "type": "halfDiminished",
+    "intervals": [
+      0,
+      3,
+      6,
+      10
+    ],
+    "fretPositions": [
+      -1,
+      13,
+      14,
+      13,
+      14,
+      -1
+    ],
+    "fingerPositions": [
+      0,
+      1,
+      3,
+      2,
+      4,
+      0
+    ],
+    "audioFile": null,
+    "difficulty": 3,
+    "displayName": "A#m7b5",
+    "aliases": [
+      "Half-Diminished",
+      "Minor 7 Flat 5"
+    ],
+    "tags": [
+      "jazz",
+      "exotic"
+    ],
+    "description": "Minor seventh flat five sonority used in ii-V-i progressions.",
+    "baseFret": 13,
+    "voicingName": "Movable voicing"
+  },
+  {
+    "name": "A# Dim 7",
+    "root": "A#",
+    "type": "diminished7",
+    "intervals": [
+      0,
+      3,
+      6,
+      9
+    ],
+    "fretPositions": [
+      -1,
+      13,
+      14,
+      12,
+      14,
+      12
+    ],
+    "fingerPositions": [
+      0,
+      2,
+      3,
+      1,
+      4,
+      1
+    ],
+    "audioFile": null,
+    "difficulty": 3,
+    "displayName": "A#dim7",
+    "aliases": [],
+    "tags": [
+      "jazz",
+      "exotic"
+    ],
+    "description": "Symmetrical diminished seventh with strong passing tension.",
+    "baseFret": 12,
+    "voicingName": "Movable voicing"
+  },
+  {
+    "name": "A# 7#9",
+    "root": "A#",
+    "type": "dominant7Sharp9",
+    "intervals": [
+      0,
+      4,
+      7,
+      10,
+      15
+    ],
+    "fretPositions": [
+      -1,
+      13,
+      12,
+      13,
+      14,
+      -1
+    ],
+    "fingerPositions": [
+      0,
+      2,
+      1,
+      3,
+      4,
+      0
+    ],
+    "audioFile": null,
+    "difficulty": 3,
+    "displayName": "A#7#9",
+    "aliases": [
+      "Hendrix Chord"
+    ],
+    "tags": [
+      "blues",
+      "jazz",
+      "rock",
+      "exotic"
+    ],
+    "description": "Altered dominant color famous in Hendrix, blues, and fusion.",
+    "baseFret": 12,
+    "voicingName": "Movable voicing"
+  },
+  {
+    "name": "A# 13",
+    "root": "A#",
+    "type": "thirteenth",
+    "intervals": [
+      0,
+      4,
+      7,
+      10,
+      14,
+      17,
+      21
+    ],
+    "fretPositions": [
+      -1,
+      13,
+      12,
+      13,
+      15,
+      15
+    ],
+    "fingerPositions": [
+      0,
+      2,
+      1,
+      3,
+      4,
+      4
+    ],
+    "audioFile": null,
+    "difficulty": 3,
+    "displayName": "A#13",
+    "aliases": [],
+    "tags": [
+      "jazz",
+      "blues",
+      "funk"
+    ],
+    "description": "Full dominant extension with a smooth thirteenth color.",
+    "baseFret": 12,
+    "voicingName": "Movable voicing"
+  },
+  {
+    "name": "A# Maj 7#11",
+    "root": "A#",
+    "type": "major7Sharp11",
+    "intervals": [
+      0,
+      4,
+      7,
+      11,
+      18
+    ],
+    "fretPositions": [
+      -1,
+      13,
+      14,
+      14,
+      15,
+      13
+    ],
+    "fingerPositions": [
+      0,
+      1,
+      2,
+      2,
+      4,
+      1
+    ],
+    "audioFile": null,
+    "difficulty": 3,
+    "displayName": "A#maj7#11",
+    "aliases": [],
+    "tags": [
+      "jazz",
+      "exotic"
+    ],
+    "description": "Lydian-flavored major seventh with raised eleventh shimmer.",
+    "baseFret": 13,
+    "voicingName": "Movable voicing"
+  },
+  {
+    "name": "A# 7b9",
+    "root": "A#",
+    "type": "dominant7Flat9",
+    "intervals": [
+      0,
+      4,
+      7,
+      10,
+      13
+    ],
+    "fretPositions": [
+      -1,
+      13,
+      12,
+      13,
+      12,
+      -1
+    ],
+    "fingerPositions": [
+      0,
+      2,
+      1,
+      3,
+      1,
+      0
+    ],
+    "audioFile": null,
+    "difficulty": 2,
+    "displayName": "A#7b9",
+    "aliases": [],
+    "tags": [
+      "jazz",
+      "exotic"
+    ],
+    "description": "Altered dominant with a dramatic flat ninth bite.",
+    "baseFret": 12,
+    "voicingName": "Movable voicing"
+  },
+  {
+    "name": "A# Min 11",
+    "root": "A#",
+    "type": "minor11",
+    "intervals": [
+      0,
+      3,
+      7,
+      10,
+      14,
+      17
+    ],
+    "fretPositions": [
+      -1,
+      13,
+      13,
+      13,
+      14,
+      13
+    ],
+    "fingerPositions": [
+      0,
+      1,
+      1,
+      1,
+      2,
+      1
+    ],
+    "audioFile": null,
+    "difficulty": 3,
+    "displayName": "A#m11",
+    "aliases": [],
+    "tags": [
+      "jazz",
+      "blues"
+    ],
+    "description": "Modern minor extension blending ninth and eleventh color.",
+    "baseFret": 13,
+    "voicingName": "Movable voicing"
+  },
+  {
+    "name": "A# 5",
+    "root": "A#",
+    "type": "power5",
+    "intervals": [
+      0,
+      7
+    ],
+    "fretPositions": [
+      -1,
+      13,
+      15,
+      15,
+      -1,
+      13
+    ],
+    "fingerPositions": [
+      0,
+      1,
+      3,
+      4,
+      0,
+      1
+    ],
+    "audioFile": null,
+    "difficulty": 2,
+    "displayName": "A#5",
+    "aliases": [
+      "Power Chord"
+    ],
+    "tags": [
+      "power",
+      "rock",
+      "blues"
+    ],
+    "description": "Root-and-fifth rock voicing with no third.",
+    "baseFret": 13,
+    "voicingName": "Movable voicing"
   },
   {
     "name": "B Major",
@@ -2830,7 +10189,14 @@
       1
     ],
     "audioFile": null,
-    "difficulty": 3
+    "difficulty": 3,
+    "displayName": "B",
+    "aliases": [],
+    "tags": [
+      "standard"
+    ],
+    "description": "Bright, stable major triad.",
+    "baseFret": 2
   },
   {
     "name": "B Minor",
@@ -2858,7 +10224,14 @@
       1
     ],
     "audioFile": null,
-    "difficulty": 3
+    "difficulty": 3,
+    "displayName": "Bm",
+    "aliases": [],
+    "tags": [
+      "standard"
+    ],
+    "description": "Darker minor triad with a melancholic color.",
+    "baseFret": 2
   },
   {
     "name": "B Dom 7",
@@ -2887,7 +10260,16 @@
       4
     ],
     "audioFile": null,
-    "difficulty": 3
+    "difficulty": 3,
+    "displayName": "B7",
+    "aliases": [],
+    "tags": [
+      "standard",
+      "blues",
+      "rock"
+    ],
+    "description": "Classic tension chord for blues, rock, and cadences.",
+    "baseFret": 1
   },
   {
     "name": "B Maj 7",
@@ -2916,7 +10298,15 @@
       1
     ],
     "audioFile": null,
-    "difficulty": 4
+    "difficulty": 4,
+    "displayName": "Bmaj7",
+    "aliases": [],
+    "tags": [
+      "standard",
+      "jazz"
+    ],
+    "description": "Smooth and sophisticated major seventh sound.",
+    "baseFret": 2
   },
   {
     "name": "B Min 7",
@@ -2945,7 +10335,16 @@
       4
     ],
     "audioFile": null,
-    "difficulty": 2
+    "difficulty": 2,
+    "displayName": "Bm7",
+    "aliases": [],
+    "tags": [
+      "standard",
+      "jazz",
+      "blues"
+    ],
+    "description": "Warm, modal minor seventh used across jazz and soul.",
+    "baseFret": 1
   },
   {
     "name": "B Dim",
@@ -2973,7 +10372,16 @@
       0
     ],
     "audioFile": null,
-    "difficulty": 4
+    "difficulty": 4,
+    "displayName": "Bdim",
+    "aliases": [],
+    "tags": [
+      "standard",
+      "jazz",
+      "exotic"
+    ],
+    "description": "Tense diminished triad with unstable color.",
+    "baseFret": 2
   },
   {
     "name": "B Aug",
@@ -3001,7 +10409,16 @@
       0
     ],
     "audioFile": null,
-    "difficulty": 4
+    "difficulty": 4,
+    "displayName": "Baug",
+    "aliases": [],
+    "tags": [
+      "standard",
+      "jazz",
+      "exotic"
+    ],
+    "description": "Expansive augmented triad with raised fifth tension.",
+    "baseFret": 2
   },
   {
     "name": "B Sus2",
@@ -3029,7 +10446,15 @@
       1
     ],
     "audioFile": null,
-    "difficulty": 3
+    "difficulty": 3,
+    "displayName": "Bsus2",
+    "aliases": [],
+    "tags": [
+      "standard",
+      "exotic"
+    ],
+    "description": "Open suspended color replacing the third with a second.",
+    "baseFret": 7
   },
   {
     "name": "B Sus4",
@@ -3057,6 +10482,609 @@
       1
     ],
     "audioFile": null,
-    "difficulty": 3
+    "difficulty": 3,
+    "displayName": "Bsus4",
+    "aliases": [],
+    "tags": [
+      "standard",
+      "blues",
+      "rock",
+      "exotic"
+    ],
+    "description": "Suspended fourth tension resolving naturally to major.",
+    "baseFret": 7
+  },
+  {
+    "name": "B Add 9",
+    "root": "B",
+    "type": "add9",
+    "intervals": [
+      0,
+      4,
+      7,
+      14
+    ],
+    "fretPositions": [
+      -1,
+      14,
+      16,
+      18,
+      16,
+      14
+    ],
+    "fingerPositions": [
+      0,
+      1,
+      2,
+      4,
+      3,
+      1
+    ],
+    "audioFile": null,
+    "difficulty": 3,
+    "displayName": "Badd9",
+    "aliases": [],
+    "tags": [
+      "standard",
+      "rock",
+      "exotic"
+    ],
+    "description": "Major triad colored with a bright ninth.",
+    "baseFret": 14,
+    "voicingName": "Movable voicing"
+  },
+  {
+    "name": "B 6",
+    "root": "B",
+    "type": "sixth",
+    "intervals": [
+      0,
+      4,
+      7,
+      9
+    ],
+    "fretPositions": [
+      -1,
+      14,
+      16,
+      16,
+      16,
+      16
+    ],
+    "fingerPositions": [
+      0,
+      1,
+      3,
+      3,
+      3,
+      3
+    ],
+    "audioFile": null,
+    "difficulty": 3,
+    "displayName": "B6",
+    "aliases": [],
+    "tags": [
+      "standard",
+      "jazz",
+      "blues"
+    ],
+    "description": "Swing-friendly major sixth voicing.",
+    "baseFret": 14,
+    "voicingName": "Movable voicing"
+  },
+  {
+    "name": "B Min 6",
+    "root": "B",
+    "type": "minor6",
+    "intervals": [
+      0,
+      3,
+      7,
+      9
+    ],
+    "fretPositions": [
+      -1,
+      14,
+      16,
+      16,
+      15,
+      16
+    ],
+    "fingerPositions": [
+      0,
+      1,
+      3,
+      4,
+      2,
+      4
+    ],
+    "audioFile": null,
+    "difficulty": 3,
+    "displayName": "Bm6",
+    "aliases": [],
+    "tags": [
+      "jazz",
+      "exotic"
+    ],
+    "description": "Minor chord with a bittersweet sixth extension.",
+    "baseFret": 14,
+    "voicingName": "Movable voicing"
+  },
+  {
+    "name": "B 6/9",
+    "root": "B",
+    "type": "sixth9",
+    "intervals": [
+      0,
+      4,
+      7,
+      9,
+      14
+    ],
+    "fretPositions": [
+      -1,
+      14,
+      16,
+      18,
+      16,
+      16
+    ],
+    "fingerPositions": [
+      0,
+      1,
+      2,
+      4,
+      3,
+      3
+    ],
+    "audioFile": null,
+    "difficulty": 3,
+    "displayName": "B6/9",
+    "aliases": [],
+    "tags": [
+      "jazz",
+      "blues"
+    ],
+    "description": "Lush major sixth chord with added ninth color.",
+    "baseFret": 14,
+    "voicingName": "Movable voicing"
+  },
+  {
+    "name": "B Dom 9",
+    "root": "B",
+    "type": "dominant9",
+    "intervals": [
+      0,
+      4,
+      7,
+      10,
+      14
+    ],
+    "fretPositions": [
+      -1,
+      14,
+      13,
+      14,
+      14,
+      14
+    ],
+    "fingerPositions": [
+      0,
+      2,
+      1,
+      3,
+      3,
+      3
+    ],
+    "audioFile": null,
+    "difficulty": 2,
+    "displayName": "B9",
+    "aliases": [],
+    "tags": [
+      "jazz",
+      "blues",
+      "funk"
+    ],
+    "description": "Extended dominant chord central to blues and funk comping.",
+    "baseFret": 13,
+    "voicingName": "Movable voicing"
+  },
+  {
+    "name": "B Maj 9",
+    "root": "B",
+    "type": "major9",
+    "intervals": [
+      0,
+      4,
+      7,
+      11,
+      14
+    ],
+    "fretPositions": [
+      -1,
+      14,
+      13,
+      15,
+      14,
+      14
+    ],
+    "fingerPositions": [
+      0,
+      2,
+      1,
+      4,
+      3,
+      3
+    ],
+    "audioFile": null,
+    "difficulty": 3,
+    "displayName": "Bmaj9",
+    "aliases": [],
+    "tags": [
+      "jazz"
+    ],
+    "description": "Glossy, modern major sound with a natural ninth.",
+    "baseFret": 13,
+    "voicingName": "Movable voicing"
+  },
+  {
+    "name": "B Min 9",
+    "root": "B",
+    "type": "minor9",
+    "intervals": [
+      0,
+      3,
+      7,
+      10,
+      14
+    ],
+    "fretPositions": [
+      -1,
+      14,
+      12,
+      14,
+      14,
+      14
+    ],
+    "fingerPositions": [
+      0,
+      3,
+      1,
+      2,
+      2,
+      2
+    ],
+    "audioFile": null,
+    "difficulty": 3,
+    "displayName": "Bm9",
+    "aliases": [],
+    "tags": [
+      "jazz",
+      "blues"
+    ],
+    "description": "Expressive minor ninth voicing used in neo-soul and jazz.",
+    "baseFret": 12,
+    "voicingName": "Movable voicing"
+  },
+  {
+    "name": "B Min 7b5",
+    "root": "B",
+    "type": "halfDiminished",
+    "intervals": [
+      0,
+      3,
+      6,
+      10
+    ],
+    "fretPositions": [
+      -1,
+      14,
+      15,
+      14,
+      15,
+      -1
+    ],
+    "fingerPositions": [
+      0,
+      1,
+      3,
+      2,
+      4,
+      0
+    ],
+    "audioFile": null,
+    "difficulty": 3,
+    "displayName": "Bm7b5",
+    "aliases": [
+      "Half-Diminished",
+      "Minor 7 Flat 5"
+    ],
+    "tags": [
+      "jazz",
+      "exotic"
+    ],
+    "description": "Minor seventh flat five sonority used in ii-V-i progressions.",
+    "baseFret": 14,
+    "voicingName": "Movable voicing"
+  },
+  {
+    "name": "B Dim 7",
+    "root": "B",
+    "type": "diminished7",
+    "intervals": [
+      0,
+      3,
+      6,
+      9
+    ],
+    "fretPositions": [
+      -1,
+      14,
+      15,
+      13,
+      15,
+      13
+    ],
+    "fingerPositions": [
+      0,
+      2,
+      3,
+      1,
+      4,
+      1
+    ],
+    "audioFile": null,
+    "difficulty": 3,
+    "displayName": "Bdim7",
+    "aliases": [],
+    "tags": [
+      "jazz",
+      "exotic"
+    ],
+    "description": "Symmetrical diminished seventh with strong passing tension.",
+    "baseFret": 13,
+    "voicingName": "Movable voicing"
+  },
+  {
+    "name": "B 7#9",
+    "root": "B",
+    "type": "dominant7Sharp9",
+    "intervals": [
+      0,
+      4,
+      7,
+      10,
+      15
+    ],
+    "fretPositions": [
+      -1,
+      14,
+      13,
+      14,
+      15,
+      -1
+    ],
+    "fingerPositions": [
+      0,
+      2,
+      1,
+      3,
+      4,
+      0
+    ],
+    "audioFile": null,
+    "difficulty": 3,
+    "displayName": "B7#9",
+    "aliases": [
+      "Hendrix Chord"
+    ],
+    "tags": [
+      "blues",
+      "jazz",
+      "rock",
+      "exotic"
+    ],
+    "description": "Altered dominant color famous in Hendrix, blues, and fusion.",
+    "baseFret": 13,
+    "voicingName": "Movable voicing"
+  },
+  {
+    "name": "B 13",
+    "root": "B",
+    "type": "thirteenth",
+    "intervals": [
+      0,
+      4,
+      7,
+      10,
+      14,
+      17,
+      21
+    ],
+    "fretPositions": [
+      -1,
+      14,
+      13,
+      14,
+      16,
+      16
+    ],
+    "fingerPositions": [
+      0,
+      2,
+      1,
+      3,
+      4,
+      4
+    ],
+    "audioFile": null,
+    "difficulty": 3,
+    "displayName": "B13",
+    "aliases": [],
+    "tags": [
+      "jazz",
+      "blues",
+      "funk"
+    ],
+    "description": "Full dominant extension with a smooth thirteenth color.",
+    "baseFret": 13,
+    "voicingName": "Movable voicing"
+  },
+  {
+    "name": "B Maj 7#11",
+    "root": "B",
+    "type": "major7Sharp11",
+    "intervals": [
+      0,
+      4,
+      7,
+      11,
+      18
+    ],
+    "fretPositions": [
+      -1,
+      14,
+      15,
+      15,
+      16,
+      14
+    ],
+    "fingerPositions": [
+      0,
+      1,
+      2,
+      2,
+      4,
+      1
+    ],
+    "audioFile": null,
+    "difficulty": 3,
+    "displayName": "Bmaj7#11",
+    "aliases": [],
+    "tags": [
+      "jazz",
+      "exotic"
+    ],
+    "description": "Lydian-flavored major seventh with raised eleventh shimmer.",
+    "baseFret": 14,
+    "voicingName": "Movable voicing"
+  },
+  {
+    "name": "B 7b9",
+    "root": "B",
+    "type": "dominant7Flat9",
+    "intervals": [
+      0,
+      4,
+      7,
+      10,
+      13
+    ],
+    "fretPositions": [
+      -1,
+      14,
+      13,
+      14,
+      13,
+      -1
+    ],
+    "fingerPositions": [
+      0,
+      2,
+      1,
+      3,
+      1,
+      0
+    ],
+    "audioFile": null,
+    "difficulty": 2,
+    "displayName": "B7b9",
+    "aliases": [],
+    "tags": [
+      "jazz",
+      "exotic"
+    ],
+    "description": "Altered dominant with a dramatic flat ninth bite.",
+    "baseFret": 13,
+    "voicingName": "Movable voicing"
+  },
+  {
+    "name": "B Min 11",
+    "root": "B",
+    "type": "minor11",
+    "intervals": [
+      0,
+      3,
+      7,
+      10,
+      14,
+      17
+    ],
+    "fretPositions": [
+      -1,
+      14,
+      14,
+      14,
+      15,
+      14
+    ],
+    "fingerPositions": [
+      0,
+      1,
+      1,
+      1,
+      2,
+      1
+    ],
+    "audioFile": null,
+    "difficulty": 3,
+    "displayName": "Bm11",
+    "aliases": [],
+    "tags": [
+      "jazz",
+      "blues"
+    ],
+    "description": "Modern minor extension blending ninth and eleventh color.",
+    "baseFret": 14,
+    "voicingName": "Movable voicing"
+  },
+  {
+    "name": "B 5",
+    "root": "B",
+    "type": "power5",
+    "intervals": [
+      0,
+      7
+    ],
+    "fretPositions": [
+      -1,
+      14,
+      16,
+      16,
+      -1,
+      14
+    ],
+    "fingerPositions": [
+      0,
+      1,
+      3,
+      4,
+      0,
+      1
+    ],
+    "audioFile": null,
+    "difficulty": 2,
+    "displayName": "B5",
+    "aliases": [
+      "Power Chord"
+    ],
+    "tags": [
+      "power",
+      "rock",
+      "blues"
+    ],
+    "description": "Root-and-fifth rock voicing with no third.",
+    "baseFret": 14,
+    "voicingName": "Movable voicing"
   }
 ]

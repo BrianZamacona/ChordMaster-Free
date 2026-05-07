@@ -203,11 +203,32 @@ class AppStrings {
   /// Chord voicing label.
   static const String voicing = 'Voicing';
 
+  /// Chord category / style label.
+  static const String chordCategory = 'Category';
+
   /// Difficulty label.
   static const String difficulty = 'Difficulty';
 
   /// Fret positions label.
   static const String fretPositions = 'Fret Positions';
+
+  /// Chord aliases label.
+  static const String chordAliases = 'Aliases';
+
+  /// Chord description label.
+  static const String chordDescription = 'About this chord';
+
+  /// Chord formula label.
+  static const String chordFormula = 'Chord Formula';
+
+  /// Related scales label.
+  static const String relatedScales = 'Related Scales';
+
+  /// Related voicings label.
+  static const String relatedVoicings = 'Related Chords';
+
+  /// Chord style matches label.
+  static const String styleMatches = 'Style Matches';
 
   // ── Scales ────────────────────────────────────────────────────────────────
 
@@ -323,6 +344,9 @@ class AppStrings {
 
   /// Empty state message for chord search.
   static const String emptyChordsSearch = 'No chords match your search.';
+
+  /// Label shown for all chord categories.
+  static const String all = 'All';
 
   /// Empty state message for scale search.
   static const String emptyScalesSearch = 'No scales match your search.';

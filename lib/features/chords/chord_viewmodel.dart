@@ -4,20 +4,23 @@ import 'package:flutter/foundation.dart';
 import 'package:flutter/services.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 
+import '../../core/constants/chord_metadata.dart';
+import '../../core/constants/music_theory.dart';
 import '../../models/chord.dart';
 
 /// Immutable state for [ChordViewModel].
 class ChordState {
-
   const ChordState({
     this.allChords = const [],
     this.filteredChords = const [],
     this.searchQuery = '',
     this.selectedRoot,
     this.selectedType,
+    this.selectedTag,
     this.isLoading = true,
     this.errorMessage,
   });
+
   /// All chords loaded from the asset bundle.
   final List<Chord> allChords;
 
@@ -33,6 +36,9 @@ class ChordState {
   /// Selected chord type filter, or `null` for all types.
   final String? selectedType;
 
+  /// Selected musical category filter, or `null` for all categories.
+  final String? selectedTag;
+
   /// Whether the initial load is in progress.
   final bool isLoading;
 
@@ -45,20 +51,28 @@ class ChordState {
     String? searchQuery,
     Object? selectedRoot = _unset,
     Object? selectedType = _unset,
+    Object? selectedTag = _unset,
     bool? isLoading,
     Object? errorMessage = _unset,
-  }) => ChordState(
-      allChords: allChords ?? this.allChords,
-      filteredChords: filteredChords ?? this.filteredChords,
-      searchQuery: searchQuery ?? this.searchQuery,
-      selectedRoot:
-          identical(selectedRoot, _unset) ? this.selectedRoot : selectedRoot as String?,
-      selectedType:
-          identical(selectedType, _unset) ? this.selectedType : selectedType as String?,
-      isLoading: isLoading ?? this.isLoading,
-      errorMessage:
-          identical(errorMessage, _unset) ? this.errorMessage : errorMessage as String?,
-    );
+  }) =>
+      ChordState(
+        allChords: allChords ?? this.allChords,
+        filteredChords: filteredChords ?? this.filteredChords,
+        searchQuery: searchQuery ?? this.searchQuery,
+        selectedRoot: identical(selectedRoot, _unset)
+            ? this.selectedRoot
+            : selectedRoot as String?,
+        selectedType: identical(selectedType, _unset)
+            ? this.selectedType
+            : selectedType as String?,
+        selectedTag: identical(selectedTag, _unset)
+            ? this.selectedTag
+            : selectedTag as String?,
+        isLoading: isLoading ?? this.isLoading,
+        errorMessage: identical(errorMessage, _unset)
+            ? this.errorMessage
+            : errorMessage as String?,
+      );
 
   static const Object _unset = Object();
 }
@@ -67,10 +81,55 @@ class ChordState {
 final chordViewModelProvider =
     NotifierProvider<ChordViewModel, ChordState>(ChordViewModel.new);
 
-/// Manages chord library state: loading, filtering by root/type, and search.
-///
-/// Uses a precomputed index [Map<String, List<Chord>>] keyed by
-/// `"$root|$type"` for O(1) lookup before applying text-query filtering.
+/// Applies the current chord filters and search query to [chords].
+List<Chord> filterChords({
+  required List<Chord> chords,
+  String searchQuery = '',
+  String? selectedRoot,
+  String? selectedType,
+  String? selectedTag,
+}) {
+  final query = searchQuery.toLowerCase().trim();
+  final results = chords.where((chord) {
+    if (selectedRoot != null && chord.root != selectedRoot) return false;
+    if (selectedType != null && chord.type != selectedType) return false;
+    if (selectedTag != null && !chordTags(chord.type, chord.tags).contains(selectedTag)) {
+      return false;
+    }
+    if (query.isEmpty) return true;
+
+    final haystack = <String>{
+      chord.name,
+      chordDisplayName(
+        root: chord.root,
+        type: chord.type,
+        explicitDisplayName: chord.displayName,
+      ),
+      chord.root,
+      chord.type,
+      chordTypeLabel(chord.type),
+      ...chordAliases(chord.type, chord.aliases),
+      ...chordTags(chord.type, chord.tags),
+      ...chordTags(chord.type, chord.tags).map(chordTagLabel),
+    }.join(' ').toLowerCase();
+
+    return haystack.contains(query);
+  }).toList(growable: false)
+    ..sort(_compareChords);
+
+  return results;
+}
+
+int _compareChords(Chord a, Chord b) {
+  final rootCompare = chromaticNotes.indexOf(a.root).compareTo(chromaticNotes.indexOf(b.root));
+  if (rootCompare != 0) return rootCompare;
+  final typeCompare =
+      (chordTypeMetadata[a.type]?.order ?? 999).compareTo(chordTypeMetadata[b.type]?.order ?? 999);
+  if (typeCompare != 0) return typeCompare;
+  return a.name.compareTo(b.name);
+}
+
+/// Manages chord library state: loading, filtering by root/type/tag, and search.
 class ChordViewModel extends Notifier<ChordState> {
   @override
   ChordState build() {
@@ -78,30 +137,20 @@ class ChordViewModel extends Notifier<ChordState> {
     return const ChordState();
   }
 
-  /// Index: "root|type" → list of matching chords for O(1) filtering.
-  final Map<String, List<Chord>> _index = {};
-
   Future<void> _load() async {
     try {
-      final jsonStr =
-          await rootBundle.loadString('assets/data/chords.json');
+      final jsonStr = await rootBundle.loadString('assets/data/chords.json');
       final list = json.decode(jsonStr) as List<dynamic>;
-      final chords =
-          list.map((e) => Chord.fromJson(e as Map<String, dynamic>)).toList();
-
-      // Rebuild the precomputed index from scratch so a Notifier rebuild
-      // (e.g. hot-reload or ProviderScope override in tests) never produces
-      // duplicate entries from a previous load cycle.
-      _index.clear();
-      for (final chord in chords) {
-        final key = '${chord.root}|${chord.type}';
-        _index.putIfAbsent(key, () => []).add(chord);
-      }
+      final chords = list
+          .map((entry) => Chord.fromJson(entry as Map<String, dynamic>))
+          .toList(growable: false)
+        ..sort(_compareChords);
 
       state = state.copyWith(
         allChords: chords,
         filteredChords: chords,
         isLoading: false,
+        errorMessage: null,
       );
     } catch (e, st) {
       debugPrint('ChordViewModel._load error: $e\n$st');
@@ -112,7 +161,7 @@ class ChordViewModel extends Notifier<ChordState> {
     }
   }
 
-  /// Filters chords by [query] text, keeping active root/type filters.
+  /// Filters chords by [query] text, keeping active root/type/tag filters.
   void search(String query) {
     state = state.copyWith(searchQuery: query);
     _applyFilters();
@@ -130,59 +179,68 @@ class ChordViewModel extends Notifier<ChordState> {
     _applyFilters();
   }
 
+  /// Filters chords by [tag]. Pass `null` to clear.
+  void filterByTag(String? tag) {
+    state = state.copyWith(selectedTag: tag);
+    _applyFilters();
+  }
+
   /// Clears all active filters.
   void clearFilters() {
     state = state.copyWith(
       searchQuery: '',
       selectedRoot: null,
       selectedType: null,
+      selectedTag: null,
       filteredChords: state.allChords,
     );
   }
 
   void _applyFilters() {
-    final root = state.selectedRoot;
-    final type = state.selectedType;
-    final query = state.searchQuery.toLowerCase().trim();
-
-    List<Chord> results;
-
-    if (root != null && type != null) {
-      results = _index['$root|$type'] ?? [];
-    } else if (root != null) {
-      // Collect all types for this root
-      results = state.allChords.where((c) => c.root == root).toList();
-    } else if (type != null) {
-      results = state.allChords.where((c) => c.type == type).toList();
-    } else {
-      results = state.allChords;
-    }
-
-    if (query.isNotEmpty) {
-      results = results
-          .where((c) =>
-              c.name.toLowerCase().contains(query) ||
-              c.root.toLowerCase().contains(query) ||
-              c.type.toLowerCase().contains(query))
-          .toList();
-    }
-
-    state = state.copyWith(filteredChords: results);
+    state = state.copyWith(
+      filteredChords: filterChords(
+        chords: state.allChords,
+        searchQuery: state.searchQuery,
+        selectedRoot: state.selectedRoot,
+        selectedType: state.selectedType,
+        selectedTag: state.selectedTag,
+      ),
+    );
   }
 
   /// Returns a [Chord] whose name matches [name], or `null` if not found.
   Chord? findByName(String name) {
-    try {
-      return state.allChords.firstWhere(
-        (c) => c.name.toLowerCase() == name.toLowerCase(),
-      );
-    } catch (_) {
-      return null;
+    final lowerName = name.toLowerCase();
+    for (final chord in state.allChords) {
+      if (chord.name.toLowerCase() == lowerName ||
+           chordDisplayName(
+                 root: chord.root,
+                 type: chord.type,
+                 explicitDisplayName: chord.displayName,
+               ).toLowerCase() ==
+              lowerName) {
+        return chord;
+      }
     }
+    return null;
   }
 
   /// Returns all chords sharing the same root as [chord].
   List<Chord> relatedByRoot(Chord chord) => state.allChords
-        .where((c) => c.root == chord.root && c.name != chord.name)
-        .toList();
+      .where((candidate) => candidate.root == chord.root && candidate.name != chord.name)
+      .toList(growable: false)
+    ..sort(_compareChords);
+
+  /// Returns chords that share at least one musical category with [chord].
+  List<Chord> relatedByTags(Chord chord, {int limit = 8}) {
+    final tags = chordTags(chord.type, chord.tags).toSet();
+    return state.allChords
+        .where((candidate) => candidate.name != chord.name)
+        .where(
+          (candidate) => chordTags(candidate.type, candidate.tags)
+              .any(tags.contains),
+        )
+        .take(limit)
+        .toList(growable: false);
+  }
 }
