@@ -65,6 +65,7 @@ void main() {
 
     test('priority chord families include explorer sections', () {
       const priorityTypes = {'major', 'minor', 'dominant7', 'major7', 'minor7'};
+      const tetradTypes = {'dominant7', 'major7', 'minor7'};
       final priorityChords =
           chords.where((chord) => priorityTypes.contains(chord.type)).toList();
       expect(priorityChords, isNotEmpty);
@@ -73,6 +74,10 @@ void main() {
         expect(chord.voicings, isNotEmpty, reason: '${chord.name} missing voicings');
         expect(chord.triadInversions, isNotEmpty,
             reason: '${chord.name} missing triad inversions');
+        if (tetradTypes.contains(chord.type)) {
+          expect(chord.advancedInversions, isNotEmpty,
+              reason: '${chord.name} missing advanced inversions');
+        }
       }
     });
   });

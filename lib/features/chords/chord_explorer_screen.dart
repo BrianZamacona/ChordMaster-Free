@@ -49,7 +49,9 @@ class ChordExplorerScreen extends ConsumerWidget {
 
     return Scaffold(
       appBar: AppBar(
-        title: Text('${chord.displayName ?? chord.name} ${AppStrings.chordExplorer}'),
+        title: Text(
+          '${chord.displayName ?? chord.name} • ${AppStrings.chordExplorer}',
+        ),
         backgroundColor: AppColors.chords,
         foregroundColor: Colors.white,
       ),
@@ -133,6 +135,17 @@ class _ExplorerItemCard extends StatelessWidget {
 
   final ChordExplorerItem item;
 
+  String _buildSubtitle() {
+    final parts = <String>[];
+    if (item.shape != null) {
+      parts.add('${AppStrings.shapeLabel}: ${item.shape}');
+    }
+    if (item.description != null) {
+      parts.add(item.description!);
+    }
+    return parts.join(' • ');
+  }
+
   @override
   Widget build(BuildContext context) => Container(
         padding: const EdgeInsets.all(12),
@@ -153,10 +166,7 @@ class _ExplorerItemCard extends StatelessWidget {
             if (item.shape != null || item.description != null) ...[
               const SizedBox(height: 2),
               Text(
-                [
-                  if (item.shape != null) '${AppStrings.shapeLabel}: ${item.shape}',
-                  if (item.description != null) item.description!,
-                ].join(' • '),
+                _buildSubtitle(),
                 style: Theme.of(context).textTheme.bodySmall?.copyWith(
                       color: AppColors.textSecondary,
                     ),
