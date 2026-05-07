@@ -31,28 +31,6 @@ class ChordDetailScreen extends ConsumerStatefulWidget {
 class _ChordDetailScreenState extends ConsumerState<ChordDetailScreen> {
   bool _isPlaying = false;
 
-  static const Map<int, String> _intervalSymbols = {
-    0: '1',
-    1: 'b2',
-    2: '2',
-    3: 'b3',
-    4: '3',
-    5: '4',
-    6: 'b5/#4',
-    7: '5',
-    8: '#5/b6',
-    9: '6',
-    10: 'b7',
-    11: '7',
-    12: '8',
-    13: 'b9',
-    14: '9',
-    15: '#9',
-    17: '11',
-    18: '#11',
-    21: '13',
-  };
-
   @override
   void initState() {
     super.initState();
@@ -337,7 +315,7 @@ class _ChordDetailScreenState extends ConsumerState<ChordDetailScreen> {
 
   String _buildFormulaText(Chord chord) {
     final symbols = chord.intervals
-        .map((interval) => _intervalSymbols[interval] ?? '$interval st')
+        .map((interval) => intervalSymbols[interval] ?? '$interval st')
         .join(' • ');
     final names = chord.intervals
         .map((interval) => intervalNames[interval] ?? '$interval semitones')

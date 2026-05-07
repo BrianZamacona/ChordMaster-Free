@@ -92,7 +92,7 @@ class _ChordDiagramPainter extends CustomPainter {
     final stringSpacing = diagramWidth / 5;
     final fretSpacing = diagramHeight / _fretsShown;
 
-    final positiveFrets = fretPositions.where((fret) => fret > 0);
+    final positiveFrets = fretPositions.where((fret) => fret > 0).toList(growable: false);
     final detectedMinFret = positiveFrets.isEmpty
         ? 1
         : positiveFrets.reduce(math.min);

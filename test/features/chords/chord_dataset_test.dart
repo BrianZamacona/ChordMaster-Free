@@ -6,8 +6,7 @@ import 'package:chordmaster_free/models/chord.dart';
 import 'package:flutter_test/flutter_test.dart';
 
 void main() {
-  final datasetPath =
-      '/home/runner/work/ChordMaster-Free/ChordMaster-Free/assets/data/chords.json';
+  final datasetPath = File('assets/data/chords.json').path;
 
   group('chord dataset integrity', () {
     late List<dynamic> rawData;

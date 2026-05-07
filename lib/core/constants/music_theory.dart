@@ -191,6 +191,29 @@ const Map<int, String> intervalNames = {
   12: 'Octave',
 };
 
+/// Short interval symbols commonly used in chord formulas.
+const Map<int, String> intervalSymbols = {
+  0:  '1',
+  1:  'b2',
+  2:  '2',
+  3:  'b3',
+  4:  '3',
+  5:  '4',
+  6:  'b5/#4',
+  7:  '5',
+  8:  '#5/b6',
+  9:  '6',
+  10: 'b7',
+  11: '7',
+  12: '8',
+  13: 'b9',
+  14: '9',
+  15: '#9',
+  17: '11',
+  18: '#11',
+  21: '13',
+};
+
 // ── Chord Quality Display Names ────────────────────────────────────────────
 
 /// Human-readable display names for chord quality keys.

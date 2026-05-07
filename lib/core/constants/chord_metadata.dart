@@ -283,9 +283,10 @@ String chordShortLabel(String type) =>
 
 List<String> chordAliases(String type, [List<String> explicitAliases = const []]) {
   final aliases = <String>[];
+  final seen = <String>{};
   for (final alias in [...?chordTypeMetadata[type]?.aliases, ...explicitAliases]) {
     final trimmed = alias.trim();
-    if (trimmed.isEmpty || aliases.contains(trimmed)) continue;
+    if (trimmed.isEmpty || !seen.add(trimmed)) continue;
     aliases.add(trimmed);
   }
   return aliases;

@@ -91,9 +91,10 @@ List<Chord> filterChords({
 }) {
   final query = searchQuery.toLowerCase().trim();
   final results = chords.where((chord) {
+    final resolvedTags = chordTags(chord.type, chord.tags);
     if (selectedRoot != null && chord.root != selectedRoot) return false;
     if (selectedType != null && chord.type != selectedType) return false;
-    if (selectedTag != null && !chordTags(chord.type, chord.tags).contains(selectedTag)) {
+    if (selectedTag != null && !resolvedTags.contains(selectedTag)) {
       return false;
     }
     if (query.isEmpty) return true;
@@ -109,8 +110,8 @@ List<Chord> filterChords({
       chord.type,
       chordTypeLabel(chord.type),
       ...chordAliases(chord.type, chord.aliases),
-      ...chordTags(chord.type, chord.tags),
-      ...chordTags(chord.type, chord.tags).map(chordTagLabel),
+      ...resolvedTags,
+      ...resolvedTags.map(chordTagLabel),
     }.join(' ').toLowerCase();
 
     return haystack.contains(query);
@@ -131,6 +132,8 @@ int _compareChords(Chord a, Chord b) {
 
 /// Manages chord library state: loading, filtering by root/type/tag, and search.
 class ChordViewModel extends Notifier<ChordState> {
+  final Map<String, Chord> _nameIndex = {};
+
   @override
   ChordState build() {
     _load();
@@ -145,6 +148,22 @@ class ChordViewModel extends Notifier<ChordState> {
           .map((entry) => Chord.fromJson(entry as Map<String, dynamic>))
           .toList(growable: false)
         ..sort(_compareChords);
+
+      _nameIndex
+        ..clear()
+        ..addEntries(
+          chords.expand((chord) {
+            final displayName = chordDisplayName(
+              root: chord.root,
+              type: chord.type,
+              explicitDisplayName: chord.displayName,
+            );
+            return [
+              MapEntry(chord.name.toLowerCase(), chord),
+              MapEntry(displayName.toLowerCase(), chord),
+            ];
+          }),
+        );
 
       state = state.copyWith(
         allChords: chords,
@@ -210,19 +229,7 @@ class ChordViewModel extends Notifier<ChordState> {
 
   /// Returns a [Chord] whose name matches [name], or `null` if not found.
   Chord? findByName(String name) {
-    final lowerName = name.toLowerCase();
-    for (final chord in state.allChords) {
-      if (chord.name.toLowerCase() == lowerName ||
-           chordDisplayName(
-                 root: chord.root,
-                 type: chord.type,
-                 explicitDisplayName: chord.displayName,
-               ).toLowerCase() ==
-              lowerName) {
-        return chord;
-      }
-    }
-    return null;
+    return _nameIndex[name.toLowerCase()];
   }
 
   /// Returns all chords sharing the same root as [chord].
