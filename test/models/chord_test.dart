@@ -90,6 +90,7 @@ void main() {
           'cagedPositions': [
             {
               'title': 'Bad Entry',
+              // Invalid because explorer fret positions must always have 6 strings.
               'fretPositions': [3, 5, 5],
               'fingerPositions': [1, 3, 4, 2, 1, 1],
             },

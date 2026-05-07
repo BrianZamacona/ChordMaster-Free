@@ -16,21 +16,14 @@ class ChordExplorerItem {
     final title = Chord._readRequiredString(json, 'title');
     final fretPositions = Chord._readFixedIntList(json, 'fretPositions');
     final fingerPositions = Chord._readFixedIntList(json, 'fingerPositions');
-
-    for (final fret in fretPositions) {
-      if (fret < -1 || fret > 24) {
-        throw const FormatException(
-          'explorer fretPositions values must be between -1 and 24',
-        );
-      }
-    }
-    for (final finger in fingerPositions) {
-      if (finger < 0 || finger > 4) {
-        throw const FormatException(
-          'explorer fingerPositions values must be between 0 and 4',
-        );
-      }
-    }
+    Chord._validateFretRange(
+      fretPositions,
+      errorMessage: 'explorer fretPositions values must be between -1 and 24',
+    );
+    Chord._validateFingerRange(
+      fingerPositions,
+      errorMessage: 'explorer fingerPositions values must be between 0 and 4',
+    );
 
     return ChordExplorerItem(
       title: title,
@@ -94,16 +87,14 @@ class Chord {
     if (difficulty < 1 || difficulty > 5) {
       throw const FormatException('difficulty must be between 1 and 5');
     }
-    for (final fret in fretPositions) {
-      if (fret < -1 || fret > 24) {
-        throw const FormatException('fretPositions values must be between -1 and 24');
-      }
-    }
-    for (final finger in fingerPositions) {
-      if (finger < 0 || finger > 4) {
-        throw const FormatException('fingerPositions values must be between 0 and 4');
-      }
-    }
+    _validateFretRange(
+      fretPositions,
+      errorMessage: 'fretPositions values must be between -1 and 24',
+    );
+    _validateFingerRange(
+      fingerPositions,
+      errorMessage: 'fingerPositions values must be between 0 and 4',
+    );
 
     return Chord(
       name: name,
@@ -337,6 +328,28 @@ class Chord {
       }
       return value.trim();
     }).where((value) => value.isNotEmpty).toSet().toList(growable: false);
+  }
+
+  static void _validateFretRange(
+    List<int> values, {
+    required String errorMessage,
+  }) {
+    for (final fret in values) {
+      if (fret < -1 || fret > 24) {
+        throw FormatException(errorMessage);
+      }
+    }
+  }
+
+  static void _validateFingerRange(
+    List<int> values, {
+    required String errorMessage,
+  }) {
+    for (final finger in values) {
+      if (finger < 0 || finger > 4) {
+        throw FormatException(errorMessage);
+      }
+    }
   }
 
   static List<ChordExplorerItem> _readExplorerList(
