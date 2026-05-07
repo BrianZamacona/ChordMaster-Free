@@ -258,7 +258,7 @@ class ChordViewModel extends Notifier<ChordState> {
         .where((candidate) => candidate.name != chord.name)
         .where(
           (candidate) => chordTags(candidate.type, candidate.tags)
-              .any(tags.contains),
+              .any((candidateTag) => tags.contains(candidateTag)),
         )
         .take(limit)
         .toList(growable: false);
