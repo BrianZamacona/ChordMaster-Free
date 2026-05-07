@@ -13,6 +13,7 @@ import '../features/improvisation/improv_screen.dart';
 import '../features/metronome/metronome_screen.dart';
 import '../features/progressions/progressions_screen.dart';
 import '../features/rhythm_games/rhythm_game_screen.dart';
+import '../features/scales/scale_detail_screen.dart';
 import '../features/scales/scales_screen.dart';
 import '../features/songs/song_detail_screen.dart';
 import '../features/songs/songs_screen.dart';
@@ -81,6 +82,14 @@ final GoRouter appRouter = GoRouter(
     GoRoute(
       path: '/scales',
       builder: (_, __) => const ScalesScreen(),
+      routes: [
+        GoRoute(
+          path: ':id',
+          builder: (_, state) => ScaleDetailScreen(
+            scaleId: state.pathParameters['id']!,
+          ),
+        ),
+      ],
     ),
     GoRoute(
       path: '/progressions',

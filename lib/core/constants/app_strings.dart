@@ -241,6 +241,15 @@ class AppStrings {
   /// Common usage description label.
   static const String commonUsage = 'Common Usage';
 
+  /// Scale notes section label.
+  static const String scaleNotes = 'Scale Notes';
+
+  /// Scale description section label.
+  static const String scaleDescription = 'About this scale';
+
+  /// Scale intervals section label.
+  static const String scaleIntervals = 'Intervals';
+
   // ── Progressions ──────────────────────────────────────────────────────────
 
   /// Key selector label.

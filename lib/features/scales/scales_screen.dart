@@ -1,12 +1,12 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
+import 'package:go_router/go_router.dart';
 
 import '../../core/constants/app_colors.dart';
 import '../../core/constants/app_strings.dart';
 import '../../core/constants/music_theory.dart';
 import '../../core/widgets/donation_button.dart';
 import '../../models/scale.dart';
-import '../../services/audio_service.dart';
 import '../../ui/animations.dart';
 import 'modes_screen.dart';
 import 'scales_viewmodel.dart';
@@ -131,7 +131,6 @@ class _ScalesTabContent extends ConsumerWidget {
   @override
   Widget build(BuildContext context, WidgetRef ref) {
     final state = ref.watch(scalesViewModelProvider);
-    final vm = ref.read(scalesViewModelProvider.notifier);
 
     if (state.isLoading) {
       return const Center(child: CircularProgressIndicator());
@@ -180,11 +179,7 @@ class _ScalesTabContent extends ConsumerWidget {
         }
         final scale = scales[index];
         return slideUpFade(
-          _ScaleCard(
-            scale: scale,
-            isSelected: state.selectedScale == scale,
-            onTap: () => vm.selectScale(scale),
-          ),
+          _ScaleCard(scale: scale),
           duration: Duration(milliseconds: 150 + index * 30),
         );
       },
@@ -192,37 +187,26 @@ class _ScalesTabContent extends ConsumerWidget {
   }
 }
 
-class _ScaleCard extends ConsumerWidget {
-  const _ScaleCard({
-    required this.scale,
-    required this.isSelected,
-    required this.onTap,
-  });
+class _ScaleCard extends StatelessWidget {
+  const _ScaleCard({required this.scale});
 
   final Scale scale;
-  final bool isSelected;
-  final VoidCallback onTap;
 
   @override
-  Widget build(BuildContext context, WidgetRef ref) {
+  Widget build(BuildContext context) {
     final theme = Theme.of(context);
     final notes = _computeNotes(scale);
-    final intervalLabels = scale.intervals
-        .map((i) => intervalNames[i] ?? '$i')
-        .toList();
 
     return Card(
       margin: const EdgeInsets.only(bottom: 10),
-      elevation: isSelected ? 4 : 1,
+      elevation: 1,
       shape: RoundedRectangleBorder(
         borderRadius: BorderRadius.circular(14),
-        side: isSelected
-            ? const BorderSide(color: AppColors.scales, width: 2)
-            : BorderSide.none,
       ),
       child: InkWell(
         borderRadius: BorderRadius.circular(14),
-        onTap: onTap,
+        onTap: () =>
+            context.push('/scales/${Uri.encodeComponent(scale.name)}'),
         child: Padding(
           padding: const EdgeInsets.all(14),
           child: Column(
@@ -250,11 +234,11 @@ class _ScaleCard extends ConsumerWidget {
                       ],
                     ),
                   ),
-                  _PlayScaleButton(scale: scale, notes: notes),
+                  const Icon(Icons.chevron_right,
+                      color: AppColors.textSecondary),
                 ],
               ),
               const SizedBox(height: 10),
-              // Notes chips
               Wrap(
                 spacing: 4,
                 runSpacing: 4,
@@ -279,36 +263,7 @@ class _ScaleCard extends ConsumerWidget {
                     )
                     .toList(),
               ),
-              if (isSelected) ...[
-                const SizedBox(height: 10),
-                const Divider(),
-                // Interval chips
-                Wrap(
-                  spacing: 4,
-                  runSpacing: 4,
-                  children: intervalLabels
-                      .map(
-                        (l) => Chip(
-                          label: Text(l, style: const TextStyle(fontSize: 11)),
-                          visualDensity: VisualDensity.compact,
-                          padding: EdgeInsets.zero,
-                        ),
-                      )
-                      .toList(),
-                ),
-                const SizedBox(height: 6),
-                Text(
-                  AppStrings.commonUsage,
-                  style: theme.textTheme.labelSmall?.copyWith(
-                    fontWeight: FontWeight.bold,
-                    color: AppColors.textSecondary,
-                  ),
-                ),
-                Text(
-                  scale.commonUsage,
-                  style: theme.textTheme.bodySmall,
-                ),
-              ],
+              const SizedBox(height: 4),
             ],
           ),
         ),
@@ -323,46 +278,4 @@ class _ScaleCard extends ConsumerWidget {
         .map((i) => chromaticNotes[(rootIdx + i) % 12])
         .toList();
   }
-}
-
-class _PlayScaleButton extends StatefulWidget {
-  const _PlayScaleButton({required this.scale, required this.notes});
-
-  final Scale scale;
-  final List<String> notes;
-
-  @override
-  State<_PlayScaleButton> createState() => _PlayScaleButtonState();
-}
-
-class _PlayScaleButtonState extends State<_PlayScaleButton> {
-  bool _isPlaying = false;
-
-  Future<void> _play() async {
-    if (_isPlaying) return;
-    setState(() => _isPlaying = true);
-    try {
-      for (final note in widget.notes) {
-        final file =
-            'assets/audio/notes/${note.replaceAll('#', 's')}4.mp3';
-        await AudioService.instance.playNote(file);
-        await Future<void>.delayed(const Duration(milliseconds: 250));
-      }
-    } catch (e) {
-      debugPrint('_PlayScaleButton._play error: $e');
-    } finally {
-      if (mounted) setState(() => _isPlaying = false);
-    }
-  }
-
-  @override
-  Widget build(BuildContext context) => IconButton(
-      icon: Icon(
-        _isPlaying ? Icons.volume_up : Icons.play_circle_outline,
-        color: AppColors.scales,
-        size: 28,
-      ),
-      tooltip: AppStrings.play,
-      onPressed: _play,
-    );
 }

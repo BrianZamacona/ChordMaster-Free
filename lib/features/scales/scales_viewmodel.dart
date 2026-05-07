@@ -153,6 +153,14 @@ class ScalesViewModel extends Notifier<ScalesState> {
     state = state.copyWith(selectedScale: null);
   }
 
+  /// Returns a [Scale] whose name matches [name], or `null` if not found.
+  Scale? findByName(String name) {
+    for (final s in state.allScales) {
+      if (s.name == name) return s;
+    }
+    return null;
+  }
+
   List<Scale> _filter(List<Scale> all, String root, String category) => all
         .where((s) =>
             s.root == root &&

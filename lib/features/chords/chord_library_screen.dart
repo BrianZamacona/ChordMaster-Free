@@ -332,7 +332,7 @@ class _ChordCard extends StatelessWidget {
     return GestureDetector(
       onTap: () {
         final encoded = Uri.encodeComponent(chord.name);
-        context.go('/chords/$encoded');
+        context.push('/chords/$encoded');
       },
       child: Card(
         elevation: 2,

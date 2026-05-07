@@ -250,7 +250,7 @@ class _ChordDetailScreenState extends ConsumerState<ChordDetailScreen> {
                           ),
                           onTap: () {
                             final encoded = Uri.encodeComponent(related.name);
-                            context.go('/chords/$encoded');
+                            context.push('/chords/$encoded');
                           },
                         );
                       },
@@ -277,7 +277,7 @@ class _ChordDetailScreenState extends ConsumerState<ChordDetailScreen> {
                             ),
                             onTap: () {
                               final encoded = Uri.encodeComponent(related.name);
-                              context.go('/chords/$encoded');
+                              context.push('/chords/$encoded');
                             },
                           ),
                         )
@@ -297,7 +297,8 @@ class _ChordDetailScreenState extends ConsumerState<ChordDetailScreen> {
                       .map(
                         (scale) => ActionChip(
                           label: Text(scale, style: const TextStyle(fontSize: 12)),
-                          onPressed: () => context.go('/scales'),
+                          onPressed: () => context.push(
+                              '/scales/${Uri.encodeComponent(scale)}'),
                         ),
                       )
                       .toList(),
