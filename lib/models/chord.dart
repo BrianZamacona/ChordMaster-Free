@@ -365,7 +365,7 @@ class Chord {
       if (value is! Map<String, dynamic>) {
         throw FormatException('$key must contain only objects');
       }
-      return ChordExplorerItem.fromJson(value);
+      return ChordExplorerItem.fromJson(value as Map<String, dynamic>);
     }).toList(growable: false);
   }
 }
