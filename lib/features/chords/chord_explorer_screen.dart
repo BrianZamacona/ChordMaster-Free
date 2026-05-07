@@ -152,7 +152,7 @@ class _ExplorerItemCard extends StatelessWidget {
         decoration: BoxDecoration(
           color: AppColors.surface,
           borderRadius: BorderRadius.circular(12),
-          border: Border.all(color: AppColors.chords.withValues(alpha: 80 / 255)),
+          border: Border.all(color: AppColors.chords.withValues(alpha: 0.31)),
         ),
         child: Column(
           crossAxisAlignment: CrossAxisAlignment.start,

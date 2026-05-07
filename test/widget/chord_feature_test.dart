@@ -73,6 +73,8 @@ void main() {
     expect(find.text('Triad Inversions'), findsOneWidget);
     expect(find.text('Advanced Inversions'), findsOneWidget);
     expect(find.text('C Form'), findsOneWidget);
+    expect(find.text('Shell 6-4-3'), findsOneWidget);
+    expect(find.text('Root Position'), findsWidgets);
     expect(find.byType(ChordDiagramWidget), findsWidgets);
   });
 }
