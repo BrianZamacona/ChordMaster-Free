@@ -1,8 +1,7 @@
-import 'package:flutter_test/flutter_test.dart';
-
 import 'package:chordmaster_free/features/scales/scale_enrichment.dart';
 import 'package:chordmaster_free/features/scales/scale_pattern_validator.dart';
 import 'package:chordmaster_free/models/scale.dart';
+import 'package:flutter_test/flutter_test.dart';
 
 void main() {
   group('ScaleEnrichment fingerings freeze', () {
@@ -28,7 +27,7 @@ void main() {
     const validator = ScalePatternValidator();
 
     test('accepts validated C major pattern in standard tuning', () {
-      final scale = Scale(
+      const scale = Scale(
         name: 'C Major',
         root: 'C',
         type: 'major',
@@ -61,7 +60,7 @@ void main() {
     });
 
     test('rejects draft patterns', () {
-      final scale = Scale(
+      const scale = Scale(
         name: 'C Major',
         root: 'C',
         type: 'major',
@@ -72,7 +71,6 @@ void main() {
         blockFingerings: const [
           ScalePattern(
             name: 'Draft block',
-            status: ScalePatternStatus.draft,
             system: ScalePatternSystem.block,
             notes: [
               ScalePatternNote(stringNumber: 6, fret: 8),

@@ -342,12 +342,11 @@ extension ScalePatternSystemX on ScalePatternSystem {
         ScalePatternSystem.custom => 'custom',
       };
 
-  static ScalePatternSystem fromJson(String? raw) {
-    return ScalePatternSystem.values.firstWhere(
-      (value) => value.jsonValue == raw,
-      orElse: () => ScalePatternSystem.custom,
-    );
-  }
+  static ScalePatternSystem fromJson(String? raw) =>
+      ScalePatternSystem.values.firstWhere(
+        (value) => value.jsonValue == raw,
+        orElse: () => ScalePatternSystem.custom,
+      );
 }
 
 enum ScalePatternStatus { draft, validated, published }
@@ -359,12 +358,11 @@ extension ScalePatternStatusX on ScalePatternStatus {
         ScalePatternStatus.published => 'published',
       };
 
-  static ScalePatternStatus fromJson(String? raw) {
-    return ScalePatternStatus.values.firstWhere(
-      (value) => value.jsonValue == raw,
-      orElse: () => ScalePatternStatus.draft,
-    );
-  }
+  static ScalePatternStatus fromJson(String? raw) =>
+      ScalePatternStatus.values.firstWhere(
+        (value) => value.jsonValue == raw,
+        orElse: () => ScalePatternStatus.draft,
+      );
 }
 
 class ScalePatternNote {

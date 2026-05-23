@@ -54,7 +54,8 @@ class _ParsedScalePattern {
       var maxFret = 0;
       for (final note in pattern.notes) {
         final stringIndex = 6 - note.stringNumber;
-        strings.putIfAbsent(stringIndex, () => <int>[]).add(note.fret);
+        final notes = strings[stringIndex] ??= <int>[];
+        notes.add(note.fret);
         if (note.fret > 0) {
           minFret = math.min(minFret, note.fret);
           maxFret = math.max(maxFret, note.fret);

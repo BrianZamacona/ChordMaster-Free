@@ -159,7 +159,7 @@ class ScalePatternValidator {
       final frets = match
           .group(2)!
           .split('-')
-          .map((part) => int.tryParse(part))
+          .map(int.tryParse)
           .whereType<int>();
       for (final fret in frets) {
         extracted.add(ScalePatternNote(stringNumber: stringNumber, fret: fret));
