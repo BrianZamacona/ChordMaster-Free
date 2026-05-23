@@ -95,7 +95,7 @@ class _ChordLibraryScreenState extends ConsumerState<ChordLibraryScreen> {
                       ? () {
                           _searchController.clear();
                           vm.clearFilters();
-                        },
+                        }
                       : null,
                   icon: const Icon(Icons.filter_alt_off),
                   label: const Text(AppStrings.reset),

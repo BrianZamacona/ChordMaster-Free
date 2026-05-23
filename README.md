@@ -95,7 +95,7 @@ flutter pub get
 flutter run
 ```
 
-> **Requirements:** Flutter SDK ≥ 3.41.5, Dart SDK ≥ 3.11.0
+> **Requirements:** Flutter SDK ≥ 3.41.5, Dart SDK ≥ 3.11.0, JDK 21 (LTS) for Android builds
 
 ---
 

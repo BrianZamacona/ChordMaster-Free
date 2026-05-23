@@ -245,9 +245,7 @@ class ChordViewModel extends Notifier<ChordState> {
   }
 
   /// Returns a [Chord] whose name matches [name], or `null` if not found.
-  Chord? findByName(String name) {
-    return _nameIndex[name.toLowerCase()];
-  }
+  Chord? findByName(String name) => _nameIndex[name.toLowerCase()];
 
   /// Returns all chords sharing the same root as [chord].
   List<Chord> relatedByRoot(Chord chord) => state.allChords
@@ -262,7 +260,7 @@ class ChordViewModel extends Notifier<ChordState> {
         .where((candidate) => candidate.name != chord.name)
         .where(
           (candidate) => chordTags(candidate.type, candidate.tags)
-              .any((candidateTag) => tags.contains(candidateTag)),
+              .any(tags.contains),
         )
         .take(limit)
         .toList(growable: false);

@@ -68,3 +68,6 @@ app.*.map.json
 
 # Coverage
 coverage/
+
+# Local Gradle cache used by VS Code Java/Gradle import
+.gradle-vscode/
