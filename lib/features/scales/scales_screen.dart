@@ -4,6 +4,7 @@ import 'package:go_router/go_router.dart';
 
 import '../../core/constants/app_colors.dart';
 import '../../core/constants/app_strings.dart';
+import '../../core/i18n/app_localizations.dart';
 import '../../core/constants/music_theory.dart';
 import '../../core/widgets/donation_button.dart';
 import '../../core/widgets/feature_module_scaffold.dart';
@@ -318,6 +319,13 @@ class _ScaleCard extends ConsumerWidget {
                   title: 'CAGED / Popular Shapes',
                   patterns: scale.cagedFingerings,
                 ),
+                if (scale.blockFingerings.isEmpty &&
+                    scale.threeNotePerStringFingerings.isEmpty &&
+                    scale.cagedFingerings.isEmpty)
+                  const Padding(
+                    padding: EdgeInsets.only(top: 2, bottom: 8),
+                    child: _PatternValidationNotice(),
+                  ),
                 const SizedBox(height: 8),
                 _HarmonizedChordsSection(scale: scale),
               ],
@@ -456,6 +464,32 @@ class _FingeringSection extends StatelessWidget {
         ),
       ],
     );
+  }
+
+  class _PatternValidationNotice extends StatelessWidget {
+    const _PatternValidationNotice();
+
+    @override
+    Widget build(BuildContext context) {
+      final scheme = Theme.of(context).colorScheme;
+      final textTheme = Theme.of(context).textTheme;
+      return Container(
+        width: double.infinity,
+        padding: const EdgeInsets.all(10),
+        decoration: BoxDecoration(
+          color: scheme.secondaryContainer.withAlpha(140),
+          borderRadius: BorderRadius.circular(8),
+          border: Border.all(color: scheme.outlineVariant),
+        ),
+        child: Text(
+          context.l10n.t('scalesValidationNotice'),
+          style: textTheme.labelSmall?.copyWith(
+            color: scheme.onSecondaryContainer,
+            fontWeight: FontWeight.w600,
+          ),
+        ),
+      );
+    }
   }
 }
 

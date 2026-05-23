@@ -5,13 +5,23 @@ import '../../services/storage_service.dart';
 
 /// Immutable state for [SettingsViewModel].
 class SettingsState {
-  const SettingsState({this.themeMode = ThemeMode.system});
+  const SettingsState({
+    this.themeMode = ThemeMode.system,
+    this.localeCode = 'en',
+  });
 
   /// The currently selected [ThemeMode].
   final ThemeMode themeMode;
+  final String localeCode;
 
-  SettingsState copyWith({ThemeMode? themeMode}) =>
-      SettingsState(themeMode: themeMode ?? this.themeMode);
+  SettingsState copyWith({
+    ThemeMode? themeMode,
+    String? localeCode,
+  }) =>
+      SettingsState(
+        themeMode: themeMode ?? this.themeMode,
+        localeCode: localeCode ?? this.localeCode,
+      );
 }
 
 /// Provider for [SettingsViewModel].
@@ -22,6 +32,7 @@ final settingsViewModelProvider =
 /// Manages persisted app settings such as [ThemeMode].
 class SettingsViewModel extends Notifier<SettingsState> {
   static const _keyThemeMode = 'themeMode';
+  static const _keyLocaleCode = 'localeCode';
 
   @override
   SettingsState build() {
@@ -35,9 +46,29 @@ class SettingsViewModel extends Notifier<SettingsState> {
       final raw = await storage.get<String>(
             StorageService.settingsBox, _keyThemeMode) ??
           'system';
-      state = state.copyWith(themeMode: _parseThemeMode(raw));
+      final localeCode = await storage.get<String>(
+            StorageService.settingsBox, _keyLocaleCode) ??
+          'en';
+      state = state.copyWith(
+        themeMode: _parseThemeMode(raw),
+        localeCode: localeCode,
+      );
     } catch (e, st) {
       debugPrint('SettingsViewModel._loadSettings error: $e\n$st');
+    }
+  }
+
+  Future<void> setLocaleCode(String localeCode) async {
+    try {
+      state = state.copyWith(localeCode: localeCode);
+      final storage = ref.read(storageServiceProvider);
+      await storage.save(
+        StorageService.settingsBox,
+        _keyLocaleCode,
+        localeCode,
+      );
+    } catch (e, st) {
+      debugPrint('SettingsViewModel.setLocaleCode error: $e\n$st');
     }
   }
 

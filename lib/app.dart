@@ -1,7 +1,10 @@
 import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter_localizations/flutter_localizations.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 
+import 'core/i18n/app_i18n.dart';
+import 'core/i18n/app_localizations.dart';
 import 'features/settings/settings_viewmodel.dart';
 import 'ui/navigation.dart';
 import 'ui/theme.dart';
@@ -15,11 +18,21 @@ class ChordMasterApp extends ConsumerWidget {
   Widget build(BuildContext context, WidgetRef ref) {
     final themeMode =
         ref.watch(settingsViewModelProvider.select((s) => s.themeMode));
+    final localeCode =
+        ref.watch(settingsViewModelProvider.select((s) => s.localeCode));
     return MaterialApp.router(
       title: 'ChordMaster Free',
       theme: lightTheme,
       darkTheme: darkTheme,
       themeMode: themeMode,
+      locale: Locale(localeCode),
+      supportedLocales: AppI18n.supportedLocales,
+      localizationsDelegates: const [
+        AppLocalizations.delegate,
+        GlobalMaterialLocalizations.delegate,
+        GlobalWidgetsLocalizations.delegate,
+        GlobalCupertinoLocalizations.delegate,
+      ],
       routerConfig: appRouter,
       debugShowCheckedModeBanner: false,
       // OWASP A05: warn when running in web (unencrypted storage).
@@ -86,4 +99,3 @@ class _WebStorageWarningBannerState extends State<_WebStorageWarningBanner> {
     );
   }
 }
-

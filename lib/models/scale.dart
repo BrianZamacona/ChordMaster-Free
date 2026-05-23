@@ -206,23 +206,67 @@ class Scale {
 class ScalePattern {
   const ScalePattern({
     required this.name,
-    required this.positions,
+    this.id,
+    this.system = ScalePatternSystem.custom,
+    this.status = ScalePatternStatus.draft,
+    this.tonic,
+    this.tuningName,
+    this.minFret,
+    this.maxFret,
+    this.positions = const [],
+    this.notes = const [],
     this.description,
   });
 
-  factory ScalePattern.fromJson(Map<String, dynamic> json) => ScalePattern(
-        name: _requirePatternString(json, 'name'),
-        positions: _requirePatternStringList(json, 'positions'),
-        description: json['description'] as String?,
+  factory ScalePattern.fromJson(Map<String, dynamic> json) {
+    final rawSystem = json['system'] as String?;
+    final rawStatus = json['status'] as String?;
+    final positions = _optionalPatternStringList(json, 'positions');
+    final notes = _optionalPatternNoteList(json, 'notes');
+    if (positions.isEmpty && notes.isEmpty) {
+      throw const FormatException(
+        'ScalePattern requires at least one of positions or notes',
       );
+    }
 
+    return ScalePattern(
+      id: json['id'] as String?,
+      name: _requirePatternString(json, 'name'),
+      system: ScalePatternSystemX.fromJson(rawSystem),
+      status: ScalePatternStatusX.fromJson(rawStatus),
+      tonic: json['tonic'] as String?,
+      tuningName: json['tuningName'] as String?,
+      minFret: _optionalPositiveInt(json['minFret']),
+      maxFret: _optionalPositiveInt(json['maxFret']),
+      positions: positions,
+      notes: notes,
+      description: json['description'] as String?,
+    );
+  }
+
+  final String? id;
   final String name;
+  final ScalePatternSystem system;
+  final ScalePatternStatus status;
+  final String? tonic;
+  final String? tuningName;
+  final int? minFret;
+  final int? maxFret;
   final List<String> positions;
+  final List<ScalePatternNote> notes;
   final String? description;
 
   Map<String, dynamic> toJson() => {
+        if (id != null) 'id': id,
         'name': name,
-        'positions': positions,
+        'system': system.jsonValue,
+        'status': status.jsonValue,
+        if (tonic != null) 'tonic': tonic,
+        if (tuningName != null) 'tuningName': tuningName,
+        if (minFret != null) 'minFret': minFret,
+        if (maxFret != null) 'maxFret': maxFret,
+        if (positions.isNotEmpty) 'positions': positions,
+        if (notes.isNotEmpty) 'notes': notes.map((n) => n.toJson()).toList(),
         if (description != null) 'description': description,
       };
 
@@ -247,6 +291,132 @@ class ScalePattern {
       return entry;
     }).toList(growable: false);
   }
+
+  static List<String> _optionalPatternStringList(
+      Map<String, dynamic> json, String key) {
+    final value = json[key];
+    if (value == null) return const [];
+    return _requirePatternStringList(json, key);
+  }
+
+  static List<ScalePatternNote> _optionalPatternNoteList(
+      Map<String, dynamic> json, String key) {
+    final value = json[key];
+    if (value == null) return const [];
+    if (value is! List) {
+      throw FormatException('$key must be a list');
+    }
+    return value
+        .map((entry) =>
+            ScalePatternNote.fromJson(Map<String, dynamic>.from(entry as Map)))
+        .toList(growable: false);
+  }
+
+  static int? _optionalPositiveInt(Object? value) {
+    if (value == null) return null;
+    if (value is! num) {
+      throw const FormatException('Expected numeric fret value');
+    }
+    final intValue = value.toInt();
+    if (intValue < 0) {
+      throw const FormatException('Fret value must be >= 0');
+    }
+    return intValue;
+  }
+}
+
+enum ScalePatternSystem {
+  block,
+  threeNps,
+  caged,
+  pentatonicBox,
+  custom,
+}
+
+extension ScalePatternSystemX on ScalePatternSystem {
+  String get jsonValue => switch (this) {
+        ScalePatternSystem.block => 'block',
+        ScalePatternSystem.threeNps => 'threeNps',
+        ScalePatternSystem.caged => 'caged',
+        ScalePatternSystem.pentatonicBox => 'pentatonicBox',
+        ScalePatternSystem.custom => 'custom',
+      };
+
+  static ScalePatternSystem fromJson(String? raw) {
+    return ScalePatternSystem.values.firstWhere(
+      (value) => value.jsonValue == raw,
+      orElse: () => ScalePatternSystem.custom,
+    );
+  }
+}
+
+enum ScalePatternStatus { draft, validated, published }
+
+extension ScalePatternStatusX on ScalePatternStatus {
+  String get jsonValue => switch (this) {
+        ScalePatternStatus.draft => 'draft',
+        ScalePatternStatus.validated => 'validated',
+        ScalePatternStatus.published => 'published',
+      };
+
+  static ScalePatternStatus fromJson(String? raw) {
+    return ScalePatternStatus.values.firstWhere(
+      (value) => value.jsonValue == raw,
+      orElse: () => ScalePatternStatus.draft,
+    );
+  }
+}
+
+class ScalePatternNote {
+  const ScalePatternNote({
+    required this.stringNumber,
+    required this.fret,
+    this.interval,
+    this.noteName,
+    this.suggestedFinger,
+  });
+
+  factory ScalePatternNote.fromJson(Map<String, dynamic> json) {
+    final stringNumber = (json['stringNumber'] as num?)?.toInt();
+    final fret = (json['fret'] as num?)?.toInt();
+    if (stringNumber == null || stringNumber < 1 || stringNumber > 6) {
+      throw const FormatException('ScalePatternNote.stringNumber must be 1..6');
+    }
+    if (fret == null || fret < 0 || fret > 24) {
+      throw const FormatException('ScalePatternNote.fret must be 0..24');
+    }
+    final interval = (json['interval'] as num?)?.toInt();
+    if (interval != null && (interval < 0 || interval > 24)) {
+      throw const FormatException('ScalePatternNote.interval must be 0..24');
+    }
+    final suggestedFinger = (json['suggestedFinger'] as num?)?.toInt();
+    if (suggestedFinger != null &&
+        (suggestedFinger < 1 || suggestedFinger > 4)) {
+      throw const FormatException(
+          'ScalePatternNote.suggestedFinger must be 1..4');
+    }
+    return ScalePatternNote(
+      stringNumber: stringNumber,
+      fret: fret,
+      interval: interval,
+      noteName: json['noteName'] as String?,
+      suggestedFinger: suggestedFinger,
+    );
+  }
+
+  final int stringNumber;
+  final int fret;
+  final int? interval;
+  final String? noteName;
+  final int? suggestedFinger;
+
+  Map<String, dynamic> toJson() => {
+        'stringNumber': stringNumber,
+        'fret': fret,
+        if (interval != null) 'interval': interval,
+        if (noteName != null) 'noteName': noteName,
+        if (suggestedFinger != null) 'suggestedFinger': suggestedFinger,
+      };
 }
 
 /// A harmonized chord entry for one degree of a scale.

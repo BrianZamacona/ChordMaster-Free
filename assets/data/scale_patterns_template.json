@@ -1,0 +1,60 @@
+{
+  "convention": {
+    "tuningName": "EADGBE_STANDARD",
+    "tuning": ["E2", "A2", "D3", "G3", "B3", "E4"],
+    "stringsSupported": 6,
+    "noteNaming": "SHARPS_ONLY",
+    "maxFret": 22
+  },
+  "systems": [
+    {"id": "caged", "priority": 1},
+    {"id": "threeNps", "priority": 2},
+    {"id": "block", "priority": 3},
+    {"id": "pentatonicBox", "priority": 4}
+  ],
+  "patterns": [
+    {
+      "id": "major_c_caged_e_01",
+      "name": "C Major - CAGED E Shape",
+      "system": "caged",
+      "status": "draft",
+      "scaleType": "major",
+      "root": "C",
+      "tonic": "C",
+      "position": {
+        "anchorFret": 8,
+        "minFret": 7,
+        "maxFret": 10
+      },
+      "notes": [
+        {
+          "stringNumber": 6,
+          "fret": 8,
+          "noteName": "C",
+          "interval": 0,
+          "suggestedFinger": 1
+        },
+        {
+          "stringNumber": 6,
+          "fret": 10,
+          "noteName": "D",
+          "interval": 2,
+          "suggestedFinger": 3
+        }
+      ],
+      "rules": {
+        "allowDegreeDuplicates": true,
+        "direction": "asc-desc",
+        "maxStretchFrets": 4
+      },
+      "review": {
+        "batchId": "batch_001",
+        "checklist": {
+          "correctNotes": false,
+          "correctStringFret": false,
+          "pedagogicalCoherence": false
+        }
+      }
+    }
+  ]
+}

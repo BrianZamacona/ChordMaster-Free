@@ -48,6 +48,27 @@ class _ParsedScalePattern {
   bool get hasDrawableStrings => positionsByString.isNotEmpty;
 
   factory _ParsedScalePattern.from(ScalePattern pattern) {
+    if (pattern.notes.isNotEmpty) {
+      final strings = <int, List<int>>{};
+      var minFret = 99;
+      var maxFret = 0;
+      for (final note in pattern.notes) {
+        final stringIndex = 6 - note.stringNumber;
+        strings.putIfAbsent(stringIndex, () => <int>[]).add(note.fret);
+        if (note.fret > 0) {
+          minFret = math.min(minFret, note.fret);
+          maxFret = math.max(maxFret, note.fret);
+        }
+      }
+      if (minFret == 99) minFret = 1;
+      if (maxFret == 0) maxFret = 5;
+      return _ParsedScalePattern(
+        positionsByString: strings,
+        minFret: minFret,
+        maxFret: maxFret,
+      );
+    }
+
     final strings = <int, List<int>>{};
     var minFret = 99;
     var maxFret = 0;

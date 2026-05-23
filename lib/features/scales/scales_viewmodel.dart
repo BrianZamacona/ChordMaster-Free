@@ -6,6 +6,7 @@ import 'package:flutter_riverpod/flutter_riverpod.dart';
 
 import '../../models/scale.dart';
 import 'scale_enrichment.dart';
+import 'scale_pattern_validator.dart';
 
 /// Category constants for scale grouping.
 class ScaleCategory {
@@ -107,6 +108,8 @@ final scalesViewModelProvider =
 
 /// Manages scales screen state: loading, root/category filtering, selection.
 class ScalesViewModel extends Notifier<ScalesState> {
+  static const _validator = ScalePatternValidator();
+
   @override
   ScalesState build() {
     _load();
@@ -120,6 +123,7 @@ class ScalesViewModel extends Notifier<ScalesState> {
       final scales = list
           .map((e) => Scale.fromJson(e as Map<String, dynamic>))
           .map(ScaleEnrichment.enrich)
+          .map(_validatePatterns)
           .toList(growable: false);
 
       state = state.copyWith(
@@ -169,4 +173,37 @@ class ScalesViewModel extends Notifier<ScalesState> {
       .where(
           (s) => s.root == root && ScaleCategory.fromType(s.type) == category)
       .toList();
+
+  Scale _validatePatterns(Scale scale) {
+    final block = _validator.validate(
+      scale: scale,
+      patterns: scale.blockFingerings,
+      system: ScalePatternSystem.block,
+    );
+    final threeNps = _validator.validate(
+      scale: scale,
+      patterns: scale.threeNotePerStringFingerings,
+      system: ScalePatternSystem.threeNps,
+    );
+    final caged = _validator.validate(
+      scale: scale,
+      patterns: scale.cagedFingerings,
+      system: ScalePatternSystem.caged,
+    );
+
+    final issues = [...block.issues, ...threeNps.issues, ...caged.issues];
+    if (issues.isNotEmpty) {
+      for (final issue in issues) {
+        debugPrint(
+          'Scale pattern rejected [${scale.name}] ${issue.patternName}: ${issue.reason}',
+        );
+      }
+    }
+
+    return scale.copyWith(
+      blockFingerings: block.validPatterns,
+      threeNotePerStringFingerings: threeNps.validPatterns,
+      cagedFingerings: caged.validPatterns,
+    );
+  }
 }

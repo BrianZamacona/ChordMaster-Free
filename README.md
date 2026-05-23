@@ -81,6 +81,15 @@ ChordMaster Free follows **Clean Architecture** with a strict separation of conc
 
 ---
 
+## 🌍 Localization Strategy
+
+- Runtime model: **static localization files** with offline-first fallback.
+- Gold locales: **English (en)** and **Spanish (es)**.
+- Additional rollout locales: **pt, de, ru, zh, ja, fr, it** (machine-assisted + human review workflow).
+- No runtime auto-translation API in production (cost, quality and offline constraints).
+
+---
+
 ## 🚀 Quick Start
 
 ```bash
