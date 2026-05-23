@@ -3,6 +3,8 @@ import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:go_router/go_router.dart';
 
 import '../../features/settings/settings_viewmodel.dart';
+import '../i18n/app_i18n.dart';
+import '../i18n/app_localizations.dart';
 import '../constants/app_colors.dart';
 import '../constants/app_strings.dart';
 
@@ -86,30 +88,30 @@ class _AppScaffoldState extends State<AppScaffold> {
         bottomNavigationBar: NavigationBar(
           selectedIndex: widget.currentIndex.clamp(0, 3),
           onDestinationSelected: _onDestinationTapped,
-          destinations: const [
+          destinations: [
             NavigationDestination(
-              icon: Icon(Icons.home_outlined),
-              selectedIcon: Icon(Icons.home),
-              label: 'Home',
+              icon: const Icon(Icons.home_outlined),
+              selectedIcon: const Icon(Icons.home),
+              label: context.l10n.t('home'),
             ),
-            NavigationDestination(
+            const NavigationDestination(
               icon: Icon(Icons.library_music_outlined),
               selectedIcon: Icon(Icons.library_music),
               label: AppStrings.moduleChords,
             ),
-            NavigationDestination(
+            const NavigationDestination(
               icon: Icon(Icons.graphic_eq_outlined),
               selectedIcon: Icon(Icons.graphic_eq),
               label: AppStrings.moduleTuner,
             ),
-            NavigationDestination(
+            const NavigationDestination(
               icon: Icon(Icons.timer_outlined),
               selectedIcon: Icon(Icons.timer),
               label: AppStrings.moduleMetronome,
             ),
             NavigationDestination(
-              icon: Icon(Icons.more_horiz),
-              label: 'More',
+              icon: const Icon(Icons.more_horiz),
+              label: context.l10n.t('more'),
             ),
           ],
         ),
@@ -120,68 +122,68 @@ class _AppScaffoldState extends State<AppScaffold> {
 class AppEndDrawer extends ConsumerWidget {
   const AppEndDrawer({super.key});
 
-  static const List<_DrawerSection> _sections = [
-    _DrawerSection(
-      title: 'Practice',
-      items: [
-        _DrawerItem(
-          label: AppStrings.moduleScales,
-          icon: Icons.music_video,
-          route: '/scales',
+  List<_DrawerSection> _sections(BuildContext context) => [
+        _DrawerSection(
+          title: context.l10n.t('practice'),
+          items: const [
+            _DrawerItem(
+              label: AppStrings.moduleScales,
+              icon: Icons.music_video,
+              route: '/scales',
+            ),
+            _DrawerItem(
+              label: AppStrings.moduleProgressions,
+              icon: Icons.queue_music,
+              route: '/progressions',
+            ),
+            _DrawerItem(
+              label: AppStrings.moduleEarTraining,
+              icon: Icons.hearing,
+              route: '/ear-training',
+            ),
+            _DrawerItem(
+              label: AppStrings.moduleRhythmGame,
+              icon: Icons.sports_esports,
+              route: '/rhythm-game',
+            ),
+            _DrawerItem(
+              label: AppStrings.moduleImprovisation,
+              icon: Icons.piano,
+              route: '/improvisation',
+            ),
+          ],
         ),
-        _DrawerItem(
-          label: AppStrings.moduleProgressions,
-          icon: Icons.queue_music,
-          route: '/progressions',
+        _DrawerSection(
+          title: context.l10n.t('createTrack'),
+          items: const [
+            _DrawerItem(
+              label: AppStrings.moduleSongs,
+              icon: Icons.music_note,
+              route: '/songs',
+            ),
+            _DrawerItem(
+              label: AppStrings.moduleComposition,
+              icon: Icons.edit_note,
+              route: '/composition',
+            ),
+            _DrawerItem(
+              label: AppStrings.moduleHealth,
+              icon: Icons.health_and_safety,
+              route: '/health',
+            ),
+            _DrawerItem(
+              label: AppStrings.moduleCommunity,
+              icon: Icons.people,
+              route: '/community',
+            ),
+            _DrawerItem(
+              label: AppStrings.moduleAchievements,
+              icon: Icons.emoji_events,
+              route: '/achievements',
+            ),
+          ],
         ),
-        _DrawerItem(
-          label: AppStrings.moduleEarTraining,
-          icon: Icons.hearing,
-          route: '/ear-training',
-        ),
-        _DrawerItem(
-          label: AppStrings.moduleRhythmGame,
-          icon: Icons.sports_esports,
-          route: '/rhythm-game',
-        ),
-        _DrawerItem(
-          label: AppStrings.moduleImprovisation,
-          icon: Icons.piano,
-          route: '/improvisation',
-        ),
-      ],
-    ),
-    _DrawerSection(
-      title: 'Create & Track',
-      items: [
-        _DrawerItem(
-          label: AppStrings.moduleSongs,
-          icon: Icons.music_note,
-          route: '/songs',
-        ),
-        _DrawerItem(
-          label: AppStrings.moduleComposition,
-          icon: Icons.edit_note,
-          route: '/composition',
-        ),
-        _DrawerItem(
-          label: AppStrings.moduleHealth,
-          icon: Icons.health_and_safety,
-          route: '/health',
-        ),
-        _DrawerItem(
-          label: AppStrings.moduleCommunity,
-          icon: Icons.people,
-          route: '/community',
-        ),
-        _DrawerItem(
-          label: AppStrings.moduleAchievements,
-          icon: Icons.emoji_events,
-          route: '/achievements',
-        ),
-      ],
-    ),
-  ];
+      ];
 
   @override
   Widget build(BuildContext context, WidgetRef ref) {
@@ -190,6 +192,8 @@ class AppEndDrawer extends ConsumerWidget {
     final location = GoRouterState.of(context).matchedLocation;
     final themeMode =
         ref.watch(settingsViewModelProvider.select((s) => s.themeMode));
+    final localeCode =
+        ref.watch(settingsViewModelProvider.select((s) => s.localeCode));
     final isDark = themeMode == ThemeMode.dark ||
         (themeMode == ThemeMode.system &&
             MediaQuery.platformBrightnessOf(context) == Brightness.dark);
@@ -236,7 +240,7 @@ class AppEndDrawer extends ConsumerWidget {
                 ),
               ),
             ),
-            ..._sections.expand(
+            ..._sections(context).expand(
               (section) => [
                 Padding(
                   padding: const EdgeInsets.fromLTRB(4, 6, 4, 8),
@@ -282,7 +286,7 @@ class AppEndDrawer extends ConsumerWidget {
                   style: textTheme.bodyMedium?.copyWith(color: scheme.onSurface),
                 ),
                 subtitle: Text(
-                  'Auto/Manual',
+                  context.l10n.t('darkModeSubtitle'),
                   style: textTheme.labelSmall
                       ?.copyWith(color: scheme.onSurfaceVariant),
                 ),
@@ -293,6 +297,46 @@ class AppEndDrawer extends ConsumerWidget {
                         value ? ThemeMode.dark : ThemeMode.system,
                       );
                 },
+              ),
+            ),
+            Container(
+              margin: const EdgeInsets.only(top: 8),
+              decoration: BoxDecoration(
+                color: scheme.surfaceContainer,
+                borderRadius: BorderRadius.circular(14),
+                border: Border.all(color: scheme.outlineVariant),
+              ),
+              padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 6),
+              child: Row(
+                children: [
+                  Icon(Icons.language, color: scheme.onSurfaceVariant),
+                  const SizedBox(width: 10),
+                  Expanded(
+                    child: Text(
+                      context.l10n.t('language'),
+                      style: textTheme.bodyMedium
+                          ?.copyWith(color: scheme.onSurface),
+                    ),
+                  ),
+                  DropdownButton<String>(
+                    value: localeCode,
+                    underline: const SizedBox.shrink(),
+                    onChanged: (value) {
+                      if (value == null) return;
+                      ref
+                          .read(settingsViewModelProvider.notifier)
+                          .setLocaleCode(value);
+                    },
+                    items: AppI18n.supportedLanguages
+                        .map(
+                          (language) => DropdownMenuItem(
+                            value: language.locale.languageCode,
+                            child: Text(language.displayName),
+                          ),
+                        )
+                        .toList(growable: false),
+                  ),
+                ],
               ),
             ),
           ],
