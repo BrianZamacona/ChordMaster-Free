@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
+import 'package:go_router/go_router.dart';
 import '../../core/constants/app_colors.dart';
 import '../../core/constants/app_strings.dart';
 import '../../core/widgets/donation_button.dart';
@@ -46,12 +47,38 @@ class _MetronomeScreenState extends ConsumerState<MetronomeScreen>
       }
     });
 
-    final timeSigs = ['2/4', '3/4', '4/4', '5/4', '6/8', '7/8', '9/8', '11/8', '12/8'];
+    final timeSigs = [
+      '2/4',
+      '3/4',
+      '4/4',
+      '5/4',
+      '6/8',
+      '7/8',
+      '9/8',
+      '11/8',
+      '12/8'
+    ];
     final subdivisions = ['quarter', 'eighth', 'sixteenth', 'triplet'];
-    final subdivisionLabels = ['♩ Quarter', '♪ Eighth', '♬ Sixteenth', '♪♪♪ Triplet'];
+    final subdivisionLabels = [
+      '♩ Quarter',
+      '♪ Eighth',
+      '♬ Sixteenth',
+      '♪♪♪ Triplet'
+    ];
 
     return Scaffold(
       appBar: AppBar(
+        leading: IconButton(
+          tooltip: MaterialLocalizations.of(context).backButtonTooltip,
+          onPressed: () {
+            if (context.canPop()) {
+              context.pop();
+              return;
+            }
+            context.go('/');
+          },
+          icon: const Icon(Icons.arrow_back),
+        ),
         title: const Text(AppStrings.moduleMetronome),
         backgroundColor: AppColors.metronome,
         foregroundColor: Colors.white,
@@ -80,10 +107,10 @@ class _MetronomeScreenState extends ConsumerState<MetronomeScreen>
             Center(
               child: Text(
                 '${state.bpm}',
-                style: Theme.of(context)
-                    .textTheme
-                    .displayLarge
-                    ?.copyWith(fontSize: 80, fontWeight: FontWeight.bold, color: AppColors.metronome),
+                style: Theme.of(context).textTheme.displayLarge?.copyWith(
+                    fontSize: 80,
+                    fontWeight: FontWeight.bold,
+                    color: AppColors.metronome),
               ),
             ),
             Center(
@@ -110,7 +137,8 @@ class _MetronomeScreenState extends ConsumerState<MetronomeScreen>
                 IconButton.filled(
                   onPressed: () => vm.setBpm(state.bpm - 1),
                   icon: const Icon(Icons.remove),
-                  style: IconButton.styleFrom(backgroundColor: AppColors.metronome),
+                  style: IconButton.styleFrom(
+                      backgroundColor: AppColors.metronome),
                 ),
                 const SizedBox(width: 16),
                 ElevatedButton(
@@ -125,7 +153,8 @@ class _MetronomeScreenState extends ConsumerState<MetronomeScreen>
                 IconButton.filled(
                   onPressed: () => vm.setBpm(state.bpm + 1),
                   icon: const Icon(Icons.add),
-                  style: IconButton.styleFrom(backgroundColor: AppColors.metronome),
+                  style: IconButton.styleFrom(
+                      backgroundColor: AppColors.metronome),
                 ),
               ],
             ),
@@ -137,12 +166,14 @@ class _MetronomeScreenState extends ConsumerState<MetronomeScreen>
             const SizedBox(height: 8),
             Wrap(
               spacing: 8,
-              children: timeSigs.map((ts) => ChoiceChip(
-                  label: Text(ts),
-                  selected: state.timeSignature == ts,
-                  selectedColor: AppColors.metronome,
-                  onSelected: (_) => vm.setTimeSignature(ts),
-                )).toList(),
+              children: timeSigs
+                  .map((ts) => ChoiceChip(
+                        label: Text(ts),
+                        selected: state.timeSignature == ts,
+                        selectedColor: AppColors.metronome,
+                        onSelected: (_) => vm.setTimeSignature(ts),
+                      ))
+                  .toList(),
             ),
             const SizedBox(height: 16),
 
@@ -152,12 +183,14 @@ class _MetronomeScreenState extends ConsumerState<MetronomeScreen>
             const SizedBox(height: 8),
             Wrap(
               spacing: 8,
-              children: List.generate(subdivisions.length, (i) => ChoiceChip(
-                  label: Text(subdivisionLabels[i]),
-                  selected: state.subdivision == subdivisions[i],
-                  selectedColor: AppColors.metronome,
-                  onSelected: (_) => vm.setSubdivision(subdivisions[i]),
-                )),
+              children: List.generate(
+                  subdivisions.length,
+                  (i) => ChoiceChip(
+                        label: Text(subdivisionLabels[i]),
+                        selected: state.subdivision == subdivisions[i],
+                        selectedColor: AppColors.metronome,
+                        onSelected: (_) => vm.setSubdivision(subdivisions[i]),
+                      )),
             ),
             const SizedBox(height: 24),
             const DonationButton(),
@@ -184,32 +217,32 @@ class _BeatIndicator extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) => SizedBox(
-      height: 60,
-      child: Row(
-        mainAxisAlignment: MainAxisAlignment.center,
-        children: List.generate(totalBeats, (i) {
-          final isActive = isPlaying && i == currentBeat;
-          final isAccent = i == 0;
-          return AnimatedContainer(
-            duration: const Duration(milliseconds: 80),
-            margin: const EdgeInsets.symmetric(horizontal: 4),
-            width: isAccent ? 44 : 36,
-            height: isAccent ? 44 : 36,
-            decoration: BoxDecoration(
-              shape: BoxShape.circle,
-              color: isActive
-                  ? AppColors.metronome
-                  : AppColors.metronome.withValues(alpha: 0.2),
-              border: Border.all(
-                color: AppColors.metronome,
-                width: isAccent ? 3 : 1.5,
+        height: 60,
+        child: Row(
+          mainAxisAlignment: MainAxisAlignment.center,
+          children: List.generate(totalBeats, (i) {
+            final isActive = isPlaying && i == currentBeat;
+            final isAccent = i == 0;
+            return AnimatedContainer(
+              duration: const Duration(milliseconds: 80),
+              margin: const EdgeInsets.symmetric(horizontal: 4),
+              width: isAccent ? 44 : 36,
+              height: isAccent ? 44 : 36,
+              decoration: BoxDecoration(
+                shape: BoxShape.circle,
+                color: isActive
+                    ? AppColors.metronome
+                    : AppColors.metronome.withValues(alpha: 0.2),
+                border: Border.all(
+                  color: AppColors.metronome,
+                  width: isAccent ? 3 : 1.5,
+                ),
               ),
-            ),
-            child: isActive
-                ? const Icon(Icons.music_note, color: Colors.white, size: 18)
-                : null,
-          );
-        }),
-      ),
-    );
+              child: isActive
+                  ? const Icon(Icons.music_note, color: Colors.white, size: 18)
+                  : null,
+            );
+          }),
+        ),
+      );
 }

@@ -3,6 +3,7 @@ import 'package:flutter_riverpod/flutter_riverpod.dart';
 
 import '../../core/constants/app_strings.dart';
 import '../../core/constants/music_theory.dart';
+import '../../core/widgets/feature_module_scaffold.dart';
 import '../../models/progression.dart';
 import 'progressions_viewmodel.dart';
 
@@ -17,8 +18,8 @@ class ProgressionsScreen extends ConsumerWidget {
     final vm = ref.read(progressionsViewModelProvider.notifier);
     final theme = Theme.of(context);
 
-    return Scaffold(
-      appBar: AppBar(title: const Text(AppStrings.moduleProgressions)),
+    return FeatureModuleScaffold(
+      title: AppStrings.moduleProgressions,
       body: SingleChildScrollView(
         padding: const EdgeInsets.all(16),
         child: Column(
@@ -74,8 +75,8 @@ class ProgressionsScreen extends ConsumerWidget {
                 padding: const EdgeInsets.only(top: 8),
                 child: Text(
                   '🎼 Composer achievement unlocked!',
-                  style: theme.textTheme.bodySmall
-                      ?.copyWith(color: Colors.amber),
+                  style:
+                      theme.textTheme.bodySmall?.copyWith(color: Colors.amber),
                   textAlign: TextAlign.center,
                 ),
               ),
@@ -107,8 +108,7 @@ class _ProgressionCard extends StatelessWidget {
     final theme = Theme.of(context);
     return Card(
       margin: const EdgeInsets.only(bottom: 12),
-      shape:
-          RoundedRectangleBorder(borderRadius: BorderRadius.circular(14)),
+      shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(14)),
       child: Padding(
         padding: const EdgeInsets.all(14),
         child: Column(
@@ -124,8 +124,8 @@ class _ProgressionCard extends StatelessWidget {
                   ),
                 ),
                 Container(
-                  padding: const EdgeInsets.symmetric(
-                      horizontal: 8, vertical: 3),
+                  padding:
+                      const EdgeInsets.symmetric(horizontal: 8, vertical: 3),
                   decoration: BoxDecoration(
                     color: theme.colorScheme.secondaryContainer,
                     borderRadius: BorderRadius.circular(8),
@@ -148,8 +148,8 @@ class _ProgressionCard extends StatelessWidget {
                         ),
                         child: Text(
                           n,
-                          style: theme.textTheme.labelMedium?.copyWith(
-                              fontStyle: FontStyle.italic),
+                          style: theme.textTheme.labelMedium
+                              ?.copyWith(fontStyle: FontStyle.italic),
                         ),
                       ))
                   .toList(),

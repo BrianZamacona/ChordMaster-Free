@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 
 import '../../core/constants/app_strings.dart';
+import '../../core/widgets/feature_module_scaffold.dart';
 import '../../models/community_post.dart';
 import 'community_viewmodel.dart';
 
@@ -57,15 +58,15 @@ class _CommunityScreenState extends ConsumerState<CommunityScreen> {
     final state = ref.watch(communityViewModelProvider);
     final theme = Theme.of(context);
 
-    return Scaffold(
-      appBar: AppBar(title: const Text(AppStrings.moduleCommunity)),
+    return FeatureModuleScaffold(
+      title: AppStrings.moduleCommunity,
       body: Column(
         children: [
           // Post creation form
           Card(
             margin: const EdgeInsets.all(12),
-            shape: RoundedRectangleBorder(
-                borderRadius: BorderRadius.circular(16)),
+            shape:
+                RoundedRectangleBorder(borderRadius: BorderRadius.circular(16)),
             child: Padding(
               padding: const EdgeInsets.all(12),
               child: Column(
@@ -133,8 +134,7 @@ class _CommunityScreenState extends ConsumerState<CommunityScreen> {
                         child: Text(AppStrings.noPostsYet,
                             style: theme.textTheme.bodyLarge))
                     : ListView.builder(
-                        padding:
-                            const EdgeInsets.symmetric(horizontal: 12),
+                        padding: const EdgeInsets.symmetric(horizontal: 12),
                         itemCount: state.posts.length,
                         itemBuilder: (context, i) => _PostCard(
                           post: state.posts[i],
@@ -165,8 +165,7 @@ class _PostCard extends StatelessWidget {
 
     return Card(
       margin: const EdgeInsets.only(bottom: 10),
-      shape:
-          RoundedRectangleBorder(borderRadius: BorderRadius.circular(14)),
+      shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(14)),
       child: Padding(
         padding: const EdgeInsets.all(14),
         child: Column(
@@ -177,9 +176,7 @@ class _PostCard extends StatelessWidget {
                 CircleAvatar(
                   radius: 18,
                   child: Text(
-                    post.author.isNotEmpty
-                        ? post.author[0].toUpperCase()
-                        : '?',
+                    post.author.isNotEmpty ? post.author[0].toUpperCase() : '?',
                     style: const TextStyle(fontWeight: FontWeight.bold),
                   ),
                 ),
@@ -196,8 +193,7 @@ class _PostCard extends StatelessWidget {
                       Text(
                         dateStr,
                         style: theme.textTheme.labelSmall?.copyWith(
-                            color: theme.colorScheme.onSurface
-                                .withAlpha(150)),
+                            color: theme.colorScheme.onSurface.withAlpha(150)),
                       ),
                     ],
                   ),
@@ -217,8 +213,7 @@ class _PostCard extends StatelessWidget {
                   constraints: const BoxConstraints(),
                 ),
                 const SizedBox(width: 4),
-                Text('${post.likes}',
-                    style: theme.textTheme.labelMedium),
+                Text('${post.likes}', style: theme.textTheme.labelMedium),
               ],
             ),
           ],

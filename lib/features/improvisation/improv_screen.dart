@@ -3,6 +3,7 @@ import 'package:flutter_riverpod/flutter_riverpod.dart';
 
 import '../../core/constants/app_strings.dart';
 import '../../core/constants/music_theory.dart';
+import '../../core/widgets/feature_module_scaffold.dart';
 
 /// Improvisation guide screen.
 class ImprovScreen extends ConsumerStatefulWidget {
@@ -140,12 +141,10 @@ class _ImprovScreenState extends ConsumerState<ImprovScreen> {
         const <int>[];
     final scaleNotes = rootIndex == -1
         ? <String>[]
-        : formula
-            .map((s) => chromaticNotes[(rootIndex + s) % 12])
-            .toList();
+        : formula.map((s) => chromaticNotes[(rootIndex + s) % 12]).toList();
 
-    return Scaffold(
-      appBar: AppBar(title: const Text(AppStrings.moduleImprovisation)),
+    return FeatureModuleScaffold(
+      title: AppStrings.moduleImprovisation,
       body: SingleChildScrollView(
         padding: const EdgeInsets.all(16),
         child: Column(
@@ -178,8 +177,8 @@ class _ImprovScreenState extends ConsumerState<ImprovScreen> {
             DropdownButtonFormField<String>(
               initialValue: _selectedScale,
               decoration: InputDecoration(
-                border: OutlineInputBorder(
-                    borderRadius: BorderRadius.circular(12)),
+                border:
+                    OutlineInputBorder(borderRadius: BorderRadius.circular(12)),
                 isDense: true,
               ),
               items: _scaleOptions
@@ -206,7 +205,10 @@ class _ImprovScreenState extends ConsumerState<ImprovScreen> {
                     crossAxisAlignment: CrossAxisAlignment.start,
                     children: [
                       Text(
-                        '$_selectedRoot ${_scaleOptions.firstWhere((o) => o.$1 == _selectedScale, orElse: () => (_selectedScale, _selectedScale)).$2}',
+                        '$_selectedRoot ${_scaleOptions.firstWhere((o) => o.$1 == _selectedScale, orElse: () => (
+                              _selectedScale,
+                              _selectedScale
+                            )).$2}',
                         style: theme.textTheme.titleMedium?.copyWith(
                           fontWeight: FontWeight.bold,
                           color: theme.colorScheme.onPrimaryContainer,
@@ -222,8 +224,7 @@ class _ImprovScreenState extends ConsumerState<ImprovScreen> {
                                           fontWeight: FontWeight.bold)),
                                   backgroundColor: theme.colorScheme.primary,
                                   labelStyle: TextStyle(
-                                      color:
-                                          theme.colorScheme.onPrimary),
+                                      color: theme.colorScheme.onPrimary),
                                 ))
                             .toList(),
                       ),
@@ -284,8 +285,7 @@ class _GuideCard extends StatelessWidget {
   Widget build(BuildContext context) {
     final theme = Theme.of(context);
     return Card(
-      shape:
-          RoundedRectangleBorder(borderRadius: BorderRadius.circular(12)),
+      shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(12)),
       child: Padding(
         padding: const EdgeInsets.all(14),
         child: Column(
@@ -312,8 +312,7 @@ class _ListGuideCard extends StatelessWidget {
   Widget build(BuildContext context) {
     final theme = Theme.of(context);
     return Card(
-      shape:
-          RoundedRectangleBorder(borderRadius: BorderRadius.circular(12)),
+      shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(12)),
       child: Padding(
         padding: const EdgeInsets.all(14),
         child: Column(
@@ -330,8 +329,7 @@ class _ListGuideCard extends StatelessWidget {
                     children: [
                       const Text('• ', style: TextStyle(fontSize: 16)),
                       Expanded(
-                          child: Text(item,
-                              style: theme.textTheme.bodySmall)),
+                          child: Text(item, style: theme.textTheme.bodySmall)),
                     ],
                   ),
                 )),

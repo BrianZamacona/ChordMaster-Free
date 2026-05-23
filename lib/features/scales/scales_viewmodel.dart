@@ -5,6 +5,7 @@ import 'package:flutter/services.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 
 import '../../models/scale.dart';
+import 'scale_enrichment.dart';
 
 /// Category constants for scale grouping.
 class ScaleCategory {
@@ -16,13 +17,21 @@ class ScaleCategory {
 
   /// Scale types that belong to the Modes category.
   static const _modeTypes = {
-    'ionian', 'dorian', 'phrygian', 'lydian',
-    'mixolydian', 'aeolian', 'locrian',
+    'ionian',
+    'dorian',
+    'phrygian',
+    'lydian',
+    'mixolydian',
+    'aeolian',
+    'locrian',
   };
 
   /// Scale types that belong to the Exotic category.
   static const _exoticTypes = {
-    'hungarianMinor', 'phrygianDominant', 'doubleHarmonic', 'neapolitan',
+    'hungarianMinor',
+    'phrygianDominant',
+    'doubleHarmonic',
+    'neapolitan',
   };
 
   /// Returns the display category for a given scale [type] key.
@@ -35,7 +44,6 @@ class ScaleCategory {
 
 /// Immutable state for [ScalesViewModel].
 class ScalesState {
-
   const ScalesState({
     this.allScales = const [],
     this.filteredScales = const [],
@@ -45,6 +53,7 @@ class ScalesState {
     this.isLoading = true,
     this.errorMessage,
   });
+
   /// All scales loaded from the asset bundle.
   final List<Scale> allScales;
 
@@ -74,19 +83,20 @@ class ScalesState {
     Object? selectedScale = _unset,
     bool? isLoading,
     Object? errorMessage = _unset,
-  }) => ScalesState(
-      allScales: allScales ?? this.allScales,
-      filteredScales: filteredScales ?? this.filteredScales,
-      selectedRoot: selectedRoot ?? this.selectedRoot,
-      selectedCategory: selectedCategory ?? this.selectedCategory,
-      selectedScale: identical(selectedScale, _unset)
-          ? this.selectedScale
-          : selectedScale as Scale?,
-      isLoading: isLoading ?? this.isLoading,
-      errorMessage: identical(errorMessage, _unset)
-          ? this.errorMessage
-          : errorMessage as String?,
-    );
+  }) =>
+      ScalesState(
+        allScales: allScales ?? this.allScales,
+        filteredScales: filteredScales ?? this.filteredScales,
+        selectedRoot: selectedRoot ?? this.selectedRoot,
+        selectedCategory: selectedCategory ?? this.selectedCategory,
+        selectedScale: identical(selectedScale, _unset)
+            ? this.selectedScale
+            : selectedScale as Scale?,
+        isLoading: isLoading ?? this.isLoading,
+        errorMessage: identical(errorMessage, _unset)
+            ? this.errorMessage
+            : errorMessage as String?,
+      );
 
   static const Object _unset = Object();
 }
@@ -105,15 +115,17 @@ class ScalesViewModel extends Notifier<ScalesState> {
 
   Future<void> _load() async {
     try {
-      final jsonStr =
-          await rootBundle.loadString('assets/data/scales.json');
+      final jsonStr = await rootBundle.loadString('assets/data/scales.json');
       final list = json.decode(jsonStr) as List<dynamic>;
-      final scales =
-          list.map((e) => Scale.fromJson(e as Map<String, dynamic>)).toList();
+      final scales = list
+          .map((e) => Scale.fromJson(e as Map<String, dynamic>))
+          .map(ScaleEnrichment.enrich)
+          .toList(growable: false);
 
       state = state.copyWith(
         allScales: scales,
-        filteredScales: _filter(scales, state.selectedRoot, state.selectedCategory),
+        filteredScales:
+            _filter(scales, state.selectedRoot, state.selectedCategory),
         isLoading: false,
       );
     } catch (e, st) {
@@ -154,8 +166,7 @@ class ScalesViewModel extends Notifier<ScalesState> {
   }
 
   List<Scale> _filter(List<Scale> all, String root, String category) => all
-        .where((s) =>
-            s.root == root &&
-            ScaleCategory.fromType(s.type) == category)
-        .toList();
+      .where(
+          (s) => s.root == root && ScaleCategory.fromType(s.type) == category)
+      .toList();
 }

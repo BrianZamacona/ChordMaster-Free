@@ -3,6 +3,7 @@ import 'package:flutter/services.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 
 import '../../core/constants/app_strings.dart';
+import '../../core/widgets/feature_module_scaffold.dart';
 import 'composition_viewmodel.dart';
 
 /// Composition tools screen.
@@ -16,38 +17,33 @@ class CompositionScreen extends ConsumerWidget {
     final vm = ref.read(compositionViewModelProvider.notifier);
     final theme = Theme.of(context);
 
-    return Scaffold(
-      appBar: AppBar(
-        title: const Text(AppStrings.moduleComposition),
-        actions: [
-          if (state.chords.isNotEmpty)
-            IconButton(
-              icon: const Icon(Icons.share),
-              tooltip: AppStrings.share,
-              onPressed: () async {
-                await Clipboard.setData(
-                    ClipboardData(text: state.asText));
-                if (!context.mounted) return;
-                ScaffoldMessenger.of(context).showSnackBar(
-                  const SnackBar(
-                      content: Text('Progression copied to clipboard!')),
-                );
-              },
-            ),
-          if (state.chords.isNotEmpty)
-            IconButton(
-              icon: const Icon(Icons.play_circle_outline),
-              tooltip: AppStrings.play,
-              onPressed: () {
-                ScaffoldMessenger.of(context).showSnackBar(
-                  SnackBar(
-                      content: Text(
-                          'Would play: ${state.asText}')),
-                );
-              },
-            ),
-        ],
-      ),
+    return FeatureModuleScaffold(
+      title: AppStrings.moduleComposition,
+      appBarActions: [
+        if (state.chords.isNotEmpty)
+          IconButton(
+            icon: const Icon(Icons.share),
+            tooltip: AppStrings.share,
+            onPressed: () async {
+              await Clipboard.setData(ClipboardData(text: state.asText));
+              if (!context.mounted) return;
+              ScaffoldMessenger.of(context).showSnackBar(
+                const SnackBar(
+                    content: Text('Progression copied to clipboard!')),
+              );
+            },
+          ),
+        if (state.chords.isNotEmpty)
+          IconButton(
+            icon: const Icon(Icons.play_circle_outline),
+            tooltip: AppStrings.play,
+            onPressed: () {
+              ScaffoldMessenger.of(context).showSnackBar(
+                SnackBar(content: Text('Would play: ${state.asText}')),
+              );
+            },
+          ),
+      ],
       body: Column(
         crossAxisAlignment: CrossAxisAlignment.stretch,
         children: [
@@ -69,10 +65,9 @@ class CompositionScreen extends ConsumerWidget {
                             horizontal: 4, vertical: 8),
                         child: ActionChip(
                           label: Text(chord,
-                              style: const TextStyle(
-                                  fontWeight: FontWeight.bold)),
-                          backgroundColor:
-                              theme.colorScheme.primaryContainer,
+                              style:
+                                  const TextStyle(fontWeight: FontWeight.bold)),
+                          backgroundColor: theme.colorScheme.primaryContainer,
                           onPressed: () => vm.addChord(chord),
                         ),
                       ))
@@ -107,8 +102,7 @@ class CompositionScreen extends ConsumerWidget {
                     child: Text(
                       'Tap chords above to build your progression',
                       style: theme.textTheme.bodyMedium?.copyWith(
-                          color:
-                              theme.colorScheme.onSurface.withAlpha(120)),
+                          color: theme.colorScheme.onSurface.withAlpha(120)),
                       textAlign: TextAlign.center,
                     ),
                   )
@@ -125,13 +119,11 @@ class CompositionScreen extends ConsumerWidget {
                             borderRadius: BorderRadius.circular(10)),
                         child: ListTile(
                           leading: CircleAvatar(
-                            backgroundColor:
-                                theme.colorScheme.primaryContainer,
+                            backgroundColor: theme.colorScheme.primaryContainer,
                             child: Text(
                               '${i + 1}',
                               style: TextStyle(
-                                color:
-                                    theme.colorScheme.onPrimaryContainer,
+                                color: theme.colorScheme.onPrimaryContainer,
                                 fontWeight: FontWeight.bold,
                               ),
                             ),
@@ -145,8 +137,8 @@ class CompositionScreen extends ConsumerWidget {
                             mainAxisSize: MainAxisSize.min,
                             children: [
                               IconButton(
-                                icon: const Icon(Icons.delete_outline,
-                                    size: 20),
+                                icon:
+                                    const Icon(Icons.delete_outline, size: 20),
                                 onPressed: () => vm.removeChord(i),
                                 padding: EdgeInsets.zero,
                                 constraints: const BoxConstraints(),
@@ -164,8 +156,7 @@ class CompositionScreen extends ConsumerWidget {
           // Bottom bar
           if (state.chords.isNotEmpty)
             Container(
-              padding:
-                  const EdgeInsets.symmetric(horizontal: 16, vertical: 12),
+              padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 12),
               decoration: BoxDecoration(
                 color: theme.colorScheme.surfaceContainerHighest,
                 border: Border(
@@ -188,8 +179,7 @@ class CompositionScreen extends ConsumerWidget {
                       await vm.saveComposition();
                       if (!context.mounted) return;
                       ScaffoldMessenger.of(context).showSnackBar(
-                        const SnackBar(
-                            content: Text('Composition saved! 🎼')),
+                        const SnackBar(content: Text('Composition saved! 🎼')),
                       );
                     },
                     icon: const Icon(Icons.save),

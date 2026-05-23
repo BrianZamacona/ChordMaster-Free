@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 
 import '../../core/constants/app_strings.dart';
+import '../../core/widgets/feature_module_scaffold.dart';
 import 'rhythm_game_viewmodel.dart';
 
 /// Rhythm game screen.
@@ -15,8 +16,8 @@ class RhythmGameScreen extends ConsumerWidget {
     final vm = ref.read(rhythmGameViewModelProvider.notifier);
     final theme = Theme.of(context);
 
-    return Scaffold(
-      appBar: AppBar(title: const Text(AppStrings.moduleRhythmGame)),
+    return FeatureModuleScaffold(
+      title: AppStrings.moduleRhythmGame,
       body: Padding(
         padding: const EdgeInsets.all(16),
         child: Column(
@@ -32,11 +33,10 @@ class RhythmGameScreen extends ConsumerWidget {
                   children: [
                     Text(
                       '${state.bpm}',
-                      style: theme.textTheme.displaySmall?.copyWith(
-                          fontWeight: FontWeight.bold),
+                      style: theme.textTheme.displaySmall
+                          ?.copyWith(fontWeight: FontWeight.bold),
                     ),
-                    Text(AppStrings.bpm,
-                        style: theme.textTheme.titleSmall),
+                    Text(AppStrings.bpm, style: theme.textTheme.titleSmall),
                     const SizedBox(height: 8),
                     Slider(
                       value: state.bpm.toDouble(),
@@ -44,9 +44,8 @@ class RhythmGameScreen extends ConsumerWidget {
                       max: 220,
                       divisions: 200,
                       label: '${state.bpm}',
-                      onChanged: state.isRunning
-                          ? null
-                          : (v) => vm.setBpm(v.round()),
+                      onChanged:
+                          state.isRunning ? null : (v) => vm.setBpm(v.round()),
                     ),
                     Row(
                       mainAxisAlignment: MainAxisAlignment.center,
@@ -93,9 +92,7 @@ class RhythmGameScreen extends ConsumerWidget {
               ),
               child: Center(
                 child: Text(
-                  state.isRunning
-                      ? (state.isBeatActive ? '●' : '○')
-                      : '○',
+                  state.isRunning ? (state.isBeatActive ? '●' : '○') : '○',
                   style: TextStyle(
                     fontSize: 40,
                     color: state.isBeatActive
@@ -162,16 +159,12 @@ class RhythmGameScreen extends ConsumerWidget {
                   child: Row(
                     mainAxisAlignment: MainAxisAlignment.spaceAround,
                     children: [
-                      _ScoreItem(
-                          label: 'Taps',
-                          value: '${state.tapsCount}'),
+                      _ScoreItem(label: 'Taps', value: '${state.tapsCount}'),
                       _ScoreItem(
                           label: 'Accuracy',
                           value: '${state.accuracy}%',
                           highlight: state.accuracy >= 90),
-                      _ScoreItem(
-                          label: 'Best',
-                          value: '${state.bestScore}%'),
+                      _ScoreItem(label: 'Best', value: '${state.bestScore}%'),
                     ],
                   ),
                 ),
@@ -182,8 +175,8 @@ class RhythmGameScreen extends ConsumerWidget {
               if (state.accuracy >= 90)
                 Text(
                   '🥁 Rhythm Master achievement unlocked!',
-                  style: theme.textTheme.bodySmall
-                      ?.copyWith(color: Colors.amber),
+                  style:
+                      theme.textTheme.bodySmall?.copyWith(color: Colors.amber),
                   textAlign: TextAlign.center,
                 ),
               const SizedBox(height: 8),
@@ -203,9 +196,7 @@ class RhythmGameScreen extends ConsumerWidget {
                                 : '${r.offsetMs}ms',
                             style: TextStyle(
                               fontSize: 11,
-                              color: r.isAccurate
-                                  ? Colors.green
-                                  : Colors.red,
+                              color: r.isAccurate ? Colors.green : Colors.red,
                             ),
                           ),
                           backgroundColor: r.isAccurate

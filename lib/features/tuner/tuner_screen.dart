@@ -6,6 +6,7 @@ import 'package:chordmaster_free/core/widgets/donation_button.dart';
 import 'package:chordmaster_free/services/achievement_service.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
+import 'package:go_router/go_router.dart';
 
 import 'tuner_viewmodel.dart';
 
@@ -59,6 +60,17 @@ class _TunerScreenState extends ConsumerState<TunerScreen> {
       backgroundColor: AppColors.background,
       appBar: AppBar(
         backgroundColor: AppColors.background,
+        leading: IconButton(
+          tooltip: MaterialLocalizations.of(context).backButtonTooltip,
+          onPressed: () {
+            if (context.canPop()) {
+              context.pop();
+              return;
+            }
+            context.go('/');
+          },
+          icon: const Icon(Icons.arrow_back),
+        ),
         title: const Text(
           AppStrings.moduleTuner,
           style: TextStyle(color: AppColors.textPrimary),
@@ -106,33 +118,33 @@ class _PermissionDeniedView extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) => Center(
-      child: Padding(
-        padding: const EdgeInsets.all(32),
-        child: Column(
-          mainAxisSize: MainAxisSize.min,
-          children: [
-            const Icon(Icons.mic_off, color: AppColors.error, size: 64),
-            const SizedBox(height: 16),
-            const Text(
-              'Microphone access is required to use the tuner. Please grant permission.',
-              textAlign: TextAlign.center,
-              style: TextStyle(color: AppColors.textSecondary, fontSize: 16),
-            ),
-            const SizedBox(height: 24),
-            ElevatedButton.icon(
-              onPressed: onGrant,
-              icon: const Icon(Icons.mic),
-              label: const Text(AppStrings.grantPermission),
-              style: ElevatedButton.styleFrom(
-                backgroundColor: AppColors.tuner,
-                foregroundColor: Colors.black,
+        child: Padding(
+          padding: const EdgeInsets.all(32),
+          child: Column(
+            mainAxisSize: MainAxisSize.min,
+            children: [
+              const Icon(Icons.mic_off, color: AppColors.error, size: 64),
+              const SizedBox(height: 16),
+              const Text(
+                'Microphone access is required to use the tuner. Please grant permission.',
+                textAlign: TextAlign.center,
+                style: TextStyle(color: AppColors.textSecondary, fontSize: 16),
               ),
-            ),
-          ],
+              const SizedBox(height: 24),
+              ElevatedButton.icon(
+                onPressed: onGrant,
+                icon: const Icon(Icons.mic),
+                label: const Text(AppStrings.grantPermission),
+                style: ElevatedButton.styleFrom(
+                  backgroundColor: AppColors.tuner,
+                  foregroundColor: Colors.black,
+                ),
+              ),
+            ],
+          ),
         ),
-      ),
-    );
-} 
+      );
+}
 
 class _NeedleGauge extends StatelessWidget {
   const _NeedleGauge({required this.cents, required this.color});
@@ -242,7 +254,9 @@ class _NoteDisplay extends StatelessWidget {
         Text(
           state.note == null ? AppStrings.tunerIdle : statusLabel,
           style: TextStyle(
-            color: state.isInTune ? AppColors.tunerInTune : AppColors.textSecondary,
+            color: state.isInTune
+                ? AppColors.tunerInTune
+                : AppColors.textSecondary,
             fontSize: 18,
           ),
         ),
@@ -270,31 +284,31 @@ class _ReferenceChips extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) => Column(
-      crossAxisAlignment: CrossAxisAlignment.start,
-      children: [
-        const Text(
-          'Reference Pitch',
-          style: TextStyle(color: AppColors.textSecondary, fontSize: 14),
-        ),
-        const SizedBox(height: 8),
-        Wrap(
-          spacing: 8,
-          children: _options.map((hz) {
-            final selected = hz == current;
-            return ChoiceChip(
-              label: Text('${hz.toInt()} Hz'),
-              selected: selected,
-              onSelected: (_) => onSelect(hz),
-              selectedColor: AppColors.tuner,
-              labelStyle: TextStyle(
-                color: selected ? Colors.black : AppColors.textPrimary,
-              ),
-              backgroundColor: AppColors.surface,
-            );
-          }).toList(),
-        ),
-      ],
-    );
+        crossAxisAlignment: CrossAxisAlignment.start,
+        children: [
+          const Text(
+            'Reference Pitch',
+            style: TextStyle(color: AppColors.textSecondary, fontSize: 14),
+          ),
+          const SizedBox(height: 8),
+          Wrap(
+            spacing: 8,
+            children: _options.map((hz) {
+              final selected = hz == current;
+              return ChoiceChip(
+                label: Text('${hz.toInt()} Hz'),
+                selected: selected,
+                onSelected: (_) => onSelect(hz),
+                selectedColor: AppColors.tuner,
+                labelStyle: TextStyle(
+                  color: selected ? Colors.black : AppColors.textPrimary,
+                ),
+                backgroundColor: AppColors.surface,
+              );
+            }).toList(),
+          ),
+        ],
+      );
 }
 
 class _GuitarStringsRow extends StatelessWidget {
@@ -304,34 +318,36 @@ class _GuitarStringsRow extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) => Column(
-      crossAxisAlignment: CrossAxisAlignment.start,
-      children: [
-        const Text(
-          'Standard Tuning Reference',
-          style: TextStyle(color: AppColors.textSecondary, fontSize: 14),
-        ),
-        const SizedBox(height: 8),
-        Row(
-          mainAxisAlignment: MainAxisAlignment.spaceEvenly,
-          children: _strings.map((s) => Container(
-              width: 44,
-              height: 44,
-              decoration: BoxDecoration(
-                shape: BoxShape.circle,
-                color: AppColors.surface,
-                border: Border.all(color: AppColors.tuner, width: 1.5),
-              ),
-              alignment: Alignment.center,
-              child: Text(
-                s,
-                style: const TextStyle(
-                  color: AppColors.textPrimary,
-                  fontSize: 12,
-                  fontWeight: FontWeight.bold,
-                ),
-              ),
-            )).toList(),
-        ),
-      ],
-    );
+        crossAxisAlignment: CrossAxisAlignment.start,
+        children: [
+          const Text(
+            'Standard Tuning Reference',
+            style: TextStyle(color: AppColors.textSecondary, fontSize: 14),
+          ),
+          const SizedBox(height: 8),
+          Row(
+            mainAxisAlignment: MainAxisAlignment.spaceEvenly,
+            children: _strings
+                .map((s) => Container(
+                      width: 44,
+                      height: 44,
+                      decoration: BoxDecoration(
+                        shape: BoxShape.circle,
+                        color: AppColors.surface,
+                        border: Border.all(color: AppColors.tuner, width: 1.5),
+                      ),
+                      alignment: Alignment.center,
+                      child: Text(
+                        s,
+                        style: const TextStyle(
+                          color: AppColors.textPrimary,
+                          fontSize: 12,
+                          fontWeight: FontWeight.bold,
+                        ),
+                      ),
+                    ))
+                .toList(),
+          ),
+        ],
+      );
 }

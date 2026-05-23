@@ -1,10 +1,12 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
+import 'package:go_router/go_router.dart';
 
 import '../../core/constants/app_colors.dart';
 import '../../core/constants/app_strings.dart';
 import '../../core/constants/music_theory.dart';
 import '../../core/widgets/donation_button.dart';
+import '../../core/widgets/feature_module_scaffold.dart';
 import '../../models/scale.dart';
 import '../../services/audio_service.dart';
 import '../../ui/animations.dart';
@@ -46,28 +48,22 @@ class _ScalesScreenState extends ConsumerState<ScalesScreen>
   Widget build(BuildContext context) {
     final state = ref.watch(scalesViewModelProvider);
 
-    return Scaffold(
-      appBar: AppBar(
-        title: const Text(AppStrings.moduleScales),
-        backgroundColor: AppColors.scales,
-        foregroundColor: Colors.white,
-        elevation: 0,
-        bottom: TabBar(
-          controller: _tabController,
-          indicatorColor: Colors.white,
-          labelColor: Colors.white,
-          unselectedLabelColor: Colors.white70,
-          tabs: ScaleCategory.all
-              .map((cat) => Tab(text: cat))
-              .toList(),
-        ),
+    return FeatureModuleScaffold(
+      title: AppStrings.moduleScales,
+      appBarBackgroundColor: AppColors.scales,
+      appBarForegroundColor: Colors.white,
+      appBarBottom: TabBar(
+        controller: _tabController,
+        indicatorColor: Colors.white,
+        labelColor: Colors.white,
+        unselectedLabelColor: Colors.white70,
+        tabs: ScaleCategory.all.map((cat) => Tab(text: cat)).toList(),
       ),
       body: Column(
         children: [
           _RootNoteSelector(
             selectedRoot: state.selectedRoot,
-            onSelected:
-                ref.read(scalesViewModelProvider.notifier).filterByRoot,
+            onSelected: ref.read(scalesViewModelProvider.notifier).filterByRoot,
           ),
           Expanded(
             child: TabBarView(
@@ -96,30 +92,29 @@ class _RootNoteSelector extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) => Container(
-      color: AppColors.scales.withAlpha(20),
-      height: 52,
-      child: ListView.separated(
-        scrollDirection: Axis.horizontal,
-        padding: const EdgeInsets.symmetric(horizontal: 12, vertical: 8),
-        itemCount: chromaticNotes.length,
-        separatorBuilder: (_, __) => const SizedBox(width: 6),
-        itemBuilder: (context, i) {
-          final root = chromaticNotes[i];
-          final isSelected = selectedRoot == root;
-          return ChoiceChip(
-            label: Text(root),
-            selected: isSelected,
-            selectedColor: AppColors.scales,
-            labelStyle: TextStyle(
-              color: isSelected ? Colors.white : null,
-              fontWeight:
-                  isSelected ? FontWeight.bold : FontWeight.normal,
-            ),
-            onSelected: (_) => onSelected(root),
-          );
-        },
-      ),
-    );
+        color: AppColors.scales.withAlpha(20),
+        height: 52,
+        child: ListView.separated(
+          scrollDirection: Axis.horizontal,
+          padding: const EdgeInsets.symmetric(horizontal: 12, vertical: 8),
+          itemCount: chromaticNotes.length,
+          separatorBuilder: (_, __) => const SizedBox(width: 6),
+          itemBuilder: (context, i) {
+            final root = chromaticNotes[i];
+            final isSelected = selectedRoot == root;
+            return ChoiceChip(
+              label: Text(root),
+              selected: isSelected,
+              selectedColor: AppColors.scales,
+              labelStyle: TextStyle(
+                color: isSelected ? Colors.white : null,
+                fontWeight: isSelected ? FontWeight.bold : FontWeight.normal,
+              ),
+              onSelected: (_) => onSelected(root),
+            );
+          },
+        ),
+      );
 }
 
 /// Renders the list of scales for a given category tab.
@@ -207,9 +202,8 @@ class _ScaleCard extends ConsumerWidget {
   Widget build(BuildContext context, WidgetRef ref) {
     final theme = Theme.of(context);
     final notes = _computeNotes(scale);
-    final intervalLabels = scale.intervals
-        .map((i) => intervalNames[i] ?? '$i')
-        .toList();
+    final intervalLabels =
+        scale.intervals.map((i) => intervalNames[i] ?? '$i').toList();
 
     return Card(
       margin: const EdgeInsets.only(bottom: 10),
@@ -308,6 +302,23 @@ class _ScaleCard extends ConsumerWidget {
                   scale.commonUsage,
                   style: theme.textTheme.bodySmall,
                 ),
+                const SizedBox(height: 10),
+                _FingeringSection(
+                  title: 'Block Fingering',
+                  patterns: scale.blockFingerings,
+                ),
+                const SizedBox(height: 8),
+                _FingeringSection(
+                  title: '3 Notes Per String (3NPS)',
+                  patterns: scale.threeNotePerStringFingerings,
+                ),
+                const SizedBox(height: 8),
+                _FingeringSection(
+                  title: 'CAGED / Popular Shapes',
+                  patterns: scale.cagedFingerings,
+                ),
+                const SizedBox(height: 8),
+                _HarmonizedChordsSection(scale: scale),
               ],
             ],
           ),
@@ -343,8 +354,7 @@ class _PlayScaleButtonState extends State<_PlayScaleButton> {
     setState(() => _isPlaying = true);
     try {
       for (final note in widget.notes) {
-        final file =
-            'assets/audio/notes/${note.replaceAll('#', 's')}4.mp3';
+        final file = 'assets/audio/notes/${note.replaceAll('#', 's')}4.mp3';
         await AudioService.instance.playNote(file);
         await Future<void>.delayed(const Duration(milliseconds: 250));
       }
@@ -357,12 +367,121 @@ class _PlayScaleButtonState extends State<_PlayScaleButton> {
 
   @override
   Widget build(BuildContext context) => IconButton(
-      icon: Icon(
-        _isPlaying ? Icons.volume_up : Icons.play_circle_outline,
-        color: AppColors.scales,
-        size: 28,
-      ),
-      tooltip: AppStrings.play,
-      onPressed: _play,
+        icon: Icon(
+          _isPlaying ? Icons.volume_up : Icons.play_circle_outline,
+          color: AppColors.scales,
+          size: 28,
+        ),
+        tooltip: AppStrings.play,
+        onPressed: _play,
+      );
+}
+
+class _FingeringSection extends StatelessWidget {
+  const _FingeringSection({
+    required this.title,
+    required this.patterns,
+  });
+
+  final String title;
+  final List<ScalePattern> patterns;
+
+  @override
+  Widget build(BuildContext context) {
+    if (patterns.isEmpty) return const SizedBox.shrink();
+
+    final theme = Theme.of(context);
+    return Column(
+      crossAxisAlignment: CrossAxisAlignment.start,
+      children: [
+        Text(
+          title,
+          style: theme.textTheme.labelSmall?.copyWith(
+            color: AppColors.textSecondary,
+            fontWeight: FontWeight.bold,
+          ),
+        ),
+        const SizedBox(height: 4),
+        ...patterns.map(
+          (pattern) => Padding(
+            padding: const EdgeInsets.only(bottom: 6),
+            child: Container(
+              width: double.infinity,
+              padding: const EdgeInsets.all(8),
+              decoration: BoxDecoration(
+                color: Theme.of(context).colorScheme.surfaceContainerHighest,
+                borderRadius: BorderRadius.circular(8),
+              ),
+              child: Column(
+                crossAxisAlignment: CrossAxisAlignment.start,
+                children: [
+                  Text(
+                    pattern.name,
+                    style: theme.textTheme.bodySmall
+                        ?.copyWith(fontWeight: FontWeight.bold),
+                  ),
+                  if (pattern.description != null)
+                    Padding(
+                      padding: const EdgeInsets.only(top: 2),
+                      child: Text(
+                        pattern.description!,
+                        style: theme.textTheme.labelSmall,
+                      ),
+                    ),
+                  const SizedBox(height: 4),
+                  ...pattern.positions.map(
+                    (line) => Text(
+                      line,
+                      style: theme.textTheme.labelSmall,
+                    ),
+                  ),
+                ],
+              ),
+            ),
+          ),
+        ),
+      ],
     );
+  }
+}
+
+class _HarmonizedChordsSection extends StatelessWidget {
+  const _HarmonizedChordsSection({required this.scale});
+
+  final Scale scale;
+
+  @override
+  Widget build(BuildContext context) {
+    if (scale.harmonizedChords.isEmpty) return const SizedBox.shrink();
+
+    final theme = Theme.of(context);
+    return Column(
+      crossAxisAlignment: CrossAxisAlignment.start,
+      children: [
+        Text(
+          'Harmonized Chords (tap for diagram)',
+          style: theme.textTheme.labelSmall?.copyWith(
+            color: AppColors.textSecondary,
+            fontWeight: FontWeight.bold,
+          ),
+        ),
+        const SizedBox(height: 4),
+        Wrap(
+          spacing: 6,
+          runSpacing: 6,
+          children: scale.harmonizedChords
+              .map(
+                (entry) => ActionChip(
+                  label: Text('${entry.degree} ${entry.chord}'),
+                  onPressed: () {
+                    final encoded = Uri.encodeComponent(entry.chord);
+                    context.go('/chords/$encoded');
+                  },
+                ),
+              )
+              .toList(growable: false),
+        ),
+      ],
+    );
+  }
 }

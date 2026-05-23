@@ -79,48 +79,46 @@ class _AppScaffoldState extends State<AppScaffold> {
 
   @override
   Widget build(BuildContext context) => Scaffold(
-      key: _scaffoldKey,
-      body: widget.body,
-      floatingActionButton: widget.floatingActionButton,
-      endDrawer: _AppEndDrawer(scaffoldKey: _scaffoldKey),
-      bottomNavigationBar: NavigationBar(
-        selectedIndex: widget.currentIndex.clamp(0, 3),
-        onDestinationSelected: _onDestinationTapped,
-        destinations: const [
-          NavigationDestination(
-            icon: Icon(Icons.home_outlined),
-            selectedIcon: Icon(Icons.home),
-            label: 'Home',
-          ),
-          NavigationDestination(
-            icon: Icon(Icons.library_music_outlined),
-            selectedIcon: Icon(Icons.library_music),
-            label: AppStrings.moduleChords,
-          ),
-          NavigationDestination(
-            icon: Icon(Icons.graphic_eq_outlined),
-            selectedIcon: Icon(Icons.graphic_eq),
-            label: AppStrings.moduleTuner,
-          ),
-          NavigationDestination(
-            icon: Icon(Icons.timer_outlined),
-            selectedIcon: Icon(Icons.timer),
-            label: AppStrings.moduleMetronome,
-          ),
-          NavigationDestination(
-            icon: Icon(Icons.more_horiz),
-            label: 'More',
-          ),
-        ],
-      ),
-    );
+        key: _scaffoldKey,
+        body: widget.body,
+        floatingActionButton: widget.floatingActionButton,
+        endDrawer: const AppEndDrawer(),
+        bottomNavigationBar: NavigationBar(
+          selectedIndex: widget.currentIndex.clamp(0, 3),
+          onDestinationSelected: _onDestinationTapped,
+          destinations: const [
+            NavigationDestination(
+              icon: Icon(Icons.home_outlined),
+              selectedIcon: Icon(Icons.home),
+              label: 'Home',
+            ),
+            NavigationDestination(
+              icon: Icon(Icons.library_music_outlined),
+              selectedIcon: Icon(Icons.library_music),
+              label: AppStrings.moduleChords,
+            ),
+            NavigationDestination(
+              icon: Icon(Icons.graphic_eq_outlined),
+              selectedIcon: Icon(Icons.graphic_eq),
+              label: AppStrings.moduleTuner,
+            ),
+            NavigationDestination(
+              icon: Icon(Icons.timer_outlined),
+              selectedIcon: Icon(Icons.timer),
+              label: AppStrings.moduleMetronome,
+            ),
+            NavigationDestination(
+              icon: Icon(Icons.more_horiz),
+              label: 'More',
+            ),
+          ],
+        ),
+      );
 }
 
 /// The end drawer that exposes the remaining feature modules.
-class _AppEndDrawer extends ConsumerWidget {
-  const _AppEndDrawer({required this.scaffoldKey});
-
-  final GlobalKey<ScaffoldState> scaffoldKey;
+class AppEndDrawer extends ConsumerWidget {
+  const AppEndDrawer({super.key});
 
   static const List<_DrawerItem> _items = [
     _DrawerItem(
@@ -207,17 +205,17 @@ class _AppEndDrawer extends ConsumerWidget {
                     Text(
                       AppStrings.appName,
                       style: Theme.of(context).textTheme.titleLarge?.copyWith(
-                        color: Colors.white,
-                        fontWeight: FontWeight.bold,
-                        letterSpacing: 1.2,
-                      ),
+                            color: Colors.white,
+                            fontWeight: FontWeight.bold,
+                            letterSpacing: 1.2,
+                          ),
                     ),
                     const SizedBox(height: 4),
                     Text(
                       AppStrings.appTagline,
                       style: Theme.of(context).textTheme.bodySmall?.copyWith(
-                        color: Colors.white70,
-                      ),
+                            color: Colors.white70,
+                          ),
                     ),
                   ],
                 ),
@@ -236,8 +234,8 @@ class _AppEndDrawer extends ConsumerWidget {
             ),
             const Divider(color: Color(0xFF2A2A2A)),
             SwitchListTile(
-              secondary:
-                  const Icon(Icons.dark_mode_outlined, color: Color(0xFF888888)),
+              secondary: const Icon(Icons.dark_mode_outlined,
+                  color: Color(0xFF888888)),
               title: const Text(AppStrings.darkMode,
                   style: TextStyle(color: Color(0xFFF0F0F0))),
               value: isDark,

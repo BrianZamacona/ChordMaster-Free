@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 
 import '../../core/constants/app_strings.dart';
+import '../../core/widgets/feature_module_scaffold.dart';
 import '../../models/interval_model.dart';
 import 'ear_training_viewmodel.dart';
 
@@ -17,25 +18,22 @@ class EarTrainingScreen extends ConsumerWidget {
     final theme = Theme.of(context);
 
     if (state.isLoading) {
-      return const Scaffold(
-          body: Center(child: CircularProgressIndicator()));
+      return const Scaffold(body: Center(child: CircularProgressIndicator()));
     }
 
-    return Scaffold(
-      appBar: AppBar(
-        title: const Text(AppStrings.moduleEarTraining),
-        actions: [
-          Padding(
-            padding: const EdgeInsets.only(right: 16),
-            child: Center(
-              child: Text(
-                '${AppStrings.score}: ${state.correctAnswers}/${state.totalAnswered}',
-                style: theme.textTheme.labelLarge,
-              ),
+    return FeatureModuleScaffold(
+      title: AppStrings.moduleEarTraining,
+      appBarActions: [
+        Padding(
+          padding: const EdgeInsets.only(right: 16),
+          child: Center(
+            child: Text(
+              '${AppStrings.score}: ${state.correctAnswers}/${state.totalAnswered}',
+              style: theme.textTheme.labelLarge,
             ),
           ),
-        ],
-      ),
+        ),
+      ],
       body: Padding(
         padding: const EdgeInsets.all(16),
         child: Column(
@@ -45,8 +43,7 @@ class EarTrainingScreen extends ConsumerWidget {
             Row(
               children: [
                 _StatChip(
-                    label: AppStrings.streak,
-                    value: '${state.streak} 🔥'),
+                    label: AppStrings.streak, value: '${state.streak} 🔥'),
                 const SizedBox(width: 8),
                 _StatChip(
                   label: 'Total Done',
@@ -55,8 +52,7 @@ class EarTrainingScreen extends ConsumerWidget {
                 const SizedBox(width: 8),
                 _StatChip(
                   label: 'Accuracy',
-                  value:
-                      '${(state.accuracy * 100).toStringAsFixed(0)}%',
+                  value: '${(state.accuracy * 100).toStringAsFixed(0)}%',
                 ),
               ],
             ),
@@ -69,8 +65,8 @@ class EarTrainingScreen extends ConsumerWidget {
                   borderRadius: BorderRadius.circular(20)),
               color: theme.colorScheme.primaryContainer,
               child: Padding(
-                padding: const EdgeInsets.symmetric(
-                    vertical: 32, horizontal: 16),
+                padding:
+                    const EdgeInsets.symmetric(vertical: 32, horizontal: 16),
                 child: Column(
                   children: [
                     const Text(
@@ -107,8 +103,8 @@ class EarTrainingScreen extends ConsumerWidget {
                     Text(
                       '${state.currentInterval.semitones} semitone${state.currentInterval.semitones == 1 ? "" : "s"}',
                       style: theme.textTheme.bodySmall?.copyWith(
-                        color: theme.colorScheme.onPrimaryContainer
-                            .withAlpha(180),
+                        color:
+                            theme.colorScheme.onPrimaryContainer.withAlpha(180),
                       ),
                     ),
                   ],
@@ -148,9 +144,7 @@ class EarTrainingScreen extends ConsumerWidget {
                       : Colors.red.withAlpha(40),
                   borderRadius: BorderRadius.circular(14),
                   border: Border.all(
-                    color: state.lastAnswerCorrect!
-                        ? Colors.green
-                        : Colors.red,
+                    color: state.lastAnswerCorrect! ? Colors.green : Colors.red,
                     width: 2,
                   ),
                 ),
@@ -209,8 +203,19 @@ class EarTrainingScreen extends ConsumerWidget {
 
   String _noteAtSemitone(int semitones) {
     const notes = [
-      'C', 'C#', 'D', 'D#', 'E', 'F',
-      'F#', 'G', 'G#', 'A', 'A#', 'B', 'C',
+      'C',
+      'C#',
+      'D',
+      'D#',
+      'E',
+      'F',
+      'F#',
+      'G',
+      'G#',
+      'A',
+      'A#',
+      'B',
+      'C',
     ];
     return notes[semitones.clamp(0, 12)];
   }
@@ -255,8 +260,7 @@ class _ChoiceButton extends StatelessWidget {
     return ElevatedButton(
       onPressed: onTap,
       style: ElevatedButton.styleFrom(
-        shape:
-            RoundedRectangleBorder(borderRadius: BorderRadius.circular(12)),
+        shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(12)),
       ),
       child: Column(
         mainAxisAlignment: MainAxisAlignment.center,

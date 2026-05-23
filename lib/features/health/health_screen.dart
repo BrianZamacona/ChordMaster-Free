@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 
 import '../../core/constants/app_strings.dart';
+import '../../core/widgets/feature_module_scaffold.dart';
 import 'health_viewmodel.dart';
 
 /// Practice health and wellness screen.
@@ -20,11 +21,27 @@ class HealthScreen extends ConsumerWidget {
   }
 
   static const _warmupExercises = [
-    ('🤲', 'Finger stretches', 'Spread fingers wide, hold 5 sec, relax. Repeat 5x.'),
+    (
+      '🤲',
+      'Finger stretches',
+      'Spread fingers wide, hold 5 sec, relax. Repeat 5x.'
+    ),
     ('✊', 'Fist pump', 'Clench fist tight, hold 3 sec, open wide. Repeat 10x.'),
-    ('🔄', 'Wrist circles', 'Rotate wrists clockwise then counter-clockwise, 10x each.'),
-    ('💪', 'Forearm stretch', 'Extend arm, pull fingers back gently. Hold 15 sec per hand.'),
-    ('👐', 'Piano walk', 'Tap each finger to thumb one-by-one, both hands, 3 rounds.'),
+    (
+      '🔄',
+      'Wrist circles',
+      'Rotate wrists clockwise then counter-clockwise, 10x each.'
+    ),
+    (
+      '💪',
+      'Forearm stretch',
+      'Extend arm, pull fingers back gently. Hold 15 sec per hand.'
+    ),
+    (
+      '👐',
+      'Piano walk',
+      'Tap each finger to thumb one-by-one, both hands, 3 rounds.'
+    ),
   ];
 
   @override
@@ -39,8 +56,8 @@ class HealthScreen extends ConsumerWidget {
       );
     }
 
-    return Scaffold(
-      appBar: AppBar(title: const Text(AppStrings.moduleHealth)),
+    return FeatureModuleScaffold(
+      title: AppStrings.moduleHealth,
       body: SingleChildScrollView(
         padding: const EdgeInsets.all(16),
         child: Column(
@@ -119,18 +136,15 @@ class HealthScreen extends ConsumerWidget {
                       onChanged: (v) => vm.toggleReminders(enabled: v),
                     ),
                     if (state.remindersEnabled) ...[
-                      Text('Remind every:',
-                          style: theme.textTheme.bodyMedium),
+                      Text('Remind every:', style: theme.textTheme.bodyMedium),
                       const SizedBox(height: 8),
                       Wrap(
                         spacing: 8,
                         children: [15, 30, 45, 60]
                             .map((m) => ChoiceChip(
                                   label: Text('${m}m'),
-                                  selected:
-                                      state.reminderIntervalMinutes == m,
-                                  onSelected: (_) =>
-                                      vm.setReminderInterval(m),
+                                  selected: state.reminderIntervalMinutes == m,
+                                  onSelected: (_) => vm.setReminderInterval(m),
                                 ))
                             .toList(),
                       ),
@@ -161,13 +175,11 @@ class HealthScreen extends ConsumerWidget {
                           child: Row(
                             crossAxisAlignment: CrossAxisAlignment.start,
                             children: [
-                              Text(e.$1,
-                                  style: const TextStyle(fontSize: 28)),
+                              Text(e.$1, style: const TextStyle(fontSize: 28)),
                               const SizedBox(width: 12),
                               Expanded(
                                 child: Column(
-                                  crossAxisAlignment:
-                                      CrossAxisAlignment.start,
+                                  crossAxisAlignment: CrossAxisAlignment.start,
                                   children: [
                                     Text(
                                       e.$2,

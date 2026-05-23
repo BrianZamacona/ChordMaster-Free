@@ -3,6 +3,7 @@ import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:go_router/go_router.dart';
 
 import '../../core/constants/app_strings.dart';
+import '../../core/widgets/feature_module_scaffold.dart';
 import '../../models/song.dart';
 import 'songs_viewmodel.dart';
 
@@ -30,8 +31,8 @@ class _SongsScreenState extends ConsumerState<SongsScreen> {
     final vm = ref.read(songsViewModelProvider.notifier);
     final theme = Theme.of(context);
 
-    return Scaffold(
-      appBar: AppBar(title: const Text(AppStrings.moduleSongs)),
+    return FeatureModuleScaffold(
+      title: AppStrings.moduleSongs,
       body: Column(
         children: [
           Padding(
@@ -105,8 +106,7 @@ class _SongTile extends StatelessWidget {
       margin: const EdgeInsets.only(bottom: 10),
       shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(12)),
       child: ListTile(
-        contentPadding:
-            const EdgeInsets.symmetric(horizontal: 16, vertical: 8),
+        contentPadding: const EdgeInsets.symmetric(horizontal: 16, vertical: 8),
         leading: CircleAvatar(
           backgroundColor: theme.colorScheme.primaryContainer,
           child: Text(
@@ -119,8 +119,8 @@ class _SongTile extends StatelessWidget {
         ),
         title: Text(
           song.title,
-          style: theme.textTheme.titleSmall
-              ?.copyWith(fontWeight: FontWeight.bold),
+          style:
+              theme.textTheme.titleSmall?.copyWith(fontWeight: FontWeight.bold),
         ),
         subtitle: Column(
           crossAxisAlignment: CrossAxisAlignment.start,
