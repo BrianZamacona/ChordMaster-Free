@@ -69,15 +69,15 @@ class _FakeChordViewModel extends ChordViewModel {
 }
 
 final _testChords = <Chord>[
-  Chord(
+  const Chord(
     name: 'C Major',
     root: 'C',
     type: 'major',
-    intervals: const [0, 4, 7],
-    fretPositions: const [-1, 3, 2, 0, 1, 0],
-    fingerPositions: const [0, 3, 2, 0, 1, 0],
-    tags: const ['jazz'],
-    cagedPositions: const [
+    intervals: [0, 4, 7],
+    fretPositions: [-1, 3, 2, 0, 1, 0],
+    fingerPositions: [0, 3, 2, 0, 1, 0],
+    tags: ['jazz'],
+    cagedPositions: [
       ChordExplorerItem(
         title: 'C Form',
         shape: 'C',
@@ -86,7 +86,7 @@ final _testChords = <Chord>[
         fingerPositions: [0, 3, 2, 0, 1, 0],
       ),
     ],
-    voicings: const [
+    voicings: [
       ChordExplorerItem(
         title: 'Shell 6-4-3',
         description: 'Compact shell voicing',
@@ -94,7 +94,7 @@ final _testChords = <Chord>[
         fingerPositions: [1, 0, 3, 2, 0, 0],
       ),
     ],
-    triadInversions: const [
+    triadInversions: [
       ChordExplorerItem(
         title: 'Root Position',
         description: 'Triad root position',
@@ -102,7 +102,7 @@ final _testChords = <Chord>[
         fingerPositions: [0, 3, 2, 0, 1, 0],
       ),
     ],
-    advancedInversions: const [
+    advancedInversions: [
       ChordExplorerItem(
         title: 'Drop-2 Root',
         description: 'Advanced inversion',
@@ -111,16 +111,16 @@ final _testChords = <Chord>[
       ),
     ],
   ),
-  Chord(
+  const Chord(
     name: 'C 7#9',
     root: 'C',
     type: 'dominant7Sharp9',
-    intervals: const [0, 4, 7, 10, 15],
-    fretPositions: const [-1, 3, 2, 3, 4, -1],
-    fingerPositions: const [0, 1, 2, 3, 4, 0],
+    intervals: [0, 4, 7, 10, 15],
+    fretPositions: [-1, 3, 2, 3, 4, -1],
+    fingerPositions: [0, 1, 2, 3, 4, 0],
     displayName: 'C7#9',
-    aliases: const ['Hendrix Chord'],
-    tags: const ['blues', 'jazz'],
+    aliases: ['Hendrix Chord'],
+    tags: ['blues', 'jazz'],
     description: 'Altered dominant color famous in Hendrix, blues, and fusion.',
   ),
 ];

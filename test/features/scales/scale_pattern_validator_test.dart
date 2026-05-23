@@ -31,11 +31,11 @@ void main() {
         name: 'C Major',
         root: 'C',
         type: 'major',
-        intervals: const [0, 2, 4, 5, 7, 9, 11],
+        intervals: [0, 2, 4, 5, 7, 9, 11],
         description: 'desc',
-        relatedChords: const ['C', 'Dm', 'Em'],
+        relatedChords: ['C', 'Dm', 'Em'],
         commonUsage: 'usage',
-        blockFingerings: const [
+        blockFingerings: [
           ScalePattern(
             name: 'Validated block',
             status: ScalePatternStatus.validated,
@@ -64,11 +64,11 @@ void main() {
         name: 'C Major',
         root: 'C',
         type: 'major',
-        intervals: const [0, 2, 4, 5, 7, 9, 11],
+        intervals: [0, 2, 4, 5, 7, 9, 11],
         description: 'desc',
-        relatedChords: const ['C', 'Dm', 'Em'],
+        relatedChords: ['C', 'Dm', 'Em'],
         commonUsage: 'usage',
-        blockFingerings: const [
+        blockFingerings: [
           ScalePattern(
             name: 'Draft block',
             system: ScalePatternSystem.block,

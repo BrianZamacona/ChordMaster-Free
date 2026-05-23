@@ -4,8 +4,8 @@ import 'package:go_router/go_router.dart';
 
 import '../../core/constants/app_colors.dart';
 import '../../core/constants/app_strings.dart';
-import '../../core/i18n/app_localizations.dart';
 import '../../core/constants/music_theory.dart';
+import '../../core/i18n/app_localizations.dart';
 import '../../core/widgets/donation_button.dart';
 import '../../core/widgets/feature_module_scaffold.dart';
 import '../../core/widgets/scale_fretboard_diagram.dart';

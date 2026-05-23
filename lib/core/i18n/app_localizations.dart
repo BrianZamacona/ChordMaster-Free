@@ -5,14 +5,14 @@ import 'app_i18n.dart';
 class AppLocalizations {
   AppLocalizations(this.locale);
 
+  factory AppLocalizations.of(BuildContext context) =>
+      Localizations.of<AppLocalizations>(context, AppLocalizations) ??
+      AppLocalizations(AppI18n.fallbackLocale);
+
   final Locale locale;
 
   static const LocalizationsDelegate<AppLocalizations> delegate =
       _AppLocalizationsDelegate();
-
-  factory AppLocalizations.of(BuildContext context) =>
-      Localizations.of<AppLocalizations>(context, AppLocalizations) ??
-      AppLocalizations(AppI18n.fallbackLocale);
 
   static final Map<String, Map<String, String>> _strings = {
     'en': {

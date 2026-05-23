@@ -41,12 +41,6 @@ class _ParsedScalePattern {
     required this.maxFret,
   });
 
-  final Map<int, List<int>> positionsByString;
-  final int minFret;
-  final int maxFret;
-
-  bool get hasDrawableStrings => positionsByString.isNotEmpty;
-
   factory _ParsedScalePattern.from(ScalePattern pattern) {
     if (pattern.notes.isNotEmpty) {
       final strings = <int, List<int>>{};
@@ -88,7 +82,7 @@ class _ParsedScalePattern {
       final stringIndex = 6 - stringNumber;
       final frets = fingerings
           .split('-')
-          .map((part) => int.tryParse(part))
+          .map(int.tryParse)
           .whereType<int>()
           .toList(growable: false);
       if (frets.isEmpty) continue;
@@ -111,6 +105,12 @@ class _ParsedScalePattern {
       maxFret: maxFret,
     );
   }
+
+  final Map<int, List<int>> positionsByString;
+  final int minFret;
+  final int maxFret;
+
+  bool get hasDrawableStrings => positionsByString.isNotEmpty;
 }
 
 class _ScaleFretboardPainter extends CustomPainter {
@@ -128,9 +128,9 @@ class _ScaleFretboardPainter extends CustomPainter {
 
   @override
   void paint(Canvas canvas, Size size) {
-    final left = 16.0;
+    const left = 16.0;
     final right = size.width - 12;
-    final top = 20.0;
+    const top = 20.0;
     final bottom = size.height - 14;
     final width = right - left;
     final height = bottom - top;
