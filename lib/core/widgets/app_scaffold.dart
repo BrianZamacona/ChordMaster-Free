@@ -120,61 +120,74 @@ class _AppScaffoldState extends State<AppScaffold> {
 class AppEndDrawer extends ConsumerWidget {
   const AppEndDrawer({super.key});
 
-  static const List<_DrawerItem> _items = [
-    _DrawerItem(
-      label: AppStrings.moduleProgressions,
-      icon: Icons.queue_music,
-      route: '/progressions',
+  static const List<_DrawerSection> _sections = [
+    _DrawerSection(
+      title: 'Practice',
+      items: [
+        _DrawerItem(
+          label: AppStrings.moduleScales,
+          icon: Icons.music_video,
+          route: '/scales',
+        ),
+        _DrawerItem(
+          label: AppStrings.moduleProgressions,
+          icon: Icons.queue_music,
+          route: '/progressions',
+        ),
+        _DrawerItem(
+          label: AppStrings.moduleEarTraining,
+          icon: Icons.hearing,
+          route: '/ear-training',
+        ),
+        _DrawerItem(
+          label: AppStrings.moduleRhythmGame,
+          icon: Icons.sports_esports,
+          route: '/rhythm-game',
+        ),
+        _DrawerItem(
+          label: AppStrings.moduleImprovisation,
+          icon: Icons.piano,
+          route: '/improvisation',
+        ),
+      ],
     ),
-    _DrawerItem(
-      label: AppStrings.moduleEarTraining,
-      icon: Icons.hearing,
-      route: '/ear-training',
-    ),
-    _DrawerItem(
-      label: AppStrings.moduleRhythmGame,
-      icon: Icons.sports_esports,
-      route: '/rhythm-game',
-    ),
-    _DrawerItem(
-      label: AppStrings.moduleImprovisation,
-      icon: Icons.piano,
-      route: '/improvisation',
-    ),
-    _DrawerItem(
-      label: AppStrings.moduleSongs,
-      icon: Icons.music_note,
-      route: '/songs',
-    ),
-    _DrawerItem(
-      label: AppStrings.moduleComposition,
-      icon: Icons.edit_note,
-      route: '/composition',
-    ),
-    _DrawerItem(
-      label: AppStrings.moduleHealth,
-      icon: Icons.health_and_safety,
-      route: '/health',
-    ),
-    _DrawerItem(
-      label: AppStrings.moduleCommunity,
-      icon: Icons.people,
-      route: '/community',
-    ),
-    _DrawerItem(
-      label: AppStrings.moduleAchievements,
-      icon: Icons.emoji_events,
-      route: '/achievements',
-    ),
-    _DrawerItem(
-      label: AppStrings.moduleScales,
-      icon: Icons.music_video,
-      route: '/scales',
+    _DrawerSection(
+      title: 'Create & Track',
+      items: [
+        _DrawerItem(
+          label: AppStrings.moduleSongs,
+          icon: Icons.music_note,
+          route: '/songs',
+        ),
+        _DrawerItem(
+          label: AppStrings.moduleComposition,
+          icon: Icons.edit_note,
+          route: '/composition',
+        ),
+        _DrawerItem(
+          label: AppStrings.moduleHealth,
+          icon: Icons.health_and_safety,
+          route: '/health',
+        ),
+        _DrawerItem(
+          label: AppStrings.moduleCommunity,
+          icon: Icons.people,
+          route: '/community',
+        ),
+        _DrawerItem(
+          label: AppStrings.moduleAchievements,
+          icon: Icons.emoji_events,
+          route: '/achievements',
+        ),
+      ],
     ),
   ];
 
   @override
   Widget build(BuildContext context, WidgetRef ref) {
+    final scheme = Theme.of(context).colorScheme;
+    final textTheme = Theme.of(context).textTheme;
+    final location = GoRouterState.of(context).matchedLocation;
     final themeMode =
         ref.watch(settingsViewModelProvider.select((s) => s.themeMode));
     final isDark = themeMode == ThemeMode.dark ||
@@ -182,18 +195,20 @@ class AppEndDrawer extends ConsumerWidget {
             MediaQuery.platformBrightnessOf(context) == Brightness.dark);
 
     return Drawer(
-      backgroundColor: AppColors.surfaceDark,
+      backgroundColor: scheme.surfaceContainerLow,
       child: SafeArea(
         child: ListView(
-          padding: EdgeInsets.zero,
+          padding: const EdgeInsets.fromLTRB(12, 0, 12, 16),
           children: [
             DrawerHeader(
+              margin: const EdgeInsets.only(bottom: 12),
               padding: EdgeInsets.zero,
-              decoration: const BoxDecoration(
+              decoration: BoxDecoration(
+                borderRadius: BorderRadius.circular(16),
                 gradient: LinearGradient(
                   begin: Alignment.topLeft,
                   end: Alignment.bottomRight,
-                  colors: [Color(0xFF8B0000), Color(0xFF0D0D0D)],
+                  colors: [AppColors.primary, scheme.surfaceContainerHigh],
                 ),
               ),
               child: Padding(
@@ -204,8 +219,8 @@ class AppEndDrawer extends ConsumerWidget {
                   children: [
                     Text(
                       AppStrings.appName,
-                      style: Theme.of(context).textTheme.titleLarge?.copyWith(
-                            color: Colors.white,
+                      style: textTheme.titleLarge?.copyWith(
+                            color: scheme.onPrimary,
                             fontWeight: FontWeight.bold,
                             letterSpacing: 1.2,
                           ),
@@ -213,38 +228,72 @@ class AppEndDrawer extends ConsumerWidget {
                     const SizedBox(height: 4),
                     Text(
                       AppStrings.appTagline,
-                      style: Theme.of(context).textTheme.bodySmall?.copyWith(
-                            color: Colors.white70,
+                      style: textTheme.bodySmall?.copyWith(
+                            color: scheme.onPrimary.withAlpha(220),
                           ),
                     ),
                   ],
                 ),
               ),
             ),
-            ..._items.map(
-              (item) => ListTile(
-                leading: Icon(item.icon, color: const Color(0xFF888888)),
-                title: Text(item.label,
-                    style: const TextStyle(color: Color(0xFFF0F0F0))),
-                onTap: () {
-                  Navigator.pop(context);
-                  context.go(item.route);
+            ..._sections.expand(
+              (section) => [
+                Padding(
+                  padding: const EdgeInsets.fromLTRB(4, 6, 4, 8),
+                  child: Text(
+                    section.title,
+                    style: textTheme.labelMedium?.copyWith(
+                      color: scheme.onSurfaceVariant,
+                      fontWeight: FontWeight.w600,
+                    ),
+                  ),
+                ),
+                Container(
+                  decoration: BoxDecoration(
+                    color: scheme.surfaceContainer,
+                    borderRadius: BorderRadius.circular(14),
+                    border: Border.all(color: scheme.outlineVariant),
+                  ),
+                  child: Column(
+                    children: section.items
+                        .map((item) => _DrawerItemTile(
+                              item: item,
+                              isSelected: location == item.route ||
+                                  location.startsWith('${item.route}/'),
+                            ))
+                        .toList(growable: false),
+                  ),
+                ),
+                const SizedBox(height: 8),
+              ],
+            ),
+            Container(
+              margin: const EdgeInsets.only(top: 8),
+              decoration: BoxDecoration(
+                color: scheme.surfaceContainer,
+                borderRadius: BorderRadius.circular(14),
+                border: Border.all(color: scheme.outlineVariant),
+              ),
+              child: SwitchListTile(
+                secondary: Icon(Icons.dark_mode_outlined,
+                    color: scheme.onSurfaceVariant),
+                title: Text(
+                  AppStrings.darkMode,
+                  style: textTheme.bodyMedium?.copyWith(color: scheme.onSurface),
+                ),
+                subtitle: Text(
+                  'Auto/Manual',
+                  style: textTheme.labelSmall
+                      ?.copyWith(color: scheme.onSurfaceVariant),
+                ),
+                value: isDark,
+                activeThumbColor: scheme.primary,
+                onChanged: (value) {
+                  ref.read(settingsViewModelProvider.notifier).setThemeMode(
+                        value ? ThemeMode.dark : ThemeMode.system,
+                      );
                 },
               ),
-            ),
-            const Divider(color: Color(0xFF2A2A2A)),
-            SwitchListTile(
-              secondary: const Icon(Icons.dark_mode_outlined,
-                  color: Color(0xFF888888)),
-              title: const Text(AppStrings.darkMode,
-                  style: TextStyle(color: Color(0xFFF0F0F0))),
-              value: isDark,
-              activeThumbColor: const Color(0xFFC0392B),
-              onChanged: (value) {
-                ref.read(settingsViewModelProvider.notifier).setThemeMode(
-                      value ? ThemeMode.dark : ThemeMode.system,
-                    );
-              },
             ),
           ],
         ),
@@ -264,4 +313,48 @@ class _DrawerItem {
   final String label;
   final IconData icon;
   final String route;
+}
+
+class _DrawerSection {
+  const _DrawerSection({
+    required this.title,
+    required this.items,
+  });
+
+  final String title;
+  final List<_DrawerItem> items;
+}
+
+class _DrawerItemTile extends StatelessWidget {
+  const _DrawerItemTile({
+    required this.item,
+    required this.isSelected,
+  });
+
+  final _DrawerItem item;
+  final bool isSelected;
+
+  @override
+  Widget build(BuildContext context) {
+    final scheme = Theme.of(context).colorScheme;
+    return ListTile(
+      dense: true,
+      contentPadding: const EdgeInsets.symmetric(horizontal: 10),
+      leading: Icon(
+        item.icon,
+        color: isSelected ? scheme.primary : scheme.onSurfaceVariant,
+      ),
+      title: Text(
+        item.label,
+        style: Theme.of(context).textTheme.bodyMedium?.copyWith(
+              color: isSelected ? scheme.primary : scheme.onSurface,
+              fontWeight: isSelected ? FontWeight.w600 : FontWeight.w400,
+            ),
+      ),
+      onTap: () {
+        Navigator.pop(context);
+        context.go(item.route);
+      },
+    );
+  }
 }

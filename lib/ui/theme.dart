@@ -58,6 +58,21 @@ final ThemeData lightTheme = ThemeData(
   outlinedButtonTheme: _outlinedButtonTheme,
   filledButtonTheme: _filledButtonTheme,
   chipTheme: _chipTheme,
+  navigationBarTheme: NavigationBarThemeData(
+    indicatorColor: AppColors.primary.withAlpha(30),
+    iconTheme: WidgetStateProperty.resolveWith((states) {
+      if (states.contains(WidgetState.selected)) {
+        return const IconThemeData(color: AppColors.primary);
+      }
+      return const IconThemeData(color: Color(0xFF5A5A5A));
+    }),
+    labelTextStyle: WidgetStateProperty.resolveWith((states) {
+      if (states.contains(WidgetState.selected)) {
+        return const TextStyle(color: AppColors.primary, fontSize: 12);
+      }
+      return const TextStyle(color: Color(0xFF5A5A5A), fontSize: 12);
+    }),
+  ),
   bottomNavigationBarTheme: const BottomNavigationBarThemeData(
     type: BottomNavigationBarType.fixed,
   ),
@@ -103,12 +118,18 @@ final ThemeData darkTheme = ThemeData(
   navigationBarTheme: NavigationBarThemeData(
     backgroundColor: AppColors.surfaceDark,
     indicatorColor: AppColors.primary.withAlpha(60),
-    iconTheme: const WidgetStatePropertyAll(
-      IconThemeData(color: AppColors.textSecondary),
-    ),
-    labelTextStyle: const WidgetStatePropertyAll(
-      TextStyle(color: AppColors.textSecondary, fontSize: 12),
-    ),
+    iconTheme: WidgetStateProperty.resolveWith((states) {
+      if (states.contains(WidgetState.selected)) {
+        return const IconThemeData(color: AppColors.textPrimary);
+      }
+      return const IconThemeData(color: AppColors.textSecondary);
+    }),
+    labelTextStyle: WidgetStateProperty.resolveWith((states) {
+      if (states.contains(WidgetState.selected)) {
+        return const TextStyle(color: AppColors.textPrimary, fontSize: 12);
+      }
+      return const TextStyle(color: AppColors.textSecondary, fontSize: 12);
+    }),
   ),
   elevatedButtonTheme: _elevatedButtonTheme,
   outlinedButtonTheme: _outlinedButtonTheme,

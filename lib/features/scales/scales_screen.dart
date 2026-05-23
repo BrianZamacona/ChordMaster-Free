@@ -7,6 +7,7 @@ import '../../core/constants/app_strings.dart';
 import '../../core/constants/music_theory.dart';
 import '../../core/widgets/donation_button.dart';
 import '../../core/widgets/feature_module_scaffold.dart';
+import '../../core/widgets/scale_fretboard_diagram.dart';
 import '../../models/scale.dart';
 import '../../services/audio_service.dart';
 import '../../ui/animations.dart';
@@ -148,15 +149,15 @@ class _ScalesTabContent extends ConsumerWidget {
         child: Column(
           mainAxisSize: MainAxisSize.min,
           children: [
-            const Icon(Icons.music_off,
-                size: 48, color: AppColors.textSecondary),
+            Icon(Icons.music_off,
+                size: 48, color: Theme.of(context).colorScheme.onSurfaceVariant),
             const SizedBox(height: 12),
             Text(
               AppStrings.emptyScalesSearch,
               style: Theme.of(context)
                   .textTheme
                   .bodyLarge
-                  ?.copyWith(color: AppColors.textSecondary),
+                  ?.copyWith(color: Theme.of(context).colorScheme.onSurfaceVariant),
             ),
           ],
         ),
@@ -238,7 +239,7 @@ class _ScaleCard extends ConsumerWidget {
                         Text(
                           scale.description,
                           style: theme.textTheme.bodySmall?.copyWith(
-                            color: AppColors.textSecondary,
+                            color: theme.colorScheme.onSurfaceVariant,
                           ),
                         ),
                       ],
@@ -295,7 +296,7 @@ class _ScaleCard extends ConsumerWidget {
                   AppStrings.commonUsage,
                   style: theme.textTheme.labelSmall?.copyWith(
                     fontWeight: FontWeight.bold,
-                    color: AppColors.textSecondary,
+                    color: theme.colorScheme.onSurfaceVariant,
                   ),
                 ),
                 Text(
@@ -391,26 +392,28 @@ class _FingeringSection extends StatelessWidget {
     if (patterns.isEmpty) return const SizedBox.shrink();
 
     final theme = Theme.of(context);
+    final scheme = theme.colorScheme;
     return Column(
       crossAxisAlignment: CrossAxisAlignment.start,
       children: [
         Text(
           title,
           style: theme.textTheme.labelSmall?.copyWith(
-            color: AppColors.textSecondary,
+            color: scheme.onSurfaceVariant,
             fontWeight: FontWeight.bold,
           ),
         ),
-        const SizedBox(height: 4),
+        const SizedBox(height: 6),
         ...patterns.map(
           (pattern) => Padding(
-            padding: const EdgeInsets.only(bottom: 6),
+            padding: const EdgeInsets.only(bottom: 8),
             child: Container(
               width: double.infinity,
-              padding: const EdgeInsets.all(8),
+              padding: const EdgeInsets.fromLTRB(10, 10, 10, 8),
               decoration: BoxDecoration(
-                color: Theme.of(context).colorScheme.surfaceContainerHighest,
+                color: scheme.surfaceContainerHighest,
                 borderRadius: BorderRadius.circular(8),
+                border: Border.all(color: scheme.outlineVariant),
               ),
               child: Column(
                 crossAxisAlignment: CrossAxisAlignment.start,
@@ -425,16 +428,27 @@ class _FingeringSection extends StatelessWidget {
                       padding: const EdgeInsets.only(top: 2),
                       child: Text(
                         pattern.description!,
-                        style: theme.textTheme.labelSmall,
+                        style: theme.textTheme.labelSmall
+                            ?.copyWith(color: scheme.onSurfaceVariant),
                       ),
                     ),
-                  const SizedBox(height: 4),
-                  ...pattern.positions.map(
-                    (line) => Text(
-                      line,
-                      style: theme.textTheme.labelSmall,
-                    ),
+                  const SizedBox(height: 8),
+                  ScaleFretboardDiagram(
+                    pattern: pattern,
+                    accentColor: AppColors.scales,
                   ),
+                  ...pattern.positions
+                      .where((line) => !line.contains('string:'))
+                      .map(
+                        (line) => Padding(
+                          padding: const EdgeInsets.only(top: 2),
+                          child: Text(
+                            line,
+                            style: theme.textTheme.labelSmall
+                                ?.copyWith(color: scheme.onSurfaceVariant),
+                          ),
+                        ),
+                      ),
                 ],
               ),
             ),
@@ -461,7 +475,7 @@ class _HarmonizedChordsSection extends StatelessWidget {
         Text(
           'Harmonized Chords (tap for diagram)',
           style: theme.textTheme.labelSmall?.copyWith(
-            color: AppColors.textSecondary,
+            color: Theme.of(context).colorScheme.onSurfaceVariant,
             fontWeight: FontWeight.bold,
           ),
         ),
@@ -475,7 +489,7 @@ class _HarmonizedChordsSection extends StatelessWidget {
                   label: Text('${entry.degree} ${entry.chord}'),
                   onPressed: () {
                     final encoded = Uri.encodeComponent(entry.chord);
-                    context.go('/chords/$encoded');
+                    context.push('/chords/$encoded');
                   },
                 ),
               )
