@@ -10,10 +10,9 @@ class AppLocalizations {
   static const LocalizationsDelegate<AppLocalizations> delegate =
       _AppLocalizationsDelegate();
 
-  static AppLocalizations of(BuildContext context) {
-    return Localizations.of<AppLocalizations>(context, AppLocalizations) ??
-        AppLocalizations(AppI18n.fallbackLocale);
-  }
+  factory AppLocalizations.of(BuildContext context) =>
+      Localizations.of<AppLocalizations>(context, AppLocalizations) ??
+      AppLocalizations(AppI18n.fallbackLocale);
 
   static final Map<String, Map<String, String>> _strings = {
     'en': {
@@ -55,9 +54,7 @@ class _AppLocalizationsDelegate
   bool isSupported(Locale locale) => AppI18n.isSupported(locale);
 
   @override
-  Future<AppLocalizations> load(Locale locale) async {
-    return AppLocalizations(locale);
-  }
+  Future<AppLocalizations> load(Locale locale) async => AppLocalizations(locale);
 
   @override
   bool shouldReload(covariant LocalizationsDelegate<AppLocalizations> old) =>

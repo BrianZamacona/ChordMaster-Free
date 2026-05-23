@@ -465,31 +465,31 @@ class _FingeringSection extends StatelessWidget {
       ],
     );
   }
+}
 
-  class _PatternValidationNotice extends StatelessWidget {
-    const _PatternValidationNotice();
+class _PatternValidationNotice extends StatelessWidget {
+  const _PatternValidationNotice();
 
-    @override
-    Widget build(BuildContext context) {
-      final scheme = Theme.of(context).colorScheme;
-      final textTheme = Theme.of(context).textTheme;
-      return Container(
-        width: double.infinity,
-        padding: const EdgeInsets.all(10),
-        decoration: BoxDecoration(
-          color: scheme.secondaryContainer.withAlpha(140),
-          borderRadius: BorderRadius.circular(8),
-          border: Border.all(color: scheme.outlineVariant),
+  @override
+  Widget build(BuildContext context) {
+    final scheme = Theme.of(context).colorScheme;
+    final textTheme = Theme.of(context).textTheme;
+    return Container(
+      width: double.infinity,
+      padding: const EdgeInsets.all(10),
+      decoration: BoxDecoration(
+        color: scheme.secondaryContainer.withAlpha(140),
+        borderRadius: BorderRadius.circular(8),
+        border: Border.all(color: scheme.outlineVariant),
+      ),
+      child: Text(
+        context.l10n.t('scalesValidationNotice'),
+        style: textTheme.labelSmall?.copyWith(
+          color: scheme.onSecondaryContainer,
+          fontWeight: FontWeight.w600,
         ),
-        child: Text(
-          context.l10n.t('scalesValidationNotice'),
-          style: textTheme.labelSmall?.copyWith(
-            color: scheme.onSecondaryContainer,
-            fontWeight: FontWeight.w600,
-          ),
-        ),
-      );
-    }
+      ),
+    );
   }
 }
 

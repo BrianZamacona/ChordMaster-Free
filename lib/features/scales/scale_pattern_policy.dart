@@ -49,7 +49,7 @@ class ScalePatternPolicy {
   }
 
   static String pitchClassFromNoteName(String noteWithOctave) {
-    final regex = RegExp(r'^[A-G]#?');
+    final regex = RegExp('^[A-G]#?');
     final match = regex.firstMatch(noteWithOctave.trim());
     return match?.group(0) ?? noteWithOctave;
   }

@@ -2,11 +2,11 @@ import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:go_router/go_router.dart';
 
-import '../../features/settings/settings_viewmodel.dart';
-import '../i18n/app_i18n.dart';
-import '../i18n/app_localizations.dart';
 import '../constants/app_colors.dart';
 import '../constants/app_strings.dart';
+import '../i18n/app_i18n.dart';
+import '../i18n/app_localizations.dart';
+import '../../features/settings/settings_viewmodel.dart';
 
 /// The root scaffold for all shell-route screens.
 ///
