@@ -59,6 +59,7 @@ class _ChordDiagramWidgetState extends State<ChordDiagramWidget> {
             chordName: widget.chordName,
             showChordName: widget.showChordName,
             baseFret: widget.baseFret,
+            colorScheme: Theme.of(context).colorScheme,
           ),
         ),
       );
@@ -71,12 +72,14 @@ class _ChordDiagramPainter extends CustomPainter {
     required this.chordName,
     required this.showChordName,
     required this.baseFret,
+    required this.colorScheme,
   });
 
   final List<int> fretPositions;
   final String chordName;
   final bool showChordName;
   final int? baseFret;
+  final ColorScheme colorScheme;
 
   static const int _fretsShown = 5;
 
@@ -112,7 +115,7 @@ class _ChordDiagramPainter extends CustomPainter {
     }
 
     final nutPaint = Paint()
-      ..color = Colors.black87
+      ..color = colorScheme.onSurface
       ..strokeWidth = fretOffset == 0 ? fretSpacing * 0.22 : 2.0
       ..strokeCap = StrokeCap.square;
 
@@ -143,7 +146,7 @@ class _ChordDiagramPainter extends CustomPainter {
     }
 
     final fretPaint = Paint()
-      ..color = Colors.black54
+      ..color = colorScheme.outline
       ..strokeWidth = 1.0;
 
     for (var fret = 1; fret <= _fretsShown; fret++) {
@@ -156,7 +159,7 @@ class _ChordDiagramPainter extends CustomPainter {
     }
 
     final stringPaint = Paint()
-      ..color = Colors.black87
+      ..color = colorScheme.onSurface.withAlpha(190)
       ..strokeWidth = 1.2;
 
     for (var stringIndex = 0; stringIndex < 6; stringIndex++) {
@@ -176,7 +179,7 @@ class _ChordDiagramPainter extends CustomPainter {
 
       if (fret == 0) {
         final openPaint = Paint()
-          ..color = Colors.black87
+          ..color = colorScheme.onSurface
           ..strokeWidth = 1.5
           ..style = PaintingStyle.stroke;
         canvas.drawCircle(
@@ -224,7 +227,7 @@ class _ChordDiagramPainter extends CustomPainter {
     Offset offset, {
     double fontSize = 12.0,
     bool bold = false,
-    Color color = Colors.black87,
+    Color? color,
     TextAlign align = TextAlign.left,
     bool centered = false,
   }) {
@@ -232,7 +235,7 @@ class _ChordDiagramPainter extends CustomPainter {
       text: TextSpan(
         text: text,
         style: TextStyle(
-          color: color,
+          color: color ?? colorScheme.onSurface,
           fontSize: fontSize,
           fontWeight: bold ? FontWeight.bold : FontWeight.normal,
         ),
@@ -256,5 +259,6 @@ class _ChordDiagramPainter extends CustomPainter {
       oldDelegate.chordName != chordName ||
       oldDelegate.showChordName != showChordName ||
       oldDelegate.baseFret != baseFret ||
+      oldDelegate.colorScheme != colorScheme ||
       oldDelegate.fretPositions.toString() != fretPositions.toString();
 }
