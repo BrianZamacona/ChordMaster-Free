@@ -24,31 +24,49 @@ class _FakeAssetBundle extends CachingAssetBundle {
 
 void main() {
   group('ScaleRepository', () {
-    test('loads and maps patterns from asset JSON list', () async {
+    late ScaleRepository repository;
+
+    setUp(() {
       final bundle = _FakeAssetBundle({
-        'assets/data/scale_patterns_coordinates.json':
-            '[{"scale_name":"Major","root":"C","pattern_type":"CAGED","position_name":"Forma de A","starting_fret":2,"frets_span":4,"coordinates":[{"string":5,"fret":3,"interval":"1","note":"C","is_root":true,"finger":2}]}]'
+        'assets/data/scales.json':
+            '[{"name":"Major","root":"C","type":"major","intervals":[0,2,4,5,7,9,11]}]'
       });
-
-      final repository = ScaleRepository(bundle: bundle);
-      final result = await repository.loadScalePatterns();
-
-      expect(result, hasLength(1));
-      expect(result.first.scaleName, 'Major');
-      expect(result.first.coordinates.first.note, 'C');
+      repository = ScaleRepository(bundle: bundle);
     });
 
-    test('supports root object with patterns key', () async {
-      final bundle = _FakeAssetBundle({
-        'assets/data/scale_patterns_coordinates.json':
-            '{"patterns":[{"scale_name":"Major","root":"C","pattern_type":"CAGED","position_name":"Forma de A","starting_fret":2,"frets_span":4,"coordinates":[{"string":5,"fret":3,"interval":"1","note":"C","is_root":true,"finger":2}]}]}'
-      });
+    test('loadPatterns generates requested system patterns', () async {
+      final result = await repository.loadPatterns(
+        scaleName: 'major',
+        root: 'C',
+        system: 'CAGED',
+      );
 
-      final repository = ScaleRepository(bundle: bundle);
-      final result = await repository.loadScalePatterns();
+      expect(result, isNotEmpty);
+      expect(result.first.patternType, 'CAGED');
+      expect(result.first.coordinates, isNotEmpty);
+    });
 
-      expect(result, hasLength(1));
-      expect(result.first.positionName, 'Forma de A');
+    test('loadAllSystems returns generated map for known scale', () async {
+      final result = await repository.loadAllSystems(
+        scaleName: 'major',
+        root: 'C',
+      );
+
+      expect(result, isNotEmpty);
+      expect(result['CAGED'], isNotEmpty);
+      expect(result['Berklee'], isNotEmpty);
+    });
+
+    test('loadPositional returns a positional pattern', () async {
+      final pattern = await repository.loadPositional(
+        scaleName: 'major',
+        root: 'C',
+        startFret: 3,
+      );
+
+      expect(pattern, isNotNull);
+      expect(pattern!.patternType, 'Posicional');
+      expect(pattern.startingFret, 3);
     });
   });
 }

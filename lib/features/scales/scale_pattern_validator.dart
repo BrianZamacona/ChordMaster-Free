@@ -18,7 +18,7 @@ class ScalePatternValidationResult {
     required this.issues,
   });
 
-  final List<ScalePattern> validPatterns;
+  final List<ScaleFingering> validPatterns;
   final List<ScalePatternValidationIssue> issues;
 }
 
@@ -27,10 +27,10 @@ class ScalePatternValidator {
 
   ScalePatternValidationResult validate({
     required Scale scale,
-    required List<ScalePattern> patterns,
+    required List<ScaleFingering> patterns,
     required ScalePatternSystem system,
   }) {
-    final valid = <ScalePattern>[];
+    final valid = <ScaleFingering>[];
     final issues = <ScalePatternValidationIssue>[];
 
     for (final pattern in patterns) {
@@ -142,7 +142,7 @@ class ScalePatternValidator {
     return ScalePatternValidationResult(validPatterns: valid, issues: issues);
   }
 
-  List<ScalePatternNote> _extractPatternNotes(ScalePattern pattern) {
+  List<ScalePatternNote> _extractPatternNotes(ScaleFingering pattern) {
     if (pattern.notes.isNotEmpty) {
       return pattern.notes;
     }

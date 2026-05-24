@@ -60,13 +60,13 @@ class Scale {
   final String commonUsage;
 
   /// Position-based block fingerings for guitar practice.
-  final List<ScalePattern> blockFingerings;
+  final List<ScaleFingering> blockFingerings;
 
   /// Three-notes-per-string (3NPS) fingering patterns.
-  final List<ScalePattern> threeNotePerStringFingerings;
+  final List<ScaleFingering> threeNotePerStringFingerings;
 
   /// CAGED-oriented fingering patterns.
-  final List<ScalePattern> cagedFingerings;
+  final List<ScaleFingering> cagedFingerings;
 
   /// Harmonized triads by degree for this scale.
   final List<HarmonizedChord> harmonizedChords;
@@ -96,9 +96,9 @@ class Scale {
     String? description,
     List<String>? relatedChords,
     String? commonUsage,
-    List<ScalePattern>? blockFingerings,
-    List<ScalePattern>? threeNotePerStringFingerings,
-    List<ScalePattern>? cagedFingerings,
+    List<ScaleFingering>? blockFingerings,
+    List<ScaleFingering>? threeNotePerStringFingerings,
+    List<ScaleFingering>? cagedFingerings,
     List<HarmonizedChord>? harmonizedChords,
   }) =>
       Scale(
@@ -175,7 +175,7 @@ class Scale {
     }).toList(growable: false);
   }
 
-  static List<ScalePattern> _optionalPatternList(
+  static List<ScaleFingering> _optionalPatternList(
       Map<String, dynamic> json, String key) {
     final value = json[key];
     if (value == null) return const [];
@@ -184,7 +184,7 @@ class Scale {
     }
     return value
         .map((entry) =>
-            ScalePattern.fromJson(Map<String, dynamic>.from(entry as Map)))
+            ScaleFingering.fromJson(Map<String, dynamic>.from(entry as Map)))
         .toList(growable: false);
   }
 
@@ -203,8 +203,8 @@ class Scale {
 }
 
 /// A reusable guitar fingering pattern representation for a scale.
-class ScalePattern {
-  const ScalePattern({
+class ScaleFingering {
+  const ScaleFingering({
     required this.name,
     this.id,
     this.system = ScalePatternSystem.custom,
@@ -218,7 +218,7 @@ class ScalePattern {
     this.description,
   });
 
-  factory ScalePattern.fromJson(Map<String, dynamic> json) {
+  factory ScaleFingering.fromJson(Map<String, dynamic> json) {
     final rawSystem = json['system'] as String?;
     final rawStatus = json['status'] as String?;
     final positions = _optionalPatternStringList(json, 'positions');
@@ -229,7 +229,7 @@ class ScalePattern {
       );
     }
 
-    return ScalePattern(
+    return ScaleFingering(
       id: json['id'] as String?,
       name: _requirePatternString(json, 'name'),
       system: ScalePatternSystemX.fromJson(rawSystem),

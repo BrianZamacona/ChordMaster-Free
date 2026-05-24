@@ -168,8 +168,33 @@ class _FretboardDiagramPainter extends CustomPainter {
         ..color = coordinate.isRoot ? rootColor : noteColor;
 
       canvas.drawCircle(Offset(x, y), markerRadius, markerPaint);
+      if (coordinate.note.isNotEmpty) {
+        _drawText(
+          canvas,
+          coordinate.note,
+          Offset(x - markerRadius * 0.6, y - markerRadius * 0.5),
+          coordinate.isRoot ? Colors.white : Colors.white,
+          fontSize: markerRadius * 0.85,
+        );
+      }
     }
     canvas.restore();
+  }
+
+  void _drawText(Canvas canvas, String text, Offset offset, Color color,
+      {double fontSize = 10}) {
+    final painter = TextPainter(
+      text: TextSpan(
+        text: text,
+        style: TextStyle(
+          fontSize: fontSize,
+          fontWeight: FontWeight.w700,
+          color: color,
+        ),
+      ),
+      textDirection: TextDirection.ltr,
+    )..layout();
+    painter.paint(canvas, offset);
   }
 
   void _drawCenteredText(
