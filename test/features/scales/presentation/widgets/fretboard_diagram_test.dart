@@ -43,6 +43,12 @@ void main() {
     );
 
     expect(find.byType(FretboardDiagram), findsOneWidget);
-    expect(find.byType(CustomPaint), findsOneWidget);
+    expect(
+      find.descendant(
+        of: find.byType(FretboardDiagram),
+        matching: find.byType(CustomPaint),
+      ),
+      findsOneWidget,
+    );
   });
 }
