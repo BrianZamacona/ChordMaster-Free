@@ -73,6 +73,11 @@ class Chord {
     this.voicings = const [],
     this.triadInversions = const [],
     this.advancedInversions = const [],
+    this.activeTuningId,
+    this.generationType,
+    this.generationConstraints = const {},
+    this.appliedInversion,
+    this.appliedDropVoicing,
   });
 
   /// Deserialises a [Chord] from a JSON map.
@@ -115,6 +120,12 @@ class Chord {
       voicings: _readExplorerList(json, 'voicings'),
       triadInversions: _readExplorerList(json, 'triadInversions'),
       advancedInversions: _readExplorerList(json, 'advancedInversions'),
+      activeTuningId: _readOptionalString(json, 'activeTuningId'),
+      generationType: _readOptionalString(json, 'generationType'),
+      generationConstraints:
+          _readOptionalObjectMap(json, 'generationConstraints'),
+      appliedInversion: _readOptionalString(json, 'appliedInversion'),
+      appliedDropVoicing: _readOptionalString(json, 'appliedDropVoicing'),
     );
   }
 
@@ -176,6 +187,21 @@ class Chord {
   /// Advanced inversions (typically tetrad-based voicings).
   final List<ChordExplorerItem> advancedInversions;
 
+  /// Optional active tuning profile id used during generation.
+  final String? activeTuningId;
+
+  /// Optional generation engine type (scale/arpeggio/chord).
+  final String? generationType;
+
+  /// Optional algorithmic constraints used to generate current voicing.
+  final Map<String, dynamic> generationConstraints;
+
+  /// Optional inversion label applied to this voicing.
+  final String? appliedInversion;
+
+  /// Optional drop-voicing metadata (drop2/drop3/etc).
+  final String? appliedDropVoicing;
+
   /// True when any explorer section has content.
   bool get hasExplorerData =>
       cagedPositions.isNotEmpty ||
@@ -205,6 +231,13 @@ class Chord {
         'advancedInversions': advancedInversions
             .map((item) => item.toJson())
             .toList(),
+        if (activeTuningId != null) 'activeTuningId': activeTuningId,
+        if (generationType != null) 'generationType': generationType,
+        if (generationConstraints.isNotEmpty)
+          'generationConstraints': generationConstraints,
+        if (appliedInversion != null) 'appliedInversion': appliedInversion,
+        if (appliedDropVoicing != null)
+          'appliedDropVoicing': appliedDropVoicing,
       };
 
   /// Sentinel used by [copyWith] to distinguish "clear to null" from "keep existing".
@@ -230,6 +263,11 @@ class Chord {
     List<ChordExplorerItem>? voicings,
     List<ChordExplorerItem>? triadInversions,
     List<ChordExplorerItem>? advancedInversions,
+    Object? activeTuningId = _unset,
+    Object? generationType = _unset,
+    Map<String, dynamic>? generationConstraints,
+    Object? appliedInversion = _unset,
+    Object? appliedDropVoicing = _unset,
   }) =>
       Chord(
         name: name ?? this.name,
@@ -258,6 +296,20 @@ class Chord {
         voicings: voicings ?? this.voicings,
         triadInversions: triadInversions ?? this.triadInversions,
         advancedInversions: advancedInversions ?? this.advancedInversions,
+        activeTuningId: identical(activeTuningId, _unset)
+            ? this.activeTuningId
+            : activeTuningId as String?,
+        generationType: identical(generationType, _unset)
+            ? this.generationType
+            : generationType as String?,
+        generationConstraints:
+            generationConstraints ?? this.generationConstraints,
+        appliedInversion: identical(appliedInversion, _unset)
+            ? this.appliedInversion
+            : appliedInversion as String?,
+        appliedDropVoicing: identical(appliedDropVoicing, _unset)
+            ? this.appliedDropVoicing
+            : appliedDropVoicing as String?,
       );
 
   @override
@@ -367,5 +419,17 @@ class Chord {
       }
       return ChordExplorerItem.fromJson(value);
     }).toList(growable: false);
+  }
+
+  static Map<String, dynamic> _readOptionalObjectMap(
+    Map<String, dynamic> json,
+    String key,
+  ) {
+    final raw = json[key];
+    if (raw == null) return const {};
+    if (raw is! Map) {
+      throw FormatException('$key must be an object');
+    }
+    return Map<String, dynamic>.from(raw);
   }
 }
