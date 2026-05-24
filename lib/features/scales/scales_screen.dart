@@ -12,7 +12,14 @@ import '../../core/widgets/scale_fretboard_diagram.dart';
 import '../../models/scale.dart';
 import '../../services/audio_service.dart';
 import '../../ui/animations.dart';
+import 'data/models/scale_pattern.dart' as engine_pattern;
+import 'domain/strategies/berklee_strategy.dart';
+import 'domain/strategies/caged_strategy.dart';
+import 'domain/strategies/linear_four_notes_strategy.dart';
+import 'domain/strategies/pentatonic_two_notes_strategy.dart';
+import 'domain/strategies/three_notes_per_string_strategy.dart';
 import 'modes_screen.dart';
+import 'presentation/widgets/fretboard_diagram.dart' as new_diagram;
 import 'scales_viewmodel.dart';
 
 /// Scales reference screen with Scales / Modes / Exotic tabs.
@@ -328,6 +335,8 @@ class _ScaleCard extends ConsumerWidget {
                   ),
                 const SizedBox(height: 8),
                 _HarmonizedChordsSection(scale: scale),
+                const SizedBox(height: 12),
+                _GeneratedPatternsSection(scale: scale),
               ],
             ],
           ),
@@ -530,6 +539,237 @@ class _HarmonizedChordsSection extends StatelessWidget {
               .toList(growable: false),
         ),
       ],
+    );
+  }
+}
+
+// ── Generated Patterns Section ────────────────────────────────────────────────
+
+/// Strategy picker labels used for the engine selector.
+const _kStrategyNames = [
+  ThreeNotesPerStringStrategy.strategyName,
+  CagedStrategy.strategyName,
+  PentatonicTwoNotesStrategy.strategyName,
+  BerkleeStrategy.strategyName,
+  LinearFourNotesStrategy.strategyName,
+];
+
+/// Shows algorithmically generated fretboard shapes for the selected scale.
+///
+/// Uses the new domain engine (domain pipeline) in parallel with the legacy
+/// fingering sections, without replacing or modifying them.
+class _GeneratedPatternsSection extends ConsumerWidget {
+  const _GeneratedPatternsSection({required this.scale});
+
+  final Scale scale;
+
+  @override
+  Widget build(BuildContext context, WidgetRef ref) {
+    final state = ref.watch(scalesViewModelProvider);
+    final vm = ref.read(scalesViewModelProvider.notifier);
+    final theme = Theme.of(context);
+    final scheme = theme.colorScheme;
+
+    return Column(
+      crossAxisAlignment: CrossAxisAlignment.start,
+      children: [
+        // ── Section header ─────────────────────────────────────────────────
+        Row(
+          children: [
+            Text(
+              'Generated Pattern',
+              style: theme.textTheme.labelSmall?.copyWith(
+                color: scheme.onSurfaceVariant,
+                fontWeight: FontWeight.bold,
+              ),
+            ),
+            const Spacer(),
+            // Starting fret stepper
+            _FretStepper(
+              value: state.engineStartingFret,
+              onDecrement: () {
+                final next = (state.engineStartingFret - 1).clamp(0, 20);
+                vm.selectStartingFret(next);
+              },
+              onIncrement: () {
+                final next = (state.engineStartingFret + 1).clamp(0, 20);
+                vm.selectStartingFret(next);
+              },
+            ),
+          ],
+        ),
+        const SizedBox(height: 6),
+        // ── Strategy selector ──────────────────────────────────────────────
+        SizedBox(
+          height: 30,
+          child: ListView.separated(
+            scrollDirection: Axis.horizontal,
+            itemCount: _kStrategyNames.length,
+            separatorBuilder: (_, __) => const SizedBox(width: 6),
+            itemBuilder: (context, i) {
+              final name = _kStrategyNames[i];
+              final isSelected = state.selectedStrategyName == name;
+              return ChoiceChip(
+                label: Text(
+                  name,
+                  style: const TextStyle(fontSize: 10),
+                ),
+                selected: isSelected,
+                selectedColor: AppColors.scales,
+                labelStyle: TextStyle(
+                  color: isSelected ? Colors.white : null,
+                  fontWeight:
+                      isSelected ? FontWeight.bold : FontWeight.normal,
+                ),
+                padding:
+                    const EdgeInsets.symmetric(horizontal: 6, vertical: 0),
+                visualDensity: VisualDensity.compact,
+                onSelected: (_) => vm.selectStrategy(name),
+              );
+            },
+          ),
+        ),
+        const SizedBox(height: 8),
+        // ── Diagram or empty notice ────────────────────────────────────────
+        _GeneratedDiagramCard(
+          patterns: state.generatedPatterns,
+        ),
+      ],
+    );
+  }
+}
+
+/// Compact stepper for the engine starting fret.
+class _FretStepper extends StatelessWidget {
+  const _FretStepper({
+    required this.value,
+    required this.onDecrement,
+    required this.onIncrement,
+  });
+
+  final int value;
+  final VoidCallback onDecrement;
+  final VoidCallback onIncrement;
+
+  @override
+  Widget build(BuildContext context) {
+    final scheme = Theme.of(context).colorScheme;
+    return Row(
+      mainAxisSize: MainAxisSize.min,
+      children: [
+        Text(
+          'Fret',
+          style: Theme.of(context).textTheme.labelSmall?.copyWith(
+                color: scheme.onSurfaceVariant,
+              ),
+        ),
+        const SizedBox(width: 4),
+        SizedBox(
+          width: 24,
+          height: 24,
+          child: IconButton(
+            padding: EdgeInsets.zero,
+            icon: const Icon(Icons.remove, size: 14),
+            onPressed: onDecrement,
+          ),
+        ),
+        SizedBox(
+          width: 22,
+          child: Text(
+            '$value',
+            textAlign: TextAlign.center,
+            style: Theme.of(context).textTheme.labelMedium?.copyWith(
+                  fontWeight: FontWeight.bold,
+                ),
+          ),
+        ),
+        SizedBox(
+          width: 24,
+          height: 24,
+          child: IconButton(
+            padding: EdgeInsets.zero,
+            icon: const Icon(Icons.add, size: 14),
+            onPressed: onIncrement,
+          ),
+        ),
+      ],
+    );
+  }
+}
+
+/// Renders the generated [engine_pattern.ScalePattern] list.
+class _GeneratedDiagramCard extends StatelessWidget {
+  const _GeneratedDiagramCard({required this.patterns});
+
+  final List<engine_pattern.ScalePattern> patterns;
+
+  @override
+  Widget build(BuildContext context) {
+    final theme = Theme.of(context);
+    final scheme = theme.colorScheme;
+
+    if (patterns.isEmpty) {
+      return Container(
+        width: double.infinity,
+        padding: const EdgeInsets.all(10),
+        decoration: BoxDecoration(
+          color: scheme.surfaceContainerHighest,
+          borderRadius: BorderRadius.circular(8),
+          border: Border.all(color: scheme.outlineVariant),
+        ),
+        child: Text(
+          'No pattern available for these settings.',
+          style: theme.textTheme.labelSmall
+              ?.copyWith(color: scheme.onSurfaceVariant),
+        ),
+      );
+    }
+
+    return Column(
+      children: patterns
+          .map(
+            (pattern) => Padding(
+              padding: const EdgeInsets.only(bottom: 8),
+              child: Container(
+                width: double.infinity,
+                padding: const EdgeInsets.fromLTRB(10, 10, 10, 8),
+                decoration: BoxDecoration(
+                  color: scheme.surfaceContainerHighest,
+                  borderRadius: BorderRadius.circular(8),
+                  border: Border.all(color: scheme.outlineVariant),
+                ),
+                child: Column(
+                  crossAxisAlignment: CrossAxisAlignment.start,
+                  children: [
+                    Row(
+                      children: [
+                        Expanded(
+                          child: Text(
+                            '${pattern.root} ${pattern.scaleName} · ${pattern.patternType}',
+                            style: theme.textTheme.bodySmall
+                                ?.copyWith(fontWeight: FontWeight.bold),
+                          ),
+                        ),
+                        Text(
+                          pattern.positionName,
+                          style: theme.textTheme.labelSmall?.copyWith(
+                            color: scheme.onSurfaceVariant,
+                          ),
+                        ),
+                      ],
+                    ),
+                    const SizedBox(height: 8),
+                    new_diagram.FretboardDiagram(
+                      pattern: pattern,
+                      rootColor: AppColors.scales,
+                      noteColor: AppColors.scales.withAlpha(180),
+                    ),
+                  ],
+                ),
+              ),
+            ),
+          )
+          .toList(),
     );
   }
 }
