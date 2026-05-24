@@ -586,7 +586,7 @@ class _GeneratedPatternsSectionState
   }
 
   @override
-  Widget build(BuildContext context, WidgetRef ref) {
+  Widget build(BuildContext context) {
     final state = ref.watch(scalesViewModelProvider);
     final vm = ref.read(scalesViewModelProvider.notifier);
     final strategyNames =

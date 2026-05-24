@@ -1,7 +1,7 @@
 import '../../../../core/constants/music_theory.dart';
 import '../models/string_configuration.dart';
-import 'fretboard_geometry_service.dart';
 import '../strategies/fingering_strategy.dart';
+import 'fretboard_geometry_service.dart';
 
 /// Pure-Dart fretboard calculator.
 ///

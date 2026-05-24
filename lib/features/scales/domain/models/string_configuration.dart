@@ -30,7 +30,6 @@ class StringConfiguration {
   /// Standard 6-string guitar (EADGBE, low → high).
   static const StringConfiguration standard6 = StringConfiguration(
     id: 'standard6',
-    instrument: InstrumentFamily.guitar,
     stringCount: 6,
     openNotes: ['E', 'A', 'D', 'G', 'B', 'E'],
     displayName: '6-String Standard (EADGBE)',
@@ -39,7 +38,6 @@ class StringConfiguration {
   /// Standard 7-string guitar (BEADGBE, low → high).
   static const StringConfiguration standard7 = StringConfiguration(
     id: 'standard7',
-    instrument: InstrumentFamily.guitar,
     stringCount: 7,
     openNotes: ['B', 'E', 'A', 'D', 'G', 'B', 'E'],
     displayName: '7-String Standard (BEADGBE)',
@@ -48,7 +46,6 @@ class StringConfiguration {
   /// Standard 8-string guitar (F#BEADGBE, low → high).
   static const StringConfiguration standard8 = StringConfiguration(
     id: 'standard8',
-    instrument: InstrumentFamily.guitar,
     stringCount: 8,
     openNotes: ['F#', 'B', 'E', 'A', 'D', 'G', 'B', 'E'],
     displayName: '8-String Standard (F#BEADGBE)',
@@ -57,7 +54,6 @@ class StringConfiguration {
   /// Drop-D 6-string guitar (DADGBE, low → high).
   static const StringConfiguration dropD = StringConfiguration(
     id: 'dropD',
-    instrument: InstrumentFamily.guitar,
     stringCount: 6,
     openNotes: ['D', 'A', 'D', 'G', 'B', 'E'],
     displayName: '6-String Drop D (DADGBE)',

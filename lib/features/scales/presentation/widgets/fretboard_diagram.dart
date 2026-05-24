@@ -225,7 +225,7 @@ class _InteractiveFretboardGridState extends State<_InteractiveFretboardGrid> {
 
   @override
   Widget build(BuildContext context) {
-    final boardHeight = 146.0;
+    const boardHeight = 146.0;
     final cellHeight = boardHeight / widget.stringCount;
     final cellWidth = widget.width / widget.displayedFretCount;
 
