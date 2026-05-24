@@ -402,7 +402,7 @@ class _FingeringSection extends StatelessWidget {
   });
 
   final String title;
-  final List<ScalePattern> patterns;
+  final List<ScaleFingering> patterns;
 
   @override
   Widget build(BuildContext context) {

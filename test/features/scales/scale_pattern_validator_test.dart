@@ -36,7 +36,7 @@ void main() {
         relatedChords: ['C', 'Dm', 'Em'],
         commonUsage: 'usage',
         blockFingerings: [
-          ScalePattern(
+          ScaleFingering(
             name: 'Validated block',
             status: ScalePatternStatus.validated,
             system: ScalePatternSystem.block,
@@ -69,7 +69,7 @@ void main() {
         relatedChords: ['C', 'Dm', 'Em'],
         commonUsage: 'usage',
         blockFingerings: [
-          ScalePattern(
+          ScaleFingering(
             name: 'Draft block',
             system: ScalePatternSystem.block,
             notes: [

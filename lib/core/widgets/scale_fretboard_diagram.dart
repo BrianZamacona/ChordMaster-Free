@@ -4,7 +4,7 @@ import 'package:flutter/material.dart';
 
 import '../../models/scale.dart';
 
-/// Visual fretboard renderer for [ScalePattern] position strings.
+/// Visual fretboard renderer for [ScaleFingering] position strings.
 class ScaleFretboardDiagram extends StatelessWidget {
   const ScaleFretboardDiagram({
     super.key,
@@ -12,7 +12,7 @@ class ScaleFretboardDiagram extends StatelessWidget {
     required this.accentColor,
   });
 
-  final ScalePattern pattern;
+  final ScaleFingering pattern;
   final Color accentColor;
 
   @override
@@ -41,7 +41,7 @@ class _ParsedScalePattern {
     required this.maxFret,
   });
 
-  factory _ParsedScalePattern.from(ScalePattern pattern) {
+  factory _ParsedScalePattern.from(ScaleFingering pattern) {
     if (pattern.notes.isNotEmpty) {
       final strings = <int, List<int>>{};
       var minFret = 99;

@@ -1,8 +1,8 @@
 import 'note_coordinate.dart';
 
-/// Strongly-typed scale shape with strict fretboard coordinates.
+/// A guitar fingering pattern for a scale, with strict fretboard coordinates.
+/// Coordinates are generated algorithmically — never written by hand.
 class ScalePattern {
-  /// Creates a scale pattern with precomputed coordinates.
   const ScalePattern({
     required this.scaleName,
     required this.root,
@@ -13,66 +13,48 @@ class ScalePattern {
     required this.coordinates,
   });
 
-  /// Parses [ScalePattern] from strict JSON contract.
   factory ScalePattern.fromJson(Map<String, dynamic> json) {
-    final scaleName = _readRequiredString(json, 'scale_name');
-    final root = _readRequiredString(json, 'root');
-    final patternType = _readRequiredString(json, 'pattern_type');
-    final positionName = _readRequiredString(json, 'position_name');
-    final startingFret = _readRequiredInt(json, 'starting_fret');
-    final fretsSpan = _readRequiredInt(json, 'frets_span');
+    final startingFret = _readInt(json, 'starting_fret');
+    final fretsSpan = _readInt(json, 'frets_span');
 
-    if (startingFret < 0) {
-      throw const FormatException('starting_fret must be >= 0');
-    }
-    if (fretsSpan < 1) {
-      throw const FormatException('frets_span must be >= 1');
-    }
+    if (startingFret < 0) throw const FormatException('starting_fret must be >= 0');
+    if (fretsSpan < 1) throw const FormatException('frets_span must be >= 1');
 
-    final rawCoordinates = json['coordinates'];
-    if (rawCoordinates is! List) {
-      throw const FormatException('coordinates must be a list');
-    }
-
-    final coordinates = rawCoordinates
-        .map((entry) {
-          if (entry is! Map) {
-            throw const FormatException('coordinates must contain objects');
-          }
-          return NoteCoordinate.fromJson(Map<String, dynamic>.from(entry));
-        })
-        .toList(growable: false);
+    final rawCoords = json['coordinates'];
+    if (rawCoords is! List) throw const FormatException('coordinates must be a list');
 
     return ScalePattern(
-      scaleName: scaleName,
-      root: root,
-      patternType: patternType,
-      positionName: positionName,
+      scaleName: _readString(json, 'scale_name'),
+      root: _readString(json, 'root'),
+      patternType: _readString(json, 'pattern_type'),
+      positionName: _readString(json, 'position_name'),
       startingFret: startingFret,
       fretsSpan: fretsSpan,
-      coordinates: coordinates,
+      coordinates: rawCoords
+          .map((e) => NoteCoordinate.fromJson(Map<String, dynamic>.from(e as Map)))
+          .toList(growable: false),
     );
   }
 
-  /// Human-readable scale label (e.g. "Major").
+  /// Human-readable scale label (e.g. "Major", "Pentatonic Minor").
   final String scaleName;
 
-  /// Root note for this shape (e.g. "C").
+  /// Root note for this shape (e.g. "C", "F#").
   final String root;
 
-  /// Pattern family (e.g. "CAGED", "3NPS").
+  /// Fingering system (e.g. "CAGED", "3NPS", "Berklee", "Posicional").
   final String patternType;
 
-  /// Position/shape display name.
+  /// Display name for this specific position/shape.
   final String positionName;
 
-  /// First absolute fret displayed by the diagram grid.
+  /// First fret shown in the diagram grid.
   final int startingFret;
 
-  /// Number of fret spaces to render from [startingFret].
+  /// Number of fret spaces rendered from [startingFret].
   final int fretsSpan;
 
-  /// Strict note coordinates to draw.
+  /// Computed note positions to draw on the fretboard.
   final List<NoteCoordinate> coordinates;
 
   Map<String, dynamic> toJson() => {
@@ -82,22 +64,53 @@ class ScalePattern {
         'position_name': positionName,
         'starting_fret': startingFret,
         'frets_span': fretsSpan,
-        'coordinates': coordinates.map((entry) => entry.toJson()).toList(),
+        'coordinates': coordinates.map((c) => c.toJson()).toList(),
       };
 
-  static String _readRequiredString(Map<String, dynamic> json, String key) {
-    final value = json[key];
-    if (value is! String || value.trim().isEmpty) {
-      throw FormatException('$key must be a non-empty string');
-    }
-    return value;
+  ScalePattern copyWith({
+    String? scaleName,
+    String? root,
+    String? patternType,
+    String? positionName,
+    int? startingFret,
+    int? fretsSpan,
+    List<NoteCoordinate>? coordinates,
+  }) =>
+      ScalePattern(
+        scaleName: scaleName ?? this.scaleName,
+        root: root ?? this.root,
+        patternType: patternType ?? this.patternType,
+        positionName: positionName ?? this.positionName,
+        startingFret: startingFret ?? this.startingFret,
+        fretsSpan: fretsSpan ?? this.fretsSpan,
+        coordinates: coordinates ?? this.coordinates,
+      );
+
+  @override
+  bool operator ==(Object other) =>
+      identical(this, other) ||
+      other is ScalePattern &&
+          other.scaleName == scaleName &&
+          other.root == root &&
+          other.patternType == patternType &&
+          other.positionName == positionName;
+
+  @override
+  int get hashCode => Object.hash(scaleName, root, patternType, positionName);
+
+  @override
+  String toString() =>
+      'ScalePattern($patternType | $root $scaleName | $positionName | fret $startingFret–${startingFret + fretsSpan})';
+
+  static String _readString(Map<String, dynamic> json, String key) {
+    final v = json[key];
+    if (v is! String || v.trim().isEmpty) throw FormatException('$key must be a non-empty string');
+    return v;
   }
 
-  static int _readRequiredInt(Map<String, dynamic> json, String key) {
-    final value = json[key];
-    if (value is! num) {
-      throw FormatException('$key must be a number');
-    }
-    return value.toInt();
+  static int _readInt(Map<String, dynamic> json, String key) {
+    final v = json[key];
+    if (v is! num) throw FormatException('$key must be a number');
+    return v.toInt();
   }
 }
