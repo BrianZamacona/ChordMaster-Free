@@ -8,10 +8,15 @@ class _FakeAssetBundle extends CachingAssetBundle {
   final Map<String, String> _assets;
 
   @override
+  Future<ByteData> load(String key) async {
+    throw UnimplementedError('Binary asset loading not needed in this test');
+  }
+
+  @override
   Future<String> loadString(String key, {bool cache = true}) async {
     final value = _assets[key];
     if (value == null) {
-      throw FlutterError('Missing asset: $key');
+      throw Exception('Missing asset: $key');
     }
     return value;
   }

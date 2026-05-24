@@ -8,16 +8,16 @@ import 'models/scale_pattern.dart';
 /// Provider for loading strict-coordinate scale patterns from local assets.
 final scaleRepositoryProvider = Provider<ScaleRepository>((ref) {
   ref.keepAlive();
-  return const ScaleRepository();
+  return ScaleRepository();
 });
 
 /// Reads scale diagram patterns from static JSON assets.
 class ScaleRepository {
   /// Creates repository with [AssetBundle] and JSON [assetPath].
-  const ScaleRepository({
-    this.bundle = rootBundle,
+  ScaleRepository({
+    AssetBundle? bundle,
     this.assetPath = 'assets/data/scale_patterns_coordinates.json',
-  });
+  }) : bundle = bundle ?? rootBundle;
 
   final AssetBundle bundle;
   final String assetPath;
