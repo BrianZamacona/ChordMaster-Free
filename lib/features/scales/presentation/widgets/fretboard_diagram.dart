@@ -4,7 +4,7 @@ import 'package:flutter/material.dart';
 
 import '../../data/models/scale_pattern.dart';
 
-/// Paints a fretboard using strict precomputed coordinates only.
+/// Paints a horizontal fretboard diagram (strings = horizontal, frets = vertical).
 class FretboardDiagram extends StatelessWidget {
   const FretboardDiagram({
     super.key,
@@ -14,16 +14,9 @@ class FretboardDiagram extends StatelessWidget {
     this.height = 180,
   });
 
-  /// Pattern containing the exact diagram coordinates.
   final ScalePattern pattern;
-
-  /// Marker color for tonic/root notes.
   final Color rootColor;
-
-  /// Marker color for non-root notes. Defaults to theme primary color.
   final Color? noteColor;
-
-  /// Fixed widget height for stable diagram layout.
   final double height;
 
   @override
@@ -58,65 +51,79 @@ class _FretboardDiagramPainter extends CustomPainter {
 
   @override
   void paint(Canvas canvas, Size size) {
-    const left = 16.0;
-    const rightPadding = 16.0;
-    const top = 20.0;
-    const bottomPadding = 16.0;
+    // ─── Márgenes ────────────────────────────────────────────────────────────
+    const left        = 40.0;  // espacio para etiqueta "X fr"
+    const rightPad    = 16.0;
+    const top         = 12.0;
+    const bottomPad   = 12.0;
 
-    final right = size.width - rightPadding;
-    final bottom = size.height - bottomPadding;
-    final width = right - left;
-    final height = bottom - top;
+    final right  = size.width  - rightPad;
+    final bottom = size.height - bottomPad;
+    final w      = right  - left;   // ancho útil  → eje de trastes
+    final h      = bottom - top;    // alto útil   → eje de cuerdas
 
-    final stringSpacing = width / (_stringCount - 1);
-    final fretSpacing = height / pattern.fretsSpan;
+    // ─── Espaciados ──────────────────────────────────────────────────────────
+    final fretSpacing   = w / pattern.fretsSpan;          // horizontal
+    final stringSpacing = h / (_stringCount - 1);         // vertical
 
-    final fretLinePaint = Paint()
-      ..color = colorScheme.outline.withAlpha(220)
-      ..strokeWidth = 1;
-
-    for (var fret = 0; fret <= pattern.fretsSpan; fret++) {
-      final y = top + (fret * fretSpacing);
-      canvas.drawLine(Offset(left, y), Offset(right, y), fretLinePaint);
-    }
-
-    final stringPaint = Paint()
-      ..color = colorScheme.onSurface.withAlpha(180)
+    // ─── Pintura base ────────────────────────────────────────────────────────
+    final fretPaint = Paint()
+      ..color       = colorScheme.outline.withAlpha(220)
       ..strokeWidth = 1.2;
 
-    for (var stringIndex = 0; stringIndex < _stringCount; stringIndex++) {
-      final x = left + (stringIndex * stringSpacing);
-      canvas.drawLine(Offset(x, top), Offset(x, bottom), stringPaint);
+    final stringPaint = Paint()
+      ..color       = colorScheme.onSurface.withAlpha(180)
+      ..strokeWidth = 1.4;
+
+    // Trastes: líneas VERTICALES
+    for (var fret = 0; fret <= pattern.fretsSpan; fret++) {
+      final x = left + (fret * fretSpacing);
+      canvas.drawLine(Offset(x, top), Offset(x, bottom), fretPaint);
     }
 
+    // Cuerdas: líneas HORIZONTALES (cuerda 1 = high e abajo, cuerda 6 = low E arriba)
+    for (var s = 0; s < _stringCount; s++) {
+      final y = top + (s * stringSpacing);
+      canvas.drawLine(Offset(left, y), Offset(right, y), stringPaint);
+    }
+
+    // ─── Etiqueta de posición (ej. "5 fr") ───────────────────────────────────
     _drawText(
       canvas,
       '${pattern.startingFret} fr',
-      Offset(right + 4, top - 6),
+      Offset(2, top + h / 2 - 6),
       colorScheme.onSurfaceVariant,
     );
 
-    final markerRadius = math.min(stringSpacing, fretSpacing) * 0.24;
+    // ─── Marcadores de nota ───────────────────────────────────────────────────
+    final markerRadius = math.min(fretSpacing, stringSpacing) * 0.30;
 
-    for (final coordinate in pattern.coordinates) {
-      final fretOffset = coordinate.fret - pattern.startingFret;
-      if (fretOffset < 0 || fretOffset >= pattern.fretsSpan) {
-        continue;
-      }
+    for (final coord in pattern.coordinates) {
+      final fretOffset = coord.fret - pattern.startingFret;
+      if (fretOffset < 0 || fretOffset >= pattern.fretsSpan) continue;
 
-      final stringIndex = 6 - coordinate.string;
-      if (stringIndex < 0 || stringIndex >= _stringCount) {
-        continue;
-      }
+      // string 1 = high e → fila inferior (s = 5), string 6 = low E → fila superior (s = 0)
+      final stringRow = _stringCount - coord.string;
+      if (stringRow < 0 || stringRow >= _stringCount) continue;
 
-      final x = left + (stringIndex * stringSpacing);
-      final y = top + ((fretOffset + 0.5) * fretSpacing);
+      final x = left + ((fretOffset + 0.5) * fretSpacing);  // centro del traste
+      final y = top  + (stringRow * stringSpacing);           // fila de cuerda
 
       final markerPaint = Paint()
         ..style = PaintingStyle.fill
-        ..color = coordinate.isRoot ? rootColor : noteColor;
+        ..color = coord.isRoot ? rootColor : noteColor;
 
       canvas.drawCircle(Offset(x, y), markerRadius, markerPaint);
+
+      // Borde blanco para que resalte sobre la línea de cuerda
+      canvas.drawCircle(
+        Offset(x, y),
+        markerRadius,
+        Paint()
+          ..style       = PaintingStyle.stroke
+          ..strokeWidth = 1.0
+          ..color       = colorScheme.surface.withAlpha(180),
+      );
     }
   }
 
@@ -132,14 +139,13 @@ class _FretboardDiagramPainter extends CustomPainter {
       ),
       textDirection: TextDirection.ltr,
     )..layout();
-
     painter.paint(canvas, offset);
   }
 
   @override
-  bool shouldRepaint(covariant _FretboardDiagramPainter oldDelegate) =>
-      oldDelegate.pattern != pattern ||
-      oldDelegate.rootColor != rootColor ||
-      oldDelegate.noteColor != noteColor ||
-      oldDelegate.colorScheme != colorScheme;
+  bool shouldRepaint(covariant _FretboardDiagramPainter old) =>
+      old.pattern    != pattern    ||
+      old.rootColor  != rootColor  ||
+      old.noteColor  != noteColor  ||
+      old.colorScheme != colorScheme;
 }
