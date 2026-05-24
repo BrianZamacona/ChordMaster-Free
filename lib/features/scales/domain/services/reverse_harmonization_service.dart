@@ -39,6 +39,7 @@ class ReverseHarmonizationService {
       final isStrict = intersection == chordMask;
       if (isStrict) {
         strict.add(entry.key);
+        tolerant.add((name: entry.key, sharedCount: sharedCount));
         continue;
       }
 
@@ -65,7 +66,7 @@ class ReverseHarmonizationService {
     var mask = 0;
     for (final interval in intervals) {
       final normalized = ((interval % 12) + 12) % 12;
-      mask |= (1 << normalized);
+      mask |= 1 << normalized;
     }
     return mask;
   }
@@ -74,7 +75,7 @@ class ReverseHarmonizationService {
     var n = value;
     var count = 0;
     while (n != 0) {
-      n &= (n - 1);
+      n &= n - 1;
       count++;
     }
     return count;

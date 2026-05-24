@@ -56,7 +56,8 @@ class ScalePatternPolicy {
 
   static String noteAt(int stringNumber, int fret) {
     if (stringNumber < 1 || stringNumber > 6) return '';
-    final stringIndex = stringNumber - 1;
+    // Pattern notes use guitar convention 1=high E ... 6=low E.
+    final stringIndex = standardTuning.length - stringNumber;
     return fretboardMap[stringIndex]?[fret] ?? '';
   }
 }
