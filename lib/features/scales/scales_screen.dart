@@ -13,13 +13,9 @@ import '../../models/scale.dart';
 import '../../services/audio_service.dart';
 import '../../ui/animations.dart';
 import 'data/models/scale_pattern.dart' as engine_pattern;
-import 'domain/strategies/berklee_strategy.dart';
-import 'domain/strategies/caged_strategy.dart';
-import 'domain/strategies/linear_four_notes_strategy.dart';
-import 'domain/strategies/pentatonic_two_notes_strategy.dart';
-import 'domain/strategies/three_notes_per_string_strategy.dart';
 import 'modes_screen.dart';
 import 'presentation/widgets/fretboard_diagram.dart' as new_diagram;
+import 'scales_engine_providers.dart';
 import 'scales_viewmodel.dart';
 
 /// Scales reference screen with Scales / Modes / Exotic tabs.
@@ -545,15 +541,6 @@ class _HarmonizedChordsSection extends StatelessWidget {
 
 // ── Generated Patterns Section ────────────────────────────────────────────────
 
-/// Strategy picker labels used for the engine selector.
-const _kStrategyNames = [
-  ThreeNotesPerStringStrategy.strategyName,
-  CagedStrategy.strategyName,
-  PentatonicTwoNotesStrategy.strategyName,
-  BerkleeStrategy.strategyName,
-  LinearFourNotesStrategy.strategyName,
-];
-
 /// Shows algorithmically generated fretboard shapes for the selected scale.
 ///
 /// Uses the new domain engine (domain pipeline) in parallel with the legacy
@@ -567,6 +554,15 @@ class _GeneratedPatternsSection extends ConsumerWidget {
   Widget build(BuildContext context, WidgetRef ref) {
     final state = ref.watch(scalesViewModelProvider);
     final vm = ref.read(scalesViewModelProvider.notifier);
+    final strategyNames =
+        ref.watch(fingeringStrategiesProvider).keys.toList(growable: false);
+    final tuningPresets = ref.watch(stringConfigPresetsProvider);
+    final filteredTunings = tuningPresets
+        .where((t) => t.stringCount == state.engineStringCount)
+        .toList(growable: false);
+    final selectedTuningId = filteredTunings.any((t) => t.id == state.selectedTuningId)
+        ? state.selectedTuningId
+        : (filteredTunings.isNotEmpty ? filteredTunings.first.id : null);
     final theme = Theme.of(context);
     final scheme = theme.colorScheme;
 
@@ -604,10 +600,10 @@ class _GeneratedPatternsSection extends ConsumerWidget {
           height: 30,
           child: ListView.separated(
             scrollDirection: Axis.horizontal,
-            itemCount: _kStrategyNames.length,
+            itemCount: strategyNames.length,
             separatorBuilder: (_, __) => const SizedBox(width: 6),
             itemBuilder: (context, i) {
-              final name = _kStrategyNames[i];
+              final name = strategyNames[i];
               final isSelected = state.selectedStrategyName == name;
               return ChoiceChip(
                 label: Text(
@@ -628,6 +624,51 @@ class _GeneratedPatternsSection extends ConsumerWidget {
               );
             },
           ),
+        ),
+        const SizedBox(height: 8),
+        Row(
+          children: [
+            const Text('Strings'),
+            const SizedBox(width: 8),
+            DropdownButton<int>(
+              value: state.engineStringCount,
+              items: const [5, 6, 7, 8]
+                  .map(
+                    (count) => DropdownMenuItem<int>(
+                      value: count,
+                      child: Text('$count'),
+                    ),
+                  )
+                  .toList(growable: false),
+              onChanged: (value) {
+                if (value != null) vm.selectStringCount(value);
+              },
+            ),
+            const SizedBox(width: 16),
+            Expanded(
+              child: DropdownButton<String>(
+                isExpanded: true,
+                value: selectedTuningId,
+                hint: const Text('Tuning'),
+                items: filteredTunings
+                    .map(
+                      (tuning) => DropdownMenuItem<String>(
+                        value: tuning.id,
+                        child: Text(
+                          tuning.displayName,
+                          overflow: TextOverflow.ellipsis,
+                        ),
+                      ),
+                    )
+                    .toList(growable: false),
+                onChanged: filteredTunings.isEmpty
+                    ? null
+                    : (value) {
+                        if (value != null) vm.selectTuning(value);
+                      },
+              ),
+            ),
+          ],
         ),
         const SizedBox(height: 8),
         // ── Diagram or empty notice ────────────────────────────────────────
