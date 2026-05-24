@@ -1,10 +1,10 @@
 import 'dart:math' as math;
+import 'dart:ui' as ui;
 
 import 'package:flutter/material.dart';
 
 import '../../data/models/scale_pattern.dart';
 
-/// Paints a horizontal fretboard diagram (strings = horizontal, frets = vertical).
 class FretboardDiagram extends StatelessWidget {
   const FretboardDiagram({
     super.key,
@@ -12,12 +12,21 @@ class FretboardDiagram extends StatelessWidget {
     this.rootColor = Colors.red,
     this.noteColor,
     this.height = 180,
-  });
+    this.viewportStartFret,
+    this.viewportEndFret,
+  }) : assert(
+          viewportStartFret == null ||
+              viewportEndFret == null ||
+              viewportStartFret <= viewportEndFret,
+          'viewportStartFret must be <= viewportEndFret',
+        );
 
   final ScalePattern pattern;
   final Color rootColor;
   final Color? noteColor;
   final double height;
+  final int? viewportStartFret;
+  final int? viewportEndFret;
 
   @override
   Widget build(BuildContext context) => SizedBox(
@@ -29,6 +38,8 @@ class FretboardDiagram extends StatelessWidget {
             rootColor: rootColor,
             noteColor: noteColor ?? Theme.of(context).colorScheme.primary,
             colorScheme: Theme.of(context).colorScheme,
+            viewportStartFret: viewportStartFret,
+            viewportEndFret: viewportEndFret,
           ),
         ),
       );
@@ -40,112 +51,212 @@ class _FretboardDiagramPainter extends CustomPainter {
     required this.rootColor,
     required this.noteColor,
     required this.colorScheme,
+    required this.viewportStartFret,
+    required this.viewportEndFret,
   });
 
-  static const _stringCount = 6;
+  static const _minimumStringCount = 6;
 
   final ScalePattern pattern;
   final Color rootColor;
   final Color noteColor;
   final ColorScheme colorScheme;
+  final int? viewportStartFret;
+  final int? viewportEndFret;
 
   @override
   void paint(Canvas canvas, Size size) {
+    final maxPatternString = pattern.coordinates.isEmpty
+        ? _minimumStringCount
+        : pattern.coordinates
+            .map((c) => c.string)
+            .reduce(math.max);
+    final stringCount = math.max(_minimumStringCount, maxPatternString);
+
+    final defaultStart = pattern.startingFret;
+    final defaultEnd = pattern.startingFret + pattern.fretsSpan - 1;
+    final startFret = viewportStartFret ?? defaultStart;
+    final endFret = viewportEndFret ?? defaultEnd;
+    final displayedFretCount = math.max(1, (endFret - startFret) + 1);
+
     // ─── Márgenes ────────────────────────────────────────────────────────────
-    const left        = 40.0;  // espacio para etiqueta "X fr"
-    const rightPad    = 16.0;
-    const top         = 12.0;
-    const bottomPad   = 12.0;
+    const left = 48.0;       // espacio para etiquetas de cuerda
+    const rightPad = 16.0;
+    const top = 16.0;
+    const fretLabelArea = 24.0;
+    const bottomPad = 8.0;
 
-    final right  = size.width  - rightPad;
-    final bottom = size.height - bottomPad;
-    final w      = right  - left;   // ancho útil  → eje de trastes
-    final h      = bottom - top;    // alto útil   → eje de cuerdas
+    final right = size.width - rightPad;
+    final bottom = size.height - bottomPad - fretLabelArea;
+    final boardWidth = right - left;
+    final boardHeight = bottom - top;
 
-    // ─── Espaciados ──────────────────────────────────────────────────────────
-    final fretSpacing   = w / pattern.fretsSpan;          // horizontal
-    final stringSpacing = h / (_stringCount - 1);         // vertical
+    final stringSpacing =
+        stringCount <= 1 ? 0.0 : boardHeight / (stringCount - 1);
+    final fretSpacing = boardWidth / displayedFretCount;
 
-    // ─── Pintura base ────────────────────────────────────────────────────────
-    final fretPaint = Paint()
-      ..color       = colorScheme.outline.withAlpha(220)
-      ..strokeWidth = 1.2;
+    // ─── Marcadores de posición (dots) ───────────────────────────────────────
+    const dotFrets = [3, 5, 7, 9, 12, 15, 17, 19, 21];
+    const doubleDotFrets = [12, 24];
+    final dotPaint = Paint()
+      ..color = colorScheme.onSurfaceVariant.withAlpha(50)
+      ..style = PaintingStyle.fill;
 
-    final stringPaint = Paint()
-      ..color       = colorScheme.onSurface.withAlpha(180)
-      ..strokeWidth = 1.4;
-
-    // Trastes: líneas VERTICALES
-    for (var fret = 0; fret <= pattern.fretsSpan; fret++) {
-      final x = left + (fret * fretSpacing);
-      canvas.drawLine(Offset(x, top), Offset(x, bottom), fretPaint);
+    for (final dotFret in dotFrets) {
+      if (dotFret < startFret || dotFret > endFret) continue;
+      final x = left + ((dotFret - startFret + 0.5) * fretSpacing);
+      if (doubleDotFrets.contains(dotFret)) {
+        canvas.drawCircle(
+            Offset(x, top + stringSpacing * 1.5), 4, dotPaint);
+        canvas.drawCircle(
+            Offset(x, top + stringSpacing * 3.5), 4, dotPaint);
+      } else {
+        canvas.drawCircle(
+            Offset(x, top + stringSpacing * 2.5), 4, dotPaint);
+      }
     }
 
-    // Cuerdas: líneas HORIZONTALES (cuerda 1 = high e abajo, cuerda 6 = low E arriba)
-    for (var s = 0; s < _stringCount; s++) {
-      final y = top + (s * stringSpacing);
+    // ─── Líneas de traste (verticales) ───────────────────────────────────────
+    final fretLinePaint = Paint()
+      ..color = colorScheme.outline.withAlpha(180)
+      ..strokeWidth = 1.0;
+
+    final nutPaint = Paint()
+      ..color = colorScheme.onSurface.withAlpha(220)
+      ..strokeWidth = 4.0
+      ..strokeCap = StrokeCap.round;
+
+    for (var line = 0; line <= displayedFretCount; line++) {
+      final fret = startFret + line;
+      final x = left + (line * fretSpacing);
+      final paint = (startFret <= 0 && fret == 0) ? nutPaint : fretLinePaint;
+      canvas.drawLine(Offset(x, top), Offset(x, bottom), paint);
+    }
+
+    // ─── Cuerdas (horizontales) con grosor variable ───────────────────────────
+    for (var si = 0; si < stringCount; si++) {
+      final y = top + (si * stringSpacing);
+      // cuerda 0 = low E (más gruesa), cuerda 5 = high e (más fina)
+      final widthFactor =
+          stringCount <= 1 ? 0.0 : si / (stringCount - 1);
+      final stringPaint = Paint()
+        ..color = colorScheme.onSurface.withAlpha(180)
+        ..strokeWidth = ui.lerpDouble(2.0, 0.8, widthFactor) ?? 1.4;
       canvas.drawLine(Offset(left, y), Offset(right, y), stringPaint);
     }
 
-    // ─── Etiqueta de posición (ej. "5 fr") ───────────────────────────────────
-    _drawText(
-      canvas,
-      '${pattern.startingFret} fr',
-      Offset(2, top + h / 2 - 6),
-      colorScheme.onSurfaceVariant,
+    // ─── Etiquetas de cuerda (izquierda) ─────────────────────────────────────
+    const stringLabels = ['E', 'A', 'D', 'G', 'B', 'e'];
+    final labelStyle = TextStyle(
+      fontSize: 10,
+      fontWeight: FontWeight.w600,
+      color: colorScheme.onSurfaceVariant,
     );
+    for (var si = 0; si < stringCount && si < stringLabels.length; si++) {
+      final y = top + (si * stringSpacing);
+      _drawCenteredText(
+        canvas,
+        stringLabels[si],
+        Offset(left - 16, y - 5),
+        labelStyle,
+      );
+    }
+
+    // ─── Etiquetas de traste (abajo) ─────────────────────────────────────────
+    final fretLabelStyle = TextStyle(
+      fontSize: 10,
+      fontWeight: FontWeight.w500,
+      color: colorScheme.onSurfaceVariant,
+      letterSpacing: 0.2,
+    );
+    for (var fret = startFret; fret <= endFret; fret++) {
+      final x = left + ((fret - startFret + 0.5) * fretSpacing);
+      _drawCenteredText(
+        canvas,
+        '$fret',
+        Offset(x, bottom + 8),
+        fretLabelStyle,
+      );
+    }
 
     // ─── Marcadores de nota ───────────────────────────────────────────────────
-    final markerRadius = math.min(fretSpacing, stringSpacing) * 0.30;
+    final markerRadius = math.min(stringSpacing, fretSpacing) * 0.28;
 
-    for (final coord in pattern.coordinates) {
-      final fretOffset = coord.fret - pattern.startingFret;
-      if (fretOffset < 0 || fretOffset >= pattern.fretsSpan) continue;
+    canvas.save();
+    canvas.clipRect(Rect.fromLTRB(left, top, right, bottom));
 
-      // string 1 = high e → fila inferior (s = 5), string 6 = low E → fila superior (s = 0)
-      final stringRow = _stringCount - coord.string;
-      if (stringRow < 0 || stringRow >= _stringCount) continue;
+    for (final coordinate in pattern.coordinates) {
+      if (coordinate.fret < startFret || coordinate.fret > endFret) continue;
 
-      final x = left + ((fretOffset + 0.5) * fretSpacing);  // centro del traste
-      final y = top  + (stringRow * stringSpacing);           // fila de cuerda
+      final stringIndex = coordinate.string - 1;
+      if (stringIndex < 0 || stringIndex >= stringCount) continue;
 
+      final x = left + ((coordinate.fret - startFret + 0.5) * fretSpacing);
+      final y = top + (stringIndex * stringSpacing);
+
+      // Sombra
+      canvas.drawCircle(
+        Offset(x + 0.5, y + 1),
+        markerRadius,
+        Paint()..color = Colors.black.withAlpha(60),
+      );
+
+      // Relleno principal  ← CORRECCIÓN: coordinate.isRoot (no coord.isRoot)
       final markerPaint = Paint()
         ..style = PaintingStyle.fill
-        ..color = coord.isRoot ? rootColor : noteColor;
-
+        ..color = coordinate.isRoot ? rootColor : noteColor;
       canvas.drawCircle(Offset(x, y), markerRadius, markerPaint);
 
-      // Borde blanco para que resalte sobre la línea de cuerda
+      // Borde sutil
       canvas.drawCircle(
         Offset(x, y),
         markerRadius,
         Paint()
-          ..style       = PaintingStyle.stroke
-          ..strokeWidth = 1.0
-          ..color       = colorScheme.surface.withAlpha(180),
+          ..style = PaintingStyle.stroke
+          ..strokeWidth = 0.8
+          ..color = Colors.white.withAlpha(60),
       );
+
+      // Texto dentro del marcador
+      if (coordinate.note.isNotEmpty) {
+        _drawCenteredText(
+          canvas,
+          coordinate.note,
+          Offset(x, y - markerRadius * 0.45),
+          TextStyle(
+            fontSize: (markerRadius * 0.9).clamp(7.0, 13.0),
+            fontWeight: FontWeight.w700,
+            color: Colors.white,
+          ),
+        );
+      }
     }
+
+    canvas.restore();
   }
 
-  void _drawText(Canvas canvas, String text, Offset offset, Color color) {
+  void _drawCenteredText(
+    Canvas canvas,
+    String text,
+    Offset center,
+    TextStyle style,
+  ) {
     final painter = TextPainter(
-      text: TextSpan(
-        text: text,
-        style: TextStyle(
-          fontSize: 10,
-          fontWeight: FontWeight.w600,
-          color: color,
-        ),
-      ),
+      text: TextSpan(text: text, style: style),
       textDirection: TextDirection.ltr,
     )..layout();
-    painter.paint(canvas, offset);
+    painter.paint(
+      canvas,
+      Offset(center.dx - painter.width / 2, center.dy),
+    );
   }
 
   @override
   bool shouldRepaint(covariant _FretboardDiagramPainter old) =>
-      old.pattern    != pattern    ||
-      old.rootColor  != rootColor  ||
-      old.noteColor  != noteColor  ||
-      old.colorScheme != colorScheme;
+      old.pattern != pattern ||
+      old.rootColor != rootColor ||
+      old.noteColor != noteColor ||
+      old.colorScheme != colorScheme ||
+      old.viewportStartFret != viewportStartFret ||
+      old.viewportEndFret != viewportEndFret;
 }
