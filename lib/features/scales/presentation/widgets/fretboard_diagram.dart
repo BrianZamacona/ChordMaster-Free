@@ -21,7 +21,6 @@ class FretboardDiagram extends StatelessWidget {
               viewportStartFret <= viewportEndFret,
           'viewportStartFret must be <= viewportEndFret',
         );
-  });
 
   /// Pattern containing the exact diagram coordinates.
   final ScalePattern pattern;
