@@ -273,6 +273,7 @@ class ScalePatternGenerator {
   }) {
     final rootNote = _rootSemitone(root);
     final intervalSet = intervals.map((i) => i % 12).toSet();
+    final scaleSet = intervalSet.map((i) => (rootNote + i) % 12).toSet();
     final isMinorPentatonic = _sameSet(intervalSet, const {0, 3, 5, 7, 10});
     final isMajorPentatonic = _sameSet(intervalSet, const {0, 2, 4, 7, 9});
     final isMinorBlues = _sameSet(intervalSet, const {0, 3, 5, 6, 7, 10});
@@ -319,7 +320,7 @@ class ScalePatternGenerator {
         }
 
         for (final fret in frets) {
-          final c = _coord(stringNum, fret, rootNote, intervalSet, intervals);
+          final c = _coord(stringNum, fret, rootNote, scaleSet, intervals);
           if (c != null) coords.add(c);
         }
       }

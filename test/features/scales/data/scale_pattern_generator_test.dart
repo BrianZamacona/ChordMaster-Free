@@ -1,5 +1,5 @@
-import 'package:chordmaster_free/features/scales/data/scale_pattern_generator.dart';
 import 'package:chordmaster_free/features/scales/data/models/note_coordinate.dart';
+import 'package:chordmaster_free/features/scales/data/scale_pattern_generator.dart';
 import 'package:flutter_test/flutter_test.dart';
 
 void main() {
