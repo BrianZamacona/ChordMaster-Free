@@ -55,7 +55,8 @@ class ScalePatternPolicy {
   }
 
   static String noteAt(int stringNumber, int fret) {
-    final stringIndex = 6 - stringNumber;
+    if (stringNumber < 1 || stringNumber > 6) return '';
+    final stringIndex = stringNumber - 1;
     return fretboardMap[stringIndex]?[fret] ?? '';
   }
 }

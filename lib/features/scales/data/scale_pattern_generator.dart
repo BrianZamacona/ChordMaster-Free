@@ -102,7 +102,15 @@ NoteCoordinate? _coord(
   return (startingFret: min, fretsSpan: (max - min).clamp(1, 24));
 }
 
+@Deprecated(
+  'Legacy generator kept for backward compatibility/tests. Prefer domain '
+  'engines and strategies in lib/features/scales/domain/.',
+)
 class ScalePatternGenerator {
+  @Deprecated(
+    'Legacy generator kept for backward compatibility/tests. Prefer domain '
+    'engines and strategies in lib/features/scales/domain/.',
+  )
   ScalePatternGenerator._();
 
   // 1. POSITIONAL — base for all systems

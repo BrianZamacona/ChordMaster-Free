@@ -4,11 +4,19 @@ import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'models/scale_pattern.dart';
 import 'scale_pattern_generator.dart';
 
+@Deprecated(
+  'Legacy pipeline kept for backward compatibility/tests. Prefer domain engines '
+  'via scales_engine_providers.dart.',
+)
 final scaleRepositoryProvider = Provider<ScaleRepository>((ref) {
   ref.keepAlive();
   return ScaleRepository();
 });
 
+@Deprecated(
+  'Legacy pipeline kept for backward compatibility/tests. Prefer domain engines '
+  'via scales_engine_providers.dart.',
+)
 class ScaleRepository {
   ScaleRepository({
     AssetBundle? bundle,
