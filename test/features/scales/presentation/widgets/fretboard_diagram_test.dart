@@ -5,7 +5,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter_test/flutter_test.dart';
 
 void main() {
-  testWidgets('renders a custom paint diagram from strict coordinates',
+  testWidgets('renders a dynamic fretboard grid from strict coordinates',
       (tester) async {
     const pattern = ScalePattern(
       scaleName: 'Major',
@@ -43,12 +43,55 @@ void main() {
     );
 
     expect(find.byType(FretboardDiagram), findsOneWidget);
-    expect(
-      find.descendant(
-        of: find.byType(FretboardDiagram),
-        matching: find.byType(CustomPaint),
-      ),
-      findsOneWidget,
+    expect(find.text('C'), findsOneWidget);
+    expect(find.text('D'), findsOneWidget);
+    expect(find.text('2'), findsWidgets);
+    expect(find.text('3'), findsWidgets);
+  });
+
+  testWidgets('supports interval and finger label modes', (tester) async {
+    const pattern = ScalePattern(
+      scaleName: 'Major',
+      root: 'C',
+      patternType: 'CAGED',
+      positionName: 'Forma de A',
+      startingFret: 2,
+      fretsSpan: 4,
+      coordinates: [
+        NoteCoordinate(
+          string: 5,
+          fret: 3,
+          interval: '1',
+          note: 'C',
+          isRoot: true,
+          finger: 2,
+        ),
+      ],
     );
+
+    await tester.pumpWidget(
+      const MaterialApp(
+        home: Scaffold(
+          body: FretboardDiagram(
+            pattern: pattern,
+            labelMode: FretboardLabelMode.interval,
+          ),
+        ),
+      ),
+    );
+    expect(find.text('1'), findsWidgets);
+
+    await tester.pumpWidget(
+      const MaterialApp(
+        home: Scaffold(
+          body: FretboardDiagram(
+            pattern: pattern,
+            labelMode: FretboardLabelMode.finger,
+          ),
+        ),
+      ),
+    );
+    await tester.pump();
+    expect(find.text('2'), findsWidgets);
   });
 }

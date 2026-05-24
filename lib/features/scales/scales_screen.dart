@@ -1,3 +1,5 @@
+import 'dart:async';
+
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:go_router/go_router.dart';
@@ -13,6 +15,7 @@ import '../../models/scale.dart';
 import '../../services/audio_service.dart';
 import '../../ui/animations.dart';
 import 'data/models/scale_pattern.dart' as engine_pattern;
+import 'domain/models/string_configuration.dart';
 import 'modes_screen.dart';
 import 'presentation/widgets/fretboard_diagram.dart' as new_diagram;
 import 'scales_engine_providers.dart';
@@ -545,13 +548,45 @@ class _HarmonizedChordsSection extends StatelessWidget {
 ///
 /// Uses the new domain engine (domain pipeline) in parallel with the legacy
 /// fingering sections, without replacing or modifying them.
-class _GeneratedPatternsSection extends ConsumerWidget {
+class _GeneratedPatternsSection extends ConsumerStatefulWidget {
   const _GeneratedPatternsSection({required this.scale});
 
   final Scale scale;
 
   @override
-  Widget build(BuildContext context, WidgetRef ref) {
+  ConsumerState<_GeneratedPatternsSection> createState() =>
+      _GeneratedPatternsSectionState();
+}
+
+class _GeneratedPatternsSectionState
+    extends ConsumerState<_GeneratedPatternsSection> {
+  new_diagram.FretboardLabelMode _labelMode = new_diagram.FretboardLabelMode.note;
+
+  List<int> _openMidiFor(StringConfiguration tuning) {
+    switch (tuning.id) {
+      case 'dropD':
+        return const [38, 45, 50, 55, 59, 64];
+      case 'standard7':
+        return const [35, 40, 45, 50, 55, 59, 64];
+      case 'standard8':
+        return const [30, 35, 40, 45, 50, 55, 59, 64];
+      case 'banjo5Drone':
+        return const [43, 50, 55, 59, 62];
+      case 'standard6':
+      default:
+        return const [40, 45, 50, 55, 59, 64];
+    }
+  }
+
+  void _triggerCellAudio(new_diagram.FretboardCellPayload payload) {
+    final fallback = '${payload.note}4';
+    final withOctave = payload.noteWithOctave ?? fallback;
+    final file = 'assets/audio/notes/${withOctave.replaceAll('#', 's')}.mp3';
+    unawaited(AudioService.instance.playNote(file));
+  }
+
+  @override
+  Widget build(BuildContext context) {
     final state = ref.watch(scalesViewModelProvider);
     final vm = ref.read(scalesViewModelProvider.notifier);
     final strategyNames =
@@ -563,6 +598,9 @@ class _GeneratedPatternsSection extends ConsumerWidget {
     final selectedTuningId = filteredTunings.any((t) => t.id == state.selectedTuningId)
         ? state.selectedTuningId
         : (filteredTunings.isNotEmpty ? filteredTunings.first.id : null);
+    final selectedTuning = selectedTuningId == null
+        ? null
+        : filteredTunings.firstWhere((t) => t.id == selectedTuningId);
     final theme = Theme.of(context);
     final scheme = theme.colorScheme;
 
@@ -670,10 +708,49 @@ class _GeneratedPatternsSection extends ConsumerWidget {
             ),
           ],
         ),
+        const SizedBox(height: 6),
+        Row(
+          children: [
+            Text(
+              'Label',
+              style: theme.textTheme.labelSmall
+                  ?.copyWith(color: scheme.onSurfaceVariant),
+            ),
+            const SizedBox(width: 8),
+            DropdownButton<new_diagram.FretboardLabelMode>(
+              value: _labelMode,
+              items: const [
+                DropdownMenuItem(
+                  value: new_diagram.FretboardLabelMode.note,
+                  child: Text('Nota'),
+                ),
+                DropdownMenuItem(
+                  value: new_diagram.FretboardLabelMode.interval,
+                  child: Text('Intervalo'),
+                ),
+                DropdownMenuItem(
+                  value: new_diagram.FretboardLabelMode.finger,
+                  child: Text('Digitación'),
+                ),
+              ],
+              onChanged: (value) {
+                if (value == null) return;
+                setState(() => _labelMode = value);
+              },
+            ),
+          ],
+        ),
         const SizedBox(height: 8),
         // ── Diagram or empty notice ────────────────────────────────────────
         _GeneratedDiagramCard(
           patterns: state.generatedPatterns,
+          labelMode: _labelMode,
+          tuningOpenNotes: selectedTuning?.openNotes ??
+              const ['E', 'A', 'D', 'G', 'B', 'E'],
+          tuningOpenMidi: selectedTuning == null ? null : _openMidiFor(selectedTuning),
+          viewportStartFret: state.engineStartingFret,
+          viewportEndFret: state.engineStartingFret + state.engineMaxFretSpan,
+          onActiveCellTriggered: _triggerCellAudio,
         ),
       ],
     );
@@ -740,9 +817,23 @@ class _FretStepper extends StatelessWidget {
 
 /// Renders the generated [engine_pattern.ScalePattern] list.
 class _GeneratedDiagramCard extends StatelessWidget {
-  const _GeneratedDiagramCard({required this.patterns});
+  const _GeneratedDiagramCard({
+    required this.patterns,
+    required this.labelMode,
+    required this.tuningOpenNotes,
+    required this.tuningOpenMidi,
+    required this.viewportStartFret,
+    required this.viewportEndFret,
+    required this.onActiveCellTriggered,
+  });
 
   final List<engine_pattern.ScalePattern> patterns;
+  final new_diagram.FretboardLabelMode labelMode;
+  final List<String> tuningOpenNotes;
+  final List<int>? tuningOpenMidi;
+  final int viewportStartFret;
+  final int viewportEndFret;
+  final ValueChanged<new_diagram.FretboardCellPayload> onActiveCellTriggered;
 
   @override
   Widget build(BuildContext context) {
@@ -804,6 +895,12 @@ class _GeneratedDiagramCard extends StatelessWidget {
                       pattern: pattern,
                       rootColor: AppColors.scales,
                       noteColor: AppColors.scales.withAlpha(180),
+                      labelMode: labelMode,
+                      tuningOpenNotes: tuningOpenNotes,
+                      tuningOpenMidi: tuningOpenMidi,
+                      viewportStartFret: viewportStartFret,
+                      viewportEndFret: viewportEndFret,
+                      onActiveCellTriggered: onActiveCellTriggered,
                     ),
                   ],
                 ),
