@@ -7,6 +7,7 @@ import 'package:flutter_riverpod/flutter_riverpod.dart';
 import '../../models/scale.dart';
 import 'data/models/scale_pattern.dart' as engine_pattern;
 import 'domain/models/string_configuration.dart';
+import 'domain/models/tablature_constraints.dart';
 import 'scale_enrichment.dart';
 import 'scale_pattern_validator.dart';
 import 'scales_engine_providers.dart';
@@ -60,9 +61,11 @@ class ScalesState {
     this.generatedPatterns = const [],
     this.selectedStrategyName =
         '3NPS', // ThreeNotesPerStringStrategy.strategyName
+    this.selectedTuningId = 'standard6',
     this.engineStringCount = 6,
     this.engineStartingFret = 1,
     this.engineMaxFretSpan = 5,
+    this.engineConstraints = const TablatureConstraints(),
   });
 
   // ── Legacy pipeline fields ─────────────────────────────────────────────────
@@ -99,6 +102,9 @@ class ScalesState {
   /// Name of the active [FingeringStrategy].
   final String selectedStrategyName;
 
+  /// Active tuning profile id used by the new generation engine.
+  final String selectedTuningId;
+
   /// Number of strings used for generation (6, 7 or 8).
   final int engineStringCount;
 
@@ -107,6 +113,9 @@ class ScalesState {
 
   /// Fret span for the generation window.
   final int engineMaxFretSpan;
+
+  /// Algorithmic tablature constraints used by generation engines.
+  final TablatureConstraints engineConstraints;
 
   // ── copyWith ───────────────────────────────────────────────────────────────
 
@@ -120,9 +129,11 @@ class ScalesState {
     Object? errorMessage = _unset,
     List<engine_pattern.ScalePattern>? generatedPatterns,
     String? selectedStrategyName,
+    String? selectedTuningId,
     int? engineStringCount,
     int? engineStartingFret,
     int? engineMaxFretSpan,
+    TablatureConstraints? engineConstraints,
   }) =>
       ScalesState(
         allScales: allScales ?? this.allScales,
@@ -138,9 +149,11 @@ class ScalesState {
             : errorMessage as String?,
         generatedPatterns: generatedPatterns ?? this.generatedPatterns,
         selectedStrategyName: selectedStrategyName ?? this.selectedStrategyName,
+        selectedTuningId: selectedTuningId ?? this.selectedTuningId,
         engineStringCount: engineStringCount ?? this.engineStringCount,
         engineStartingFret: engineStartingFret ?? this.engineStartingFret,
         engineMaxFretSpan: engineMaxFretSpan ?? this.engineMaxFretSpan,
+        engineConstraints: engineConstraints ?? this.engineConstraints,
       );
 
   static const Object _unset = Object();
@@ -229,7 +242,18 @@ class ScalesViewModel extends Notifier<ScalesState> {
 
   /// Updates the engine string count and regenerates patterns.
   void selectStringCount(int count) {
-    state = state.copyWith(engineStringCount: count);
+    state = state.copyWith(
+      engineStringCount: count,
+      selectedTuningId: _defaultTuningIdForStringCount(count),
+    );
+    if (state.selectedScale != null) {
+      _generateEnginePatterns(state.selectedScale!);
+    }
+  }
+
+  /// Updates the active tuning profile id and regenerates patterns.
+  void selectTuning(String tuningId) {
+    state = state.copyWith(selectedTuningId: tuningId);
     if (state.selectedScale != null) {
       _generateEnginePatterns(state.selectedScale!);
     }
@@ -248,21 +272,25 @@ class ScalesViewModel extends Notifier<ScalesState> {
   void _generateEnginePatterns(Scale scale) {
     try {
       final strategies = ref.read(fingeringStrategiesProvider);
-      final calculator = ref.read(fretboardCalculatorProvider);
+      final scaleEngine = ref.read(scaleGenerationEngineProvider);
       final mapper = ref.read(generatedPatternMapperProvider);
+      final tuningById = ref.read(stringConfigByIdProvider);
 
       final strategy =
           strategies[state.selectedStrategyName] ?? strategies.values.first;
 
-      final config = _configForStringCount(state.engineStringCount);
+      final config = tuningById[state.selectedTuningId] ??
+          _configForStringCount(state.engineStringCount);
 
-      final notes = calculator.calculate(
+      final notes = scaleEngine.generate(
         root: scale.root,
         intervals: scale.intervals,
         strategy: strategy,
-        config: config,
+        tuning: config,
         startingFret: state.engineStartingFret,
-        maxFretSpan: state.engineMaxFretSpan,
+        constraints: state.engineConstraints.copyWith(
+          maxSpanPerString: state.engineMaxFretSpan,
+        ),
       );
 
       final pattern = mapper.map(
@@ -290,6 +318,19 @@ class ScalesViewModel extends Notifier<ScalesState> {
         return StringConfiguration.standard8;
       default:
         return StringConfiguration.standard6;
+    }
+  }
+
+  static String _defaultTuningIdForStringCount(int count) {
+    switch (count) {
+      case 7:
+        return StringConfiguration.standard7.id;
+      case 8:
+        return StringConfiguration.standard8.id;
+      case 5:
+        return StringConfiguration.banjo5Drone.id;
+      default:
+        return StringConfiguration.standard6.id;
     }
   }
 

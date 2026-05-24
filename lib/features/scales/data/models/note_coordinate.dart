@@ -12,8 +12,8 @@ class NoteCoordinate {
     final stringNum = (json['string'] as num?)?.toInt();
     final fret = (json['fret'] as num?)?.toInt();
 
-    if (stringNum == null || stringNum < 1 || stringNum > 6) {
-      throw const FormatException('string must be 1..6');
+    if (stringNum == null || stringNum < 1 || stringNum > 12) {
+      throw const FormatException('string must be 1..12');
     }
     if (fret == null || fret < 0 || fret > 24) {
       throw const FormatException('fret must be 0..24');
@@ -34,7 +34,7 @@ class NoteCoordinate {
     );
   }
 
-  /// String number: 1 = low E, 6 = high e.
+  /// String number: 1 = lowest string, n = highest string.
   final int string;
 
   /// Absolute fret number (0 = open string).

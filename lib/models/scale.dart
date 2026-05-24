@@ -15,6 +15,11 @@ class Scale {
     this.threeNotePerStringFingerings = const [],
     this.cagedFingerings = const [],
     this.harmonizedChords = const [],
+    this.activeTuningId,
+    this.generationType,
+    this.generationConstraints = const {},
+    this.appliedVoicing,
+    this.appliedInversion,
   });
 
   /// Deserialises a [Scale] from a JSON map.
@@ -35,6 +40,11 @@ class Scale {
           _optionalPatternList(json, 'threeNotePerStringFingerings'),
       cagedFingerings: _optionalPatternList(json, 'cagedFingerings'),
       harmonizedChords: _optionalHarmonizedChordList(json, 'harmonizedChords'),
+      activeTuningId: json['activeTuningId'] as String?,
+      generationType: json['generationType'] as String?,
+      generationConstraints: _optionalObjectMap(json, 'generationConstraints'),
+      appliedVoicing: json['appliedVoicing'] as String?,
+      appliedInversion: json['appliedInversion'] as String?,
     );
   }
 
@@ -71,6 +81,21 @@ class Scale {
   /// Harmonized triads by degree for this scale.
   final List<HarmonizedChord> harmonizedChords;
 
+  /// Optional active tuning profile id used during generation.
+  final String? activeTuningId;
+
+  /// Optional generation engine type (scale/arpeggio/chord).
+  final String? generationType;
+
+  /// Optional algorithmic constraints used to generate current shape.
+  final Map<String, dynamic> generationConstraints;
+
+  /// Optional voicing label applied during generation.
+  final String? appliedVoicing;
+
+  /// Optional inversion label applied during generation.
+  final String? appliedInversion;
+
   /// Serialises this [Scale] to a JSON map.
   Map<String, dynamic> toJson() => {
         'name': name,
@@ -85,6 +110,12 @@ class Scale {
             threeNotePerStringFingerings.map((e) => e.toJson()).toList(),
         'cagedFingerings': cagedFingerings.map((e) => e.toJson()).toList(),
         'harmonizedChords': harmonizedChords.map((e) => e.toJson()).toList(),
+        if (activeTuningId != null) 'activeTuningId': activeTuningId,
+        if (generationType != null) 'generationType': generationType,
+        if (generationConstraints.isNotEmpty)
+          'generationConstraints': generationConstraints,
+        if (appliedVoicing != null) 'appliedVoicing': appliedVoicing,
+        if (appliedInversion != null) 'appliedInversion': appliedInversion,
       };
 
   /// Returns a copy of this [Scale] with the specified fields replaced.
@@ -100,6 +131,11 @@ class Scale {
     List<ScaleFingering>? threeNotePerStringFingerings,
     List<ScaleFingering>? cagedFingerings,
     List<HarmonizedChord>? harmonizedChords,
+    Object? activeTuningId = _unset,
+    Object? generationType = _unset,
+    Map<String, dynamic>? generationConstraints,
+    Object? appliedVoicing = _unset,
+    Object? appliedInversion = _unset,
   }) =>
       Scale(
         name: name ?? this.name,
@@ -114,6 +150,20 @@ class Scale {
             threeNotePerStringFingerings ?? this.threeNotePerStringFingerings,
         cagedFingerings: cagedFingerings ?? this.cagedFingerings,
         harmonizedChords: harmonizedChords ?? this.harmonizedChords,
+        activeTuningId: identical(activeTuningId, _unset)
+            ? this.activeTuningId
+            : activeTuningId as String?,
+        generationType: identical(generationType, _unset)
+            ? this.generationType
+            : generationType as String?,
+        generationConstraints:
+            generationConstraints ?? this.generationConstraints,
+        appliedVoicing: identical(appliedVoicing, _unset)
+            ? this.appliedVoicing
+            : appliedVoicing as String?,
+        appliedInversion: identical(appliedInversion, _unset)
+            ? this.appliedInversion
+            : appliedInversion as String?,
       );
 
   @override
@@ -130,6 +180,8 @@ class Scale {
 
   @override
   String toString() => 'Scale(name: $name, root: $root, type: $type)';
+
+  static const Object _unset = Object();
 
   static String _requireString(Map<String, dynamic> json, String key) {
     final value = json[key];
@@ -199,6 +251,16 @@ class Scale {
         .map((entry) =>
             HarmonizedChord.fromJson(Map<String, dynamic>.from(entry as Map)))
         .toList(growable: false);
+  }
+
+  static Map<String, dynamic> _optionalObjectMap(
+      Map<String, dynamic> json, String key) {
+    final value = json[key];
+    if (value == null) return const {};
+    if (value is! Map) {
+      throw FormatException('$key must be an object map');
+    }
+    return Map<String, dynamic>.from(value);
   }
 }
 
@@ -377,8 +439,9 @@ class ScalePatternNote {
   factory ScalePatternNote.fromJson(Map<String, dynamic> json) {
     final stringNumber = (json['stringNumber'] as num?)?.toInt();
     final fret = (json['fret'] as num?)?.toInt();
-    if (stringNumber == null || stringNumber < 1 || stringNumber > 6) {
-      throw const FormatException('ScalePatternNote.stringNumber must be 1..6');
+    if (stringNumber == null || stringNumber < 1 || stringNumber > 12) {
+      throw const FormatException(
+          'ScalePatternNote.stringNumber must be 1..12');
     }
     if (fret == null || fret < 0 || fret > 24) {
       throw const FormatException('ScalePatternNote.fret must be 0..24');

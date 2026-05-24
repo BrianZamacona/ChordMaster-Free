@@ -1,5 +1,6 @@
 import '../../../../core/constants/music_theory.dart';
 import '../models/string_configuration.dart';
+import 'fretboard_geometry_service.dart';
 import '../strategies/fingering_strategy.dart';
 
 /// Pure-Dart fretboard calculator.
@@ -10,7 +11,9 @@ import '../strategies/fingering_strategy.dart';
 ///
 /// This class is stateless and side-effect free — safe to use as a singleton.
 class FretboardCalculator {
-  const FretboardCalculator();
+  const FretboardCalculator([this._geometry = const FretboardGeometryService()]);
+
+  final FretboardGeometryService _geometry;
 
   /// Calculates the fretboard shape for the given parameters.
   ///
@@ -34,36 +37,17 @@ class FretboardCalculator {
     final rootIndex = chromaticNotes.indexOf(root);
     if (rootIndex == -1) return const [];
 
-    // Build a set of valid scale semitones (mod 12).
-    final scaleSemitones = <int>{
-      for (final i in intervals) i % 12,
+    final availableCoordinates = _geometry.buildByString(
+      root: root,
+      intervals: intervals,
+      config: config,
+      startingFret: startingFret,
+      maxFretSpan: maxFretSpan,
+    );
+    final availableByString = <int, List<PositionedNote>>{
+      for (final entry in availableCoordinates.entries)
+        entry.key: entry.value.map((c) => c.toPositionedNote()).toList(),
     };
-
-    // Enumerate available scale notes for each string within the window.
-    final availableByString = <int, List<PositionedNote>>{};
-    for (var s = 1; s <= config.stringCount; s++) {
-      final openNote = config.openNoteForString(s);
-      final openIndex = chromaticNotes.indexOf(openNote);
-      if (openIndex == -1) continue;
-
-      final notesOnString = <PositionedNote>[];
-      for (var fret = startingFret; fret <= startingFret + maxFretSpan; fret++) {
-        final noteIndex = (openIndex + fret) % 12;
-        final semitone = (noteIndex - rootIndex + 12) % 12;
-        if (scaleSemitones.contains(semitone)) {
-          notesOnString.add(
-            PositionedNote(
-              stringNumber: s,
-              fret: fret,
-              semitoneFromRoot: semitone,
-            ),
-          );
-        }
-      }
-      if (notesOnString.isNotEmpty) {
-        availableByString[s] = notesOnString;
-      }
-    }
 
     return strategy.select(
       availableByString: availableByString,
