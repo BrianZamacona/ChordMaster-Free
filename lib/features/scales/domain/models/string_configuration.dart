@@ -1,8 +1,8 @@
 /// Guitar string configuration for fretboard calculation.
 ///
 /// [openNotes] lists pitch classes from low string (index 0) to high string
-/// (index n−1). Use [openNoteForString] to convert from the standard
-/// 1-based high-to-low convention used in [NoteCoordinate].
+/// (index n−1). [openNoteForString] uses the same convention as
+/// [NoteCoordinate]: 1 = low string, n = high string.
 class StringConfiguration {
   const StringConfiguration({
     required this.stringCount,
@@ -61,12 +61,9 @@ class StringConfiguration {
 
   // ── Helpers ────────────────────────────────────────────────────────────────
 
-  /// Returns the open pitch class for [stringNumber] (1 = highest string).
-  ///
-  /// Converts from 1-based high-to-low to the 0-based low-to-high index used
-  /// internally: `index = stringCount − stringNumber`.
+  /// Returns the open pitch class for [stringNumber] (1 = lowest string).
   String openNoteForString(int stringNumber) {
-    final index = stringCount - stringNumber;
+    final index = stringNumber - 1;
     if (index < 0 || index >= stringCount) return 'E';
     return openNotes[index];
   }

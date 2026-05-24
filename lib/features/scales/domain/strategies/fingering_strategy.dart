@@ -8,7 +8,7 @@ class PositionedNote {
     required this.semitoneFromRoot,
   });
 
-  /// Guitar string number (1 = highest string, n = lowest string).
+  /// Guitar string number (1 = lowest string, n = highest string).
   final int stringNumber;
 
   /// Absolute fret number (0 = open string).
@@ -29,7 +29,7 @@ abstract class FingeringStrategy {
 
   /// Selects the notes that form a complete fretboard shape.
   ///
-  /// [availableByString] maps string number (1 = highest) to the list of
+  /// [availableByString] maps string number (1 = lowest) to the list of
   /// all scale [PositionedNote]s that fall within the requested fret window on
   /// that string.  The strategy may trim, reorder, or extend the selection.
   List<PositionedNote> select({

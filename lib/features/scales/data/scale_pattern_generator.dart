@@ -18,6 +18,51 @@ const Map<int, String> _intervalNames = {
   8: 'b6',  9: '6',  10: 'b7', 11: '7',
 };
 
+// Canonical 5-box minor-pentatonic templates (low E -> high e), using fret
+// offsets from tonic on low E string.
+const List<List<List<int>>> _minorPentatonicBoxOffsets = [
+  [
+    [0, 3],
+    [0, 2],
+    [0, 2],
+    [0, 2],
+    [0, 3],
+    [0, 3],
+  ],
+  [
+    [3, 5],
+    [2, 5],
+    [2, 5],
+    [2, 4],
+    [3, 5],
+    [3, 5],
+  ],
+  [
+    [5, 7],
+    [5, 7],
+    [5, 7],
+    [4, 7],
+    [5, 8],
+    [5, 7],
+  ],
+  [
+    [7, 10],
+    [7, 10],
+    [7, 9],
+    [7, 9],
+    [8, 10],
+    [7, 10],
+  ],
+  [
+    [10, 12],
+    [10, 12],
+    [9, 12],
+    [9, 12],
+    [10, 12],
+    [10, 12],
+  ],
+];
+
 int _noteAt(int stringNum, int fret) =>
     (_standardTuning[stringNum - 1] + fret) % 12;
 
@@ -227,26 +272,70 @@ class ScalePatternGenerator {
     required List<int> intervals,
   }) {
     final rootNote = _rootSemitone(root);
-    final startFrets = <int>[];
+    final intervalSet = intervals.map((i) => i % 12).toSet();
+    final scaleSet = intervalSet.map((i) => (rootNote + i) % 12).toSet();
+    final isMinorPentatonic = _sameSet(intervalSet, const {0, 3, 5, 7, 10});
+    final isMajorPentatonic = _sameSet(intervalSet, const {0, 2, 4, 7, 9});
+    final isMinorBlues = _sameSet(intervalSet, const {0, 3, 5, 6, 7, 10});
 
-    for (var fret = 0; fret <= 12; fret++) {
-      final note = _noteAt(1, fret);
-      final semitoneFromRoot = (note - rootNote + 12) % 12;
-      if (intervals.contains(semitoneFromRoot)) {
-        startFrets.add(fret);
-        if (startFrets.length == 5) break;
-      }
+    if (!isMinorPentatonic && !isMajorPentatonic && !isMinorBlues) {
+      // Unknown pentatonic-like formula: keep generic fallback.
+      return List.generate(5, (i) => positional(
+            scaleName: scaleName,
+            root: root,
+            intervals: intervals,
+            startFret: i * 2,
+            fretsSpan: 4,
+            patternType: 'Pentatónica',
+            positionName: 'Caja ${i + 1} — traste ${i * 2}',
+          ));
     }
 
-    return List.generate(startFrets.length, (i) => positional(
-      scaleName: scaleName,
-      root: root,
-      intervals: intervals,
-      startFret: startFrets[i],
-      fretsSpan: 4,
-      patternType: 'Pentatónica',
-      positionName: 'Caja ${i + 1} — traste ${startFrets[i]}',
-    ));
+    final lowETonicFret = ((rootNote - _standardTuning[0]) % 12 + 12) % 12;
+    // Major pentatonic shares boxes with its relative minor (3 frets below).
+    final anchorFret = isMajorPentatonic
+        ? ((lowETonicFret - 3) % 12 + 12) % 12
+        : lowETonicFret;
+
+    return List.generate(_minorPentatonicBoxOffsets.length, (boxIndex) {
+      final offsetsPerString = _minorPentatonicBoxOffsets[boxIndex];
+      final coords = <NoteCoordinate>[];
+
+      for (var stringNum = 1; stringNum <= 6; stringNum++) {
+        final offsets = offsetsPerString[stringNum - 1];
+        final frets = <int>[
+          for (final offset in offsets) anchorFret + offset,
+        ];
+
+        if (isMinorBlues) {
+          final withBlue = _insertBlueNoteIfPresent(
+            stringNum: stringNum,
+            candidateFrets: frets,
+            rootNote: rootNote,
+            scaleSet: intervalSet,
+          );
+          frets
+            ..clear()
+            ..addAll(withBlue);
+        }
+
+        for (final fret in frets) {
+          final c = _coord(stringNum, fret, rootNote, scaleSet, intervals);
+          if (c != null) coords.add(c);
+        }
+      }
+
+      final b = _bounds(coords);
+      return ScalePattern(
+        scaleName: scaleName,
+        root: root,
+        patternType: 'Pentatónica',
+        positionName: 'Caja ${boxIndex + 1} — traste ${b.startingFret}',
+        startingFret: b.startingFret,
+        fretsSpan: b.fretsSpan,
+        coordinates: coords,
+      );
+    });
   }
 
   // 7. BERKLEE POSITIONAL — 7 positions
@@ -330,4 +419,26 @@ class ScalePatternGenerator {
       ],
     };
   }
+}
+
+bool _sameSet(Set<int> a, Set<int> b) =>
+    a.length == b.length && a.containsAll(b);
+
+List<int> _insertBlueNoteIfPresent({
+  required int stringNum,
+  required List<int> candidateFrets,
+  required int rootNote,
+  required Set<int> scaleSet,
+}) {
+  if (candidateFrets.length < 2) return candidateFrets;
+  final sorted = List<int>.from(candidateFrets)..sort();
+  final low = sorted.first;
+  final high = sorted.last;
+  if (high - low < 2) return sorted;
+
+  final mid = low + 1;
+  final semitone = (_noteAt(stringNum, mid) - rootNote + 12) % 12;
+  if (!scaleSet.contains(6) || semitone != 6) return sorted;
+
+  return [low, mid, high];
 }
