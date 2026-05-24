@@ -1,3 +1,5 @@
+// ignore_for_file: avoid_redundant_argument_values
+
 import 'models/note_coordinate.dart';
 import 'models/scale_pattern.dart';
 
@@ -112,7 +114,6 @@ class ScalePatternGenerator {
         root: root,
         intervals: intervals,
         startFret: startFret,
-        fretsSpan: 4,
         patternType: 'CAGED',
         positionName: 'Forma ${cagedNames[i]} — traste $startFret',
       );

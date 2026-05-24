@@ -8,24 +8,6 @@ class NoteCoordinate {
     this.finger,
   });
 
-  /// String number: 1 = low E, 6 = high e.
-  final int string;
-
-  /// Absolute fret number (0 = open string).
-  final int fret;
-
-  /// true if this note is the tonic/root.
-  final bool isRoot;
-
-  /// Note name: "C", "D#", "A#", etc.
-  final String note;
-
-  /// Interval name: "1", "b3", "5", "b7", etc.
-  final String interval;
-
-  /// Suggested fretting finger (1=index … 4=pinky). null if not specified.
-  final int? finger;
-
   factory NoteCoordinate.fromJson(Map<String, dynamic> json) {
     final stringNum = (json['string'] as num?)?.toInt();
     final fret = (json['fret'] as num?)?.toInt();
@@ -51,6 +33,24 @@ class NoteCoordinate {
       finger: finger,
     );
   }
+
+  /// String number: 1 = low E, 6 = high e.
+  final int string;
+
+  /// Absolute fret number (0 = open string).
+  final int fret;
+
+  /// true if this note is the tonic/root.
+  final bool isRoot;
+
+  /// Note name: "C", "D#", "A#", etc.
+  final String note;
+
+  /// Interval name: "1", "b3", "5", "b7", etc.
+  final String interval;
+
+  /// Suggested fretting finger (1=index … 4=pinky). null if not specified.
+  final int? finger;
 
   Map<String, dynamic> toJson() => {
         'string': string,
