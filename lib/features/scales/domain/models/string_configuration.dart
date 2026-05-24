@@ -8,10 +8,7 @@ class StringConfiguration {
     required this.stringCount,
     required this.openNotes,
     required this.displayName,
-  }) : assert(
-          openNotes.length == stringCount,
-          'openNotes.length must equal stringCount',
-        );
+  });
 
   // ── Presets ────────────────────────────────────────────────────────────────
 

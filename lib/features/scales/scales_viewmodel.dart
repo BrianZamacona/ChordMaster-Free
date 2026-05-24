@@ -5,7 +5,6 @@ import 'package:flutter/services.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 
 import '../../models/scale.dart';
-import 'data/mappers/generated_pattern_mapper.dart';
 import 'data/models/scale_pattern.dart' as engine_pattern;
 import 'domain/models/string_configuration.dart';
 import 'scale_enrichment.dart';

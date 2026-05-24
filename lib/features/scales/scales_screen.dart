@@ -622,7 +622,7 @@ class _GeneratedPatternsSection extends ConsumerWidget {
                       isSelected ? FontWeight.bold : FontWeight.normal,
                 ),
                 padding:
-                    const EdgeInsets.symmetric(horizontal: 6, vertical: 0),
+                    const EdgeInsets.symmetric(horizontal: 6),
                 visualDensity: VisualDensity.compact,
                 onSelected: (_) => vm.selectStrategy(name),
               );

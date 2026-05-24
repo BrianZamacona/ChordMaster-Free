@@ -13,35 +13,27 @@ import 'domain/strategies/three_notes_per_string_strategy.dart';
 // ── Core engine ───────────────────────────────────────────────────────────────
 
 /// Provides the stateless [FretboardCalculator] singleton.
-final fretboardCalculatorProvider = Provider<FretboardCalculator>((ref) {
-  return const FretboardCalculator();
-});
+final fretboardCalculatorProvider = Provider<FretboardCalculator>((ref) => const FretboardCalculator());
 
 // ── Strategies ────────────────────────────────────────────────────────────────
 
 /// All available [FingeringStrategy] instances keyed by their [name].
 ///
 /// The insertion order defines the display order in the UI.
-final fingeringStrategiesProvider = Provider<Map<String, FingeringStrategy>>((ref) {
-  return const {
+final fingeringStrategiesProvider = Provider<Map<String, FingeringStrategy>>((ref) => const {
     ThreeNotesPerStringStrategy.strategyName: ThreeNotesPerStringStrategy(),
     CagedStrategy.strategyName: CagedStrategy(),
     PentatonicTwoNotesStrategy.strategyName: PentatonicTwoNotesStrategy(),
     BerkleeStrategy.strategyName: BerkleeStrategy(),
     LinearFourNotesStrategy.strategyName: LinearFourNotesStrategy(),
-  };
-});
+  });
 
 // ── String presets ────────────────────────────────────────────────────────────
 
 /// All available [StringConfiguration] presets.
-final stringConfigPresetsProvider = Provider<List<StringConfiguration>>((ref) {
-  return StringConfiguration.presets;
-});
+final stringConfigPresetsProvider = Provider<List<StringConfiguration>>((ref) => StringConfiguration.presets);
 
 // ── Mapper ────────────────────────────────────────────────────────────────────
 
 /// Provides the [GeneratedPatternMapper] singleton.
-final generatedPatternMapperProvider = Provider<GeneratedPatternMapper>((ref) {
-  return const GeneratedPatternMapper();
-});
+final generatedPatternMapperProvider = Provider<GeneratedPatternMapper>((ref) => const GeneratedPatternMapper());
