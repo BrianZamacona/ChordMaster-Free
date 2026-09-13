@@ -20,7 +20,7 @@ class _FakeAssetBundle extends CachingAssetBundle {
 
 void main() {
   test('getVisiblePatterns returns resolved pattern in viewport', () async {
-    final json = '''
+    const json = '''
 {
   "scales": [
     {

@@ -1,7 +1,7 @@
+import 'package:flutter/widgets.dart';
 import 'package:go_router/go_router.dart';
-
-import '../data/models/scale_definition.dart';
 import '../core/widgets/app_scaffold.dart';
+import '../data/models/scale_definition.dart';
 import '../features/achievements/achievements_screen.dart';
 import '../features/chords/chord_detail_screen.dart';
 import '../features/chords/chord_explorer_screen.dart';
@@ -15,11 +15,11 @@ import '../features/improvisation/improv_screen.dart';
 import '../features/metronome/metronome_screen.dart';
 import '../features/progressions/progressions_screen.dart';
 import '../features/rhythm_games/rhythm_game_screen.dart';
-import 'scales/detail/scale_detail_screen.dart';
-import 'scales/scales_screen.dart';
 import '../features/songs/song_detail_screen.dart';
 import '../features/songs/songs_screen.dart';
 import '../features/tuner/tuner_screen.dart';
+import 'scales/detail/scale_detail_screen.dart';
+import 'scales/scales_screen.dart';
 
 /// The global [GoRouter] instance for ChordMaster Free.
 ///
@@ -100,15 +100,13 @@ final GoRouter appRouter = GoRouter(
             return CustomTransitionPage(
               key: state.pageKey,
               child: ScaleDetailScreen(scale: scale),
-              transitionsBuilder: (context, animation, secondaryAnimation, child) {
-                return SlideTransition(
+              transitionsBuilder: (context, animation, secondaryAnimation, child) => SlideTransition(
                   position: Tween<Offset>(
                     begin: const Offset(0, 1),
                     end: Offset.zero,
                   ).animate(CurvedAnimation(parent: animation, curve: Curves.easeOutCubic)),
                   child: child,
-                );
-              },
+                ),
               transitionDuration: const Duration(milliseconds: 350),
             );
           },

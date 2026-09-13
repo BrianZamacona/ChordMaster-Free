@@ -84,8 +84,7 @@ class _StringCountToggle extends StatelessWidget {
   final ValueChanged<int> onChanged;
 
   @override
-  Widget build(BuildContext context) {
-    return Padding(
+  Widget build(BuildContext context) => Padding(
       padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 8),
       child: SegmentedButton<int>(
         segments: const [
@@ -96,7 +95,6 @@ class _StringCountToggle extends StatelessWidget {
         onSelectionChanged: (s) => onChanged(s.first),
       ),
     );
-  }
 }
 
 class _SystemFilterRow extends StatelessWidget {
@@ -111,8 +109,7 @@ class _SystemFilterRow extends StatelessWidget {
   final ValueChanged<String?> onChanged;
 
   @override
-  Widget build(BuildContext context) {
-    return SizedBox(
+  Widget build(BuildContext context) => SizedBox(
       height: 42,
       child: ListView(
         scrollDirection: Axis.horizontal,
@@ -129,7 +126,6 @@ class _SystemFilterRow extends StatelessWidget {
         ],
       ),
     );
-  }
 }
 
 class _SystemChip extends StatelessWidget {

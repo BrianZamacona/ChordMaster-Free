@@ -1,4 +1,3 @@
-import 'dart:ui' show FontFeature;
 
 import 'package:flutter/material.dart';
 
@@ -52,7 +51,7 @@ class FretRangeSlider extends StatelessWidget {
         const SizedBox(height: 4),
         SliderTheme(
           data: SliderTheme.of(context).copyWith(
-            rangeThumbShape: const RoundRangeSliderThumbShape(enabledThumbRadius: 10),
+            rangeThumbShape: const RoundRangeSliderThumbShape(),
             trackHeight: 4,
             activeTrackColor: cs.primary,
             inactiveTrackColor: cs.surfaceContainerHighest,
@@ -61,7 +60,6 @@ class FretRangeSlider extends StatelessWidget {
           ),
           child: RangeSlider(
             values: RangeValues(startFret.toDouble(), endFret.toDouble()),
-            min: 0,
             max: maxFret.toDouble(),
             divisions: maxFret,
             labels: RangeLabels('$startFret', '$endFret'),
@@ -96,7 +94,9 @@ class FretRangeSlider extends StatelessWidget {
   List<int> _markers(int max) {
     final step = (max ~/ 6).clamp(1, max);
     final m = <int>[0];
-    for (var i = step; i < max; i += step) m.add(i);
+    for (var i = step; i < max; i += step) {
+      m.add(i);
+    }
     if (m.last != max) m.add(max);
     return m;
   }

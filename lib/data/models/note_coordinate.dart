@@ -8,13 +8,6 @@ class NoteCoordinate {
     this.finger,
   });
 
-  final int string;
-  final int fret;
-  final bool isRoot;
-  final String note;
-  final String interval;
-  final int? finger;
-
   factory NoteCoordinate.fromJson(Map<String, dynamic> json) => NoteCoordinate(
     string:   (json['string'] as num).toInt(),
     fret:     (json['fret']   as num).toInt(),
@@ -23,6 +16,13 @@ class NoteCoordinate {
     interval: json['interval'] as String? ?? '',
     finger:   (json['finger'] as num?)?.toInt(),
   );
+
+  final int string;
+  final int fret;
+  final bool isRoot;
+  final String note;
+  final String interval;
+  final int? finger;
 
   Map<String, dynamic> toJson() => {
     'string': string, 'fret': fret, 'is_root': isRoot,

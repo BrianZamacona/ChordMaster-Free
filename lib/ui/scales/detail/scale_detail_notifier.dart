@@ -66,7 +66,6 @@ class ScaleDetailState {
 }
 
 class ScaleDetailNotifier extends AutoDisposeFamilyNotifier<ScaleDetailState, ScaleDefinition> {
-  @override
   ScaleDetailState build(ScaleDefinition arg) {
     final initial = ScaleDetailState(
       scale: arg,

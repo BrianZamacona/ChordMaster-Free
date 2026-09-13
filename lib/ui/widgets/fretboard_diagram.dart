@@ -31,8 +31,8 @@ class FretboardDiagram extends StatelessWidget {
       child: LayoutBuilder(
         builder: (context, constraints) {
           final width = constraints.maxWidth;
-          final leftPad = 20.0;
-          final top = 16.0;
+          const leftPad = 20.0;
+          const top = 16.0;
           final fretWidth = (width - leftPad) / displayedFretCount;
           final stringSpacing = (height - top - 20) / (stringCount - 1);
 

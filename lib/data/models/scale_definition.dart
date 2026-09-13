@@ -14,14 +14,6 @@ class ScaleDefinition {
     this.description = '',
   });
 
-  final String id;
-  final String name;
-  final String category;
-  final String description;
-  final List<int> intervals;
-  final List<FingeringSystem> systems;
-  final List<ScalePosition> positions;
-
   factory ScaleDefinition.fromJson(Map<String, dynamic> json) => ScaleDefinition(
     id: json['id'] as String,
     name: json['name'] as String,
@@ -35,18 +27,26 @@ class ScaleDefinition {
         .map((e) => ScalePosition.fromJson(e as Map<String, dynamic>))
         .toList(growable: false),
   );
+
+  final String id;
+  final String name;
+  final String category;
+  final String description;
+  final List<int> intervals;
+  final List<FingeringSystem> systems;
+  final List<ScalePosition> positions;
 }
 
 class FingeringSystem {
   const FingeringSystem({required this.id, required this.name});
 
-  final String id;
-  final String name;
-
   factory FingeringSystem.fromJson(Map<String, dynamic> json) => FingeringSystem(
     id: json['id'] as String,
     name: json['name'] as String,
   );
+
+  final String id;
+  final String name;
 }
 
 class ScalePosition {
@@ -59,14 +59,6 @@ class ScalePosition {
     required this.coordinates,
     this.rootAnchors = const [],
   });
-
-  final String id;
-  final String name;
-  final String systemId;
-  final int startingFret;
-  final int fretSpan;
-  final List<RelativeCoord> coordinates;
-  final List<RootAnchor> rootAnchors;
 
   factory ScalePosition.fromJson(Map<String, dynamic> json) => ScalePosition(
     id: json['id'] as String,
@@ -81,6 +73,14 @@ class ScalePosition {
         .map((e) => RootAnchor.fromJson(e as Map<String, dynamic>))
         .toList(growable: false),
   );
+
+  final String id;
+  final String name;
+  final String systemId;
+  final int startingFret;
+  final int fretSpan;
+  final List<RelativeCoord> coordinates;
+  final List<RootAnchor> rootAnchors;
 
   List<NoteCoordinate> resolveCoordinates(int rootSemitone) {
     final semitoneOffset = rootSemitone % 12;
@@ -125,13 +125,13 @@ String _intervalName(int interval) {
 class StringPatterns {
   const StringPatterns({required this.patterns});
 
-  final List<PatternData> patterns;
-
   factory StringPatterns.fromJson(Map<String, dynamic> json) => StringPatterns(
     patterns: (json['patterns'] as List<dynamic>? ?? const [])
         .map((e) => PatternData.fromJson(e as Map<String, dynamic>))
         .toList(growable: false),
   );
+
+  final List<PatternData> patterns;
 }
 
 class PatternData {
@@ -144,13 +144,6 @@ class PatternData {
     this.finger,
   });
 
-  final int string;
-  final int fretOffset;
-  final String interval;
-  final String note;
-  final bool isRoot;
-  final int? finger;
-
   factory PatternData.fromJson(Map<String, dynamic> json) => PatternData(
     string: (json['string'] as num).toInt(),
     fretOffset: (json['fret_offset'] as num).toInt(),
@@ -159,18 +152,25 @@ class PatternData {
     isRoot: json['is_root'] as bool? ?? false,
     finger: (json['finger'] as num?)?.toInt(),
   );
+
+  final int string;
+  final int fretOffset;
+  final String interval;
+  final String note;
+  final bool isRoot;
+  final int? finger;
 }
 
 class RootAnchor {
   const RootAnchor({required this.string, required this.fretOffset});
 
-  final int string;
-  final int fretOffset;
-
   factory RootAnchor.fromJson(Map<String, dynamic> json) => RootAnchor(
     string: (json['string'] as num).toInt(),
     fretOffset: (json['fret_offset'] as num).toInt(),
   );
+
+  final int string;
+  final int fretOffset;
 }
 
 class RelativeCoord {
@@ -183,13 +183,6 @@ class RelativeCoord {
     this.finger,
   });
 
-  final int string;
-  final int fretOffset;
-  final String interval;
-  final String note;
-  final bool isRoot;
-  final int? finger;
-
   factory RelativeCoord.fromJson(Map<String, dynamic> json) => RelativeCoord(
     string: (json['string'] as num).toInt(),
     fretOffset: (json['fret_offset'] as num).toInt(),
@@ -198,4 +191,11 @@ class RelativeCoord {
     isRoot: json['is_root'] as bool? ?? false,
     finger: (json['finger'] as num?)?.toInt(),
   );
+
+  final int string;
+  final int fretOffset;
+  final String interval;
+  final String note;
+  final bool isRoot;
+  final int? finger;
 }
