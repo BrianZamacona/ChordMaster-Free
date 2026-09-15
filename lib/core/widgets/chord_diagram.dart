@@ -85,7 +85,10 @@ class _ChordDiagramPainter extends CustomPainter {
 
   @override
   void paint(Canvas canvas, Size size) {
-    final topPadding = showChordName ? size.height * 0.18 : size.height * 0.11;
+    // Reserve a stable area for X/O indicators whether the chord name is shown.
+    final indicatorAreaHeight = size.height * 0.09;
+    final topPadding =
+        (showChordName ? size.height * 0.18 : 0) + indicatorAreaHeight;
     final bottomPadding = size.height * 0.04;
     final leftPadding = size.width * 0.10;
     final rightPadding = size.width * 0.14;
@@ -171,7 +174,7 @@ class _ChordDiagramPainter extends CustomPainter {
       );
     }
 
-    final indicatorY = topPadding - fretSpacing * 0.55;
+    final indicatorY = topPadding - indicatorAreaHeight * 0.5;
 
     for (var stringIndex = 0; stringIndex < 6; stringIndex++) {
       final x = leftPadding + stringIndex * stringSpacing;

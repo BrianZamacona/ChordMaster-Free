@@ -80,10 +80,9 @@ class _ParsedScalePattern {
       }
 
       final stringIndex = 6 - stringNumber;
-      final frets = fingerings
-          .split('-')
-          .map(int.tryParse)
-          .whereType<int>()
+        final frets = RegExp(r'-?\d+')
+          .allMatches(fingerings)
+          .map((match) => int.parse(match.group(0)!))
           .toList(growable: false);
       if (frets.isEmpty) continue;
 
