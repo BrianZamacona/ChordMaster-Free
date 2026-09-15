@@ -65,10 +65,15 @@ class ScaleDetailState {
       );
 }
 
-class ScaleDetailNotifier extends AutoDisposeFamilyNotifier<ScaleDetailState, ScaleDefinition> {
-  ScaleDetailState build(ScaleDefinition arg) {
+class ScaleDetailNotifier extends Notifier<ScaleDetailState> {
+  ScaleDetailNotifier(this._arg);
+
+  final ScaleDefinition _arg;
+
+  @override
+  ScaleDetailState build() {
     final initial = ScaleDetailState(
-      scale: arg,
+      scale: _arg,
       rootSemitone: 0,
       stringCount: 6,
       startFret: 0,
