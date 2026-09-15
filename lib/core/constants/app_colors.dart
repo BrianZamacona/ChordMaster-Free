@@ -29,6 +29,21 @@ class AppColors {
   /// Divider and outline color.
   static const Color outline = Color(0xFF2A2A2A);
 
+  /// Light scaffold background — warm off-white for the Rock Elegant theme.
+  static const Color backgroundLight = Color(0xFFF7F3F1);
+
+  /// Light card and surface color.
+  static const Color surfaceLight = Color(0xFFFFFBF9);
+
+  /// Light-mode outline color.
+  static const Color outlineLight = Color(0xFFE1D6D2);
+
+  /// Primary text color on light surfaces.
+  static const Color textPrimaryLight = Color(0xFF2A2020);
+
+  /// Secondary text color on light surfaces.
+  static const Color textSecondaryLight = Color(0xFF6F6260);
+
   // ── Text ───────────────────────────────────────────────────────────────────
 
   /// Primary text color on dark surfaces.

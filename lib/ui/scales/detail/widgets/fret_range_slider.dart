@@ -64,9 +64,16 @@ class FretRangeSlider extends StatelessWidget {
             divisions: maxFret,
             labels: RangeLabels('$startFret', '$endFret'),
             onChanged: (v) {
-              final s = v.start.round();
-              final e = v.end.round();
-              if (e - s >= _minSpan) onChanged(s, e);
+              var s = v.start.round();
+              var e = v.end.round();
+              if (e - s < _minSpan) {
+                if (s != startFret) {
+                  s = (e - _minSpan).clamp(0, maxFret).toInt();
+                } else {
+                  e = (s + _minSpan).clamp(0, maxFret).toInt();
+                }
+              }
+              onChanged(s, e);
             },
           ),
         ),

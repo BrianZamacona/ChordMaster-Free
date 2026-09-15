@@ -19,7 +19,7 @@ const _cardTheme = CardThemeData(
 const _elevatedButtonTheme = ElevatedButtonThemeData(
   style: ButtonStyle(
     shape: WidgetStatePropertyAll(StadiumBorder()),
-    backgroundColor: WidgetStatePropertyAll(Color(0xFF8B0000)),
+    backgroundColor: WidgetStatePropertyAll(AppColors.primary),
     foregroundColor: WidgetStatePropertyAll(Colors.white),
   ),
 );
@@ -51,9 +51,26 @@ TextTheme _buildTextTheme(TextTheme base) {
 /// Light Material Design 3 theme for ChordMaster Free.
 final ThemeData lightTheme = ThemeData(
   useMaterial3: true,
-  colorScheme: ColorScheme.fromSeed(seedColor: _seedColor),
+  colorScheme: ColorScheme.fromSeed(seedColor: _seedColor).copyWith(
+    surface: AppColors.surfaceLight,
+    surfaceContainer: AppColors.surfaceLight,
+    surfaceContainerLow: AppColors.backgroundLight,
+    surfaceContainerHigh: const Color(0xFFF1E9E6),
+    surfaceContainerHighest: const Color(0xFFE9DEDA),
+    outline: AppColors.outlineLight,
+    onSurface: AppColors.textPrimaryLight,
+  ),
+  scaffoldBackgroundColor: AppColors.backgroundLight,
   textTheme: _buildTextTheme(ThemeData.light().textTheme),
   cardTheme: _cardTheme,
+  appBarTheme: const AppBarTheme(
+    backgroundColor: AppColors.backgroundLight,
+    foregroundColor: AppColors.textPrimaryLight,
+    elevation: 0,
+    scrolledUnderElevation: 0,
+    surfaceTintColor: Colors.transparent,
+    shape: Border(bottom: BorderSide(color: AppColors.primary)),
+  ),
   elevatedButtonTheme: _elevatedButtonTheme,
   outlinedButtonTheme: _outlinedButtonTheme,
   filledButtonTheme: _filledButtonTheme,
@@ -70,7 +87,7 @@ final ThemeData lightTheme = ThemeData(
       if (states.contains(WidgetState.selected)) {
         return const TextStyle(color: AppColors.primary, fontSize: 12);
       }
-      return const TextStyle(color: Color(0xFF5A5A5A), fontSize: 12);
+      return const TextStyle(color: AppColors.textSecondaryLight, fontSize: 12);
     }),
   ),
   bottomNavigationBarTheme: const BottomNavigationBarThemeData(
@@ -120,13 +137,13 @@ final ThemeData darkTheme = ThemeData(
     indicatorColor: AppColors.primary.withAlpha(60),
     iconTheme: WidgetStateProperty.resolveWith((states) {
       if (states.contains(WidgetState.selected)) {
-        return const IconThemeData(color: AppColors.textPrimary);
+        return const IconThemeData(color: AppColors.primary);
       }
       return const IconThemeData(color: AppColors.textSecondary);
     }),
     labelTextStyle: WidgetStateProperty.resolveWith((states) {
       if (states.contains(WidgetState.selected)) {
-        return const TextStyle(color: AppColors.textPrimary, fontSize: 12);
+        return const TextStyle(color: AppColors.primary, fontSize: 12);
       }
       return const TextStyle(color: AppColors.textSecondary, fontSize: 12);
     }),

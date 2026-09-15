@@ -109,7 +109,7 @@ class CompositionScreen extends ConsumerWidget {
                 : ReorderableListView.builder(
                     padding: const EdgeInsets.symmetric(horizontal: 12),
                     itemCount: state.chords.length,
-                    onReorder: vm.reorderChords,
+                    onReorderItem: vm.reorderChords,
                     itemBuilder: (context, i) {
                       final chord = state.chords[i];
                       return Card(

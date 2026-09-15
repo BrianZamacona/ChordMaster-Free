@@ -22,27 +22,31 @@ class RootPicker extends StatelessWidget {
         itemBuilder: (_, i) {
           final active = i == selected;
           return Padding(
-            padding: const EdgeInsets.only(right: 6, top: 6, bottom: 6),
-            child: GestureDetector(
-              onTap: () => onChanged(i),
-              child: AnimatedContainer(
-                duration: const Duration(milliseconds: 180),
-                curve: Curves.easeOut,
-                width: 36,
-                decoration: BoxDecoration(
-                  color: active ? cs.primary : cs.surfaceContainerHighest,
-                  borderRadius: BorderRadius.circular(18),
-                  boxShadow: active
-                      ? [BoxShadow(color: cs.primary.withAlpha(80), blurRadius: 6, offset: const Offset(0, 2))]
-                      : null,
-                ),
-                alignment: Alignment.center,
-                child: Text(
-                  _roots[i],
-                  style: theme.textTheme.labelSmall?.copyWith(
-                    color: active ? cs.onPrimary : cs.onSurfaceVariant,
-                    fontWeight: active ? FontWeight.w800 : FontWeight.w500,
-                    fontSize: _roots[i].length > 1 ? 9 : 11,
+            padding: const EdgeInsets.only(right: 4, top: 6, bottom: 6),
+            child: Material(
+              color: Colors.transparent,
+              child: InkWell(
+                borderRadius: BorderRadius.circular(22),
+                onTap: () => onChanged(i),
+                child: AnimatedContainer(
+                  duration: const Duration(milliseconds: 180),
+                  curve: Curves.easeOut,
+                  width: 44,
+                  decoration: BoxDecoration(
+                    color: active ? cs.primary : cs.surfaceContainerHighest,
+                    borderRadius: BorderRadius.circular(22),
+                    boxShadow: active
+                        ? [BoxShadow(color: cs.primary.withAlpha(80), blurRadius: 6, offset: const Offset(0, 2))]
+                        : null,
+                  ),
+                  alignment: Alignment.center,
+                  child: Text(
+                    _roots[i],
+                    style: theme.textTheme.labelSmall?.copyWith(
+                      color: active ? cs.onPrimary : cs.onSurfaceVariant,
+                      fontWeight: active ? FontWeight.w800 : FontWeight.w500,
+                      fontSize: _roots[i].length > 1 ? 9 : 11,
+                    ),
                   ),
                 ),
               ),
