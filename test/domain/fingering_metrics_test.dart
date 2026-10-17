@@ -85,6 +85,66 @@ void main() {
     expect(openStringMidi, hasLength(6));
   });
 
+  group('stringTonesFromChordJson', () {
+    List<String?> labels(List<StringTone?> t) => [for (final x in t) x?.label];
+    List<String?> notes(List<StringTone?> t) => [for (final x in t) x?.note];
+
+    test('C abierto en orden 6ª → 1ª, muteada = null', () {
+      final t = stringTonesFromChordJson(
+        jsonFrets: [-1, 3, 2, 0, 1, 0],
+        root: 'C',
+      );
+      expect(labels(t), [null, 'R', '3', '5', 'R', '3']);
+      expect(notes(t), [null, 'C', 'E', 'G', 'C', 'E']);
+      expect(t[1]!.isRoot, isTrue);
+    });
+
+    test('A menor abierto: b3 en la 2ª cuerda', () {
+      final t = stringTonesFromChordJson(
+        jsonFrets: [-1, 0, 2, 2, 1, 0],
+        root: 'A',
+      );
+      expect(labels(t), [null, 'R', '5', 'R', 'b3', '5']);
+      expect(notes(t), [null, 'A', 'E', 'A', 'C', 'E']);
+    });
+
+    test('todo chords.json: coincide con analyzeFingering y suena dentro del acorde', () {
+      var checked = 0;
+      for (final c in chords) {
+        final root = c['root'] as String;
+        final rootPc = noteNames.indexOf(root);
+        final allowed = {for (final i in _ints(c['intervals'])) (rootPc + i) % 12};
+        final items = [
+          c,
+          for (final key in [
+            'cagedPositions',
+            'voicings',
+            'triadInversions',
+            'advancedInversions',
+          ])
+            ...((c[key] as List<dynamic>? ?? const []).cast<Map<String, dynamic>>()),
+        ];
+        for (final item in items) {
+          final frets = _ints(item['fretPositions']);
+          final tones = stringTonesFromChordJson(jsonFrets: frets, root: root);
+          final m = analyze(c, item);
+          final sounding = tones.whereType<StringTone>().toList();
+          final where = '${c['name']} $frets';
+          expect([for (final x in sounding) x.label], m.toneLabels, reason: where);
+          expect([for (final x in sounding) x.note], m.toneNotes, reason: where);
+          for (var j = 0; j < 6; j++) {
+            expect(tones[j] == null, frets[j] == -1, reason: where);
+          }
+          for (final x in sounding) {
+            expect(allowed, contains(noteNames.indexOf(x.note)), reason: where);
+          }
+          checked++;
+        }
+      }
+      expect(checked, 1092);
+    });
+  });
+
   group('bestIndices', () {
     test('un mejor', () => expect(bestIndices([3, 1, 2]), {1}));
     test('empate marca a todos los empatados', () {

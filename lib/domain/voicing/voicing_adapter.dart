@@ -15,4 +15,9 @@ class VoicingAdapter {
   /// `fingerPositions` de chords.json (6ª → 1ª) al orden del motor.
   static List<int> fingersFromChordJson(List<int> fingerPositions) =>
       fingerPositions.reversed.toList();
+
+  /// Inverso: una lista por cuerda en orden del motor (0 = 1ª) al orden de
+  /// chords.json (6ª → 1ª), para que la UI dibuje sin invertir nada.
+  static List<T> toChordJsonOrder<T>(List<T> engineOrder) =>
+      engineOrder.reversed.toList();
 }

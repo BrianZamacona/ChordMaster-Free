@@ -121,6 +121,43 @@ FingeringMetrics analyzeFingering({
   );
 }
 
+/// Nota que suena en una cuerda y su intervalo respecto a la raíz.
+class StringTone {
+  const StringTone({required this.note, required this.label});
+
+  /// Con sostenidos (`C#`, nunca `Db`).
+  final String note;
+
+  /// Etiqueta de intervalo (`R`, `b3`, `5`…), misma tabla que [FingeringMetrics.toneLabels].
+  final String label;
+
+  bool get isRoot => label == 'R';
+}
+
+/// Nota e intervalo por cuerda, en el orden de chords.json (6ª → 1ª), para
+/// que la UI dibuje sin invertir cuerdas. `null` = cuerda muteada.
+List<StringTone?> stringTonesFromChordJson({
+  required List<int> jsonFrets,
+  required String root,
+}) {
+  final frets = VoicingAdapter.fromChordJson(jsonFrets);
+  final rootPc = noteNames.indexOf(root);
+  final engineTones = [
+    for (var s = 0; s < frets.length; s++)
+      if (frets[s] == null)
+        null
+      else
+        () {
+          final pc = (standardOpenStringMidi[s] + frets[s]!) % 12;
+          return StringTone(
+            note: noteNames[pc],
+            label: _toneLabelBySemitone[(pc - rootPc + 12) % 12],
+          );
+        }(),
+  ];
+  return VoicingAdapter.toChordJsonOrder(engineTones);
+}
+
 /// Índices con el menor valor; ignora `null`. Vacío si no hay al menos dos
 /// valores comparables o si todos son iguales.
 Set<int> bestIndices(List<num?> values) {
