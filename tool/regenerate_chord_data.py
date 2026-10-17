@@ -9,6 +9,8 @@ Corrige, con reglas musicales explícitas (no parches manuales):
   3. Principal de E dim (llevaba la 6ª de dim7)  -> 0-1-2-0-x-x  (E-Bb-E-G)
   4. 'Top-Set Tension' de Dom 7                  -> G-B-e con 1ª-3ª-b7 (la 3ª se había subido a 4ª)
   5. advancedInversions (7mas, 144 entradas)     -> búsqueda por reglas (ver generate_inversion)
+  6. Formas de principiante en 4 cuerdas, sin cejilla grande, para acordes cuya única forma
+     baja es una cejilla completa (F, B, Bm, F#m): se añaden a `voicings` como 'Beginner Grip'.
 No toca ningún otro campo. Idempotente: correrlo dos veces da el mismo archivo.
 """
 import json, sys
@@ -74,9 +76,18 @@ def generate_inversion(root, intervals, inv, need=None):
     if best is None: raise RuntimeError(f"sin voicing: root={root} {intervals} {inv}")
     return best[1], best[2]
 
+# 6. (raíz, tipo) -> (fretPositions, fingerPositions), orden 6ª -> 1ª.
+BEGINNER_GRIPS = {
+    ('F', 'major'):  ([-1, -1, 3, 2, 1, 1], [0, 0, 3, 2, 1, 1]),   # F A C F (cejilla mini 2 cuerdas)
+    ('B', 'major'):  ([-1, -1, 4, 4, 4, 2], [0, 0, 2, 3, 4, 1]),   # F# B D# F#
+    ('B', 'minor'):  ([-1, -1, 4, 4, 3, 2], [0, 0, 3, 4, 2, 1]),   # F# B D F#
+    ('F#', 'minor'): ([-1, -1, 4, 2, 2, 2], [0, 0, 3, 1, 1, 1]),   # F# A C# F# (cejilla mini 3 cuerdas)
+}
+BEGINNER_TITLE = 'Beginner Grip'
+
 def main(path):
     data = json.load(open(path, encoding='utf-8'))
-    changed = {'sus2': 0, 'F': 0, 'Edim': 0, 'TopSet': 0, 'inversiones': 0}
+    changed = {'sus2': 0, 'F': 0, 'Edim': 0, 'TopSet': 0, 'inversiones': 0, 'principiante': 0}
     E_SHAPE_F = {  # forma E en cejilla al traste 1 (raíz F en la 6ª cuerda)
         'major':     ([1,3,3,2,1,1], [1,3,4,2,1,1]),
         'minor':     ([1,3,3,1,1,1], [1,3,4,1,1,1]),
@@ -112,6 +123,22 @@ def main(path):
             new = (frets, fingers, min(f for f in frets if f > 0))
             if (p['fretPositions'], p['fingerPositions'], p['baseFret']) != new: changed['inversiones'] += 1
             p['fretPositions'], p['fingerPositions'], p['baseFret'] = new
+        # 6. forma de principiante
+        grip = BEGINNER_GRIPS.get((c['root'], t))
+        if grip:
+            frets, fingers = grip
+            got = {(OPEN[i] + f) % 12 for i, f in enumerate(frets) if f >= 0}
+            if not got <= allowed or {r} - got:
+                raise RuntimeError(f"forma de principiante inválida: {c['name']}")
+            entry = {'title': BEGINNER_TITLE, 'shape': 'Top set',
+                     'description': 'Four-string beginner shape without a full barre.',
+                     'fretPositions': list(frets), 'fingerPositions': list(fingers),
+                     'baseFret': min(f for f in frets if f > 0)}
+            voicings = c.setdefault('voicings', [])
+            current = [v for v in voicings if v['title'] == BEGINNER_TITLE]
+            if current != [entry]:
+                voicings[:] = [v for v in voicings if v['title'] != BEGINNER_TITLE] + [entry]
+                changed['principiante'] += 1
     Path(path).write_text(json.dumps(data, indent=2, ensure_ascii=False) + "\n", encoding='utf-8')
     print("entradas modificadas:", changed)
 

@@ -118,8 +118,8 @@ void main() {
       'voicings: $total, con cejilla: ${mini + grande} '
       '(mini $mini, grande $grande), imposibles: ${impossible.length}',
     );
-    expect(total, 1092);
-    expect(mini, 358);
+    expect(total, 1096); // 1092 + 4 formas de principiante (F, B, Bm, F#m)
+    expect(mini, 360); // + F xx3211 y F#m xx4222
     expect(grande, 241);
     // Deuda de datos en chords.json (dedos repetidos con cuerdas muteadas, al aire
     // o más bajas entre medias); el conteo exacto evita que crezca en silencio.

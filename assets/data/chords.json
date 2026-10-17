@@ -12391,6 +12391,28 @@
           1
         ],
         "baseFret": 8
+      },
+      {
+        "title": "Beginner Grip",
+        "shape": "Top set",
+        "description": "Four-string beginner shape without a full barre.",
+        "fretPositions": [
+          -1,
+          -1,
+          3,
+          2,
+          1,
+          1
+        ],
+        "fingerPositions": [
+          0,
+          0,
+          3,
+          2,
+          1,
+          1
+        ],
+        "baseFret": 1
       }
     ],
     "triadInversions": [
@@ -15111,6 +15133,28 @@
           1
         ],
         "baseFret": 9
+      },
+      {
+        "title": "Beginner Grip",
+        "shape": "Top set",
+        "description": "Four-string beginner shape without a full barre.",
+        "fretPositions": [
+          -1,
+          -1,
+          4,
+          2,
+          2,
+          2
+        ],
+        "fingerPositions": [
+          0,
+          0,
+          3,
+          1,
+          1,
+          1
+        ],
+        "baseFret": 2
       }
     ],
     "triadInversions": [
@@ -27007,6 +27051,28 @@
           1
         ],
         "baseFret": 14
+      },
+      {
+        "title": "Beginner Grip",
+        "shape": "Top set",
+        "description": "Four-string beginner shape without a full barre.",
+        "fretPositions": [
+          -1,
+          -1,
+          4,
+          4,
+          4,
+          2
+        ],
+        "fingerPositions": [
+          0,
+          0,
+          2,
+          3,
+          4,
+          1
+        ],
+        "baseFret": 2
       }
     ],
     "triadInversions": [
@@ -27291,6 +27357,28 @@
           1
         ],
         "baseFret": 14
+      },
+      {
+        "title": "Beginner Grip",
+        "shape": "Top set",
+        "description": "Four-string beginner shape without a full barre.",
+        "fretPositions": [
+          -1,
+          -1,
+          4,
+          4,
+          3,
+          2
+        ],
+        "fingerPositions": [
+          0,
+          0,
+          3,
+          4,
+          2,
+          1
+        ],
+        "baseFret": 2
       }
     ],
     "triadInversions": [

@@ -90,7 +90,7 @@ void main() {
   });
 
   test('disminuidas: el nombre sale de los intervalos, no del id', () {
-    expect(scaleDisplayName('diminished_wh', dimHalfWhole), 'Disminuida semitono-tono');
+    expect(scaleDisplayName('diminished_hw', dimHalfWhole), 'Disminuida semitono-tono');
     expect(scaleDisplayName('x', [0, 2, 3, 5, 6, 8, 9, 11]), 'Disminuida tono-semitono');
     CurrentLanguage.value = AppLanguage.en;
     expect(scaleDisplayName('dorian', dorian), 'Dorian');

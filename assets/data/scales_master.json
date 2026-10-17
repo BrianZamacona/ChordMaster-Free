@@ -9474,8 +9474,8 @@
       ]
     },
     {
-      "id": "diminished_wh",
-      "name": "Diminished Wh",
+      "id": "diminished_hw",
+      "name": "Diminished Half-Whole",
       "category": "Simétrica",
       "description": "",
       "intervals": [
@@ -9955,8 +9955,8 @@
       ]
     },
     {
-      "id": "diminished_hw",
-      "name": "Diminished Hw",
+      "id": "diminished_wh",
+      "name": "Diminished Whole-Half",
       "category": "Simétrica",
       "description": "",
       "intervals": [

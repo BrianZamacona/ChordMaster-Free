@@ -24,9 +24,8 @@ const _names = <String, LocalizedText>{
 
 /// Nombre visible de una escala.
 ///
-/// Las disminuidas se nombran por sus intervalos y no por el id: en el JSON
-/// `diminished_wh` empieza por semitono (es la semitono-tono) y
-/// `diminished_hw` por tono; así la app muestra el nombre correcto.
+/// Las disminuidas se nombran por sus intervalos (empieza por semitono =
+/// semitono-tono), no por el id, para que el nombre nunca dependa de él.
 String scaleDisplayName(String id, List<int> intervals, {String? fallback}) {
   if (intervals.length == 8) {
     return intervals[1] == 1

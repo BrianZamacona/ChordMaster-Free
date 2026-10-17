@@ -58,6 +58,11 @@ cada nota pertenezca a la escala. No bajar la tolerancia de 0.
   3NPS = escalera de 3 notas por cuerda (solo 7 notas); 4NPS = 3NPS + 1 nota por cuerda;
   2NPS = cajas pentatónicas (blues añade la b5 entre 4ª y 5ª). Los modos tienen sus propios
   `intervals` (rotaciones de la mayor).
+- Disminuidas: el id sale de los intervalos (`diminished_hw` = empieza por semitono,
+  semitono-tono; `diminished_wh` = por tono). Lo fija `regenerate_scales_master.py`.
+- Formas de principiante ('Beginner Grip' en `voicings`): F xx3211, B xx4442, Bm xx4432,
+  F#m xx4222, generadas por `regenerate_chord_data.py`. El modo Principiante las elige; el
+  Estándar sigue usando la cejilla completa.
 - Berklee NO está implementado: no hay definición con trastes verificada. No inventarla.
 - Progresiones: candidatos = digitaciones de `chords.json` sin costo ergonómico infinito;
   **formas abiertas primero** (decisión del usuario): si el acorde tiene alguna forma abierta
@@ -120,11 +125,6 @@ cada nota pertenezca a la escala. No bajar la tolerancia de 0.
 ## Pendiente (en orden)
 1. Revisión visual en el dispositivo (rediseño completo, versión bilingüe, "Mi progresión",
    tarjetas "¿Por qué?").
-2. Decidir los ids cruzados de las disminuidas en `scales_master.json`: `diminished_wh` tiene
-   intervalos semitono-tono y `diminished_hw` tono-semitono. La app ya muestra el nombre correcto
-   (se deriva de los intervalos); corregir los ids exige pasar por el generador.
-3. `chords.json` no tiene F ni B en primera posición sin cejilla (p. ej. F xx3211): por eso en
-   Do y Mi el modo principiante usa cejilla en esos acordes. Se añadiría vía el generador.
-4. Sandbox TS: corregir la 7ª diatónica del grado VII (allí sigue como disminuida; aquí se
+2. Sandbox TS: corregir la 7ª diatónica del grado VII (allí sigue como disminuida; aquí se
    corrigió a 7ª menor y se regeneraron solo esas filas del golden, 2005 → 1983).
-5. Berklee, si se consigue una definición verificable.
+3. Berklee, si se consigue una definición verificable.

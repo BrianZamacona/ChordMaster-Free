@@ -80,7 +80,7 @@ void main() {
         }
       }
     }
-    expect(total, 1092);
+    expect(total, 1096);
     expect(outside, isEmpty, reason: '$outside');
     expect(openStringMidi, hasLength(6));
   });
@@ -141,7 +141,7 @@ void main() {
           checked++;
         }
       }
-      expect(checked, 1092);
+      expect(checked, 1096);
     });
   });
 

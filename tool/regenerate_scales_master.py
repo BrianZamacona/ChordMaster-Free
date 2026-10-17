@@ -17,8 +17,10 @@ Reglas
            añade la b5 en las cuerdas que ya tienen 4ª y 5ª separadas por 2 trastes.
   4NPS   : sólo escalas de 7 notas y modos. Cada posición 3NPS + la nota siguiente en cada cuerda
            (la repetida en el cambio de cuerda). Berklee NO se genera: no hay definición verificable.
-Corrige además los `intervals` de los 7 modos (eran los de Jónico para todos).
-No toca id/name/category/description/systems. Idempotente.
+Corrige además los `intervals` de los 7 modos (eran los de Jónico para todos) y el id/nombre
+de las dos disminuidas, que estaban cruzados: el id sale de los intervalos (empieza por
+semitono -> `diminished_hw`, semitono-tono; por tono -> `diminished_wh`, tono-semitono).
+No toca category/description. Idempotente.
 """
 import json, sys
 from pathlib import Path
@@ -118,6 +120,11 @@ def main(path):
     data = json.loads(Path(path).read_text(encoding='utf-8'))
     for s in data['modes']:
         s['intervals'] = sorted({(m - MAJOR[MODE_ROT[s['id']]]) % 12 for m in MAJOR})
+    for s in data['scales']:
+        if s['id'].startswith('diminished_') and len(s['intervals']) == 8:
+            half_first = s['intervals'][1] == 1
+            s['id'] = 'diminished_hw' if half_first else 'diminished_wh'
+            s['name'] = 'Diminished Half-Whole' if half_first else 'Diminished Whole-Half'
     for s in data['scales'] + data['modes']:
         iv = s['intervals']; pos = []; systems = []
         if s in data['scales']:

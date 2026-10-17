@@ -90,6 +90,7 @@ const chordDataSpanish = <String, String>{
   'D Form': 'Forma D',
   'E Form': 'Forma E',
   'G Form': 'Forma G',
+  'Beginner Grip': 'Forma de principiante',
   'Blues Comping': 'Acompañamiento blues',
   'Bright Top-Set': 'Cuerdas agudas, brillante',
   'Moody Top-Set': 'Cuerdas agudas, sombrío',
@@ -177,6 +178,8 @@ const chordDataSpanish = <String, String>{
   'Root, third, and fifth with muted inner strings.': 'Raíz, 3ª y 5ª con cuerdas interiores muteadas.',
   'Soulful minor7 on top strings.': 'm7 con alma en las cuerdas agudas.',
   'Warm maj7 shell comping shape.': 'Shell maj7 cálido para acompañar.',
+  'Four-string beginner shape without a full barre.':
+      'Forma de 4 cuerdas para principiantes, sin cejilla completa.',
 };
 
 /// Texto de `chords.json` (en inglés) en el idioma actual.
