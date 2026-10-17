@@ -204,9 +204,9 @@ void main() {
     expect(find.text('Voicings'), findsOneWidget);
     expect(find.text(AppStrings.triadInversions), findsOneWidget);
     expect(find.text(AppStrings.advancedInversions), findsOneWidget);
-    expect(find.text('C Form'), findsOneWidget);
+    expect(find.text('Forma C'), findsOneWidget);
     expect(find.text('Shell 6-4-3'), findsOneWidget);
-    expect(find.text('Root Position'), findsWidgets);
+    expect(find.text('Posición fundamental'), findsWidgets);
     expect(find.byType(ChordDiagramWidget), findsWidgets);
   });
 }

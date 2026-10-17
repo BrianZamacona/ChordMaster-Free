@@ -1,3 +1,4 @@
+import 'chord_texts.dart';
 import 'music_theory.dart';
 
 /// Central metadata describing supported chord qualities and musical categories.
@@ -273,7 +274,10 @@ const List<String> allowedChordTags = [
 ];
 
 String chordTypeLabel(String type) =>
-    chordTypeMetadata[type]?.displayName ?? chordQualityDisplayNames[type] ?? type;
+    chordTypeNames[type]?.text ??
+    chordTypeMetadata[type]?.displayName ??
+    chordQualityDisplayNames[type] ??
+    type;
 
 String chordShortLabel(String type) =>
     chordTypeMetadata[type]?.shortLabel ?? chordTypeLabel(type);
@@ -314,7 +318,8 @@ List<String> chordTags(String type, [List<String> explicitTags = const []]) {
   return ordered;
 }
 
-String chordTagLabel(String tag) => chordTagLabels[tag] ?? tag;
+String chordTagLabel(String tag) =>
+    chordTagNames[tag]?.text ?? chordTagLabels[tag] ?? tag;
 
 String chordDisplayName({
   required String root,
@@ -328,7 +333,11 @@ String chordDisplayName({
   return '$root$shortLabel';
 }
 
+/// Descripción del tipo en el idioma actual; la de chords.json (inglés)
+/// solo se usa si el tipo no tiene traducción.
 String? chordDescription(String type, [String? explicitDescription]) {
+  final localized = chordTypeDescriptions[type];
+  if (localized != null) return localized.text;
   final trimmed = explicitDescription?.trim();
   if (trimmed != null && trimmed.isNotEmpty) return trimmed;
   return chordTypeMetadata[type]?.description;

@@ -1,4 +1,6 @@
 import '../../core/constants/app_strings.dart';
+import '../../core/constants/chord_texts.dart';
+import '../../core/i18n/tr.dart';
 import '../../models/chord.dart';
 
 /// Máximo de digitaciones en el comparador.
@@ -83,9 +85,10 @@ List<FingeringRef> parseFingeringSelection(String? raw, Chord chord) {
 String fingeringTitle(Chord chord, FingeringRef ref) {
   final item = sectionItems(chord, ref.section)[ref.index];
   if (ref.section == 'caged') {
-    return sharedShapeLabels(chord.cagedPositions)[ref.index] ?? item.title;
+    return sharedShapeLabels(chord.cagedPositions)[ref.index] ??
+        chordDataText(item.title);
   }
-  return item.title;
+  return chordDataText(item.title);
 }
 
 /// Etiquetas "G (usa la digitación E)" por índice, para formas con
@@ -100,6 +103,9 @@ Map<int, String> sharedShapeLabels(List<ChordExplorerItem> items) {
     for (final group in groups.values)
       if (group.length > 1)
         for (final i in group.take(group.length - 1))
-          i: '${name(items[i])} (usa la digitación ${name(items[group.last])})',
+          i: tr(
+            es: '${name(items[i])} (usa la digitación ${name(items[group.last])})',
+            en: '${name(items[i])} (uses the ${name(items[group.last])} fingering)',
+          ),
   };
 }

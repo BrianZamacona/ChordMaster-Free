@@ -4,6 +4,7 @@ import 'package:flutter/foundation.dart';
 import 'package:flutter/services.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 
+import '../../core/constants/app_strings.dart';
 import '../../core/constants/chord_metadata.dart';
 import '../../core/constants/music_theory.dart';
 import '../../models/chord.dart';
@@ -192,7 +193,7 @@ class ChordViewModel extends Notifier<ChordState> {
       debugPrint('ChordViewModel._load error: $e\n$st');
       state = state.copyWith(
         isLoading: false,
-        errorMessage: 'Failed to load chords.',
+        errorMessage: AppStrings.errorLoadChords,
       );
     }
   }

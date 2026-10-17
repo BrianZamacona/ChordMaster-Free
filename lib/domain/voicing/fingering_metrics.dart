@@ -1,3 +1,4 @@
+import '../../core/i18n/tr.dart';
 import '../theory/double_stops.dart' show noteNames;
 import 'barre_detection.dart';
 import 'ergonomics.dart';
@@ -109,9 +110,11 @@ FingeringMetrics analyzeFingering({
     mutedInside: mutedInside,
     bassNote: noteNames[bassPc],
     inversion: switch (position) {
-      -1 => 'Fuera del acorde',
-      0 => 'Fundamental',
-      _ => '$position\u00aa inversión',
+      -1 => tr(es: 'Fuera del acorde', en: 'Outside the chord'),
+      0 => tr(es: 'Fundamental', en: 'Root position'),
+      1 => tr(es: '1ª inversión', en: '1st inversion'),
+      2 => tr(es: '2ª inversión', en: '2nd inversion'),
+      _ => tr(es: '$position\u00aa inversión', en: '${position}rd inversion'),
     },
     toneLabels: [
       for (final s in sounding)

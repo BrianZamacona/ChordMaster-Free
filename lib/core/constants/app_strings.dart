@@ -303,6 +303,28 @@ class AppStrings {
   static String get dsSkipOne => tr(es: 'Saltando una', en: 'Skip one');
   static String get dsLowRange => tr(es: 'Trastes 0–12', en: 'Frets 0–12');
   static String get dsHighRange => tr(es: 'Trastes 13–24', en: 'Frets 13–24');
+  static String dsGroupTitle(int a, int b, int pairs) => tr(
+    es: 'Cuerdas $a y $b · $pairs parejas',
+    en: 'Strings $a and $b · $pairs pairs',
+  );
+  static String get dsNoPairs =>
+      tr(es: 'Sin parejas en este rango.', en: 'No pairs in this range.');
+
+  /// Calidad de intervalo del dominio ("3ª mayor") en el idioma actual.
+  static String intervalQualityLabel(String spanish) {
+    if (CurrentLanguage.value == AppLanguage.es) return spanish;
+    final m = RegExp(r'^(\d)ª (\w+)$').firstMatch(spanish);
+    if (m == null) return spanish;
+    const ordinals = {'2': '2nd', '3': '3rd', '4': '4th', '5': '5th', '6': '6th', '7': '7th'};
+    const qualities = {
+      'mayor': 'major',
+      'menor': 'minor',
+      'justa': 'perfect',
+      'aumentada': 'augmented',
+      'disminuida': 'diminished',
+    };
+    return '${qualities[m[2]] ?? m[2]} ${ordinals[m[1]] ?? m[1]}';
+  }
 
   // ── Progresiones ───────────────────────────────────────────────────────────
 
@@ -405,6 +427,10 @@ class AppStrings {
   static String get errorGeneric => tr(
     es: 'Algo salió mal. Inténtalo de nuevo.',
     en: 'Something went wrong. Please try again.',
+  );
+  static String get errorLoadChords => tr(
+    es: 'No se pudieron cargar los acordes.',
+    en: 'Failed to load chords.',
   );
   static String get errorStorage => tr(
     es: 'No se pudieron cargar los datos guardados.',

@@ -2,6 +2,8 @@ import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 
 import '../../core/constants/app_strings.dart';
+import '../../core/constants/chord_texts.dart';
+import '../../core/i18n/tr.dart';
 import '../../core/widgets/chord_diagram.dart';
 import '../../domain/voicing/barre_detection.dart';
 import '../../domain/voicing/fingering_metrics.dart';
@@ -186,7 +188,9 @@ class _CompareColumn extends StatelessWidget {
   String _barreText() {
     final barre = metrics.barre;
     if (barre == null) return AppStrings.barreNone;
-    final kind = barreKind(barre) == BarreKind.grande ? 'grande' : 'mini';
+    final kind = barreKind(barre) == BarreKind.grande
+        ? tr(es: 'grande', en: 'full')
+        : tr(es: 'mini', en: 'mini');
     return '$kind ${AppStrings.fretWord} ${barre.fret}';
   }
 
@@ -215,7 +219,8 @@ class _CompareColumn extends StatelessWidget {
             Text(
               [
                 sectionTitle(fingering.section),
-                if (item.shape != null) '${AppStrings.shapeLabel}: ${item.shape}',
+                if (item.shape != null)
+                  '${AppStrings.shapeLabel}: ${chordDataText(item.shape!)}',
               ].join(' • '),
               style: Theme.of(context).textTheme.bodySmall?.copyWith(
                     color: context.palette.textSecondary,

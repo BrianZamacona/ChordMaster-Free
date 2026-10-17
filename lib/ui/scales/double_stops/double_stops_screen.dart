@@ -189,12 +189,12 @@ class _GroupSection extends StatelessWidget {
           crossAxisAlignment: CrossAxisAlignment.start,
           children: [
             Text(
-              'Cuerdas ${companion + 1} y ${base + 1} · ${group.pairs.length} parejas',
+              AppStrings.dsGroupTitle(companion + 1, base + 1, group.pairs.length),
               style: theme.textTheme.titleSmall,
             ),
             const SizedBox(height: 8),
             if (group.pairs.isEmpty)
-              const Text('Sin parejas en este rango.')
+              Text(AppStrings.dsNoPairs)
             else ...[
               DoubleStopFretboard(
                 pairs: group.pairs,
@@ -215,7 +215,7 @@ class _GroupSection extends StatelessWidget {
                 children: [
                   for (final d in degrees)
                     Text(
-                      '${degreeNumeral(d)}: ${qualityByDegree[d]}',
+                      '${degreeNumeral(d)}: ${AppStrings.intervalQualityLabel(qualityByDegree[d]!)}',
                       style: theme.textTheme.labelSmall,
                     ),
                 ],

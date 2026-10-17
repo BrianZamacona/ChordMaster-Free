@@ -3,6 +3,7 @@ import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:go_router/go_router.dart';
 
 import '../../core/constants/app_strings.dart';
+import '../../core/constants/chord_texts.dart';
 import '../../core/widgets/chord_diagram.dart';
 import '../../core/widgets/fingering_theory_card.dart';
 import '../../models/chord.dart';
@@ -239,10 +240,10 @@ class _ExplorerItemCard extends StatelessWidget {
   String _buildSubtitle() {
     final parts = <String>[];
     if (item.shape != null) {
-      parts.add('${AppStrings.shapeLabel}: ${item.shape}');
+      parts.add('${AppStrings.shapeLabel}: ${chordDataText(item.shape!)}');
     }
     if (item.description != null) {
-      parts.add(item.description!);
+      parts.add(chordDataText(item.description!));
     }
     return parts.join(' • ');
   }
@@ -259,7 +260,7 @@ class _ExplorerItemCard extends StatelessWidget {
           crossAxisAlignment: CrossAxisAlignment.start,
           children: [
             Text(
-              titleOverride ?? item.title,
+              titleOverride ?? chordDataText(item.title),
               style: Theme.of(context).textTheme.titleSmall?.copyWith(
                     fontWeight: FontWeight.bold,
                   ),

@@ -4,6 +4,7 @@ import 'package:flutter/foundation.dart';
 import 'package:flutter/services.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 
+import '../../core/constants/chord_metadata.dart';
 import '../../core/i18n/tr.dart';
 import '../../domain/progressions/progression_builder.dart';
 import '../../domain/progressions/progression_data.dart';
@@ -109,7 +110,7 @@ class ProgressionPlan {
 
 String _degreeLabel(ProgressionDegree degree, int tonic) {
   final root = noteNames[(tonic + degree.semitones) % 12];
-  return '${degree.numeral} ($root ${degree.type})';
+  return '${degree.numeral} (${chordDisplayName(root: root, type: degree.type)})';
 }
 
 /// Calcula el camino óptimo y las transiciones; sin efectos secundarios.
