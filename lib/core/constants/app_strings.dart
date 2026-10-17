@@ -233,9 +233,6 @@ class AppStrings {
   /// Chord explorer screen title.
   static const String chordExplorer = 'Explorer';
 
-  /// CAGED positions section label.
-  static const String cagedPositions = 'CAGED Positions';
-
   /// Curated voicings section label.
   static const String curatedVoicings = 'Voicings';
 

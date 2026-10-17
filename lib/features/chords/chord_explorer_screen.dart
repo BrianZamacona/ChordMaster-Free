@@ -4,6 +4,8 @@ import 'package:flutter_riverpod/flutter_riverpod.dart';
 import '../../core/constants/app_colors.dart';
 import '../../core/constants/app_strings.dart';
 import '../../core/widgets/chord_diagram.dart';
+import '../../core/widgets/fingering_theory_card.dart';
+import '../../domain/fingering_systems/fingering_systems_registry.dart';
 import '../../models/chord.dart';
 import 'chord_viewmodel.dart';
 
@@ -61,7 +63,9 @@ class ChordExplorerScreen extends ConsumerWidget {
           crossAxisAlignment: CrossAxisAlignment.start,
           children: [
             _ExplorerSection(
-              title: AppStrings.cagedPositions,
+              title:
+                  '${FingeringSystemsRegistry.theoryFor('caged')?.name ?? 'CAGED'} Positions',
+              header: const FingeringTheoryCard(systemId: 'caged'),
               items: chord.cagedPositions,
             ),
             const SizedBox(height: 16),
@@ -97,10 +101,15 @@ class ChordExplorerScreen extends ConsumerWidget {
 }
 
 class _ExplorerSection extends StatelessWidget {
-  const _ExplorerSection({required this.title, required this.items});
+  const _ExplorerSection({
+    required this.title,
+    required this.items,
+    this.header,
+  });
 
   final String title;
   final List<ChordExplorerItem> items;
+  final Widget? header;
 
   @override
   Widget build(BuildContext context) {
@@ -120,6 +129,7 @@ class _ExplorerSection extends StatelessWidget {
       title: title,
       child: Column(
         children: [
+          if (header != null) ...[header!, const SizedBox(height: 12)],
           for (var index = 0; index < items.length; index++) ...[
             _ExplorerItemCard(item: items[index]),
             if (index != items.length - 1) const SizedBox(height: 12),

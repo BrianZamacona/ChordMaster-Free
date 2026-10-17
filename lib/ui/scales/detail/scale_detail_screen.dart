@@ -1,7 +1,9 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 
+import '../../../core/widgets/fingering_theory_card.dart';
 import '../../../data/models/scale_definition.dart';
+import '../../../domain/fingering_systems/fingering_systems_registry.dart';
 import '../../../ui/widgets/fretboard_diagram.dart';
 import 'scale_detail_notifier.dart';
 import 'widgets/fret_range_slider.dart';
@@ -31,6 +33,11 @@ class ScaleDetailScreen extends ConsumerWidget {
             selectedSystemId: state.selectedSystemId,
             onChanged: notifier.changeSystem,
           ),
+          if (state.selectedSystemId != null)
+            Padding(
+              padding: const EdgeInsets.fromLTRB(16, 4, 16, 8),
+              child: FingeringTheoryCard(systemId: state.selectedSystemId!),
+            ),
           FretRangeSlider(
             startFret: state.startFret,
             endFret: state.endFret,
@@ -109,16 +116,25 @@ class _SystemFilterRow extends StatelessWidget {
   final ValueChanged<String?> onChanged;
 
   @override
-  Widget build(BuildContext context) => SizedBox(
+  Widget build(BuildContext context) {
+    final ordered = [...systems]..sort((a, b) {
+        int rank(String id) {
+          final i = FingeringSystemsRegistry.displayOrder.indexOf(id);
+          return i < 0 ? FingeringSystemsRegistry.displayOrder.length : i;
+        }
+
+        return rank(a.id).compareTo(rank(b.id));
+      });
+    return SizedBox(
       height: 42,
       child: ListView(
         scrollDirection: Axis.horizontal,
         padding: const EdgeInsets.symmetric(horizontal: 16),
         children: [
           _SystemChip(label: 'Todos', selected: selectedSystemId == null, onTap: () => onChanged(null)),
-          ...systems.map(
+          ...ordered.map(
             (s) => _SystemChip(
-              label: s.name,
+              label: FingeringSystemsRegistry.theoryFor(s.id)?.name ?? s.name,
               selected: selectedSystemId == s.id,
               onTap: () => onChanged(s.id),
             ),
@@ -126,6 +142,7 @@ class _SystemFilterRow extends StatelessWidget {
         ],
       ),
     );
+  }
 }
 
 class _SystemChip extends StatelessWidget {
