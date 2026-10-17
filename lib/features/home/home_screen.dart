@@ -260,7 +260,7 @@ class _ModuleInfo {
   final String route;
 }
 
-List<_ModuleInfo> _modules = [
+List<_ModuleInfo> get _modules => [
   _ModuleInfo(
       label: AppStrings.moduleChords,
       icon: Icons.piano,

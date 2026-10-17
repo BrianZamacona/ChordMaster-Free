@@ -1,6 +1,7 @@
 import 'dart:convert';
 import 'dart:io';
 
+import 'package:chordmaster_free/core/constants/scale_names.dart';
 import 'package:chordmaster_free/core/i18n/tr.dart';
 import 'package:chordmaster_free/domain/theory/intervals.dart';
 import 'package:chordmaster_free/domain/theory/scale_insights.dart';
@@ -67,6 +68,33 @@ void main() {
     expect([for (final c in diatonicTriads(harmonicMinor)) c.numeral],
         ['i', 'ii°', 'bIII+', 'iv', 'V', 'bVI', 'vii°']);
     expect(diatonicTriads(pentMinor), isEmpty);
+  });
+
+  test('escalas para un acorde: solo las que contienen todas sus notas', () {
+    final data =
+        jsonDecode(File('assets/data/scales_master.json').readAsStringSync())
+            as Map<String, dynamic>;
+    final all = {
+      for (final g in ['scales', 'modes'])
+        for (final raw in data[g] as List<dynamic>)
+          (raw as Map<String, dynamic>)['id'] as String:
+              (raw['intervals'] as List<dynamic>).cast<int>(),
+    };
+    final dim = scalesForChord([0, 3, 6], all);
+    expect(dim, containsAll(['locrian', 'diminished_wh', 'diminished_hw']));
+    expect(dim, isNot(contains('whole_tone'))); // no tiene b3
+    final m6 = scalesForChord([0, 3, 7, 9], all);
+    expect(m6, containsAll(['dorian', 'melodic_minor']));
+    expect(m6, isNot(contains('natural_minor'))); // su b6 choca con la 6
+    expect(scalesForChord([0, 4, 7, 11, 18], all), ['lydian']);
+  });
+
+  test('disminuidas: el nombre sale de los intervalos, no del id', () {
+    expect(scaleDisplayName('diminished_wh', dimHalfWhole), 'Disminuida semitono-tono');
+    expect(scaleDisplayName('x', [0, 2, 3, 5, 6, 8, 9, 11]), 'Disminuida tono-semitono');
+    CurrentLanguage.value = AppLanguage.en;
+    expect(scaleDisplayName('dorian', dorian), 'Dorian');
+    expect(scaleDisplayName('unknown', majorScale, fallback: 'X'), 'X');
   });
 
   test('cada escala y modo del JSON tiene ideas de improvisación', () {

@@ -3,6 +3,8 @@ import 'dart:ui' as ui;
 
 import 'package:flutter/material.dart';
 
+import '../../core/i18n/tr.dart';
+
 import '../../data/models/note_coordinate.dart';
 import '../../data/repository/scale_repository.dart';
 import '../theme.dart';
@@ -32,8 +34,12 @@ class FretboardDiagram extends StatelessWidget {
         height: height,
         child: LayoutBuilder(
           builder: (context, constraints) => Semantics(
-            label: 'Posición entre los trastes ${pattern.startingFret} y '
-                '${pattern.endFret}, ${pattern.coordinates.length} notas',
+            label: tr(
+              es: 'Posición entre los trastes ${pattern.startingFret} y '
+                  '${pattern.endFret}, ${pattern.coordinates.length} notas',
+              en: 'Position between frets ${pattern.startingFret} and '
+                  '${pattern.endFret}, ${pattern.coordinates.length} notes',
+            ),
             excludeSemantics: true,
             child: CustomPaint(
               size: Size(constraints.maxWidth, height),

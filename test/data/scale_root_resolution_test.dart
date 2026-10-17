@@ -39,22 +39,22 @@ void main() {
   group('chips de sistema', () {
     List<String> chips(ScaleDefinition s) => [
           for (final sys in s.systems)
-            FingeringSystemsRegistry.theoryFor(sys.id)?.name ?? sys.name,
+            FingeringSystemsRegistry.theoryFor(sys.id)?.name.text ?? sys.name,
         ];
 
-    test('pentatónicas y blues muestran Pentatonic Box (2NPS)', () {
+    test('pentatónicas y blues muestran Caja pentatónica (2NPS)', () {
       for (final id in ['pentatonic_minor', 'pentatonic_major', 'blues_minor']) {
         final scale = scales.firstWhere((s) => s.id == id);
-        expect(chips(scale), contains('Pentatonic Box (2NPS)'), reason: id);
-        expect(chips(scale), isNot(contains('Linear (4NPS)')), reason: id);
+        expect(chips(scale), contains('Caja pentatónica (2NPS)'), reason: id);
+        expect(chips(scale), isNot(contains('Lineal (4NPS)')), reason: id);
       }
     });
 
-    test('escalas de 7 notas y modos muestran Linear (4NPS)', () {
+    test('escalas de 7 notas y modos muestran Lineal (4NPS)', () {
       final sevenNote = scales.where((s) => s.intervals.length == 7);
       expect(sevenNote, isNotEmpty);
       for (final scale in sevenNote) {
-        expect(chips(scale), contains('Linear (4NPS)'), reason: scale.id);
+        expect(chips(scale), contains('Lineal (4NPS)'), reason: scale.id);
       }
     });
 

@@ -7,9 +7,14 @@ import 'package:go_router/go_router.dart';
 import '../../core/constants/app_strings.dart';
 import '../../core/constants/chord_metadata.dart';
 import '../../core/constants/music_theory.dart';
+import '../../core/constants/scale_names.dart';
 import '../../core/widgets/chord_diagram.dart';
 import '../../core/widgets/donation_button.dart';
 import '../../core/widgets/interval_legend.dart';
+import '../../data/models/scale_definition.dart';
+import '../../data/repository/scale_repository.dart';
+import '../../domain/theory/double_stops.dart' show noteNames;
+import '../../domain/theory/scale_insights.dart';
 import '../../domain/voicing/fingering_metrics.dart';
 import '../../models/chord.dart';
 import '../../services/achievement_service.dart';
@@ -341,18 +346,7 @@ class _ChordDetailScreenState extends ConsumerState<ChordDetailScreen> {
             fadeIn(
               _SectionCard(
                 title: AppStrings.relatedScales,
-                child: Wrap(
-                  spacing: 8,
-                  runSpacing: 4,
-                  children: _relatedScales(chord)
-                      .map(
-                        (scale) => ActionChip(
-                          label: Text(scale, style: const TextStyle(fontSize: 12)),
-                          onPressed: () => context.go('/learn/scales'),
-                        ),
-                      )
-                      .toList(),
-                ),
+                child: _RelatedScales(chord: chord),
               ),
             ),
             const SizedBox(height: 24),
@@ -373,56 +367,51 @@ class _ChordDetailScreenState extends ConsumerState<ChordDetailScreen> {
         .join(' — ');
     return '$symbols\n$names';
   }
+}
 
-  List<String> _relatedScales(Chord chord) {
-    switch (chord.type) {
-      case 'major':
-      case 'major7':
-      case 'add9':
-      case 'sixth':
-      case 'major9':
-      case 'major7Sharp11':
-        return [
-          '${chord.root} Major',
-          '${chord.root} Pentatonic Major',
-          '${chord.root} Lydian',
-        ];
-      case 'dominant7':
-      case 'dominant9':
-      case 'thirteenth':
-      case 'dominant7Flat9':
-      case 'dominant7Sharp9':
-        return [
-          '${chord.root} Mixolydian',
-          '${chord.root} Blues',
-          '${chord.root} Pentatonic Major',
-        ];
-      case 'minor':
-      case 'minor7':
-      case 'minor6':
-      case 'minor9':
-      case 'minor11':
-        return [
-          '${chord.root} Natural Minor',
-          '${chord.root} Pentatonic Minor',
-          '${chord.root} Dorian',
-          '${chord.root} Blues',
-        ];
-      case 'halfDiminished':
-      case 'diminished':
-      case 'diminished7':
-        return [
-          '${chord.root} Locrian',
-          '${chord.root} Harmonic Minor',
-          '${chord.root} Whole Tone',
-        ];
-      default:
-        return [
-          '${chord.root} Major',
-          '${chord.root} Natural Minor',
-        ];
+/// Escalas que contienen todas las notas del acorde (regla de
+/// [scalesForChord]); cada una abre su detalle en la raíz del acorde.
+class _RelatedScales extends ConsumerWidget {
+  const _RelatedScales({required this.chord});
+
+  final Chord chord;
+
+  @override
+  Widget build(BuildContext context, WidgetRef ref) {
+    final all = [
+      ...?ref.watch(allScalesProvider).value,
+      ...?ref.watch(allModesProvider).value,
+    ];
+    final byId = {for (final s in all) s.id: s};
+    final ids = scalesForChord(chord.intervals, {
+      for (final s in all) s.id: s.intervals,
+    });
+    final root = noteNames.indexOf(chord.root);
+    if (ids.isEmpty) {
+      return Text(AppStrings.relatedScalesNone, style: Theme.of(context).textTheme.bodySmall);
     }
+    return Wrap(
+      spacing: 8,
+      runSpacing: 4,
+      children: [
+        for (final id in ids)
+          ActionChip(
+            key: Key('related-scale-$id'),
+            label: Text(
+              '${chord.root} ${_name(byId[id]!)}',
+              style: const TextStyle(fontSize: 12),
+            ),
+            onPressed: () => context.go(
+              '/learn/scales/$id?root=${root < 0 ? 0 : root}',
+              extra: byId[id],
+            ),
+          ),
+      ],
+    );
   }
+
+  static String _name(ScaleDefinition s) =>
+      scaleDisplayName(s.id, s.intervals, fallback: s.name);
 }
 
 class _PlayButton extends StatelessWidget {

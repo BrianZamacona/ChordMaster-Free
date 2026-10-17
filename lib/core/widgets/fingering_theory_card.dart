@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 
 import '../../domain/fingering_systems/fingering_systems_registry.dart';
+import '../constants/app_strings.dart';
 
 /// Explanation of a fingering system, read from [FingeringSystemsRegistry].
 class FingeringTheoryCard extends StatelessWidget {
@@ -18,19 +19,19 @@ class FingeringTheoryCard extends StatelessWidget {
       crossAxisAlignment: CrossAxisAlignment.start,
       children: [
         Text(
-          theory.name,
+          theory.name.text,
           style: Theme.of(
             context,
           ).textTheme.titleSmall?.copyWith(fontWeight: FontWeight.bold),
         ),
         const SizedBox(height: 4),
-        Text(theory.shortExplanation, style: style),
+        Text(theory.shortExplanation.text, style: style),
         if (theory.shapeOrder.isNotEmpty) ...[
           const SizedBox(height: 4),
-          Text('Orden: ${theory.shapeOrder.join(' - ')}', style: style),
+          Text('${AppStrings.scaleShapeOrder}: ${theory.shapeOrder.join(' - ')}', style: style),
         ],
         const SizedBox(height: 4),
-        Text(theory.howShapesConnect, style: style),
+        Text(theory.howShapesConnect.text, style: style),
       ],
     );
   }

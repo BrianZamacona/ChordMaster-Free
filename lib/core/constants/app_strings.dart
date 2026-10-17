@@ -75,6 +75,10 @@ class AppStrings {
   static String get chordFormula => tr(es: 'Fórmula', en: 'Formula');
   static String get relatedScales =>
       tr(es: 'Escalas relacionadas', en: 'Related scales');
+  static String get relatedScalesNone => tr(
+    es: 'Ninguna escala de la app contiene todas sus notas.',
+    en: 'No scale in the app contains all of its notes.',
+  );
   static String get relatedVoicings =>
       tr(es: 'Acordes relacionados', en: 'Related chords');
   static String get styleMatches =>
@@ -257,6 +261,14 @@ class AppStrings {
     en: 'No positions for this system',
   );
   static String get scaleShapeOrder => tr(es: 'Orden', en: 'Order');
+  static String get cagedPositions =>
+      tr(es: 'Posiciones CAGED', en: 'CAGED positions');
+  static String get scaleModes => tr(es: 'Modos', en: 'Modes');
+  static String get scaleNotesCount => tr(es: 'notas', en: 'notes');
+  static String get dsSub => tr(
+    es: 'Parejas de notas por grado y par de cuerdas',
+    en: 'Note pairs by degree and string pair',
+  );
   static String get scaleSteps => tr(
     es: 'Pasos entre notas (T = tono, S = semitono)',
     en: 'Steps between notes (W = whole, H = half)',

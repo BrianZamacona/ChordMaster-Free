@@ -5,7 +5,6 @@ import 'package:go_router/go_router.dart';
 import '../../core/constants/app_strings.dart';
 import '../../core/widgets/chord_diagram.dart';
 import '../../core/widgets/fingering_theory_card.dart';
-import '../../domain/fingering_systems/fingering_systems_registry.dart';
 import '../../models/chord.dart';
 import '../../ui/palette.dart';
 import 'chord_viewmodel.dart';
@@ -87,7 +86,7 @@ class _ChordExplorerScreenState extends ConsumerState<ChordExplorerScreen> {
           children: [
             _ExplorerSection(
               title:
-                  '${FingeringSystemsRegistry.theoryFor('caged')?.name ?? 'CAGED'} Positions',
+                  AppStrings.cagedPositions,
               header: const FingeringTheoryCard(systemId: 'caged'),
               labelSharedShapes: true,
               sectionId: 'caged',

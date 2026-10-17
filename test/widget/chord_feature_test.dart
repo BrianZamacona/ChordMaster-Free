@@ -200,7 +200,7 @@ void main() {
     );
     await tester.pump(const Duration(milliseconds: 700));
 
-    expect(find.text('CAGED Positions'), findsOneWidget);
+    expect(find.text(AppStrings.cagedPositions), findsOneWidget);
     expect(find.text('Voicings'), findsOneWidget);
     expect(find.text(AppStrings.triadInversions), findsOneWidget);
     expect(find.text(AppStrings.advancedInversions), findsOneWidget);

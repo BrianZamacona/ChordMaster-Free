@@ -52,16 +52,19 @@ class ScaleDetailState {
       );
 }
 
+/// Escala y tónica inicial (semitono, C = 0) del detalle.
+typedef ScaleDetailArgs = ({ScaleDefinition scale, int root});
+
 class ScaleDetailNotifier extends Notifier<ScaleDetailState> {
   ScaleDetailNotifier(this._arg);
 
-  final ScaleDefinition _arg;
+  final ScaleDetailArgs _arg;
 
   @override
   ScaleDetailState build() {
     final initial = ScaleDetailState(
-      scale: _arg,
-      rootSemitone: 0,
+      scale: _arg.scale,
+      rootSemitone: _arg.root % 12,
       selectedSystemId: null,
       visiblePatterns: const [],
       selectedPatternIndex: 0,
@@ -97,6 +100,6 @@ class ScaleDetailNotifier extends Notifier<ScaleDetailState> {
 }
 
 final scaleDetailProvider = NotifierProvider.autoDispose
-    .family<ScaleDetailNotifier, ScaleDetailState, ScaleDefinition>(
+    .family<ScaleDetailNotifier, ScaleDetailState, ScaleDetailArgs>(
   ScaleDetailNotifier.new,
 );

@@ -122,6 +122,17 @@ List<String> chordTypesOnTonic(List<int> scale) {
   return [for (final e in fits) e.key];
 }
 
+/// Escalas (de [candidates], por id) que contienen todas las notas de un
+/// acorde con esos [chordIntervals] construido sobre su tónica: las que
+/// puedes tocar sobre ese acorde sin chocar con él.
+List<String> scalesForChord(
+  List<int> chordIntervals,
+  Map<String, List<int>> candidates,
+) => [
+  for (final e in candidates.entries)
+    if (chordIntervals.every((i) => _normalized(e.value).contains(i % 12))) e.key,
+];
+
 /// Acorde diatónico: tríada construida por terceras sobre un grado.
 class DiatonicChord {
   const DiatonicChord({

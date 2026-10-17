@@ -126,6 +126,10 @@ final GoRouter appRouter = GoRouter(
                       path: ':scaleId',
                       builder: (_, state) => ScaleDetailScreen(
                         scale: state.extra! as ScaleDefinition,
+                        initialRoot: int.tryParse(
+                              state.uri.queryParameters['root'] ?? '',
+                            ) ??
+                            0,
                       ),
                     ),
                   ],

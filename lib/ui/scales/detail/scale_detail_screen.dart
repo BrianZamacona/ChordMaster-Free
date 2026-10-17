@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 
 import '../../../core/constants/app_strings.dart';
+import '../../../core/constants/scale_names.dart';
 import '../../../core/widgets/fingering_theory_card.dart';
 import '../../../core/widgets/interval_legend.dart';
 import '../../../core/widgets/selector_pill.dart';
@@ -20,12 +21,18 @@ const _noteNames = ['C', 'C#', 'D', 'D#', 'E', 'F', 'F#', 'G', 'G#', 'A', 'A#', 
 /// Detalle de una escala: tónica y sistema arriba, posiciones completas
 /// (nunca recortadas) y, bajo el diapasón, qué es el sistema y las notas.
 class ScaleDetailScreen extends ConsumerWidget {
-  const ScaleDetailScreen({super.key, required this.scale});
+  const ScaleDetailScreen({super.key, required this.scale, this.initialRoot = 0});
 
   final ScaleDefinition scale;
 
+  /// Tónica con la que abre (semitono, C = 0); p. ej. desde un acorde.
+  final int initialRoot;
+
+  String get _scaleName =>
+      scaleDisplayName(scale.id, scale.intervals, fallback: scale.name);
+
   String _systemName(String id) =>
-      FingeringSystemsRegistry.theoryFor(id)?.name ??
+      FingeringSystemsRegistry.theoryFor(id)?.name.text ??
       scale.systems.firstWhere((s) => s.id == id, orElse: () => FingeringSystem(id: id, name: id)).name;
 
   List<FingeringSystem> get _orderedSystems => [...scale.systems]..sort((a, b) {
@@ -39,12 +46,13 @@ class ScaleDetailScreen extends ConsumerWidget {
 
   @override
   Widget build(BuildContext context, WidgetRef ref) {
-    final state = ref.watch(scaleDetailProvider(scale));
-    final notifier = ref.read(scaleDetailProvider(scale).notifier);
+    final args = (scale: scale, root: initialRoot);
+    final state = ref.watch(scaleDetailProvider(args));
+    final notifier = ref.read(scaleDetailProvider(args).notifier);
     final pattern = state.currentPattern;
 
     return Scaffold(
-      appBar: AppBar(title: Text('${state.rootName} ${scale.name}')),
+      appBar: AppBar(title: Text('${state.rootName} $_scaleName')),
       body: ListView(
         padding: const EdgeInsets.only(bottom: 24),
         children: [
@@ -116,8 +124,8 @@ class ScaleDetailScreen extends ConsumerWidget {
           else
             _DiagramPlaceholder(message: AppStrings.scaleNoPositions),
           ScaleInfoPanel(
-            scaleName: scale.name,
-            category: scale.category,
+            scaleName: _scaleName,
+            category: scaleCategoryName(scale.category),
             rootName: state.rootName,
             notes: state.scaleNoteNames,
             degrees: scaleDegreeLabels(scale.intervals),
@@ -159,7 +167,7 @@ class ScaleDetailScreen extends ConsumerWidget {
                   child: ListTile(
                     title: Text(_systemName(s.id)),
                     subtitle: Text(
-                      FingeringSystemsRegistry.theoryFor(s.id)?.shortExplanation ?? '',
+                      FingeringSystemsRegistry.theoryFor(s.id)?.shortExplanation.text ?? '',
                       maxLines: 2,
                       overflow: TextOverflow.ellipsis,
                     ),

@@ -2,46 +2,48 @@ import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:go_router/go_router.dart';
 
+import '../../core/constants/app_strings.dart';
+import '../../core/constants/scale_names.dart';
 import '../../data/models/scale_definition.dart';
 import '../../data/repository/scale_repository.dart';
+import '../../domain/theory/scale_insights.dart';
 
+/// Escalas por categoría, los modos de la mayor y el acceso a double stops.
 class ScalesScreen extends ConsumerWidget {
   const ScalesScreen({super.key});
+
+  static const _categories = ['Diatónica', 'Pentatónica', 'Simétrica', 'Exótica'];
 
   @override
   Widget build(BuildContext context, WidgetRef ref) {
     final scalesAsync = ref.watch(allScalesProvider);
+    final modes = ref.watch(allModesProvider).value ?? const <ScaleDefinition>[];
 
     return Scaffold(
-      appBar: AppBar(title: const Text('Escalas')),
+      appBar: AppBar(title: Text(AppStrings.moduleScales)),
       body: scalesAsync.when(
-        data: (scales) {
-          final diatonic = scales.where((s) => s.category == 'Diatónica').toList();
-          final pentatonic = scales.where((s) => s.category == 'Pentatónica').toList();
-          final symmetric = scales.where((s) => s.category == 'Simétrica').toList();
-          final exotic = scales.where((s) => s.category == 'Exótica').toList();
-
-          return ListView(
-            padding: const EdgeInsets.all(16),
-            children: [
-              Card(
-                child: ListTile(
-                  leading: const Icon(Icons.straighten),
-                  title: const Text('Double stops diatónicos'),
-                  subtitle: const Text('Parejas de notas por grado y par de cuerdas'),
-                  onTap: () => context.go('/learn/scales/double-stops'),
-                ),
+        data: (scales) => ListView(
+          padding: const EdgeInsets.all(16),
+          children: [
+            Card(
+              child: ListTile(
+                leading: const Icon(Icons.straighten),
+                title: Text(AppStrings.dsTitle),
+                subtitle: Text(AppStrings.dsSub),
+                onTap: () => context.go('/learn/scales/double-stops'),
               ),
-              const SizedBox(height: 8),
-              _Section(title: 'Diatónica', scales: diatonic),
-              _Section(title: 'Pentatónica', scales: pentatonic),
-              _Section(title: 'Simétrica', scales: symmetric),
-              _Section(title: 'Exótica', scales: exotic),
-            ],
-          );
-        },
+            ),
+            const SizedBox(height: 8),
+            for (final c in _categories)
+              _Section(
+                title: scaleCategoryName(c),
+                scales: [for (final s in scales) if (s.category == c) s],
+              ),
+            _Section(title: AppStrings.scaleModes, scales: modes),
+          ],
+        ),
         loading: () => const Center(child: CircularProgressIndicator()),
-        error: (e, _) => Center(child: Text('Error: $e')),
+        error: (e, _) => Center(child: Text('${AppStrings.errorGeneric}\n$e')),
       ),
     );
   }
@@ -64,8 +66,12 @@ class _Section extends StatelessWidget {
         const SizedBox(height: 8),
         ...scales.map((scale) => Card(
               child: ListTile(
-                title: Text(scale.name),
-                subtitle: Text(scale.id),
+                key: Key('scale-${scale.id}'),
+                title: Text(scaleDisplayName(scale.id, scale.intervals, fallback: scale.name)),
+                subtitle: Text(
+                  '${scale.intervals.length} ${AppStrings.scaleNotesCount} · '
+                  '${stepPatternLabel(scale.intervals)}',
+                ),
                 onTap: () => context.go('/learn/scales/${scale.id}', extra: scale),
               ),
             )),

@@ -52,20 +52,20 @@ void main() {
   }
 
   for (final id in ['pentatonic_minor', 'pentatonic_major', 'blues_minor']) {
-    testWidgets('$id: ofrece Pentatonic Box (2NPS), sin Linear', (tester) async {
+    testWidgets('$id: ofrece Caja pentatónica (2NPS), sin Linear', (tester) async {
       await pump(tester, scales.firstWhere((s) => s.id == id));
       await openSystems(tester);
-      expect(find.widgetWithText(ListTile, 'Pentatonic Box (2NPS)'), findsOneWidget);
-      expect(find.widgetWithText(ListTile, 'Linear (4NPS)'), findsNothing);
+      expect(find.widgetWithText(ListTile, 'Caja pentatónica (2NPS)'), findsOneWidget);
+      expect(find.widgetWithText(ListTile, 'Lineal (4NPS)'), findsNothing);
     });
   }
 
   for (final scale in scales.where((s) => s.intervals.length == 7)) {
-    testWidgets('${scale.id}: ofrece Linear (4NPS)', (tester) async {
+    testWidgets('${scale.id}: ofrece Lineal (4NPS)', (tester) async {
       await pump(tester, scale);
       await openSystems(tester);
-      expect(find.widgetWithText(ListTile, 'Linear (4NPS)'), findsOneWidget);
-      expect(find.widgetWithText(ListTile, 'Pentatonic Box (2NPS)'), findsNothing);
+      expect(find.widgetWithText(ListTile, 'Lineal (4NPS)'), findsOneWidget);
+      expect(find.widgetWithText(ListTile, 'Caja pentatónica (2NPS)'), findsNothing);
     });
   }
 

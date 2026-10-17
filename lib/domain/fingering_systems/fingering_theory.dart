@@ -1,3 +1,5 @@
+import '../../core/i18n/tr.dart';
+
 /// Explanatory metadata for a fingering system (CAGED, 3NPS, etc.).
 ///
 /// This is the single place where the *theory* behind a fingering system
@@ -19,16 +21,16 @@ class FingeringSystemTheory {
   final String id;
 
   /// Display name (e.g. 'CAGED').
-  final String name;
+  final LocalizedText name;
 
   /// 2-3 sentence explanation of what the system is, shown once per
   /// system (not repeated per scale/chord).
-  final String shortExplanation;
+  final LocalizedText shortExplanation;
 
   /// Canonical order of shape labels, e.g. ['C', 'A', 'G', 'E', 'D'].
   /// Empty for systems that don't have named shapes (e.g. 3NPS).
   final List<String> shapeOrder;
 
   /// Explanation of how consecutive shapes overlap/connect on the neck.
-  final String howShapesConnect;
+  final LocalizedText howShapesConnect;
 }

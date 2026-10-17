@@ -1,6 +1,9 @@
 import 'package:flutter/material.dart';
 
+import '../../../../core/constants/app_strings.dart';
+import '../../../../core/constants/scale_names.dart';
 import '../../../../data/repository/scale_repository.dart';
+import '../../../../domain/fingering_systems/fingering_systems_registry.dart';
 
 class PatternTabBar extends StatelessWidget {
   const PatternTabBar({
@@ -34,7 +37,7 @@ class PatternTabBar extends StatelessWidget {
             const SizedBox(width: 8),
             Expanded(
               child: Text(
-                'Sin posiciones para este sistema',
+                AppStrings.scaleNoPositions,
                 style: theme.textTheme.bodySmall?.copyWith(color: cs.onSurfaceVariant),
               ),
             ),
@@ -91,7 +94,7 @@ class PatternTabBar extends StatelessWidget {
                             crossAxisAlignment: CrossAxisAlignment.start,
                             children: [
                               Text(
-                                p.positionName,
+                                positionDisplayName(p.positionName),
                                 style: theme.textTheme.labelSmall?.copyWith(
                                   fontWeight: active ? FontWeight.w700 : FontWeight.w500,
                                   color: active ? cs.onSecondaryContainer : cs.onSurfaceVariant,
@@ -99,7 +102,8 @@ class PatternTabBar extends StatelessWidget {
                                 ),
                               ),
                               Text(
-                                p.systemName,
+                                FingeringSystemsRegistry.theoryFor(p.systemId)?.name.text ??
+                                    p.systemName,
                                 style: TextStyle(
                                   fontSize: 8,
                                   color: active
