@@ -182,6 +182,18 @@ ThemeData _buildTheme(AppPalette p, Brightness brightness) {
       selectedItemColor: p.accent,
       unselectedItemColor: p.textSecondary,
     ),
+    segmentedButtonTheme: SegmentedButtonThemeData(
+      style: ButtonStyle(
+        backgroundColor: WidgetStateProperty.resolveWith(
+          (states) => states.contains(WidgetState.selected)
+              ? p.accent.withValues(alpha: 0.22)
+              : p.surface,
+        ),
+        foregroundColor: WidgetStatePropertyAll(p.textPrimary),
+        side: WidgetStatePropertyAll(BorderSide(color: p.outline)),
+        textStyle: WidgetStatePropertyAll(text.labelLarge),
+      ),
+    ),
     drawerTheme: DrawerThemeData(backgroundColor: p.background),
     dividerTheme: DividerThemeData(color: p.outline),
     sliderTheme: SliderThemeData(

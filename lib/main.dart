@@ -1,13 +1,23 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
+import 'package:google_fonts/google_fonts.dart';
 import 'package:hive_flutter/hive_flutter.dart';
 
 import 'app.dart';
 import 'services/notification_service.dart';
 import 'services/storage_service.dart';
+import 'ui/theme.dart';
 
 Future<void> main() async {
   WidgetsFlutterBinding.ensureInitialized();
+  // Fuentes empaquetadas: se cargan antes del primer frame para que los
+  // diagramas (CustomPainter) no se pinten con la fuente de respaldo.
+  await GoogleFonts.pendingFonts([
+    darkTheme.textTheme.titleLarge,
+    lightTheme.textTheme.bodyMedium,
+    musicMono(),
+    musicMono(fontWeight: FontWeight.w600),
+  ]);
   await Hive.initFlutter();
   final storage = StorageService();
   await storage.openBoxes();

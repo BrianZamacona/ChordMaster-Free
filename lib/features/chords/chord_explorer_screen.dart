@@ -94,6 +94,7 @@ class _ChordExplorerScreenState extends ConsumerState<ChordExplorerScreen> {
               items: chord.cagedPositions,
               selected: _selected,
               onToggle: _toggle,
+              root: chord.root,
             ),
             const SizedBox(height: 16),
             _ExplorerSection(
@@ -102,6 +103,7 @@ class _ChordExplorerScreenState extends ConsumerState<ChordExplorerScreen> {
               items: chord.voicings,
               selected: _selected,
               onToggle: _toggle,
+              root: chord.root,
             ),
             const SizedBox(height: 16),
             _ExplorerSection(
@@ -110,6 +112,7 @@ class _ChordExplorerScreenState extends ConsumerState<ChordExplorerScreen> {
               items: chord.triadInversions,
               selected: _selected,
               onToggle: _toggle,
+              root: chord.root,
             ),
             const SizedBox(height: 16),
             _ExplorerSection(
@@ -118,6 +121,7 @@ class _ChordExplorerScreenState extends ConsumerState<ChordExplorerScreen> {
               items: chord.advancedInversions,
               selected: _selected,
               onToggle: _toggle,
+              root: chord.root,
             ),
             if (!chord.hasExplorerData)
               Padding(
@@ -162,9 +166,12 @@ class _ExplorerSection extends StatelessWidget {
     required this.items,
     required this.selected,
     required this.onToggle,
+    required this.root,
     this.header,
     this.labelSharedShapes = false,
   });
+
+  final String root;
 
   final String title;
   final String sectionId;
@@ -202,6 +209,7 @@ class _ExplorerSection extends StatelessWidget {
               fingering: FingeringRef(sectionId, index),
               selected: selected,
               onToggle: onToggle,
+              root: root,
             ),
             if (index != items.length - 1) const SizedBox(height: 12),
           ],
@@ -217,8 +225,11 @@ class _ExplorerItemCard extends StatelessWidget {
     required this.fingering,
     required this.selected,
     required this.onToggle,
+    required this.root,
     this.titleOverride,
   });
+
+  final String root;
 
   final ChordExplorerItem item;
   final FingeringRef fingering;
@@ -268,9 +279,12 @@ class _ExplorerItemCard extends StatelessWidget {
               child: ChordDiagramWidget(
                 chordName: item.title,
                 fretPositions: item.fretPositions,
+                fingerPositions: item.fingerPositions,
+                root: root,
+                toneRow: DiagramToneRow.intervalsAndNotes,
                 baseFret: item.baseFret,
                 showChordName: false,
-                size: 140,
+                size: 150,
               ),
             ),
             _CompareCheckbox(

@@ -226,9 +226,12 @@ class _CompareColumn extends StatelessWidget {
               child: ChordDiagramWidget(
                 chordName: item.title,
                 fretPositions: item.fretPositions,
+                fingerPositions: item.fingerPositions,
+                root: chord.root,
+                toneRow: DiagramToneRow.intervalsAndNotes,
                 baseFret: item.baseFret,
                 showChordName: false,
-                size: 140,
+                size: 150,
               ),
             ),
             const SizedBox(height: 8),

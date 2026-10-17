@@ -341,6 +341,8 @@ class _ChordCard extends StatelessWidget {
                 child: ChordDiagramWidget(
                   chordName: chord.name,
                   fretPositions: chord.fretPositions,
+                  fingerPositions: chord.fingerPositions,
+                  root: chord.root,
                   size: 120,
                   showChordName: false,
                   baseFret: chord.baseFret,

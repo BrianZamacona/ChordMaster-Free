@@ -34,3 +34,32 @@ Barre? detectBarre(EngineFrets frets, List<int> engineFingers) {
   }
   return best;
 }
+
+/// Cejilla para dibujar: traste y extremos en índices de chords.json
+/// (0 = 6ª cuerda), con `lowString < highString`.
+typedef JsonBarre = ({int fret, int lowString, int highString});
+
+/// [detectBarre] a partir de `fretPositions`/`fingerPositions` de chords.json.
+///
+/// Solo devuelve cejillas tocables: si alguna cuerda bajo la barra está
+/// muteada o pisada más abajo que la cejilla (deuda conocida de datos, ver
+/// `barre_detection_test`), devuelve `null` para no dibujar algo falso.
+JsonBarre? barreFromChordJson(List<int> jsonFrets, List<int> jsonFingers) {
+  final frets = VoicingAdapter.fromChordJson(jsonFrets);
+  final barre = detectBarre(
+    frets,
+    VoicingAdapter.fingersFromChordJson(jsonFingers),
+  );
+  if (barre == null) return null;
+  for (var s = barre.endString; s <= barre.fromString; s++) {
+    final fret = frets[s];
+    if (fret == null || fret < barre.fret) return null;
+  }
+  final a = VoicingAdapter.stringIndexToChordJson(barre.fromString);
+  final b = VoicingAdapter.stringIndexToChordJson(barre.endString);
+  return (
+    fret: barre.fret,
+    lowString: a < b ? a : b,
+    highString: a < b ? b : a,
+  );
+}

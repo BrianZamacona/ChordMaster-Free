@@ -58,6 +58,7 @@ class ProgressionVoicing extends VoiceLeadingVoicing {
     required double super.individualCost,
     required this.chord,
     required this.jsonFrets,
+    required this.jsonFingers,
     super.barre,
   });
 
@@ -65,6 +66,9 @@ class ProgressionVoicing extends VoiceLeadingVoicing {
 
   /// Misma digitación en el orden de chords.json (6ª → 1ª, -1 = muteada).
   final List<int> jsonFrets;
+
+  /// `fingerPositions` de la misma digitación (6ª → 1ª), para dibujarla.
+  final List<int> jsonFingers;
 }
 
 int _anchorFret(EngineFrets frets) {
@@ -120,6 +124,7 @@ class ProgressionBuilder {
           individualCost: cost,
           chord: chord,
           jsonFrets: raw,
+          jsonFingers: chord.fingers[i],
           barre: barre,
         ),
       );

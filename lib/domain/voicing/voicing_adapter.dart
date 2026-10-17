@@ -20,4 +20,7 @@ class VoicingAdapter {
   /// chords.json (6ª → 1ª), para que la UI dibuje sin invertir nada.
   static List<T> toChordJsonOrder<T>(List<T> engineOrder) =>
       engineOrder.reversed.toList();
+
+  /// Índice de cuerda del motor (0 = 1ª) a índice de chords.json (0 = 6ª).
+  static int stringIndexToChordJson(int engineString) => 5 - engineString;
 }

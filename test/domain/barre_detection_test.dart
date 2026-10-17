@@ -125,6 +125,31 @@ void main() {
     // o más bajas entre medias); el conteo exacto evita que crezca en silencio.
     expect(impossible, hasLength(_knownImpossibleBarres), reason: '$impossible');
   });
+
+  group('barreFromChordJson', () {
+    test('F con cejilla completa: traste 1, de la 6ª a la 1ª', () {
+      expect(
+        barreFromChordJson([1, 3, 3, 2, 1, 1], [1, 3, 4, 2, 1, 1]),
+        (fret: 1, lowString: 0, highString: 5),
+      );
+    });
+
+    test('Bm de la 5ª a la 1ª en el traste 2', () {
+      expect(
+        barreFromChordJson([-1, 2, 4, 4, 3, 2], [0, 1, 3, 4, 2, 1]),
+        (fret: 2, lowString: 1, highString: 5),
+      );
+    });
+
+    test('sin dedo repetido no hay cejilla', () {
+      expect(barreFromChordJson([-1, 3, 2, 0, 1, 0], [0, 3, 2, 0, 1, 0]), isNull);
+    });
+
+    test('cejilla imposible (cuerda al aire debajo) no se dibuja', () {
+      expect(barreFromChordJson([3, 0, 0, 0, 3, 3], [1, 0, 0, 0, 1, 1]), isNull);
+      expect(barreFromChordJson([3, -1, 3, 3, 3, 3], [1, 0, 1, 1, 1, 1]), isNull);
+    });
+  });
 }
 
 const _knownImpossibleBarres = 27;

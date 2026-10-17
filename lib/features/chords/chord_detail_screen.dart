@@ -9,6 +9,8 @@ import '../../core/constants/chord_metadata.dart';
 import '../../core/constants/music_theory.dart';
 import '../../core/widgets/chord_diagram.dart';
 import '../../core/widgets/donation_button.dart';
+import '../../core/widgets/interval_legend.dart';
+import '../../domain/voicing/fingering_metrics.dart';
 import '../../models/chord.dart';
 import '../../services/achievement_service.dart';
 import '../../services/audio_service.dart';
@@ -30,6 +32,7 @@ class ChordDetailScreen extends ConsumerStatefulWidget {
 
 class _ChordDetailScreenState extends ConsumerState<ChordDetailScreen> {
   bool _isPlaying = false;
+  DiagramDotLabel _dotLabel = DiagramDotLabel.finger;
 
   @override
   void initState() {
@@ -166,13 +169,53 @@ class _ChordDetailScreenState extends ConsumerState<ChordDetailScreen> {
             ),
             const SizedBox(height: 24),
             Center(
+              child: SegmentedButton<DiagramDotLabel>(
+                key: const Key('diagram-label-toggle'),
+                showSelectedIcon: false,
+                segments: const [
+                  ButtonSegment(
+                    value: DiagramDotLabel.finger,
+                    label: Text(AppStrings.showFingers),
+                  ),
+                  ButtonSegment(
+                    value: DiagramDotLabel.interval,
+                    label: Text(AppStrings.showIntervals),
+                  ),
+                  ButtonSegment(
+                    value: DiagramDotLabel.note,
+                    label: Text(AppStrings.showNotes),
+                  ),
+                ],
+                selected: {_dotLabel},
+                onSelectionChanged: (s) => setState(() => _dotLabel = s.first),
+              ),
+            ),
+            const SizedBox(height: 16),
+            Center(
               child: scaleIn(
                 ChordDiagramWidget(
                   chordName: chord.name,
                   fretPositions: chord.fretPositions,
+                  fingerPositions: chord.fingerPositions,
+                  root: chord.root,
+                  dotLabel: _dotLabel,
+                  toneRow: DiagramToneRow.intervalsAndNotes,
                   baseFret: chord.baseFret,
                   showChordName: false,
+                  size: 230,
                 ),
+              ),
+            ),
+            const SizedBox(height: 8),
+            Center(
+              child: IntervalLegend(
+                labels: [
+                  for (final t in stringTonesFromChordJson(
+                    jsonFrets: chord.fretPositions,
+                    root: chord.root,
+                  ))
+                    if (t != null) t.label,
+                ],
               ),
             ),
             const SizedBox(height: 24),

@@ -297,6 +297,17 @@ class AppStrings {
   static const String fretWord = 'traste';
   static const String fretsWord = 'trastes';
 
+  // ── Diagrama ──────────────────────────────────────────────────────────────
+
+  static const String legendRoot = 'Raíz';
+  static const String legendThird = '3ª';
+  static const String legendFifth = '5ª';
+  static const String legendSeventh = '7ª';
+  static const String legendTension = 'Tensión';
+  static const String showFingers = 'Dedos';
+  static const String showIntervals = 'Intervalos';
+  static const String showNotes = 'Notas';
+
   // ── Scales ────────────────────────────────────────────────────────────────
 
   /// Scale type selector label.

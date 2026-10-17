@@ -154,6 +154,9 @@ class _StepCard extends StatelessWidget {
         ChordDiagramWidget(
           chordName: chord.name,
           fretPositions: step.voicing.jsonFrets,
+          fingerPositions: step.voicing.jsonFingers,
+          root: chord.root,
+          toneRow: DiagramToneRow.intervals,
           showChordName: false,
           size: 110,
         ),
