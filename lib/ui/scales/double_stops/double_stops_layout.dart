@@ -23,12 +23,18 @@ Offset noteOffset(
   );
 }
 
-/// Centro de la etiqueta de grado: sobre la línea, o a la derecha si es casi vertical.
-Offset segmentLabelOffset(Offset from, Offset to) {
-  final mid = (from + to) / 2;
-  return (to.dx - from.dx).abs() < 2
-      ? mid + const Offset(14, 0)
-      : mid + const Offset(0, -7);
+/// Centro de la etiqueta de grado. Solo las dos cuerdas de la pareja llevan
+/// notas, así que va en el hueco libre entre la cuerda superior de la pareja y
+/// la de encima, alineada con el centro de la línea; si la pareja empieza en la
+/// 1ª cuerda (sin hueco encima), va bajo la cuerda inferior. Nunca encima de
+/// una nota: con 13 trastes una nota casi llena el ancho de un traste.
+Offset segmentLabelOffset(Offset from, Offset to, double stringSpacing) {
+  final x = (from.dx + to.dx) / 2;
+  final upper = from.dy < to.dy ? from.dy : to.dy;
+  final lower = from.dy < to.dy ? to.dy : from.dy;
+  return upper - stringSpacing / 2 < fretboardTop
+      ? Offset(x, lower + stringSpacing / 2)
+      : Offset(x, upper - stringSpacing / 2);
 }
 
 class DoubleStopSegment {

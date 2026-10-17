@@ -11,17 +11,17 @@ import 'package:flutter_test/flutter_test.dart';
 
 void main() {
   group('segmentLabelOffset', () {
-    test('vertical (mismo traste): a la derecha del segmento', () {
+    test('en el hueco sobre la cuerda superior, al centro de la línea', () {
       expect(
-        segmentLabelOffset(const Offset(50, 16), const Offset(50, 56)),
-        const Offset(64, 36),
+        segmentLabelOffset(const Offset(50, 36), const Offset(90, 56), 20),
+        const Offset(70, 26),
       );
     });
 
-    test('diagonal: sobre el punto medio', () {
+    test('pareja en la 1ª cuerda: bajo la cuerda inferior', () {
       expect(
-        segmentLabelOffset(const Offset(50, 16), const Offset(90, 36)),
-        const Offset(70, 19),
+        segmentLabelOffset(const Offset(50, 16), const Offset(50, 36), 20),
+        const Offset(50, 46),
       );
     });
   });
