@@ -11,4 +11,8 @@ class VoicingAdapter {
     for (final fret in fretPositions.reversed)
       if (fret < 0) null else fret,
   ];
+
+  /// `fingerPositions` de chords.json (6ª → 1ª) al orden del motor.
+  static List<int> fingersFromChordJson(List<int> fingerPositions) =>
+      fingerPositions.reversed.toList();
 }
