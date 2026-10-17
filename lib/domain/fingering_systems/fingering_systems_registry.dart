@@ -1,16 +1,12 @@
-import 'caged/caged_shape_generator.dart';
 import 'caged/caged_theory.dart';
-import 'fingering_generator.dart';
 import 'fingering_theory.dart';
-import 'linear_four_notes/linear_four_notes_generator.dart';
 import 'linear_four_notes/linear_four_notes_theory.dart';
-import 'pentatonic_two_notes/pentatonic_two_notes_generator.dart';
 import 'pentatonic_two_notes/pentatonic_two_notes_theory.dart';
-import 'three_nps/three_nps_generator.dart';
 import 'three_nps/three_nps_theory.dart';
 
 /// Single source of truth mapping a fingering-system id to its theory
-/// metadata and its shape generator.
+/// metadata. (Las posiciones salen de assets/data/scales_master.json,
+/// generado y auditado por tool/regenerate_scales_master.py.)
 ///
 /// `features/chords` and the scale explorer both read from here instead
 /// of each hardcoding their own copy of a system's theory — that
@@ -26,18 +22,8 @@ class FingeringSystemsRegistry {
     'pentatonic_two_notes': pentatonicTwoNotesTheory,
   };
 
-  static const Map<String, FingeringGenerator> generators = {
-    'caged': CagedShapeGenerator(),
-    'three_nps': ThreeNpsGenerator(),
-    'linear_four_notes': LinearFourNotesGenerator(),
-    'pentatonic_two_notes': PentatonicTwoNotesGenerator(),
-  };
-
   static FingeringSystemTheory? theoryFor(String systemId) =>
       theories[systemId];
-
-  static FingeringGenerator? generatorFor(String systemId) =>
-      generators[systemId];
 
   /// All registered systems, in a stable display order — use this to
   /// drive the `_SystemFilterRow` chips instead of whatever order a
