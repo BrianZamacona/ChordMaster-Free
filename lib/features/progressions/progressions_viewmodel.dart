@@ -171,20 +171,41 @@ final progressionPlanProvider = Provider<AsyncValue<ProgressionPlan>>((ref) {
 });
 
 /// Manages progression selection state and the usage counter.
+///
+/// El contador (logro "composer") sube una vez por progresión distinta
+/// (id + tónica), no en cada cambio de selección.
 class ProgressionsViewModel extends Notifier<ProgressionsState> {
   static const _keyCount = 'progressions_generated';
+  static const _keySeen = 'progressions_seen';
 
   @override
   ProgressionsState build() {
-    _loadCount();
+    _seen.clear();
+    _loaded = _loadCount();
     return const ProgressionsState();
   }
+
+  /// Progresiones ya contadas, como `id@tónica`.
+  final _seen = <String>{};
+
+  /// Los conteos esperan a la carga: si no, un cambio hecho antes de que
+  /// termine se pisaría con el valor guardado (o lo pisaría a él).
+  late Future<void> _loaded;
+
+  @visibleForTesting
+  Future<void> get loaded => _loaded;
 
   Future<void> _loadCount() async {
     try {
       final storage = ref.read(storageServiceProvider);
       final count =
           await storage.get<int>(StorageService.userProgressBox, _keyCount) ?? 0;
+      final seen = await storage.get<List<dynamic>>(
+            StorageService.userProgressBox,
+            _keySeen,
+          ) ??
+          const [];
+      _seen.addAll(seen.whereType<String>());
       state = state.copyWith(progressionsGenerated: count);
     } catch (e, st) {
       debugPrint('ProgressionsViewModel._loadCount error: $e\n$st');
@@ -193,7 +214,7 @@ class ProgressionsViewModel extends Notifier<ProgressionsState> {
 
   void setTonic(int tonic) {
     state = state.copyWith(tonic: tonic);
-    _countGeneration();
+    _countGeneration('${state.progressionId}@$tonic');
   }
 
   void setBeginner({required bool beginner}) =>
@@ -201,15 +222,24 @@ class ProgressionsViewModel extends Notifier<ProgressionsState> {
 
   void setProgression(String id) {
     state = state.copyWith(progressionId: id);
-    _countGeneration();
+    _countGeneration('$id@${state.tonic}');
   }
 
-  Future<void> _countGeneration() async {
+  /// Cuenta [key] una sola vez. La clave se arma al llamar (no tras el
+  /// `await`) para contar lo que el usuario eligió aunque ya haya cambiado.
+  Future<void> _countGeneration(String key) async {
+    await _loaded;
+    if (!_seen.add(key)) return;
     final newCount = state.progressionsGenerated + 1;
     state = state.copyWith(progressionsGenerated: newCount);
     try {
       final storage = ref.read(storageServiceProvider);
       await storage.save(StorageService.userProgressBox, _keyCount, newCount);
+      await storage.save(
+        StorageService.userProgressBox,
+        _keySeen,
+        _seen.toList(growable: false),
+      );
       if (newCount >= 5) {
         await AchievementService.instance.unlock('composer');
       }
