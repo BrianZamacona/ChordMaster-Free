@@ -19,6 +19,7 @@ import '../features/songs/song_detail_screen.dart';
 import '../features/songs/songs_screen.dart';
 import '../features/tuner/tuner_screen.dart';
 import 'scales/detail/scale_detail_screen.dart';
+import 'scales/double_stops/double_stops_screen.dart';
 import 'scales/scales_screen.dart';
 
 /// The global [GoRouter] instance for ChordMaster Free.
@@ -93,6 +94,10 @@ final GoRouter appRouter = GoRouter(
       path: '/scales',
       builder: (_, __) => const ScalesScreen(),
       routes: [
+        GoRoute(
+          path: 'double-stops',
+          builder: (_, __) => const DoubleStopsScreen(),
+        ),
         GoRoute(
           path: ':scaleId',
           pageBuilder: (context, state) {

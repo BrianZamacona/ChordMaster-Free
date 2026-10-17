@@ -24,6 +24,15 @@ class ScalesScreen extends ConsumerWidget {
           return ListView(
             padding: const EdgeInsets.all(16),
             children: [
+              Card(
+                child: ListTile(
+                  leading: const Icon(Icons.straighten),
+                  title: const Text('Double stops diatónicos'),
+                  subtitle: const Text('Parejas de notas por grado y par de cuerdas'),
+                  onTap: () => context.go('/scales/double-stops'),
+                ),
+              ),
+              const SizedBox(height: 8),
               _Section(title: 'Diatónica', scales: diatonic),
               _Section(title: 'Pentatónica', scales: pentatonic),
               _Section(title: 'Simétrica', scales: symmetric),
