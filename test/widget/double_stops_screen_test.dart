@@ -10,6 +10,21 @@ import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:flutter_test/flutter_test.dart';
 
 void main() {
+  group('segmentLabelOffset', () {
+    test('vertical (mismo traste): a la derecha del segmento', () {
+      expect(
+        segmentLabelOffset(const Offset(50, 16), const Offset(50, 56)),
+        const Offset(64, 36),
+      );
+    });
+
+    test('diagonal: sobre el punto medio', () {
+      expect(
+        segmentLabelOffset(const Offset(50, 16), const Offset(90, 36)),
+        const Offset(70, 19),
+      );
+    });
+  });
   test('noteTextColor: blanco en la raíz, onPrimary en el intervalo', () {
     final dark = ColorScheme.fromSeed(
       seedColor: Colors.pink,

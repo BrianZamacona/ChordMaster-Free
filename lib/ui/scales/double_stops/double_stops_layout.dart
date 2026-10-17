@@ -23,6 +23,14 @@ Offset noteOffset(
   );
 }
 
+/// Centro de la etiqueta de grado: sobre la línea, o a la derecha si es casi vertical.
+Offset segmentLabelOffset(Offset from, Offset to) {
+  final mid = (from + to) / 2;
+  return (to.dx - from.dx).abs() < 2
+      ? mid + const Offset(14, 0)
+      : mid + const Offset(0, -7);
+}
+
 class DoubleStopSegment {
   const DoubleStopSegment(this.from, this.to, this.pair);
 

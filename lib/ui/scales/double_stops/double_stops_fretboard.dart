@@ -131,7 +131,7 @@ class DoubleStopPainter extends CustomPainter {
       _text(
         canvas,
         degreeNumeral(seg.pair.degree),
-        (seg.from + seg.to) / 2 + const Offset(0, -7),
+        segmentLabelOffset(seg.from, seg.to),
         TextStyle(
           fontSize: 9,
           fontWeight: FontWeight.bold,
