@@ -8,6 +8,11 @@ const _romanNumerals = ['I', 'II', 'III', 'IV', 'V', 'VI', 'VII'];
 String degreeNumeral(int? degree) =>
     degree == null ? '' : _romanNumerals[degree - 1];
 
+/// Blanco sobre el rojo de la raíz; `onPrimary` sobre el color de las notas intervalo.
+// ignore: avoid_positional_boolean_parameters
+Color noteTextColor(bool isRoot, ColorScheme colorScheme) =>
+    isRoot ? Colors.white : colorScheme.onPrimary;
+
 /// Diapasón con las parejas de un par de cuerdas; notas y líneas se pintan en
 /// un mismo lienzo con las coordenadas de [noteOffset].
 class DoubleStopFretboard extends StatelessWidget {
@@ -145,17 +150,17 @@ class DoubleStopPainter extends CustomPainter {
         final center = at(mark.stringIndex, mark.fret);
         canvas.drawCircle(
           center,
-          9,
+          10,
           Paint()..color = isRoot ? Colors.red : colorScheme.primary,
         );
         _text(
           canvas,
           mark.note,
           center,
-          const TextStyle(
-            fontSize: 8,
+          TextStyle(
+            fontSize: 10,
             fontWeight: FontWeight.bold,
-            color: Colors.white,
+            color: noteTextColor(isRoot, colorScheme),
           ),
         );
       }
