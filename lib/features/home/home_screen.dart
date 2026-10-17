@@ -264,51 +264,47 @@ const List<_ModuleInfo> _modules = [
   _ModuleInfo(
       label: AppStrings.moduleChords,
       icon: Icons.piano,
-      route: '/chords'),
+      route: '/learn/chords'),
   _ModuleInfo(
       label: AppStrings.moduleScales,
       icon: Icons.music_note,
-      route: '/scales'),
+      route: '/learn/scales'),
   _ModuleInfo(
       label: AppStrings.moduleTuner,
       icon: Icons.graphic_eq,
-      route: '/tuner'),
+      route: '/tools/tuner'),
   _ModuleInfo(
       label: AppStrings.moduleMetronome,
       icon: Icons.timer,
-      route: '/metronome'),
+      route: '/tools/metronome'),
   _ModuleInfo(
       label: AppStrings.moduleProgressions,
       icon: Icons.queue_music,
-      route: '/progressions'),
+      route: '/learn/progressions'),
   _ModuleInfo(
       label: AppStrings.moduleEarTraining,
       icon: Icons.hearing,
-      route: '/ear-training'),
+      route: '/practice/ear-training'),
   _ModuleInfo(
       label: AppStrings.moduleRhythmGame,
       icon: Icons.sports_esports,
-      route: '/rhythm-game'),
+      route: '/practice/rhythm'),
   _ModuleInfo(
       label: AppStrings.moduleImprovisation,
       icon: Icons.auto_awesome,
-      route: '/improvisation'),
+      route: '/practice/improvisation'),
   _ModuleInfo(
       label: AppStrings.moduleSongs,
       icon: Icons.library_music,
-      route: '/songs'),
+      route: '/practice/songs'),
   _ModuleInfo(
       label: AppStrings.moduleComposition,
       icon: Icons.edit_note,
-      route: '/composition'),
+      route: '/learn/composition'),
   _ModuleInfo(
       label: AppStrings.moduleHealth,
       icon: Icons.favorite,
-      route: '/health'),
-  _ModuleInfo(
-      label: AppStrings.moduleCommunity,
-      icon: Icons.people,
-      route: '/community'),
+      route: '/progress/health'),
 ];
 
 class _ModuleCard extends StatelessWidget {

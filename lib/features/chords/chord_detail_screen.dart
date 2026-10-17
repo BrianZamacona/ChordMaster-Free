@@ -113,7 +113,7 @@ class _ChordDetailScreenState extends ConsumerState<ChordDetailScreen> {
             tooltip: AppStrings.chordExplorer,
             onPressed: () {
               final encoded = Uri.encodeComponent(chord.name);
-              context.go('/chords/$encoded/explorer');
+              context.go('/learn/chords/$encoded/explorer');
             },
             icon: const Icon(Icons.explore_outlined),
           ),
@@ -301,7 +301,7 @@ class _ChordDetailScreenState extends ConsumerState<ChordDetailScreen> {
                           ),
                           onTap: () {
                             final encoded = Uri.encodeComponent(related.name);
-                            context.go('/chords/$encoded');
+                            context.go('/learn/chords/$encoded');
                           },
                         );
                       },
@@ -328,7 +328,7 @@ class _ChordDetailScreenState extends ConsumerState<ChordDetailScreen> {
                             ),
                             onTap: () {
                               final encoded = Uri.encodeComponent(related.name);
-                              context.go('/chords/$encoded');
+                              context.go('/learn/chords/$encoded');
                             },
                           ),
                         )
@@ -348,7 +348,7 @@ class _ChordDetailScreenState extends ConsumerState<ChordDetailScreen> {
                       .map(
                         (scale) => ActionChip(
                           label: Text(scale, style: const TextStyle(fontSize: 12)),
-                          onPressed: () => context.go('/scales'),
+                          onPressed: () => context.go('/learn/scales'),
                         ),
                       )
                       .toList(),

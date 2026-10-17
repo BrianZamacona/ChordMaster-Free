@@ -297,6 +297,52 @@ class AppStrings {
   static const String fretWord = 'traste';
   static const String fretsWord = 'trastes';
 
+  // ── Navegación ────────────────────────────────────────────────────────────
+
+  static const String tabHome = 'Inicio';
+  static const String tabLearn = 'Aprender';
+  static const String tabPractice = 'Practicar';
+  /// Corto para que quepa en la barra inferior a 360 px.
+  static const String tabTools = 'Afinar';
+  static const String toolsTitle = 'Herramientas';
+  static const String tabProgress = 'Progreso';
+
+  static const String learnIntro =
+      'Acordes, escalas y progresiones: qué tocar y por qué suena así.';
+  static const String practiceIntro =
+      'Entrena el oído y el ritmo, y aplica lo aprendido en canciones.';
+  static const String progressIntro =
+      'Tus logros, tu tiempo de práctica y los ajustes de la app.';
+  static const String settingsTitle = 'Ajustes';
+
+  static const String hubChords = 'Acordes';
+  static const String hubChordsSub =
+      'Biblioteca de 288 acordes, formas CAGED, inversiones y comparador.';
+  static const String hubScales = 'Escalas y double stops';
+  static const String hubScalesSub =
+      'Escalas y modos por sistema (CAGED, 3NPS…) y parejas de notas.';
+  static const String hubProgressions = 'Progresiones';
+  static const String hubProgressionsSub =
+      'Progresiones comunes con las digitaciones más cómodas entre acordes.';
+  static const String hubComposition = 'Componer';
+  static const String hubCompositionSub =
+      'Arma y guarda tus propias progresiones.';
+  static const String hubEar = 'Oído';
+  static const String hubEarSub = 'Reconoce intervalos y acordes de oído.';
+  static const String hubRhythm = 'Ritmo';
+  static const String hubRhythmSub = 'Toca a tiempo con el pulso.';
+  static const String hubSongs = 'Canciones';
+  static const String hubSongsSub = 'Practica con canciones reales.';
+  static const String hubImprov = 'Improvisación';
+  static const String hubImprovSub =
+      'Qué escala usar sobre cada acorde, patrones y licks.';
+  static const String hubAchievements = 'Logros';
+  static const String hubAchievementsSub = 'Lo que ya conseguiste.';
+  static const String hubHealth = 'Salud de práctica';
+  static const String hubHealthSub = 'Tiempo de práctica, descansos y calentamiento.';
+  static const String toolTuner = 'Afinador';
+  static const String toolMetronome = 'Metrónomo';
+
   // ── Diagrama ──────────────────────────────────────────────────────────────
 
   static const String legendRoot = 'Raíz';

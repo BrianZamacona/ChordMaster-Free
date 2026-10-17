@@ -117,6 +117,9 @@ class MetronomeViewModel extends Notifier<MetronomeState> {
     _timer = null;
     _nextTick = null;
     _beat = 0;
+    // Sin cambio de estado si ya estaba parado: se llama al ocultar o
+    // desmontar la pantalla y no debe notificar a widgets que se desmontan.
+    if (!state.isPlaying && state.currentBeat == 0) return;
     state = state.copyWith(isPlaying: false, currentBeat: 0);
   }
 

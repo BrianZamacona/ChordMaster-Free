@@ -1,5 +1,5 @@
-import 'package:flutter/widgets.dart';
 import 'package:go_router/go_router.dart';
+
 import '../core/widgets/app_scaffold.dart';
 import '../data/models/scale_definition.dart';
 import '../features/achievements/achievements_screen.dart';
@@ -7,11 +7,11 @@ import '../features/chords/chord_compare_screen.dart';
 import '../features/chords/chord_detail_screen.dart';
 import '../features/chords/chord_explorer_screen.dart';
 import '../features/chords/chord_library_screen.dart';
-import '../features/community/community_screen.dart';
 import '../features/composition/composition_screen.dart';
 import '../features/ear_training/ear_training_screen.dart';
 import '../features/health/health_screen.dart';
 import '../features/home/home_screen.dart';
+import '../features/hubs/hubs.dart';
 import '../features/improvisation/improv_screen.dart';
 import '../features/metronome/metronome_screen.dart';
 import '../features/progressions/progressions_screen.dart';
@@ -23,58 +23,118 @@ import 'scales/detail/scale_detail_screen.dart';
 import 'scales/double_stops/double_stops_screen.dart';
 import 'scales/scales_screen.dart';
 
-/// The global [GoRouter] instance for ChordMaster Free.
+/// Rutas anteriores al rediseño de navegación → rutas actuales.
 ///
-/// Uses [StatefulShellRoute.indexedStack] for the four primary tabs so each
-/// branch retains its navigation state independently.  The remaining feature
-/// modules are top-level routes accessible from the end drawer.
+/// Se conservan porque Inicio guarda el último módulo visitado con la ruta
+/// vieja y puede haber enlaces o notificaciones que la usen.
+const legacyRoutePrefixes = {
+  '/chords': '/learn/chords',
+  '/scales': '/learn/scales',
+  '/progressions': '/learn/progressions',
+  '/composition': '/learn/composition',
+  '/ear-training': '/practice/ear-training',
+  '/rhythm-game': '/practice/rhythm',
+  '/songs': '/practice/songs',
+  '/improvisation': '/practice/improvisation',
+  '/tuner': '/tools/tuner',
+  '/metronome': '/tools/metronome',
+  '/achievements': '/progress/achievements',
+  '/health': '/progress/health',
+  '/community': '/progress',
+};
+
+/// Ruta actual para [location], o `null` si no es una ruta vieja.
+String? redirectLegacyRoute(String location) {
+  for (final MapEntry(key: old, value: current) in legacyRoutePrefixes.entries) {
+    if (location == old || location.startsWith('$old/') || location.startsWith('$old?')) {
+      return current + location.substring(old.length);
+    }
+  }
+  return null;
+}
+
+/// Router de ChordMaster Free.
+///
+/// Todas las pantallas viven dentro de un único [StatefulShellRoute] con cinco
+/// pestañas (Inicio, Aprender, Practicar, Herramientas, Progreso), así la
+/// barra inferior está siempre visible y cada pestaña recuerda su pila. Las
+/// pantallas de una sección cuelgan de su hub, por eso el botón de atrás
+/// automático vuelve a la pantalla anterior real.
 final GoRouter appRouter = GoRouter(
   initialLocation: '/',
+  redirect: (context, state) => redirectLegacyRoute(state.uri.toString()),
   routes: [
     StatefulShellRoute.indexedStack(
-      builder: (context, state, navigationShell) => AppScaffold(
-          body: navigationShell,
-          currentIndex: navigationShell.currentIndex,
-          onIndexChange: (index) => navigationShell.goBranch(
-            index,
-            initialLocation: index == navigationShell.currentIndex,
-          ),
+      builder: (context, state, shell) => AppScaffold(
+        body: shell,
+        currentIndex: shell.currentIndex,
+        onIndexChange: (index) => shell.goBranch(
+          index,
+          initialLocation: index == shell.currentIndex,
         ),
+      ),
       branches: [
         StatefulShellBranch(
           routes: [
-            GoRoute(
-              path: '/',
-              builder: (_, __) => const HomeScreen(),
-            ),
+            GoRoute(path: '/', builder: (_, __) => const HomeScreen()),
           ],
         ),
         StatefulShellBranch(
           routes: [
             GoRoute(
-              path: '/chords',
-              builder: (_, __) => const ChordLibraryScreen(),
+              path: '/learn',
+              builder: (_, __) => const LearnHubScreen(),
               routes: [
                 GoRoute(
-                  path: ':id',
-                  builder: (_, state) => ChordDetailScreen(
-                    chordId: state.pathParameters['id']!,
-                  ),
+                  path: 'chords',
+                  builder: (_, __) => const ChordLibraryScreen(),
                   routes: [
                     GoRoute(
-                      path: 'explorer',
-                      builder: (_, state) => ChordExplorerScreen(
+                      path: ':id',
+                      builder: (_, state) => ChordDetailScreen(
                         chordId: state.pathParameters['id']!,
                       ),
+                      routes: [
+                        GoRoute(
+                          path: 'explorer',
+                          builder: (_, state) => ChordExplorerScreen(
+                            chordId: state.pathParameters['id']!,
+                          ),
+                        ),
+                        GoRoute(
+                          path: 'compare',
+                          builder: (_, state) => ChordCompareScreen(
+                            chordId: state.pathParameters['id']!,
+                            selection: state.uri.queryParameters['sel'],
+                          ),
+                        ),
+                      ],
+                    ),
+                  ],
+                ),
+                GoRoute(
+                  path: 'scales',
+                  builder: (_, __) => const ScalesScreen(),
+                  routes: [
+                    GoRoute(
+                      path: 'double-stops',
+                      builder: (_, __) => const DoubleStopsScreen(),
                     ),
                     GoRoute(
-                      path: 'compare',
-                      builder: (_, state) => ChordCompareScreen(
-                        chordId: state.pathParameters['id']!,
-                        selection: state.uri.queryParameters['sel'],
+                      path: ':scaleId',
+                      builder: (_, state) => ScaleDetailScreen(
+                        scale: state.extra! as ScaleDefinition,
                       ),
                     ),
                   ],
+                ),
+                GoRoute(
+                  path: 'progressions',
+                  builder: (_, __) => const ProgressionsScreen(),
+                ),
+                GoRoute(
+                  path: 'composition',
+                  builder: (_, __) => const CompositionScreen(),
                 ),
               ],
             ),
@@ -83,92 +143,76 @@ final GoRouter appRouter = GoRouter(
         StatefulShellBranch(
           routes: [
             GoRoute(
-              path: '/tuner',
-              builder: (_, __) => const TunerScreen(),
+              path: '/practice',
+              builder: (_, __) => const PracticeHubScreen(),
+              routes: [
+                GoRoute(
+                  path: 'ear-training',
+                  builder: (_, __) => const EarTrainingScreen(),
+                ),
+                GoRoute(
+                  path: 'rhythm',
+                  builder: (_, __) => const RhythmGameScreen(),
+                ),
+                GoRoute(
+                  path: 'songs',
+                  builder: (_, __) => const SongsScreen(),
+                  routes: [
+                    GoRoute(
+                      path: ':id',
+                      builder: (_, state) => SongDetailScreen(
+                        songId: state.pathParameters['id']!,
+                      ),
+                    ),
+                  ],
+                ),
+                GoRoute(
+                  path: 'improvisation',
+                  builder: (_, __) => const ImprovScreen(),
+                ),
+              ],
+            ),
+          ],
+        ),
+        StatefulShellBranch(
+          initialLocation: '/tools/tuner',
+          routes: [
+            GoRoute(path: '/tools', redirect: (_, __) => '/tools/tuner'),
+            GoRoute(
+              path: '/tools/tuner',
+              pageBuilder: (_, state) => NoTransitionPage(
+                key: state.pageKey,
+                child: const TunerScreen(),
+              ),
+            ),
+            GoRoute(
+              path: '/tools/metronome',
+              pageBuilder: (_, state) => NoTransitionPage(
+                key: state.pageKey,
+                child: const MetronomeScreen(),
+              ),
             ),
           ],
         ),
         StatefulShellBranch(
           routes: [
             GoRoute(
-              path: '/metronome',
-              builder: (_, __) => const MetronomeScreen(),
+              path: '/progress',
+              builder: (_, __) => const ProgressHubScreen(),
+              routes: [
+                GoRoute(
+                  path: 'achievements',
+                  builder: (_, __) => const AchievementsScreen(),
+                ),
+                GoRoute(
+                  path: 'health',
+                  builder: (_, __) => const HealthScreen(),
+                ),
+              ],
             ),
           ],
         ),
       ],
-    ),
-    GoRoute(
-      path: '/scales',
-      builder: (_, __) => const ScalesScreen(),
-      routes: [
-        GoRoute(
-          path: 'double-stops',
-          builder: (_, __) => const DoubleStopsScreen(),
-        ),
-        GoRoute(
-          path: ':scaleId',
-          pageBuilder: (context, state) {
-            final scale = state.extra as ScaleDefinition;
-            return CustomTransitionPage(
-              key: state.pageKey,
-              child: ScaleDetailScreen(scale: scale),
-              transitionsBuilder: (context, animation, secondaryAnimation, child) => SlideTransition(
-                  position: Tween<Offset>(
-                    begin: const Offset(0, 1),
-                    end: Offset.zero,
-                  ).animate(CurvedAnimation(parent: animation, curve: Curves.easeOutCubic)),
-                  child: child,
-                ),
-              transitionDuration: const Duration(milliseconds: 350),
-            );
-          },
-        ),
-      ],
-    ),
-    GoRoute(
-      path: '/progressions',
-      builder: (_, __) => const ProgressionsScreen(),
-    ),
-    GoRoute(
-      path: '/ear-training',
-      builder: (_, __) => const EarTrainingScreen(),
-    ),
-    GoRoute(
-      path: '/rhythm-game',
-      builder: (_, __) => const RhythmGameScreen(),
-    ),
-    GoRoute(
-      path: '/improvisation',
-      builder: (_, __) => const ImprovScreen(),
-    ),
-    GoRoute(
-      path: '/songs',
-      builder: (_, __) => const SongsScreen(),
-      routes: [
-        GoRoute(
-          path: ':id',
-          builder: (_, state) => SongDetailScreen(
-            songId: state.pathParameters['id']!,
-          ),
-        ),
-      ],
-    ),
-    GoRoute(
-      path: '/composition',
-      builder: (_, __) => const CompositionScreen(),
-    ),
-    GoRoute(
-      path: '/health',
-      builder: (_, __) => const HealthScreen(),
-    ),
-    GoRoute(
-      path: '/community',
-      builder: (_, __) => const CommunityScreen(),
-    ),
-    GoRoute(
-      path: '/achievements',
-      builder: (_, __) => const AchievementsScreen(),
     ),
   ],
 );

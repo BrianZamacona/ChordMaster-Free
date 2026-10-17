@@ -1,8 +1,8 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
-import 'package:go_router/go_router.dart';
 import '../../core/constants/app_strings.dart';
 import '../../core/widgets/donation_button.dart';
+import '../../core/widgets/tool_switcher.dart';
 import '../../ui/palette.dart';
 import 'metronome_viewmodel.dart';
 
@@ -19,9 +19,13 @@ class _MetronomeScreenState extends ConsumerState<MetronomeScreen>
     with TickerProviderStateMixin {
   late AnimationController _beatController;
 
+  /// Guardado al iniciar: en `dispose` ya no se puede usar `ref`.
+  late final MetronomeViewModel _vm;
+
   @override
   void initState() {
     super.initState();
+    _vm = ref.read(metronomeViewModelProvider.notifier);
     _beatController = AnimationController(
       vsync: this,
       duration: const Duration(milliseconds: 100),
@@ -29,9 +33,17 @@ class _MetronomeScreenState extends ConsumerState<MetronomeScreen>
   }
 
   @override
+  void didChangeDependencies() {
+    super.didChangeDependencies();
+    // El shell deja montadas las pestañas ocultas (TickerMode desactivado):
+    // al salir de Herramientas el metrónomo no debe seguir sonando.
+    if (!TickerMode.valuesOf(context).enabled) _vm.stopMetronome();
+  }
+
+  @override
   void dispose() {
     _beatController.dispose();
-    ref.read(metronomeViewModelProvider.notifier).stopMetronome();
+    _vm.stopMetronome();
     super.dispose();
   }
 
@@ -68,18 +80,8 @@ class _MetronomeScreenState extends ConsumerState<MetronomeScreen>
 
     return Scaffold(
       appBar: AppBar(
-        leading: IconButton(
-          tooltip: MaterialLocalizations.of(context).backButtonTooltip,
-          onPressed: () {
-            if (context.canPop()) {
-              context.pop();
-              return;
-            }
-            context.go('/');
-          },
-          icon: const Icon(Icons.arrow_back),
-        ),
-        title: const Text(AppStrings.moduleMetronome),
+        bottom: const ToolSwitcher(current: AppTool.metronome),
+        title: const Text(AppStrings.toolsTitle),
       ),
       floatingActionButton: FloatingActionButton.extended(
         onPressed: state.isPlaying ? vm.stopMetronome : vm.startMetronome,

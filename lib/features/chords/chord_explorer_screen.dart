@@ -40,7 +40,7 @@ class _ChordExplorerScreenState extends ConsumerState<ChordExplorerScreen> {
   void _openCompare(Chord chord) {
     final encoded = Uri.encodeComponent(chord.name);
     final sel = _selected.map((r) => r.key).join(',');
-    context.go('/chords/$encoded/compare?sel=$sel');
+    context.go('/learn/chords/$encoded/compare?sel=$sel');
   }
 
   @override

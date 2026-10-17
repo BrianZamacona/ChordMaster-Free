@@ -77,7 +77,7 @@ class _SongsScreenState extends ConsumerState<SongsScreen> {
                       return _SongTile(
                         song: song,
                         isViewed: isViewed,
-                        onTap: () => context.go('/songs/${song.id}'),
+                        onTap: () => context.go('/practice/songs/${song.id}'),
                       );
                     },
                   ),

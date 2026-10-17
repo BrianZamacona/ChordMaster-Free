@@ -79,11 +79,17 @@ cada nota pertenezca a la escala. No bajar la tolerancia de 0.
 - `lib/domain/fingering_systems/` — teoría de sistemas + registro.
 - `lib/data/` — modelos y repositorio de escalas (resolución por raíz).
 - `lib/features/` — pantallas por módulo (chords, progressions, ...).
-  - `features/chords/chord_compare_screen.dart` — ruta `/chords/:id/compare?sel=caged:0,voicings:2`
+  - `features/chords/chord_compare_screen.dart` — ruta `/learn/chords/:id/compare?sel=caged:0,voicings:2`
     (claves `sección:índice`, máx. 3; secciones `main`, `caged`, `voicings`, `triadInversions`,
     `advancedInversions`). Parseo y títulos en `fingering_selection.dart`; el explorador marca
     con checkbox "Comparar".
 - `lib/ui/scales/` — escalas, detalle y `double_stops/`.
+- `lib/ui/navigation.dart` — UN solo `StatefulShellRoute` con 5 pestañas (`AppScaffold`):
+  Inicio `/`, Aprender `/learn/...`, Practicar `/practice/...`, Afinar `/tools/tuner|metronome`,
+  Progreso `/progress/...` (incluye ajustes). Toda pantalla nueva cuelga de su hub para que el
+  botón de atrás automático funcione; nada de `leading` manual ni barras inferiores propias.
+  Las rutas viejas (`/chords`, `/tuner`…) redirigen vía `redirectLegacyRoute`. Las pestañas
+  ocultas siguen montadas: lo que use micrófono/audio debe pausarse con `TickerMode`.
 
 ## Pendiente (en orden)
 1. Revisión visual en el dispositivo del rediseño (fases 7A/7C: paleta, diagramas con dedos e

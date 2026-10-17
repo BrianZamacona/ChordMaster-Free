@@ -29,7 +29,7 @@ class ScalesScreen extends ConsumerWidget {
                   leading: const Icon(Icons.straighten),
                   title: const Text('Double stops diatónicos'),
                   subtitle: const Text('Parejas de notas por grado y par de cuerdas'),
-                  onTap: () => context.go('/scales/double-stops'),
+                  onTap: () => context.go('/learn/scales/double-stops'),
                 ),
               ),
               const SizedBox(height: 8),
@@ -66,7 +66,7 @@ class _Section extends StatelessWidget {
               child: ListTile(
                 title: Text(scale.name),
                 subtitle: Text(scale.id),
-                onTap: () => context.go('/scales/${scale.id}', extra: scale),
+                onTap: () => context.go('/learn/scales/${scale.id}', extra: scale),
               ),
             )),
         const SizedBox(height: 12),

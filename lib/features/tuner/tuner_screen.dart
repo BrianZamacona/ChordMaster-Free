@@ -2,11 +2,11 @@ import 'dart:math' as math;
 
 import 'package:chordmaster_free/core/constants/app_strings.dart';
 import 'package:chordmaster_free/core/widgets/donation_button.dart';
+import 'package:chordmaster_free/core/widgets/tool_switcher.dart';
 import 'package:chordmaster_free/services/achievement_service.dart';
 import 'package:chordmaster_free/ui/palette.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
-import 'package:go_router/go_router.dart';
 
 import 'tuner_viewmodel.dart';
 
@@ -20,17 +20,36 @@ class TunerScreen extends ConsumerStatefulWidget {
 class _TunerScreenState extends ConsumerState<TunerScreen> {
   bool _achievementGranted = false;
 
+  /// Guardado al iniciar: en `dispose` ya no se puede usar `ref`.
+  late final TunerViewModel _vm;
+  bool _listening = false;
+
   @override
   void initState() {
     super.initState();
-    WidgetsBinding.instance.addPostFrameCallback((_) {
-      ref.read(tunerViewModelProvider.notifier).startListening();
-    });
+    _vm = ref.read(tunerViewModelProvider.notifier);
+  }
+
+  @override
+  void didChangeDependencies() {
+    super.didChangeDependencies();
+    // El shell deja montadas las pestañas ocultas (TickerMode desactivado):
+    // el micrófono solo se usa mientras el afinador está a la vista.
+    final visible = TickerMode.valuesOf(context).enabled;
+    if (visible && !_listening) {
+      _listening = true;
+      WidgetsBinding.instance.addPostFrameCallback((_) {
+        if (mounted && _listening) _vm.startListening();
+      });
+    } else if (!visible && _listening) {
+      _listening = false;
+      _vm.stopListening();
+    }
   }
 
   @override
   void dispose() {
-    ref.read(tunerViewModelProvider.notifier).stopListening();
+    if (_listening) _vm.stopListening();
     super.dispose();
   }
 
@@ -60,21 +79,8 @@ class _TunerScreenState extends ConsumerState<TunerScreen> {
       backgroundColor: context.palette.background,
       appBar: AppBar(
         backgroundColor: context.palette.background,
-        leading: IconButton(
-          tooltip: MaterialLocalizations.of(context).backButtonTooltip,
-          onPressed: () {
-            if (context.canPop()) {
-              context.pop();
-              return;
-            }
-            context.go('/');
-          },
-          icon: const Icon(Icons.arrow_back),
-        ),
-        title: Text(
-          AppStrings.moduleTuner,
-          style: TextStyle(color: context.palette.textPrimary),
-        ),
+        bottom: const ToolSwitcher(current: AppTool.tuner),
+        title: const Text(AppStrings.toolsTitle),
         iconTheme: IconThemeData(color: context.palette.textPrimary),
       ),
       body: !state.hasPermission

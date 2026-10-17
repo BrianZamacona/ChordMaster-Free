@@ -1,195 +1,76 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
-import 'package:go_router/go_router.dart';
 
 import '../../features/settings/settings_viewmodel.dart';
-import '../../ui/palette.dart';
+import '../../ui/theme.dart';
 import '../constants/app_strings.dart';
 import '../i18n/app_i18n.dart';
 import '../i18n/app_localizations.dart';
 
-/// The root scaffold for all shell-route screens.
+/// Pestañas de la barra inferior, en orden; el índice es la rama del shell.
+enum AppTab { home, learn, practice, tools, progress }
+
+/// Shell de toda la app: la barra inferior está en todas las pantallas.
 ///
-/// Provides a consistent [AppBar], a [NavigationBar] with five destinations
-/// (Home, Chords, Tuner, Metronome, More), and an [endDrawer] that exposes
-/// the remaining feature modules.
-///
-/// For the four primary tabs the scaffold delegates navigation to
-/// [onIndexChange] (typically [StatefulNavigationShell.goBranch]); when
-/// [onIndexChange] is `null` it falls back to [GoRouter.go].
-///
-/// The "More" tab (index 4) opens the end drawer via the internal
-/// [GlobalKey<ScaffoldState>] — it does not correspond to a shell branch.
-class AppScaffold extends StatefulWidget {
-  /// Creates an [AppScaffold].
+/// Cada pantalla pone su propio `Scaffold` con `AppBar`; el botón de atrás
+/// es el automático de Flutter, que vuelve a la pantalla anterior real.
+class AppScaffold extends StatelessWidget {
   const AppScaffold({
     super.key,
     required this.body,
     required this.currentIndex,
-    this.title,
-    this.actions,
-    this.floatingActionButton,
-    this.onIndexChange,
+    required this.onIndexChange,
   });
 
-  /// The main content area.
   final Widget body;
-
-  /// The currently selected navigation index (0–3 for shell tabs, 4 for More).
   final int currentIndex;
-
-  /// AppBar title. Defaults to [AppStrings.appName] when `null`.
-  final String? title;
-
-  /// Optional AppBar action widgets.
-  final List<Widget>? actions;
-
-  /// Optional [FloatingActionButton].
-  final Widget? floatingActionButton;
-
-  /// Called when a navigation destination is tapped.
-  ///
-  /// When `null`, tapping a destination calls [GoRouter.go] with the
-  /// associated route.  Index 4 always opens the end drawer regardless.
-  final void Function(int)? onIndexChange;
-
-  @override
-  State<AppScaffold> createState() => _AppScaffoldState();
-}
-
-class _AppScaffoldState extends State<AppScaffold> {
-  final GlobalKey<ScaffoldState> _scaffoldKey = GlobalKey<ScaffoldState>();
-
-  static const List<String> _tabRoutes = [
-    '/',
-    '/chords',
-    '/tuner',
-    '/metronome',
-  ];
-
-  void _onDestinationTapped(int index) {
-    if (index == 4) {
-      _scaffoldKey.currentState?.openEndDrawer();
-      return;
-    }
-    if (widget.onIndexChange != null) {
-      widget.onIndexChange!(index);
-    } else {
-      context.go(_tabRoutes[index]);
-    }
-  }
+  final ValueChanged<int> onIndexChange;
 
   @override
   Widget build(BuildContext context) => Scaffold(
-        key: _scaffoldKey,
-        body: widget.body,
-        floatingActionButton: widget.floatingActionButton,
-        endDrawer: const AppEndDrawer(),
+        body: body,
         bottomNavigationBar: NavigationBar(
-          selectedIndex: widget.currentIndex.clamp(0, 3),
-          onDestinationSelected: _onDestinationTapped,
-          destinations: [
+          selectedIndex: currentIndex,
+          onDestinationSelected: onIndexChange,
+          destinations: const [
             NavigationDestination(
-              icon: const Icon(Icons.home_outlined),
-              selectedIcon: const Icon(Icons.home),
-              label: context.l10n.t('home'),
-            ),
-            const NavigationDestination(
-              icon: Icon(Icons.library_music_outlined),
-              selectedIcon: Icon(Icons.library_music),
-              label: AppStrings.moduleChords,
-            ),
-            const NavigationDestination(
-              icon: Icon(Icons.graphic_eq_outlined),
-              selectedIcon: Icon(Icons.graphic_eq),
-              label: AppStrings.moduleTuner,
-            ),
-            const NavigationDestination(
-              icon: Icon(Icons.timer_outlined),
-              selectedIcon: Icon(Icons.timer),
-              label: AppStrings.moduleMetronome,
+              icon: Icon(Icons.home_outlined),
+              selectedIcon: Icon(Icons.home),
+              label: AppStrings.tabHome,
             ),
             NavigationDestination(
-              icon: const Icon(Icons.more_horiz),
-              label: context.l10n.t('more'),
+              icon: Icon(Icons.menu_book_outlined),
+              selectedIcon: Icon(Icons.menu_book),
+              label: AppStrings.tabLearn,
+            ),
+            NavigationDestination(
+              icon: Icon(Icons.hearing_outlined),
+              selectedIcon: Icon(Icons.hearing),
+              label: AppStrings.tabPractice,
+            ),
+            NavigationDestination(
+              icon: Icon(Icons.tune_outlined),
+              selectedIcon: Icon(Icons.tune),
+              label: AppStrings.tabTools,
+            ),
+            NavigationDestination(
+              icon: Icon(Icons.insights_outlined),
+              selectedIcon: Icon(Icons.insights),
+              label: AppStrings.tabProgress,
             ),
           ],
         ),
       );
 }
 
-/// The end drawer that exposes the remaining feature modules.
-class AppEndDrawer extends ConsumerWidget {
-  const AppEndDrawer({super.key});
-
-  List<_DrawerSection> _sections(BuildContext context) => [
-        _DrawerSection(
-          title: context.l10n.t('practice'),
-          items: const [
-            _DrawerItem(
-              label: AppStrings.moduleScales,
-              icon: Icons.music_video,
-              route: '/scales',
-            ),
-            _DrawerItem(
-              label: AppStrings.moduleProgressions,
-              icon: Icons.queue_music,
-              route: '/progressions',
-            ),
-            _DrawerItem(
-              label: AppStrings.moduleEarTraining,
-              icon: Icons.hearing,
-              route: '/ear-training',
-            ),
-            _DrawerItem(
-              label: AppStrings.moduleRhythmGame,
-              icon: Icons.sports_esports,
-              route: '/rhythm-game',
-            ),
-            _DrawerItem(
-              label: AppStrings.moduleImprovisation,
-              icon: Icons.piano,
-              route: '/improvisation',
-            ),
-          ],
-        ),
-        _DrawerSection(
-          title: context.l10n.t('createTrack'),
-          items: const [
-            _DrawerItem(
-              label: AppStrings.moduleSongs,
-              icon: Icons.music_note,
-              route: '/songs',
-            ),
-            _DrawerItem(
-              label: AppStrings.moduleComposition,
-              icon: Icons.edit_note,
-              route: '/composition',
-            ),
-            _DrawerItem(
-              label: AppStrings.moduleHealth,
-              icon: Icons.health_and_safety,
-              route: '/health',
-            ),
-            _DrawerItem(
-              label: AppStrings.moduleCommunity,
-              icon: Icons.people,
-              route: '/community',
-            ),
-            _DrawerItem(
-              label: AppStrings.moduleAchievements,
-              icon: Icons.emoji_events,
-              route: '/achievements',
-            ),
-          ],
-        ),
-      ];
+/// Ajustes de tema e idioma (antes en el menú lateral "Más").
+class SettingsPanel extends ConsumerWidget {
+  const SettingsPanel({super.key});
 
   @override
   Widget build(BuildContext context, WidgetRef ref) {
-    final scheme = Theme.of(context).colorScheme;
-    final textTheme = Theme.of(context).textTheme;
-    final location = GoRouterState.of(context).matchedLocation;
+    final p = context.palette;
+    final text = Theme.of(context).textTheme;
     final themeMode =
         ref.watch(settingsViewModelProvider.select((s) => s.themeMode));
     final localeCode =
@@ -198,207 +79,52 @@ class AppEndDrawer extends ConsumerWidget {
         (themeMode == ThemeMode.system &&
             MediaQuery.platformBrightnessOf(context) == Brightness.dark);
 
-    return Drawer(
-      backgroundColor: scheme.surfaceContainerLow,
-      child: SafeArea(
-        child: ListView(
-          padding: const EdgeInsets.fromLTRB(12, 0, 12, 16),
-          children: [
-            DrawerHeader(
-              margin: const EdgeInsets.only(bottom: 12),
-              padding: EdgeInsets.zero,
-              decoration: BoxDecoration(
-                borderRadius: BorderRadius.circular(16),
-                gradient: LinearGradient(
-                  begin: Alignment.topLeft,
-                  end: Alignment.bottomRight,
-                  colors: [context.palette.accent, scheme.surfaceContainerHigh],
-                ),
-              ),
-              child: Padding(
-                padding: const EdgeInsets.fromLTRB(16, 0, 16, 16),
-                child: Column(
-                  crossAxisAlignment: CrossAxisAlignment.start,
-                  mainAxisAlignment: MainAxisAlignment.end,
-                  children: [
-                    Text(
-                      AppStrings.appName,
-                      style: textTheme.titleLarge?.copyWith(
-                            color: scheme.onPrimary,
-                            fontWeight: FontWeight.bold,
-                            letterSpacing: 1.2,
-                          ),
+    return Card(
+      child: Column(
+        children: [
+          SwitchListTile(
+            secondary: Icon(Icons.dark_mode_outlined, color: p.textSecondary),
+            title: const Text(AppStrings.darkMode),
+            subtitle: Text(
+              context.l10n.t('darkModeSubtitle'),
+              style: text.labelSmall?.copyWith(color: p.textSecondary),
+            ),
+            value: isDark,
+            onChanged: (value) =>
+                ref.read(settingsViewModelProvider.notifier).setThemeMode(
+                      value ? ThemeMode.dark : ThemeMode.system,
                     ),
-                    const SizedBox(height: 4),
-                    Text(
-                      AppStrings.appTagline,
-                      style: textTheme.bodySmall?.copyWith(
-                            color: scheme.onPrimary.withAlpha(220),
-                          ),
-                    ),
+          ),
+          const Divider(height: 1),
+          Padding(
+            padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 6),
+            child: Row(
+              children: [
+                Icon(Icons.language, color: p.textSecondary),
+                const SizedBox(width: 16),
+                Expanded(child: Text(context.l10n.t('language'))),
+                DropdownButton<String>(
+                  value: localeCode,
+                  underline: const SizedBox.shrink(),
+                  onChanged: (value) {
+                    if (value == null) return;
+                    ref
+                        .read(settingsViewModelProvider.notifier)
+                        .setLocaleCode(value);
+                  },
+                  items: [
+                    for (final language in AppI18n.supportedLanguages)
+                      DropdownMenuItem(
+                        value: language.locale.languageCode,
+                        child: Text(language.displayName),
+                      ),
                   ],
                 ),
-              ),
-            ),
-            ..._sections(context).expand(
-              (section) => [
-                Padding(
-                  padding: const EdgeInsets.fromLTRB(4, 6, 4, 8),
-                  child: Text(
-                    section.title,
-                    style: textTheme.labelMedium?.copyWith(
-                      color: scheme.onSurfaceVariant,
-                      fontWeight: FontWeight.w600,
-                    ),
-                  ),
-                ),
-                Container(
-                  decoration: BoxDecoration(
-                    color: scheme.surfaceContainer,
-                    borderRadius: BorderRadius.circular(14),
-                    border: Border.all(color: scheme.outlineVariant),
-                  ),
-                  child: Column(
-                    children: section.items
-                        .map((item) => _DrawerItemTile(
-                              item: item,
-                              isSelected: location == item.route ||
-                                  location.startsWith('${item.route}/'),
-                            ))
-                        .toList(growable: false),
-                  ),
-                ),
-                const SizedBox(height: 8),
               ],
             ),
-            Container(
-              margin: const EdgeInsets.only(top: 8),
-              decoration: BoxDecoration(
-                color: scheme.surfaceContainer,
-                borderRadius: BorderRadius.circular(14),
-                border: Border.all(color: scheme.outlineVariant),
-              ),
-              child: SwitchListTile(
-                secondary: Icon(Icons.dark_mode_outlined,
-                    color: scheme.onSurfaceVariant),
-                title: Text(
-                  AppStrings.darkMode,
-                  style: textTheme.bodyMedium?.copyWith(color: scheme.onSurface),
-                ),
-                subtitle: Text(
-                  context.l10n.t('darkModeSubtitle'),
-                  style: textTheme.labelSmall
-                      ?.copyWith(color: scheme.onSurfaceVariant),
-                ),
-                value: isDark,
-                activeThumbColor: scheme.primary,
-                onChanged: (value) {
-                  ref.read(settingsViewModelProvider.notifier).setThemeMode(
-                        value ? ThemeMode.dark : ThemeMode.system,
-                      );
-                },
-              ),
-            ),
-            Container(
-              margin: const EdgeInsets.only(top: 8),
-              decoration: BoxDecoration(
-                color: scheme.surfaceContainer,
-                borderRadius: BorderRadius.circular(14),
-                border: Border.all(color: scheme.outlineVariant),
-              ),
-              padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 6),
-              child: Row(
-                children: [
-                  Icon(Icons.language, color: scheme.onSurfaceVariant),
-                  const SizedBox(width: 10),
-                  Expanded(
-                    child: Text(
-                      context.l10n.t('language'),
-                      style: textTheme.bodyMedium
-                          ?.copyWith(color: scheme.onSurface),
-                    ),
-                  ),
-                  DropdownButton<String>(
-                    value: localeCode,
-                    underline: const SizedBox.shrink(),
-                    onChanged: (value) {
-                      if (value == null) return;
-                      ref
-                          .read(settingsViewModelProvider.notifier)
-                          .setLocaleCode(value);
-                    },
-                    items: AppI18n.supportedLanguages
-                        .map(
-                          (language) => DropdownMenuItem(
-                            value: language.locale.languageCode,
-                            child: Text(language.displayName),
-                          ),
-                        )
-                        .toList(growable: false),
-                  ),
-                ],
-              ),
-            ),
-          ],
-        ),
+          ),
+        ],
       ),
-    );
-  }
-}
-
-/// Data holder for a single end-drawer list tile.
-class _DrawerItem {
-  const _DrawerItem({
-    required this.label,
-    required this.icon,
-    required this.route,
-  });
-
-  final String label;
-  final IconData icon;
-  final String route;
-}
-
-class _DrawerSection {
-  const _DrawerSection({
-    required this.title,
-    required this.items,
-  });
-
-  final String title;
-  final List<_DrawerItem> items;
-}
-
-class _DrawerItemTile extends StatelessWidget {
-  const _DrawerItemTile({
-    required this.item,
-    required this.isSelected,
-  });
-
-  final _DrawerItem item;
-  final bool isSelected;
-
-  @override
-  Widget build(BuildContext context) {
-    final scheme = Theme.of(context).colorScheme;
-    return ListTile(
-      dense: true,
-      contentPadding: const EdgeInsets.symmetric(horizontal: 10),
-      leading: Icon(
-        item.icon,
-        color: isSelected ? scheme.primary : scheme.onSurfaceVariant,
-      ),
-      title: Text(
-        item.label,
-        style: Theme.of(context).textTheme.bodyMedium?.copyWith(
-              color: isSelected ? scheme.primary : scheme.onSurface,
-              fontWeight: isSelected ? FontWeight.w600 : FontWeight.w400,
-            ),
-      ),
-      onTap: () {
-        Navigator.pop(context);
-        context.go(item.route);
-      },
     );
   }
 }
