@@ -79,8 +79,8 @@ class AppStrings {
     es: 'Ninguna escala de la app contiene todas sus notas.',
     en: 'No scale in the app contains all of its notes.',
   );
-  static String get relatedVoicings =>
-      tr(es: 'Acordes relacionados', en: 'Related chords');
+  static String relatedChordsOf(String root) =>
+      tr(es: 'Acordes relacionados con $root', en: 'Related $root chords');
   static String get styleMatches =>
       tr(es: 'Del mismo estilo', en: 'Same style');
   static String get chordExplorer => tr(es: 'Explorador', en: 'Explorer');

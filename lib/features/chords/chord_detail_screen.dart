@@ -290,7 +290,7 @@ class _ChordDetailScreenState extends ConsumerState<ChordDetailScreen> {
               const SizedBox(height: 12),
               fadeIn(
                 _SectionCard(
-                  title: '${chord.root} ${AppStrings.relatedVoicings}',
+                  title: AppStrings.relatedChordsOf(chord.root),
                   child: SizedBox(
                     height: 80,
                     child: ListView.separated(
@@ -364,7 +364,7 @@ class _ChordDetailScreenState extends ConsumerState<ChordDetailScreen> {
         .map((interval) => intervalSymbols[interval] ?? '$interval semitones')
         .join(' • ');
     final names = chord.intervals
-        .map(intervalLongName)
+        .map((i) => i == 0 ? AppStrings.legendRoot : intervalLongName(i))
         .join(' — ');
     return '$symbols\n$names';
   }
