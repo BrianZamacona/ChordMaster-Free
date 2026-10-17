@@ -4,12 +4,14 @@ import 'package:go_router/go_router.dart';
 
 import '../../core/constants/app_strings.dart';
 import '../../core/constants/chord_metadata.dart';
+import '../../core/constants/chord_texts.dart';
 import '../../core/widgets/chord_diagram.dart';
 import '../../models/chord.dart';
 import '../../ui/animations.dart';
 import '../../ui/palette.dart';
 import 'chord_filters.dart';
 import 'chord_viewmodel.dart';
+import 'fingering_selection.dart';
 
 /// Chord library screen with search, style/root/type filters, and chord card grid.
 class ChordLibraryScreen extends ConsumerStatefulWidget {
@@ -128,7 +130,11 @@ class _ChordLibraryScreenState extends ConsumerState<ChordLibraryScreen> {
                               ],
                             ),
                           )
-                        : _ChordGrid(chords: state.filteredChords),
+                        : state.filteredChords.length == 1
+                            // Un solo acorde (p. ej. raíz C + tipo Mayor):
+                            // se ven todas sus posiciones, no solo la abierta.
+                            ? _SingleChordPositions(chord: state.filteredChords.first)
+                            : _ChordGrid(chords: state.filteredChords),
           ),
         ],
       ),
@@ -256,6 +262,12 @@ class _ChordCard extends StatelessWidget {
               ),
               const SizedBox(height: 4),
               _DifficultyStars(difficulty: chord.difficulty),
+              const SizedBox(height: 2),
+              Text(
+                AppStrings.positionsCount(positionCount(chord)),
+                key: Key('positions-${chord.name}'),
+                style: theme.textTheme.labelSmall?.copyWith(color: context.palette.accent),
+              ),
             ],
           ),
         ),
@@ -282,4 +294,114 @@ class _DifficultyStars extends StatelessWidget {
           ),
         ),
       );
+}
+
+/// Todas las digitaciones de un acorde, agrupadas por sección. Tocar una
+/// abre el explorador (donde se pueden comparar).
+class _SingleChordPositions extends StatelessWidget {
+  const _SingleChordPositions({required this.chord});
+
+  final Chord chord;
+
+  @override
+  Widget build(BuildContext context) {
+    final theme = Theme.of(context);
+    final p = context.palette;
+    final encoded = Uri.encodeComponent(chord.name);
+    final name = chordDisplayName(
+      root: chord.root,
+      type: chord.type,
+      explicitDisplayName: chord.displayName,
+    );
+    final shared = sharedShapeLabels(chord.cagedPositions);
+    return LayoutBuilder(
+      builder: (context, constraints) {
+        const gap = 10.0;
+        final columns = constraints.maxWidth >= 640 ? 4 : 2;
+        final width = (constraints.maxWidth - 24 - gap * (columns - 1)) / columns;
+        return ListView(
+          padding: const EdgeInsets.fromLTRB(12, 4, 12, 24),
+          children: [
+            Text(
+              AppStrings.allPositionsOf(name, positionCount(chord)),
+              style: theme.textTheme.titleMedium,
+            ),
+            const SizedBox(height: 8),
+            Wrap(
+              spacing: 8,
+              runSpacing: 8,
+              children: [
+                OutlinedButton.icon(
+                  onPressed: () => context.go('/learn/chords/$encoded'),
+                  icon: const Icon(Icons.info_outline, size: 18),
+                  label: Text(AppStrings.openDetail),
+                ),
+                OutlinedButton.icon(
+                  key: const Key('open-explorer'),
+                  onPressed: () => context.go('/learn/chords/$encoded/explorer'),
+                  icon: const Icon(Icons.compare_arrows, size: 18),
+                  label: Text(AppStrings.openExplorerToCompare),
+                ),
+              ],
+            ),
+            for (final section in compareSections)
+              if (sectionItems(chord, section).isNotEmpty) ...[
+                const SizedBox(height: 16),
+                Text(
+                  section == 'caged' ? AppStrings.cagedPositions : sectionTitle(section),
+                  style: theme.textTheme.titleSmall?.copyWith(color: p.accent),
+                ),
+                const SizedBox(height: 8),
+                Wrap(
+                  spacing: gap,
+                  runSpacing: gap,
+                  children: [
+                    for (final (i, item) in sectionItems(chord, section).indexed)
+                      SizedBox(
+                        width: width,
+                        child: Card(
+                          key: Key('position-$section-$i'),
+                          margin: EdgeInsets.zero,
+                          clipBehavior: Clip.antiAlias,
+                          child: InkWell(
+                            onTap: () => context.go('/learn/chords/$encoded/explorer'),
+                            child: Padding(
+                              padding: const EdgeInsets.all(8),
+                              child: Column(
+                                children: [
+                                  Text(
+                                    section == 'main'
+                                        ? AppStrings.compareMainSection
+                                        : section == 'caged'
+                                            ? shared[i] ?? chordDataText(item.title)
+                                            : chordDataText(item.title),
+                                    textAlign: TextAlign.center,
+                                    maxLines: 2,
+                                    overflow: TextOverflow.ellipsis,
+                                    style: theme.textTheme.labelLarge,
+                                  ),
+                                  const SizedBox(height: 4),
+                                  ChordDiagramWidget(
+                                    chordName: item.title,
+                                    fretPositions: item.fretPositions,
+                                    fingerPositions: item.fingerPositions,
+                                    root: chord.root,
+                                    baseFret: item.baseFret,
+                                    size: (width - 16).clamp(90, 150).toDouble(),
+                                    showChordName: false,
+                                  ),
+                                ],
+                              ),
+                            ),
+                          ),
+                        ),
+                      ),
+                  ],
+                ),
+              ],
+          ],
+        );
+      },
+    );
+  }
 }

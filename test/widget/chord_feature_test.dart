@@ -166,7 +166,10 @@ void main() {
     await tester.enterText(find.byType(TextField), 'hendrix');
     await tester.pump(const Duration(milliseconds: 300));
 
-    expect(find.text('C7#9'), findsOneWidget);
+    // Un solo resultado: se ven todas sus posiciones, no solo la principal.
+    expect(find.textContaining('C7#9'), findsOneWidget);
+    expect(find.byKey(const Key('position-main-0')), findsOneWidget);
+    expect(find.byKey(const Key('open-explorer')), findsOneWidget);
   });
 
   testWidgets('chord detail shows aliases and category chips for Hendrix voicings',

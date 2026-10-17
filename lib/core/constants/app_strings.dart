@@ -96,6 +96,14 @@ class AppStrings {
   static String get noDataAvailable =>
       tr(es: 'Sin datos.', en: 'No data available.');
   static String get shapeLabel => tr(es: 'Forma', en: 'Shape');
+  static String positionsCount(int n) => n == 1
+      ? tr(es: '1 posición', en: '1 position')
+      : tr(es: '$n posiciones', en: '$n positions');
+  static String allPositionsOf(String chord, int n) =>
+      tr(es: 'Todas las posiciones de $chord ($n)', en: 'All $chord positions ($n)');
+  static String get openDetail => tr(es: 'Ver detalle', en: 'See details');
+  static String get openExplorerToCompare =>
+      tr(es: 'Comparar en el explorador', en: 'Compare in the explorer');
 
   // ── Comparador de digitaciones ─────────────────────────────────────────────
 

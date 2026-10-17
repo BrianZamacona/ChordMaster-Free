@@ -33,6 +33,10 @@ List<ChordExplorerItem> sectionItems(Chord chord, String section) =>
       _ => const [],
     };
 
+/// Cuántas digitaciones tiene el acorde en total (todas las secciones).
+int positionCount(Chord chord) =>
+    compareSections.fold(0, (n, s) => n + sectionItems(chord, s).length);
+
 String sectionTitle(String section) => switch (section) {
       'main' => AppStrings.compareMainSection,
       'caged' => 'CAGED',
