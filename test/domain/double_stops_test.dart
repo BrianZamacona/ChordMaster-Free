@@ -80,4 +80,42 @@ void main() {
       expect(quality(DiatonicDoubleStopInterval.fifth, 7), '5ª disminuida');
     });
   });
+
+  group('degreeInMajorKey', () {
+    test('las 7 notas de C mayor son 1…7', () {
+      expect(
+        [for (final n in ['C', 'D', 'E', 'F', 'G', 'A', 'B']) degreeInMajorKey(n, 'C')],
+        ['1', '2', '3', '4', '5', '6', '7'],
+      );
+    });
+
+    test('en G mayor, F# es el 7 y C el 4', () {
+      expect(degreeInMajorKey('F#', 'G'), '7');
+      expect(degreeInMajorKey('C', 'G'), '4');
+    });
+
+    test('fuera de la escala devuelve la etiqueta cromática', () {
+      expect(degreeInMajorKey('D#', 'C'), 'b3');
+    });
+
+    test('toda nota de los double stops diatónicos está en la tonalidad', () {
+      final outside = <String>{};
+      for (final key in noteNames) {
+        for (final type in DiatonicDoubleStopInterval.values) {
+          final groups = findDiatonicDoubleStopPairs(key, type, const FretRange(0, 12));
+          for (final pair in groups.expand((g) => g.pairs)) {
+            for (final mark in [pair.root, pair.interval]) {
+              if (int.tryParse(degreeInMajorKey(mark.note, key)) == null) {
+                outside.add('${type.name} grado ${pair.degree}');
+              }
+            }
+          }
+        }
+      }
+      // Deuda conocida, compartida con los fixtures golden del sandbox TS: la
+      // 7ª del grado VII figura como disminuida (9 semitonos, B→G# en C) y en
+      // la escala mayor es menor (10, B→A). Pendiente de decisión del usuario.
+      expect(outside, {'seventh grado 7'});
+    });
+  });
 }

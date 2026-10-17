@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 
+import '../../../core/widgets/interval_legend.dart';
 import '../../../domain/theory/double_stops.dart';
 import 'double_stops_fretboard.dart';
 
@@ -151,7 +152,7 @@ class DoubleStopsContent extends ConsumerWidget {
             ),
             const SizedBox(height: 16),
             for (final group in groups)
-              _GroupSection(group: group, range: c.range),
+              _GroupSection(group: group, range: c.range, tonic: noteNames[c.tonic]),
           ],
         ),
       ),
@@ -160,7 +161,13 @@ class DoubleStopsContent extends ConsumerWidget {
 }
 
 class _GroupSection extends StatelessWidget {
-  const _GroupSection({required this.group, required this.range});
+  const _GroupSection({
+    required this.group,
+    required this.range,
+    required this.tonic,
+  });
+
+  final String tonic;
 
   final DoubleStopGroup group;
   final FretRange range;
@@ -190,7 +197,19 @@ class _GroupSection extends StatelessWidget {
             if (group.pairs.isEmpty)
               const Text('Sin parejas en este rango.')
             else ...[
-              DoubleStopFretboard(pairs: group.pairs, range: range),
+              DoubleStopFretboard(
+                pairs: group.pairs,
+                range: range,
+                tonic: tonic,
+              ),
+              const SizedBox(height: 4),
+              IntervalLegend(
+                labels: [
+                  for (final pair in group.pairs)
+                    for (final mark in [pair.root, pair.interval])
+                      degreeInMajorKey(mark.note, tonic),
+                ],
+              ),
               const SizedBox(height: 4),
               Wrap(
                 spacing: 12,

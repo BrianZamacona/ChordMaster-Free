@@ -44,6 +44,8 @@ void main() {
 
       test('cada etiqueta de intervalo cae en su familia', () {
         expect(p.intervalColor('R'), p.intervalRoot);
+        expect(p.intervalColor('1'), p.intervalRoot);
+        expect(p.intervalColor('#5'), p.intervalFifth);
         expect(p.intervalColor('b3'), p.intervalThird);
         expect(p.intervalColor('3'), p.intervalThird);
         expect(p.intervalColor('5'), p.intervalFifth);

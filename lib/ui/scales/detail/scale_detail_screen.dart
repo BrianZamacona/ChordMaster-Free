@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 
 import '../../../core/widgets/fingering_theory_card.dart';
+import '../../../core/widgets/interval_legend.dart';
 import '../../../data/models/scale_definition.dart';
 import '../../../domain/fingering_systems/fingering_systems_registry.dart';
 import '../../../ui/widgets/fretboard_diagram.dart';
@@ -51,11 +52,19 @@ class ScaleDetailScreen extends ConsumerWidget {
             isLoading: state.isLoading,
           ),
           const SizedBox(height: 8),
-          if (state.currentPattern != null)
+          if (state.currentPattern != null) ...[
             Padding(
               padding: const EdgeInsets.symmetric(horizontal: 16),
               child: FretboardDiagram(pattern: state.currentPattern!),
-            )
+            ),
+            const SizedBox(height: 8),
+            IntervalLegend(
+              labels: [
+                for (final c in state.currentPattern!.coordinates)
+                  if (c.isRoot) '1' else c.interval,
+              ],
+            ),
+          ]
           else if (state.isLoading)
             const _DiagramSkeleton()
           else

@@ -49,6 +49,14 @@ ThemeData _buildTheme(AppPalette p, Brightness brightness) {
     onPrimary: p.onAccent,
     secondary: p.intervalThird,
     onSecondary: p.onInterval,
+    // Selecciones (chips, pestañas): latón translúcido sobre la tarjeta, no
+    // el melocotón que Material deriva de la semilla.
+    primaryContainer: Color.alphaBlend(p.accent.withValues(alpha: 0.22), p.surface),
+    onPrimaryContainer: p.textPrimary,
+    secondaryContainer:
+        Color.alphaBlend(p.accent.withValues(alpha: 0.22), p.surface),
+    onSecondaryContainer: p.textPrimary,
+    tertiary: p.intervalFifth,
     surface: p.surface,
     onSurface: p.textPrimary,
     onSurfaceVariant: p.textSecondary,

@@ -152,6 +152,14 @@ const _diatonicIntervals = {
 
 int noteIndex(String note) => noteNames.indexOf(note);
 
+/// Grado de [note] en la escala mayor de [key]: '1'…'7' si pertenece a la
+/// escala; si no, la etiqueta cromática (`b3`, `#4` se escribe `b5`…).
+String degreeInMajorKey(String note, String key) {
+  final semitone = (noteIndex(note) - noteIndex(key) + 12) % 12;
+  final degree = _majorScaleSteps.indexOf(semitone);
+  return degree >= 0 ? '${degree + 1}' : _intervalLabels[semitone];
+}
+
 String noteAt(int stringIndex, int fret) =>
     noteNames[(openStringMidi[stringIndex] + fret) % 12];
 

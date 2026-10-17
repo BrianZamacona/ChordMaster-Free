@@ -63,11 +63,12 @@ class AppPalette extends ThemeExtension<AppPalette> {
   final Color fretWire;
   final Color nut;
 
-  /// Color de una etiqueta de intervalo de `analyzeFingering` (R, b3, 5, b7…).
+  /// Color de una etiqueta de intervalo: de acordes (`R`, `b3`, `5`…) o de
+  /// escalas (`1`, `b3`, `#5`…).
   Color intervalColor(String label) => switch (label) {
-        'R' => intervalRoot,
+        'R' || '1' => intervalRoot,
         'b3' || '3' => intervalThird,
-        'b5' || '5' => intervalFifth,
+        'b5' || '5' || '#5' => intervalFifth,
         'b7' || '7' => intervalSeventh,
         _ => intervalTension,
       };

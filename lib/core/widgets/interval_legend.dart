@@ -5,8 +5,8 @@ import '../constants/app_strings.dart';
 
 /// Leyenda de los colores de intervalo de un diagrama.
 ///
-/// Solo muestra las familias presentes en [labels] (etiquetas de
-/// `stringTonesFromChordJson`), con la misma forma que en el diagrama:
+/// Solo muestra las familias presentes en [labels] (de acordes: `R`, `b3`…;
+/// de escalas: `1`, `#5`…), con la misma forma que en el diagrama:
 /// la raíz cuadrada, el resto redondas.
 class IntervalLegend extends StatelessWidget {
   const IntervalLegend({super.key, required this.labels});
@@ -19,9 +19,10 @@ class IntervalLegend extends StatelessWidget {
     final present = labels.toSet();
     bool has(Set<String> family) => present.any(family.contains);
     final entries = [
-      if (present.contains('R')) (AppStrings.legendRoot, p.intervalRoot, true),
+      if (has({'R', '1'})) (AppStrings.legendRoot, p.intervalRoot, true),
       if (has({'b3', '3'})) (AppStrings.legendThird, p.intervalThird, false),
-      if (has({'b5', '5'})) (AppStrings.legendFifth, p.intervalFifth, false),
+      if (has({'b5', '5', '#5'}))
+        (AppStrings.legendFifth, p.intervalFifth, false),
       if (has({'b7', '7'})) (AppStrings.legendSeventh, p.intervalSeventh, false),
       if (has({'b2', '2', '4', 'b6', '6'}))
         (AppStrings.legendTension, p.intervalTension, false),

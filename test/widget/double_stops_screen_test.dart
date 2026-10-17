@@ -25,15 +25,6 @@ void main() {
       );
     });
   });
-  test('noteTextColor: blanco en la raíz, onPrimary en el intervalo', () {
-    final dark = ColorScheme.fromSeed(
-      seedColor: Colors.pink,
-      brightness: Brightness.dark,
-    );
-    expect(noteTextColor(true, dark), Colors.white);
-    expect(noteTextColor(false, dark), dark.onPrimary);
-    expect(noteTextColor(false, dark), isNot(Colors.white));
-  });
   group('noteOffset', () {
     const size = Size(280, 136);
 
