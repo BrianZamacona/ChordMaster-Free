@@ -21,6 +21,7 @@ class FingeringMetrics {
     required this.bassNote,
     required this.inversion,
     required this.toneLabels,
+    required this.toneNotes,
   });
 
   /// `null` si el costo ergonómico es infinito.
@@ -44,6 +45,9 @@ class FingeringMetrics {
 
   /// De la cuerda más grave a la más aguda, solo cuerdas sonantes.
   final List<String> toneLabels;
+
+  /// Nombres (con sostenidos) alineados con [toneLabels].
+  final List<String> toneNotes;
 }
 
 /// Analiza una digitación de chords.json (orden 6ª → 1ª, `-1` = muteada).
@@ -113,6 +117,7 @@ FingeringMetrics analyzeFingering({
       for (final s in sounding)
         _toneLabelBySemitone[(pitchClass(s) - rootPc + 12) % 12],
     ],
+    toneNotes: [for (final s in sounding) noteNames[pitchClass(s)]],
   );
 }
 

@@ -35,6 +35,7 @@ void main() {
     expect(m.lowestFret, 1);
     expect(m.fretSpan, 2);
     expect(m.toneLabels, ['R', '3', '5', 'R', '3']);
+    expect(m.toneNotes, ['C', 'E', 'G', 'C', 'E']);
     expect(m.ergonomicCost, isNotNull);
   });
 
