@@ -11,7 +11,6 @@ import '../features/ear_training/ear_training_screen.dart';
 import '../features/health/health_screen.dart';
 import '../features/home/home_screen.dart';
 import '../features/hubs/hubs.dart';
-import '../features/improvisation/improv_screen.dart';
 import '../features/metronome/metronome_screen.dart';
 import '../features/progressions/progressions_screen.dart';
 import '../features/rhythm_games/rhythm_game_screen.dart';
@@ -36,7 +35,9 @@ const legacyRoutePrefixes = {
   '/ear-training': '/practice/ear-training',
   '/rhythm-game': '/practice/rhythm',
   '/songs': '/practice/songs',
-  '/improvisation': '/practice/improvisation',
+  // Improvisación se fusionó con el detalle de cada escala.
+  '/improvisation': '/learn/scales',
+  '/practice/improvisation': '/learn/scales',
   '/tuner': '/tools/tuner',
   '/metronome': '/tools/metronome',
   '/achievements': '/progress/achievements',
@@ -162,10 +163,6 @@ final GoRouter appRouter = GoRouter(
                       ),
                     ),
                   ],
-                ),
-                GoRoute(
-                  path: 'improvisation',
-                  builder: (_, __) => const ImprovScreen(),
                 ),
               ],
             ),

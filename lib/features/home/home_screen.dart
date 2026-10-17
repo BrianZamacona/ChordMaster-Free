@@ -290,10 +290,6 @@ List<_ModuleInfo> _modules = [
       icon: Icons.sports_esports,
       route: '/practice/rhythm'),
   _ModuleInfo(
-      label: AppStrings.moduleImprovisation,
-      icon: Icons.auto_awesome,
-      route: '/practice/improvisation'),
-  _ModuleInfo(
       label: AppStrings.moduleSongs,
       icon: Icons.library_music,
       route: '/practice/songs'),

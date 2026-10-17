@@ -13,6 +13,7 @@ import '../../theme.dart';
 import 'scale_detail_notifier.dart';
 import 'widgets/pattern_tab_bar.dart';
 import 'widgets/scale_info_panel.dart';
+import 'widgets/scale_theory_cards.dart';
 
 const _noteNames = ['C', 'C#', 'D', 'D#', 'E', 'F', 'F#', 'G', 'G#', 'A', 'A#', 'B'];
 
@@ -120,6 +121,15 @@ class ScaleDetailScreen extends ConsumerWidget {
             rootName: state.rootName,
             notes: state.scaleNoteNames,
             degrees: scaleDegreeLabels(scale.intervals),
+          ),
+          ScaleWhyCard(
+            intervals: scale.intervals,
+            rootSemitone: _noteNames.indexOf(state.rootName),
+          ),
+          ScaleImproviseCard(
+            scaleId: scale.id,
+            intervals: scale.intervals,
+            rootName: state.rootName,
           ),
         ],
       ),

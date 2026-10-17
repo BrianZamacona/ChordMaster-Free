@@ -34,6 +34,8 @@ void main() {
       expect(redirectLegacyRoute('/community'), '/progress');
       expect(redirectLegacyRoute('/composition'), '/learn/progressions');
       expect(redirectLegacyRoute('/learn/composition'), '/learn/progressions');
+      expect(redirectLegacyRoute('/improvisation'), '/learn/scales');
+      expect(redirectLegacyRoute('/practice/improvisation'), '/learn/scales');
     });
 
     test('rutas actuales y prefijos parecidos no se tocan', () {

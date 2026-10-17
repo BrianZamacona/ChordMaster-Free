@@ -61,12 +61,6 @@ class PracticeHubScreen extends StatelessWidget {
             subtitle: AppStrings.hubSongsSub,
             route: '/practice/songs',
           ),
-          HubEntry(
-            icon: Icons.auto_awesome,
-            title: AppStrings.hubImprov,
-            subtitle: AppStrings.hubImprovSub,
-            route: '/practice/improvisation',
-          ),
         ],
       );
 }

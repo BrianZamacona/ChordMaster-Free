@@ -21,8 +21,6 @@ class AppStrings {
       tr(es: 'Progresiones', en: 'Progressions');
   static String get moduleEarTraining => tr(es: 'Oído', en: 'Ear Training');
   static String get moduleRhythmGame => tr(es: 'Ritmo', en: 'Rhythm Game');
-  static String get moduleImprovisation =>
-      tr(es: 'Improvisación', en: 'Improvisation');
   static String get moduleSongs => tr(es: 'Canciones', en: 'Songs');
   static String get moduleHealth =>
       tr(es: 'Salud de práctica', en: 'Practice Health');
@@ -179,11 +177,6 @@ class AppStrings {
     es: 'Progresiones comunes con las digitaciones más cómodas, y las tuyas.',
     en: 'Common progressions with the most comfortable fingerings, and your own.',
   );
-  static String get hubImprov => tr(es: 'Improvisación', en: 'Improvisation');
-  static String get hubImprovSub => tr(
-    es: 'Qué escala usar sobre cada acorde, patrones y licks.',
-    en: 'Which scale to use over each chord, patterns and licks.',
-  );
   static String get hubEar => tr(es: 'Oído', en: 'Ear');
   static String get hubEarSub => tr(
     es: 'Reconoce intervalos y acordes de oído.',
@@ -264,6 +257,29 @@ class AppStrings {
     en: 'No positions for this system',
   );
   static String get scaleShapeOrder => tr(es: 'Orden', en: 'Order');
+  static String get scaleSteps => tr(
+    es: 'Pasos entre notas (T = tono, S = semitono)',
+    en: 'Steps between notes (W = whole, H = half)',
+  );
+  static String get scaleDiatonicChords =>
+      tr(es: 'Acordes de la escala', en: 'Chords of the scale');
+  static String get scaleDiatonicHint => tr(
+    es: 'Tríadas formadas con sus propias notas, tomando una sí y una no.',
+    en: 'Triads built from its own notes, taking every other note.',
+  );
+  static String get scaleImproviseTitle =>
+      tr(es: 'Improvisar con esta escala', en: 'Improvise with this scale');
+  static String get improvWhere => tr(es: 'Dónde suena', en: 'Where it fits');
+  static String get improvIdea =>
+      tr(es: 'Idea para practicar', en: 'Practice idea');
+  static String get scaleChordsFit =>
+      tr(es: 'Acordes que puedes acompañar', en: 'Chords it fits over');
+  static String get scaleChordsFitHint => tr(
+    es: 'Sobre la tónica, todas las notas del acorde están en la escala: '
+        'ninguna choca.',
+    en: 'On the tonic, every note of the chord is in the scale: nothing '
+        'clashes.',
+  );
 
   // ── Double stops ───────────────────────────────────────────────────────────
 

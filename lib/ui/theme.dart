@@ -9,9 +9,13 @@ export 'palette.dart';
 /// leerse sin esfuerzo). Las fuentes van empaquetadas en `assets/google_fonts/`,
 /// así que no se descargan en tiempo de ejecución.
 TextTheme _buildTextTheme(TextTheme base, AppPalette p) {
+  // Atkinson no trae "→" (lo usa la teoría de progresiones): Plex Mono sí.
+  // ♭ y ♯ no están en ninguna de las tres; los pone la fuente del sistema.
+  final fallback = [GoogleFonts.ibmPlexMono().fontFamily!];
   final body = GoogleFonts.atkinsonHyperlegibleTextTheme(base).apply(
     bodyColor: p.textPrimary,
     displayColor: p.textPrimary,
+    fontFamilyFallback: fallback,
   );
   TextStyle? display(TextStyle? s, FontWeight w) =>
       GoogleFonts.bricolageGrotesque(textStyle: s, fontWeight: w);
