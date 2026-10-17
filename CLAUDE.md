@@ -1,7 +1,8 @@
 # ChordMaster-Free — guía del proyecto
 
 App Flutter/Dart (Riverpod, go_router) para aprender guitarra: acordes, escalas, progresiones
-y double stops. Idioma de la UI y de los commits: español.
+y double stops. UI bilingüe (español e inglés; arranca en el idioma del teléfono si es inglés,
+si no en español). Commits en español.
 
 ## Principio rector
 **Una sola fuente de verdad por tema, y todo dato musical pasa por una auditoría automática.**
@@ -29,13 +30,24 @@ cada nota pertenezca a la escala. No bajar la tolerancia de 0.
   está dado para raíz C; la app suma el semitono de la raíz y, si pasa del traste 24 o baja de 0,
   desplaza ±12 (todo o nada, nunca recorta una posición).
 - Notas siempre con sostenidos (`C C# D D# E F F# G G# A A# B`).
+- Nombre de intervalos en escalas: `spellInterval` (`lib/domain/theory/intervals.dart`). En
+  escalas de 7 notas cada grado tiene su número (b6 en la menor, #4 en la lidia), nunca `#5`
+  por defecto.
 - Dibujo de diapasón con líneas/notas: UNA función de coordenadas (`noteOffset`) y un solo
   `CustomPainter`; nada de medir widgets por separado.
 - Colores: SOLO desde `context.palette` (`lib/ui/palette.dart`, paleta Palisandro con versión
   clara y oscura) o `Theme.of(context).colorScheme`. Nada de `Colors.red`/hex sueltos ni
   colores por módulo. El color codifica intervalos (`palette.intervalColor('b3')`) y siempre
   va con etiqueta o forma (raíz = cuadrado). `test/ui/palette_test.dart` exige contraste.
-- Tipografía: Bricolage Grotesque (títulos), Atkinson Hyperlegible (texto), IBM Plex Mono
+- Textos: NUNCA un literal visible en una pantalla. Todo pasa por `tr(es:, en:)`
+  (`lib/core/i18n/tr.dart`), normalmente vía un getter de `AppStrings`; las dos versiones son
+  obligatorias. Datos con texto: `LocalizedText`. Como son getters, no van en `const` ni en
+  listas globales `final` (se quedarían en el idioma viejo): usar getters. Los textos en inglés
+  de `chords.json` se traducen en `lib/core/constants/chord_texts.dart` y
+  `test/core/chord_texts_test.dart` exige cobertura completa; nombres de escala en
+  `scale_names.dart`; intervalos en `interval_texts.dart`.
+- Tipografía: Bricolage Grotesque (títulos), Atkinson Hyperlegible (texto, con Plex Mono de
+  respaldo para "→"), IBM Plex Mono
   (`musicMono()`, notas/intervalos). Empaquetadas en `assets/google_fonts/` (OFL); los tests
   que tocan `lightTheme`/`darkTheme` deben llamar `TestWidgetsFlutterBinding.ensureInitialized()`.
 
@@ -73,6 +85,15 @@ cada nota pertenezca a la escala. No bajar la tolerancia de 0.
 7. `git status` antes de dar por terminado; no dejar archivos sueltos (`tool/flutter`,
    `test_errors.txt`) ni cambios sin commitear.
 
+## Teoría "¿Por qué?" (generada por reglas, con tests)
+- `lib/domain/theory/harmony.dart` — función de cada grado (reposo/preparación/tensión),
+  cadencias (auténtica, plagal, rota, semicadencia; también al repetir el bucle) y notas comunes.
+- `lib/domain/theory/scale_insights.dart` — pasos T/S, nota característica frente a mayor o
+  menor natural, simetría, acordes que caben sobre la tónica, acordes diatónicos con número
+  romano, escalas para un acorde (`scalesForChord`) e ideas de improvisación (texto curado por
+  escala; las disminuidas se distinguen por intervalos).
+- Todo texto nuevo de teoría: bilingüe y con test que verifique lo que afirma.
+
 ## Mapa del código
 - `lib/domain/theory/double_stops.dart` — double stops diatónicos y fijos.
 - `lib/domain/voicing/` — `ergonomics.dart` (incl. modo principiante), `voice_leading.dart`,
@@ -89,15 +110,21 @@ cada nota pertenezca a la escala. No bajar la tolerancia de 0.
 - `lib/ui/scales/` — escalas, detalle y `double_stops/`.
 - `lib/ui/navigation.dart` — UN solo `StatefulShellRoute` con 5 pestañas (`AppScaffold`):
   Inicio `/`, Aprender `/learn/...`, Practicar `/practice/...`, Afinar `/tools/tuner|metronome`,
-  Progreso `/progress/...` (incluye ajustes). Toda pantalla nueva cuelga de su hub para que el
+  Progreso `/progress/...` (incluye ajustes). Componer vive dentro de Progresiones ("Mi
+  progresión", por grados) e Improvisación dentro del detalle de cada escala; sus rutas viejas
+  redirigen. El detalle de escala acepta `?root=` (tónica inicial). Toda pantalla nueva cuelga de su hub para que el
   botón de atrás automático funcione; nada de `leading` manual ni barras inferiores propias.
   Las rutas viejas (`/chords`, `/tuner`…) redirigen vía `redirectLegacyRoute`. Las pestañas
   ocultas siguen montadas: lo que use micrófono/audio debe pausarse con `TickerMode`.
 
 ## Pendiente (en orden)
-1. Revisión visual en el dispositivo del rediseño (fases 7A/7C: paleta, diagramas con dedos e
-   intervalos, escalas y double stops). En double stops el color de cada nota es ahora su
-   grado en la tonalidad (igual en todas las parejas).
-2. Sandbox TS: corregir la 7ª diatónica del grado VII (allí sigue como disminuida; aquí se
+1. Revisión visual en el dispositivo (rediseño completo, versión bilingüe, "Mi progresión",
+   tarjetas "¿Por qué?").
+2. Decidir los ids cruzados de las disminuidas en `scales_master.json`: `diminished_wh` tiene
+   intervalos semitono-tono y `diminished_hw` tono-semitono. La app ya muestra el nombre correcto
+   (se deriva de los intervalos); corregir los ids exige pasar por el generador.
+3. `chords.json` no tiene F ni B en primera posición sin cejilla (p. ej. F xx3211): por eso en
+   Do y Mi el modo principiante usa cejilla en esos acordes. Se añadiría vía el generador.
+4. Sandbox TS: corregir la 7ª diatónica del grado VII (allí sigue como disminuida; aquí se
    corrigió a 7ª menor y se regeneraron solo esas filas del golden, 2005 → 1983).
-3. Berklee, si se consigue una definición verificable.
+5. Berklee, si se consigue una definición verificable.
