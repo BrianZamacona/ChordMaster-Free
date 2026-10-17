@@ -1,56 +1,162 @@
+import 'dart:convert';
+
 import 'package:flutter/foundation.dart';
+import 'package:flutter/services.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 
-import '../../core/constants/music_theory.dart';
-import '../../models/progression.dart';
+import '../../domain/progressions/progression_builder.dart';
+import '../../domain/progressions/progression_data.dart';
+import '../../domain/theory/double_stops.dart' show noteNames;
+import '../../domain/voicing/voice_leading.dart';
 import '../../services/achievement_service.dart';
 import '../../services/storage_service.dart';
 
 /// Immutable state for [ProgressionsViewModel].
 class ProgressionsState {
   const ProgressionsState({
-    this.selectedKey = 'C',
-    this.isMajor = true,
-    this.generatedProgressions = const [],
+    this.tonic = 0,
+    this.progressionId = 'v1-2',
     this.progressionsGenerated = 0,
   });
 
-  final String selectedKey;
-  final bool isMajor;
-  final List<Progression> generatedProgressions;
+  /// Pitch class de la tónica (C = 0).
+  final int tonic;
+  final String progressionId;
   final int progressionsGenerated;
 
   ProgressionsState copyWith({
-    String? selectedKey,
-    bool? isMajor,
-    List<Progression>? generatedProgressions,
+    int? tonic,
+    String? progressionId,
     int? progressionsGenerated,
   }) => ProgressionsState(
-    selectedKey: selectedKey ?? this.selectedKey,
-    isMajor: isMajor ?? this.isMajor,
-    generatedProgressions: generatedProgressions ?? this.generatedProgressions,
+    tonic: tonic ?? this.tonic,
+    progressionId: progressionId ?? this.progressionId,
     progressionsGenerated: progressionsGenerated ?? this.progressionsGenerated,
   );
 }
+
+/// Transición entre dos acordes consecutivos de un camino.
+class ProgressionTransition {
+  const ProgressionTransition({
+    required this.fretShift,
+    required this.commonNotes,
+    required this.cost,
+  });
+
+  final int fretShift;
+  final int commonNotes;
+  final double cost;
+}
+
+class ProgressionStep {
+  const ProgressionStep({
+    required this.numeral,
+    required this.voicing,
+    this.transition,
+  });
+
+  final String numeral;
+  final ProgressionVoicing voicing;
+
+  /// `null` en el primer acorde.
+  final ProgressionTransition? transition;
+}
+
+class ProgressionPlan {
+  const ProgressionPlan({
+    required this.progression,
+    required this.tonic,
+    this.steps = const [],
+    this.problem,
+  });
+
+  final Progression progression;
+  final int tonic;
+  final List<ProgressionStep> steps;
+
+  /// Mensaje legible cuando no se pudo armar el camino.
+  final String? problem;
+}
+
+String _degreeLabel(ProgressionDegree degree, int tonic) {
+  final root = noteNames[(tonic + degree.semitones) % 12];
+  return '${degree.numeral} ($root ${degree.type})';
+}
+
+/// Calcula el camino óptimo y las transiciones; sin efectos secundarios.
+ProgressionPlan buildProgressionPlan(
+  ProgressionBuilder builder,
+  Progression progression,
+  int tonic,
+) {
+  final layers = builder.layersFor(progression, tonic);
+  final missing = [
+    for (var i = 0; i < layers.length; i++)
+      if (layers[i].isEmpty) _degreeLabel(progression.degrees[i], tonic),
+  ];
+  if (missing.isNotEmpty) {
+    return ProgressionPlan(
+      progression: progression,
+      tonic: tonic,
+      problem: 'No hay digitaciones válidas para: ${missing.join(', ')}.',
+    );
+  }
+
+  final path = findOptimalProgressionPath(layers);
+  if (path.isEmpty) {
+    return ProgressionPlan(
+      progression: progression,
+      tonic: tonic,
+      problem: 'No se encontró un camino de digitaciones para esta progresión.',
+    );
+  }
+
+  return ProgressionPlan(
+    progression: progression,
+    tonic: tonic,
+    steps: [
+      for (var i = 0; i < path.length; i++)
+        ProgressionStep(
+          numeral: progression.degrees[i].numeral,
+          voicing: path[i],
+          transition: i == 0
+              ? null
+              : ProgressionTransition(
+                  fretShift: (path[i].anchorFret - path[i - 1].anchorFret).abs(),
+                  commonNotes: retainedPositionCount(path[i - 1], path[i]),
+                  cost: calculateVoiceLeadingCost(path[i - 1], path[i]),
+                ),
+        ),
+    ],
+  );
+}
+
+/// Carga chords.json una sola vez.
+final progressionBuilderProvider = FutureProvider<ProgressionBuilder>((ref) async {
+  final raw = await rootBundle.loadString('assets/data/chords.json');
+  final chords = jsonDecode(raw) as List<dynamic>;
+  return ProgressionBuilder([
+    for (final c in chords) ChordFingerings.fromJson(c as Map<String, dynamic>),
+  ]);
+});
 
 /// Provider for [ProgressionsViewModel].
 final progressionsViewModelProvider =
     NotifierProvider<ProgressionsViewModel, ProgressionsState>(
         ProgressionsViewModel.new);
 
-/// Common chord progression patterns: (name, style, numerals, semitone offsets from key).
-const _progressionTemplates = [
-  ('I – IV – V', 'Classic', ['I', 'IV', 'V'], [0, 5, 7]),
-  ('I – V – vi – IV', 'Pop', ['I', 'V', 'vi', 'IV'], [0, 7, 9, 5]),
-  ('ii – V – I', 'Jazz', ['ii', 'V', 'I'], [2, 7, 0]),
-  ('I – vi – IV – V', '50s', ['I', 'vi', 'IV', 'V'], [0, 9, 5, 7]),
-  ('I – IV – vi – V', 'Rock', ['I', 'IV', 'vi', 'V'], [0, 5, 9, 7]),
-  ('vi – IV – I – V', 'Minor feel', ['vi', 'IV', 'I', 'V'], [9, 5, 0, 7]),
-  ('I – iii – IV – V', 'Soul', ['I', 'iii', 'IV', 'V'], [0, 4, 5, 7]),
-  ('I – IV – I – V', 'Blues', ['I', 'IV', 'I', 'V'], [0, 5, 0, 7]),
-];
+final progressionPlanProvider = Provider<AsyncValue<ProgressionPlan>>((ref) {
+  final s = ref.watch(progressionsViewModelProvider);
+  final progression = progressions.firstWhere(
+    (p) => p.id == s.progressionId,
+    orElse: () => progressions.first,
+  );
+  return ref
+      .watch(progressionBuilderProvider)
+      .whenData((b) => buildProgressionPlan(b, progression, s.tonic));
+});
 
-/// Manages progressions generation state.
+/// Manages progression selection state and the usage counter.
 class ProgressionsViewModel extends Notifier<ProgressionsState> {
   static const _keyCount = 'progressions_generated';
 
@@ -71,46 +177,19 @@ class ProgressionsViewModel extends Notifier<ProgressionsState> {
     }
   }
 
-  void setKey(String key) => state = state.copyWith(selectedKey: key);
-  void setMajor({required bool isMajor}) => state = state.copyWith(isMajor: isMajor);
+  void setTonic(int tonic) {
+    state = state.copyWith(tonic: tonic);
+    _countGeneration();
+  }
 
-  /// Generates common progressions for the selected key/mode.
-  Future<void> generate() async {
-    final key = state.selectedKey;
-    final rootIndex = chromaticNotes.indexOf(key);
-    if (rootIndex == -1) return;
+  void setProgression(String id) {
+    state = state.copyWith(progressionId: id);
+    _countGeneration();
+  }
 
-    final progressions = <Progression>[];
-    for (var i = 0; i < _progressionTemplates.length; i++) {
-      final t = _progressionTemplates[i];
-      final numerals = t.$3;
-      final semitoneOffsets = t.$4;
-
-      final chords = List.generate(semitoneOffsets.length, (j) {
-        final noteIndex = (rootIndex + semitoneOffsets[j]) % 12;
-        final note = chromaticNotes[noteIndex];
-        final numeral = numerals[j];
-        final isMinor = numeral == numeral.toLowerCase();
-        return isMinor ? '${note}m' : note;
-      });
-
-      progressions.add(Progression(
-        id: '${key}_${state.isMajor ? "maj" : "min"}_$i',
-        name: t.$1,
-        style: t.$2,
-        numerals: List<String>.from(numerals),
-        chords: chords,
-        key: key,
-        isMajor: state.isMajor,
-      ));
-    }
-
+  Future<void> _countGeneration() async {
     final newCount = state.progressionsGenerated + 1;
-    state = state.copyWith(
-      generatedProgressions: progressions,
-      progressionsGenerated: newCount,
-    );
-
+    state = state.copyWith(progressionsGenerated: newCount);
     try {
       final storage = ref.read(storageServiceProvider);
       await storage.save(StorageService.userProgressBox, _keyCount, newCount);
@@ -118,7 +197,7 @@ class ProgressionsViewModel extends Notifier<ProgressionsState> {
         await AchievementService.instance.unlock('composer');
       }
     } catch (e, st) {
-      debugPrint('ProgressionsViewModel.generate error: $e\n$st');
+      debugPrint('ProgressionsViewModel._countGeneration error: $e\n$st');
     }
   }
 }

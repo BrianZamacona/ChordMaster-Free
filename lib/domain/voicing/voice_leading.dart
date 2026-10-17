@@ -70,7 +70,7 @@ VoiceExtremes identifySopranoAndBass(EngineFrets fretPositions) {
   return VoiceExtremes(bass: bass, soprano: soprano);
 }
 
-int _retainedPositionCount(VoiceLeadingVoicing previous, VoiceLeadingVoicing next) {
+int retainedPositionCount(VoiceLeadingVoicing previous, VoiceLeadingVoicing next) {
   var count = 0;
   for (var s = 0; s < previous.fretPositions.length; s++) {
     final fret = previous.fretPositions[s];
@@ -93,7 +93,7 @@ double calculateVoiceLeadingCost(
   final retainedBonus = options.retainedNoteBonus ?? 1.5;
   final sopranoCost = (leap * leap).toDouble();
   final fretShiftCost = (next.anchorFret - previous.anchorFret).abs() * shiftWeight;
-  final retainedCost = _retainedPositionCount(previous, next) * retainedBonus;
+  final retainedCost = retainedPositionCount(previous, next) * retainedBonus;
   final total = sopranoCost + fretShiftCost - retainedCost;
   return total > 0 ? total : 0;
 }
