@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
+import 'package:go_router/go_router.dart';
 
 import '../../core/constants/app_colors.dart';
 import '../../core/constants/app_strings.dart';
@@ -13,13 +14,38 @@ import 'fingering_selection.dart';
 export 'fingering_selection.dart' show sharedShapeLabels;
 
 /// Explorer screen showing CAGED positions, curated voicings, and inversions.
-class ChordExplorerScreen extends ConsumerWidget {
+///
+/// Cada digitación se puede marcar para el comparador (máx. 3).
+class ChordExplorerScreen extends ConsumerStatefulWidget {
   const ChordExplorerScreen({super.key, required this.chordId});
 
   final String chordId;
 
   @override
-  Widget build(BuildContext context, WidgetRef ref) {
+  ConsumerState<ChordExplorerScreen> createState() =>
+      _ChordExplorerScreenState();
+}
+
+class _ChordExplorerScreenState extends ConsumerState<ChordExplorerScreen> {
+  /// En orden de selección; así se arman las columnas del comparador.
+  final _selected = <FingeringRef>[];
+
+  void _toggle(FingeringRef fingering) => setState(() {
+        if (!_selected.remove(fingering) &&
+            _selected.length < maxCompareSelection) {
+          _selected.add(fingering);
+        }
+      });
+
+  void _openCompare(Chord chord) {
+    final encoded = Uri.encodeComponent(chord.name);
+    final sel = _selected.map((r) => r.key).join(',');
+    context.go('/chords/$encoded/compare?sel=$sel');
+  }
+
+  @override
+  Widget build(BuildContext context) {
+    final chordId = widget.chordId;
     final state = ref.watch(chordViewModelProvider);
     final vm = ref.read(chordViewModelProvider.notifier);
     final decodedName = Uri.decodeComponent(chordId);
@@ -70,22 +96,34 @@ class ChordExplorerScreen extends ConsumerWidget {
                   '${FingeringSystemsRegistry.theoryFor('caged')?.name ?? 'CAGED'} Positions',
               header: const FingeringTheoryCard(systemId: 'caged'),
               labelSharedShapes: true,
+              sectionId: 'caged',
               items: chord.cagedPositions,
+              selected: _selected,
+              onToggle: _toggle,
             ),
             const SizedBox(height: 16),
             _ExplorerSection(
               title: AppStrings.curatedVoicings,
+              sectionId: 'voicings',
               items: chord.voicings,
+              selected: _selected,
+              onToggle: _toggle,
             ),
             const SizedBox(height: 16),
             _ExplorerSection(
               title: AppStrings.triadInversions,
+              sectionId: 'triadInversions',
               items: chord.triadInversions,
+              selected: _selected,
+              onToggle: _toggle,
             ),
             const SizedBox(height: 16),
             _ExplorerSection(
               title: AppStrings.advancedInversions,
+              sectionId: 'advancedInversions',
               items: chord.advancedInversions,
+              selected: _selected,
+              onToggle: _toggle,
             ),
             if (!chord.hasExplorerData)
               Padding(
@@ -100,6 +138,25 @@ class ChordExplorerScreen extends ConsumerWidget {
           ],
         ),
       ),
+      bottomNavigationBar: chord.hasExplorerData
+          ? SafeArea(
+              child: Padding(
+                padding: const EdgeInsets.fromLTRB(16, 8, 16, 8),
+                child: FilledButton.icon(
+                  key: const Key('compare-bar-button'),
+                  style: FilledButton.styleFrom(
+                    backgroundColor: AppColors.chords,
+                  ),
+                  onPressed:
+                      _selected.length >= 2 ? () => _openCompare(chord) : null,
+                  icon: const Icon(Icons.compare_arrows),
+                  label: Text(
+                    '${AppStrings.compareButton} (${_selected.length})',
+                  ),
+                ),
+              ),
+            )
+          : null,
     );
   }
 }
@@ -107,13 +164,19 @@ class ChordExplorerScreen extends ConsumerWidget {
 class _ExplorerSection extends StatelessWidget {
   const _ExplorerSection({
     required this.title,
+    required this.sectionId,
     required this.items,
+    required this.selected,
+    required this.onToggle,
     this.header,
     this.labelSharedShapes = false,
   });
 
   final String title;
+  final String sectionId;
   final List<ChordExplorerItem> items;
+  final List<FingeringRef> selected;
+  final ValueChanged<FingeringRef> onToggle;
   final Widget? header;
   final bool labelSharedShapes;
 
@@ -142,6 +205,9 @@ class _ExplorerSection extends StatelessWidget {
             _ExplorerItemCard(
               item: items[index],
               titleOverride: sharedLabels[index],
+              fingering: FingeringRef(sectionId, index),
+              selected: selected,
+              onToggle: onToggle,
             ),
             if (index != items.length - 1) const SizedBox(height: 12),
           ],
@@ -152,9 +218,18 @@ class _ExplorerSection extends StatelessWidget {
 }
 
 class _ExplorerItemCard extends StatelessWidget {
-  const _ExplorerItemCard({required this.item, this.titleOverride});
+  const _ExplorerItemCard({
+    required this.item,
+    required this.fingering,
+    required this.selected,
+    required this.onToggle,
+    this.titleOverride,
+  });
 
   final ChordExplorerItem item;
+  final FingeringRef fingering;
+  final List<FingeringRef> selected;
+  final ValueChanged<FingeringRef> onToggle;
   final String? titleOverride;
 
   String _buildSubtitle() {
@@ -204,9 +279,52 @@ class _ExplorerItemCard extends StatelessWidget {
                 size: 140,
               ),
             ),
+            _CompareCheckbox(
+              fingering: fingering,
+              selected: selected,
+              onToggle: onToggle,
+            ),
           ],
         ),
       );
+}
+
+class _CompareCheckbox extends StatelessWidget {
+  const _CompareCheckbox({
+    required this.fingering,
+    required this.selected,
+    required this.onToggle,
+  });
+
+  final FingeringRef fingering;
+  final List<FingeringRef> selected;
+  final ValueChanged<FingeringRef> onToggle;
+
+  @override
+  Widget build(BuildContext context) {
+    final isSelected = selected.contains(fingering);
+    final enabled = isSelected || selected.length < maxCompareSelection;
+    final row = Row(
+      mainAxisSize: MainAxisSize.min,
+      children: [
+        Checkbox(
+          key: Key('compare-${fingering.key}'),
+          value: isSelected,
+          activeColor: AppColors.chords,
+          onChanged: enabled ? (_) => onToggle(fingering) : null,
+        ),
+        Text(
+          AppStrings.compareCheckbox,
+          style: Theme.of(context).textTheme.bodySmall?.copyWith(
+                color: enabled ? null : AppColors.textSecondary,
+              ),
+        ),
+      ],
+    );
+    return enabled
+        ? row
+        : Tooltip(message: AppStrings.compareMaxReached, child: row);
+  }
 }
 
 class _SectionCard extends StatelessWidget {
