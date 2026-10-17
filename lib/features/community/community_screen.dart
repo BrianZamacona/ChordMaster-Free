@@ -75,10 +75,10 @@ class _CommunityScreenState extends ConsumerState<CommunityScreen> {
                 children: [
                   TextField(
                     controller: _authorController,
-                    decoration: const InputDecoration(
+                    decoration: InputDecoration(
                       hintText: AppStrings.author,
-                      prefixIcon: Icon(Icons.person_outline),
-                      border: OutlineInputBorder(),
+                      prefixIcon: const Icon(Icons.person_outline),
+                      border: const OutlineInputBorder(),
                       isDense: true,
                     ),
                     textInputAction: TextInputAction.next,
@@ -86,9 +86,9 @@ class _CommunityScreenState extends ConsumerState<CommunityScreen> {
                   const SizedBox(height: 8),
                   TextField(
                     controller: _contentController,
-                    decoration: const InputDecoration(
+                    decoration: InputDecoration(
                       hintText: AppStrings.writePostHint,
-                      border: OutlineInputBorder(),
+                      border: const OutlineInputBorder(),
                     ),
                     maxLines: 3,
                     maxLength: CommunityPost.maxContentLength,

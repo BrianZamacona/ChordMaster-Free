@@ -183,7 +183,7 @@ class CompositionScreen extends ConsumerWidget {
                       );
                     },
                     icon: const Icon(Icons.save),
-                    label: const Text(AppStrings.save),
+                    label: Text(AppStrings.save),
                   ),
                 ],
               ),

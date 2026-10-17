@@ -53,7 +53,7 @@ class _ChordExplorerScreenState extends ConsumerState<ChordExplorerScreen> {
     if (state.isLoading) {
       return Scaffold(
         appBar: AppBar(
-          title: const Text(AppStrings.chordExplorer),
+          title: Text(AppStrings.chordExplorer),
         ),
         body: const Center(child: CircularProgressIndicator()),
       );
@@ -63,7 +63,7 @@ class _ChordExplorerScreenState extends ConsumerState<ChordExplorerScreen> {
     if (chord == null) {
       return Scaffold(
         appBar: AppBar(
-          title: const Text(AppStrings.chordExplorer),
+          title: Text(AppStrings.chordExplorer),
         ),
         body: Center(
           child: Text(

@@ -1,602 +1,371 @@
-/// All user-facing strings for ChordMaster Free.
+import '../i18n/tr.dart';
+
+/// Textos de la interfaz en español e inglés.
 ///
-/// Using a single source of truth makes localisation straightforward and
-/// guarantees consistent wording across the app.
+/// Cada texto es un getter (no `const`) porque depende del idioma actual;
+/// `tr` exige las dos versiones, así que falta de traducción = no compila.
 class AppStrings {
   AppStrings._();
 
   // ── App ────────────────────────────────────────────────────────────────────
 
-  /// Application display name.
   static const String appName = 'ChordMaster Free';
 
-  /// Short tagline shown on the splash / home screen.
-  static const String appTagline = 'Master music at your own pace';
+  // ── Módulos ────────────────────────────────────────────────────────────────
 
-  // ── Module Names ───────────────────────────────────────────────────────────
+  static String get moduleChords => tr(es: 'Acordes', en: 'Chords');
+  static String get moduleScales => tr(es: 'Escalas', en: 'Scales');
+  static String get moduleTuner => tr(es: 'Afinador', en: 'Tuner');
+  static String get moduleMetronome => tr(es: 'Metrónomo', en: 'Metronome');
+  static String get moduleProgressions =>
+      tr(es: 'Progresiones', en: 'Progressions');
+  static String get moduleEarTraining => tr(es: 'Oído', en: 'Ear Training');
+  static String get moduleRhythmGame => tr(es: 'Ritmo', en: 'Rhythm Game');
+  static String get moduleImprovisation =>
+      tr(es: 'Improvisación', en: 'Improvisation');
+  static String get moduleSongs => tr(es: 'Canciones', en: 'Songs');
+  static String get moduleComposition => tr(es: 'Componer', en: 'Compose');
+  static String get moduleHealth =>
+      tr(es: 'Salud de práctica', en: 'Practice Health');
+  static String get moduleCommunity => tr(es: 'Comunidad', en: 'Community');
+  static String get moduleAchievements => tr(es: 'Logros', en: 'Achievements');
 
-  /// Chord library module name.
-  static const String moduleChords = 'Chords';
+  // ── Acciones ───────────────────────────────────────────────────────────────
 
-  /// Scales reference module name.
-  static const String moduleScales = 'Scales';
+  static String get play => tr(es: 'Reproducir', en: 'Play');
+  static String get stop => tr(es: 'Detener', en: 'Stop');
+  static String get save => tr(es: 'Guardar', en: 'Save');
+  static String get reset => tr(es: 'Reiniciar', en: 'Reset');
+  static String get next => tr(es: 'Siguiente', en: 'Next');
+  static String get share => tr(es: 'Compartir', en: 'Share');
+  static String get grantPermission =>
+      tr(es: 'Permitir micrófono', en: 'Allow microphone');
+  static String get darkMode => tr(es: 'Modo oscuro', en: 'Dark mode');
+  static String get darkModeSubtitle => tr(
+    es: 'Apagado = sigue al sistema',
+    en: 'Off = follow the system',
+  );
+  static String get language => tr(es: 'Idioma', en: 'Language');
+  static String get supportApp =>
+      tr(es: 'Apoya a ChordMaster ♥', en: 'Support ChordMaster ♥');
+  static String get post => tr(es: 'Publicar', en: 'Post');
+  static String get start => tr(es: 'Empezar', en: 'Start');
+  static String get tap => tr(es: 'Marcar', en: 'Tap');
 
-  /// Chromatic tuner module name.
-  static const String moduleTuner = 'Tuner';
+  // ── Afinador ───────────────────────────────────────────────────────────────
 
-  /// Metronome module name.
-  static const String moduleMetronome = 'Metronome';
+  static String get inTune => tr(es: 'Afinada', en: 'In tune');
+  static String get sharp => tr(es: 'Alta', en: 'Sharp');
+  static String get flat => tr(es: 'Baja', en: 'Flat');
+  static String get tunerIdle =>
+      tr(es: 'Toca una cuerda para empezar', en: 'Play a string to begin');
+  static String get cents => tr(es: 'cents', en: 'cents');
 
-  /// Chord progressions module name.
-  static const String moduleProgressions = 'Progressions';
+  // ── Metrónomo ──────────────────────────────────────────────────────────────
 
-  /// Ear training module name.
-  static const String moduleEarTraining = 'Ear Training';
-
-  /// Rhythm game module name.
-  static const String moduleRhythmGame = 'Rhythm Game';
-
-  /// Improvisation guide module name.
-  static const String moduleImprovisation = 'Improvisation';
-
-  /// Song library module name.
-  static const String moduleSongs = 'Songs';
-
-  /// Composition tools module name.
-  static const String moduleComposition = 'Composition';
-
-  /// Practice health / wellness module name.
-  static const String moduleHealth = 'Practice Health';
-
-  /// Community feed module name.
-  static const String moduleCommunity = 'Community';
-
-  /// Achievements module name.
-  static const String moduleAchievements = 'Achievements';
-
-  // ── Common Button Labels ───────────────────────────────────────────────────
-
-  /// Generic play action.
-  static const String play = 'Play';
-
-  /// Generic stop action.
-  static const String stop = 'Stop';
-
-  /// Generic pause action.
-  static const String pause = 'Pause';
-
-  /// Generic resume action.
-  static const String resume = 'Resume';
-
-  /// Generic save action.
-  static const String save = 'Save';
-
-  /// Generic cancel action.
-  static const String cancel = 'Cancel';
-
-  /// Generic delete action.
-  static const String delete = 'Delete';
-
-  /// Generic edit action.
-  static const String edit = 'Edit';
-
-  /// Generic confirm action.
-  static const String confirm = 'Confirm';
-
-  /// Generic back action.
-  static const String back = 'Back';
-
-  /// Generic close action.
-  static const String close = 'Close';
-
-  /// Generic retry action.
-  static const String retry = 'Retry';
-
-  /// Generic reset action.
-  static const String reset = 'Reset';
-
-  /// Generic next action.
-  static const String next = 'Next';
-
-  /// Generic previous action.
-  static const String previous = 'Previous';
-
-  /// Generic submit action.
-  static const String submit = 'Submit';
-
-  /// Generate / create new content action.
-  static const String generate = 'Generate';
-
-  /// Analyze audio or content action.
-  static const String analyze = 'Analyze';
-
-  /// Share content action.
-  static const String share = 'Share';
-
-  /// Add to favourites action.
-  static const String addFavourite = 'Add to Favourites';
-
-  /// Remove from favourites action.
-  static const String removeFavourite = 'Remove from Favourites';
-
-  /// Request a system permission action.
-  static const String grantPermission = 'Grant Permission';
-
-  /// Open app settings action.
-  static const String openSettings = 'Open Settings';
-
-  /// Dark mode toggle label.
-  static const String darkMode = 'Dark Mode';
-
-  /// Support the developer action (shown in donation prompts).
-  static const String supportApp = 'Support ChordMaster ♥';
-
-  /// Like / upvote action.
-  static const String like = 'Like';
-
-  /// Post a community entry.
-  static const String post = 'Post';
-
-  /// Start a new session / activity.
-  static const String start = 'Start';
-
-  /// Finish / complete a session.
-  static const String finish = 'Finish';
-
-  /// Tap-to-set BPM action.
-  static const String tap = 'Tap';
-
-  /// Increase value action.
-  static const String increase = 'Increase';
-
-  /// Decrease value action.
-  static const String decrease = 'Decrease';
-
-  /// View all items action.
-  static const String viewAll = 'View All';
-
-  /// Load more items action.
-  static const String loadMore = 'Load More';
-
-  // ── Tuner ─────────────────────────────────────────────────────────────────
-
-  /// Label shown when a note is detected as in-tune.
-  static const String inTune = 'In Tune';
-
-  /// Label shown when note is slightly sharp.
-  static const String sharp = 'Sharp';
-
-  /// Label shown when note is slightly flat.
-  static const String flat = 'Flat';
-
-  /// Tuner listening state label.
-  static const String listening = 'Listening…';
-
-  /// Tuner idle state label.
-  static const String tunerIdle = 'Play a note to begin';
-
-  /// Cents label used near the deviation indicator.
-  static const String cents = 'cents';
-
-  // ── Metronome ─────────────────────────────────────────────────────────────
-
-  /// BPM label.
   static const String bpm = 'BPM';
+  static String get timeSignature => tr(es: 'Compás', en: 'Time signature');
+  static String get subdivision => tr(es: 'Subdivisión', en: 'Subdivision');
 
-  /// Time signature label.
-  static const String timeSignature = 'Time Signature';
+  // ── Acordes ────────────────────────────────────────────────────────────────
 
-  /// Beats per bar label.
-  static const String beatsPerBar = 'Beats per bar';
+  static String get chordCategory => tr(es: 'Estilo', en: 'Style');
+  static String get difficulty => tr(es: 'Dificultad', en: 'Difficulty');
+  static String get fretPositions => tr(es: 'Trastes', en: 'Frets');
+  static String get chordAliases => tr(es: 'Otros nombres', en: 'Aliases');
+  static String get chordDescription =>
+      tr(es: 'Sobre este acorde', en: 'About this chord');
+  static String get chordFormula => tr(es: 'Fórmula', en: 'Formula');
+  static String get relatedScales =>
+      tr(es: 'Escalas relacionadas', en: 'Related scales');
+  static String get relatedVoicings =>
+      tr(es: 'Acordes relacionados', en: 'Related chords');
+  static String get styleMatches =>
+      tr(es: 'Del mismo estilo', en: 'Same style');
+  static String get chordExplorer => tr(es: 'Explorador', en: 'Explorer');
+  static String get curatedVoicings => tr(es: 'Voicings', en: 'Voicings');
+  static String get triadInversions =>
+      tr(es: 'Inversiones de tríada', en: 'Triad inversions');
+  static String get advancedInversions =>
+      tr(es: 'Inversiones avanzadas', en: 'Advanced inversions');
+  static String get chordExplorerEmpty => tr(
+    es: 'Este acorde aún no tiene datos para el explorador.',
+    en: 'This chord has no explorer data yet.',
+  );
+  static String get noDataAvailable =>
+      tr(es: 'Sin datos.', en: 'No data available.');
+  static String get shapeLabel => tr(es: 'Forma', en: 'Shape');
 
-  /// Subdivision label.
-  static const String subdivision = 'Subdivision';
+  // ── Comparador de digitaciones ─────────────────────────────────────────────
 
-  // ── Chords ────────────────────────────────────────────────────────────────
+  static String get compareTitle =>
+      tr(es: 'Comparar digitaciones', en: 'Compare fingerings');
+  static String get compareCheckbox => tr(es: 'Comparar', en: 'Compare');
+  static String get compareButton => tr(es: 'Comparar', en: 'Compare');
+  static String get compareMaxReached =>
+      tr(es: 'Máximo 3 digitaciones', en: 'Up to 3 fingerings');
+  static String get compareEmpty => tr(
+    es: 'Elige 2–3 digitaciones en el explorador',
+    en: 'Pick 2–3 fingerings in the explorer',
+  );
+  static String get compareBack =>
+      tr(es: 'Volver al explorador', en: 'Back to the explorer');
+  static String get compareBest => tr(es: 'Mejor', en: 'Best');
+  static String get compareCostNote => tr(
+    es: 'El costo ergonómico incluye siempre la cejilla. En Progresiones, el '
+        'modo Estándar no la penaliza, así que los costos pueden diferir.',
+    en: 'The ergonomic cost always includes the barre. In Progressions, '
+        'Standard mode does not penalize it, so costs may differ.',
+  );
+  static String get compareMainSection =>
+      tr(es: 'Digitación principal', en: 'Main fingering');
 
-  /// Root note selector label.
-  static const String rootNote = 'Root Note';
+  static String get metricCost =>
+      tr(es: 'Costo ergonómico', en: 'Ergonomic cost');
+  static String get metricFingers => tr(es: 'Dedos', en: 'Fingers');
+  static String get metricBarre => tr(es: 'Cejilla', en: 'Barre');
+  static String get metricPosition => tr(es: 'Posición', en: 'Position');
+  static String get metricSpan => tr(es: 'Extensión', en: 'Span');
+  static String get metricMuted =>
+      tr(es: 'Cuerdas muteadas', en: 'Muted strings');
+  static String get metricBass => tr(es: 'Bajo', en: 'Bass');
+  static String get metricInversion => tr(es: 'Inversión', en: 'Inversion');
+  static String get metricNotes => tr(es: 'Notas', en: 'Notes');
+  static String get barreNone => tr(es: 'Ninguna', en: 'None');
+  static String get openPosition => tr(es: 'Al aire', en: 'Open');
+  static String get fretWord => tr(es: 'traste', en: 'fret');
+  static String get fretsWord => tr(es: 'trastes', en: 'frets');
 
-  /// Chord type selector label.
-  static const String chordType = 'Chord Type';
+  // ── Navegación ─────────────────────────────────────────────────────────────
 
-  /// Chord voicing label.
-  static const String voicing = 'Voicing';
+  static String get tabHome => tr(es: 'Inicio', en: 'Home');
+  static String get tabLearn => tr(es: 'Aprender', en: 'Learn');
+  static String get tabPractice => tr(es: 'Practicar', en: 'Practice');
 
-  /// Chord category / style label.
-  static const String chordCategory = 'Category';
-
-  /// Difficulty label.
-  static const String difficulty = 'Difficulty';
-
-  /// Fret positions label.
-  static const String fretPositions = 'Fret Positions';
-
-  /// Chord aliases label.
-  static const String chordAliases = 'Aliases';
-
-  /// Chord description label.
-  static const String chordDescription = 'About this chord';
-
-  /// Chord formula label.
-  static const String chordFormula = 'Chord Formula';
-
-  /// Related scales label.
-  static const String relatedScales = 'Related Scales';
-
-  /// Related voicings label.
-  static const String relatedVoicings = 'Related Chords';
-
-  /// Chord style matches label.
-  static const String styleMatches = 'Style Matches';
-
-  /// Chord explorer screen title.
-  static const String chordExplorer = 'Explorer';
-
-  /// Curated voicings section label.
-  static const String curatedVoicings = 'Voicings';
-
-  /// Triad inversion section label.
-  static const String triadInversions = 'Triad Inversions';
-
-  /// Advanced inversion section label.
-  static const String advancedInversions = 'Advanced Inversions';
-
-  /// Explorer empty message for unsupported chords.
-  static const String chordExplorerEmpty =
-      'This chord has no explorer data yet.';
-
-  /// Generic no-data label.
-  static const String noDataAvailable = 'No data available.';
-
-  /// Label for CAGED/voicing shape metadata.
-  static const String shapeLabel = 'Shape';
-
-  // ── Comparador de digitaciones ────────────────────────────────────────────
-
-  /// Título de la pantalla del comparador.
-  static const String compareTitle = 'Comparar digitaciones';
-
-  /// Checkbox de cada digitación del explorador.
-  static const String compareCheckbox = 'Comparar';
-
-  /// Botón de la barra inferior; se completa con "(n)".
-  static const String compareButton = 'Comparar';
-
-  /// Tooltip cuando ya hay 3 digitaciones elegidas.
-  static const String compareMaxReached = 'Máximo 3 digitaciones';
-
-  /// Estado vacío del comparador.
-  static const String compareEmpty = 'Elige 2–3 digitaciones en el explorador';
-
-  /// Botón de volver desde el estado vacío.
-  static const String compareBack = 'Volver al explorador';
-
-  /// Marca de mejor valor en una fila.
-  static const String compareBest = 'Mejor';
-
-  /// Nota sobre el costo ergonómico frente a Progresiones.
-  static const String compareCostNote =
-      'El costo ergonómico incluye siempre la cejilla. En Progresiones, el '
-      'modo Estándar no la penaliza, así que los costos pueden diferir.';
-
-  /// Sección de la digitación principal del acorde.
-  static const String compareMainSection = 'Digitación principal';
-
-  static const String metricCost = 'Costo ergonómico';
-  static const String metricFingers = 'Dedos';
-  static const String metricBarre = 'Cejilla';
-  static const String metricPosition = 'Posición';
-  static const String metricSpan = 'Extensión';
-  static const String metricMuted = 'Cuerdas muteadas';
-  static const String metricBass = 'Bajo';
-  static const String metricInversion = 'Inversión';
-  static const String metricNotes = 'Notas';
-  static const String barreNone = 'Ninguna';
-  static const String openPosition = 'Al aire';
-  static const String fretWord = 'traste';
-  static const String fretsWord = 'trastes';
-
-  // ── Navegación ────────────────────────────────────────────────────────────
-
-  static const String tabHome = 'Inicio';
-  static const String tabLearn = 'Aprender';
-  static const String tabPractice = 'Practicar';
   /// Corto para que quepa en la barra inferior a 360 px.
-  static const String tabTools = 'Afinar';
-  static const String toolsTitle = 'Herramientas';
-  static const String tabProgress = 'Progreso';
-
-  static const String learnIntro =
-      'Acordes, escalas y progresiones: qué tocar y por qué suena así.';
-  static const String practiceIntro =
-      'Entrena el oído y el ritmo, y aplica lo aprendido en canciones.';
-  static const String progressIntro =
-      'Tus logros, tu tiempo de práctica y los ajustes de la app.';
-  static const String settingsTitle = 'Ajustes';
-
-  static const String hubChords = 'Acordes';
-  static const String hubChordsSub =
-      'Biblioteca de 288 acordes, formas CAGED, inversiones y comparador.';
-  static const String hubScales = 'Escalas y double stops';
-  static const String hubScalesSub =
-      'Escalas y modos por sistema (CAGED, 3NPS…) y parejas de notas.';
-  static const String hubProgressions = 'Progresiones';
-  static const String hubProgressionsSub =
-      'Progresiones comunes con las digitaciones más cómodas entre acordes.';
-  static const String hubComposition = 'Componer';
-  static const String hubCompositionSub =
-      'Arma y guarda tus propias progresiones.';
-  static const String hubEar = 'Oído';
-  static const String hubEarSub = 'Reconoce intervalos y acordes de oído.';
-  static const String hubRhythm = 'Ritmo';
-  static const String hubRhythmSub = 'Toca a tiempo con el pulso.';
-  static const String hubSongs = 'Canciones';
-  static const String hubSongsSub = 'Practica con canciones reales.';
-  static const String hubImprov = 'Improvisación';
-  static const String hubImprovSub =
-      'Qué escala usar sobre cada acorde, patrones y licks.';
-  static const String hubAchievements = 'Logros';
-  static const String hubAchievementsSub = 'Lo que ya conseguiste.';
-  static const String hubHealth = 'Salud de práctica';
-  static const String hubHealthSub = 'Tiempo de práctica, descansos y calentamiento.';
-  static const String toolTuner = 'Afinador';
-  static const String toolMetronome = 'Metrónomo';
-
-  // ── Filtros de acordes ────────────────────────────────────────────────────
-
-  static const String filterRoot = 'Raíz';
-  static const String filterType = 'Tipo';
-  static const String filterStyle = 'Estilo';
-  static const String filterRootTitle = 'Nota raíz';
-  static const String filterTypeTitle = 'Tipo de acorde';
-  static const String filterStyleTitle = 'Estilo';
-  static const String filterAllRoots = 'Todas las raíces';
-  static const String filterAllTypes = 'Todos los tipos';
-  static const String filterAllStyles = 'Todos los estilos';
-  static const String filterClear = 'Quitar filtro';
-  static const String filterClearAll = 'Limpiar';
-  static String chordsCount(int n) => n == 1 ? '1 acorde' : '$n acordes';
-  static const String familyTriads = 'Tríadas';
-  static const String familyTriadsHint =
-      'Tres notas: raíz, 3ª y 5ª (o sus variantes). La base de todo.';
-  static const String familySevenths = 'Sextas y séptimas';
-  static const String familySeventhsHint =
-      'Una tríada más la 6ª o la 7ª: el sonido del blues, el jazz y el soul.';
-  static const String familyExtended = 'Novenas y extendidas';
-  static const String familyExtendedHint =
-      'Añaden 9ª, 11ª o 13ª sobre la 7ª: color y tensión suave.';
-  static const String familyAltered = 'Alterados';
-  static const String familyAlteredHint =
-      'Tensiones alteradas (♭9, ♯9, ♯11) para dominantes con más tensión.';
-
-  // ── Escalas ───────────────────────────────────────────────────────────────
-
-  static const String scaleTonic = 'Tónica';
-  static const String scaleSystem = 'Sistema';
-  static const String scaleSystemTitle = 'Sistema de digitación';
-  static const String scaleAllSystems = 'Todos los sistemas';
-  static const String scaleHowItWorks = 'Cómo funciona';
-  static const String scaleNoPositions = 'Sin posiciones para este sistema';
-
-  // ── Double stops ──────────────────────────────────────────────────────────
-
-  static const String dsTitle = 'Double stops diatónicos';
-  static const String dsInterval = 'Intervalo';
-  static const String dsAdjacent = 'Cuerdas juntas';
-  static const String dsSkipOne = 'Saltando una';
-  static const String dsLowRange = 'Trastes 0–12';
-  static const String dsHighRange = 'Trastes 13–24';
-
-  // ── Progresiones ──────────────────────────────────────────────────────────
-
-  static const String progressionKey = 'Tonalidad';
-  static const String progressionKeyTitle = 'Tonalidad (mayor)';
-  static const String progressionLabel = 'Progresión';
-  static const String progressionPickTitle = 'Elige una progresión';
-  static const String transitionNoJump = 'sin salto';
-  static const String transitionJump = 'salto';
-  static const String transitionCommonOne = 'nota común';
-  static const String transitionCommonMany = 'notas comunes';
-  static const String transitionCost = 'Costo de transición';
-
-  // ── Diagrama ──────────────────────────────────────────────────────────────
-
-  static const String legendRoot = 'Raíz';
-  static const String legendThird = '3ª';
-  static const String legendFifth = '5ª';
-  static const String legendSeventh = '7ª';
-  static const String legendTension = 'Tensión';
-  static const String showFingers = 'Dedos';
-  static const String showIntervals = 'Intervalos';
-  static const String showNotes = 'Notas';
-
-  // ── Scales ────────────────────────────────────────────────────────────────
-
-  /// Scale type selector label.
-  static const String scaleType = 'Scale Type';
-
-  /// Related chords label.
-  static const String relatedChords = 'Related Chords';
-
-  /// Common usage description label.
-  static const String commonUsage = 'Common Usage';
-
-  // ── Progressions ──────────────────────────────────────────────────────────
-
-  /// Key selector label.
-  static const String key = 'Key';
-
-  /// Modo estándar de digitaciones.
-  static const String modeStandard = 'Estándar';
-
-  /// Modo principiante (penaliza cejillas).
-  static const String modeBeginner = 'Principiante';
-
-  /// Chip de cejilla; se completa con el traste.
-  static const String barreFret = 'Cejilla traste';
-
-  /// Chip de cejilla de 4 o más cuerdas.
-  static const String barreLarge = 'cejilla grande';
-
-  /// Major / minor toggle label.
-  static const String majorMinor = 'Major / Minor';
-
-  /// Style selector label.
-  static const String style = 'Style';
-
-  /// Roman numeral analysis label.
-  static const String numeralAnalysis = 'Numeral Analysis';
-
-  // ── Ear Training ──────────────────────────────────────────────────────────
-
-  /// Prompt asking the user to identify the heard interval.
-  static const String identifyInterval = 'What interval did you hear?';
-
-  /// Prompt asking the user to identify the heard chord.
-  static const String identifyChord = 'What chord did you hear?';
-
-  /// Correct answer feedback.
-  static const String correct = 'Correct!';
-
-  /// Incorrect answer feedback.
-  static const String incorrect = 'Incorrect';
-
-  /// Score label.
-  static const String score = 'Score';
-
-  /// Streak label.
-  static const String streak = 'Streak';
-
-  /// Round label.
-  static const String round = 'Round';
-
-  // ── Songs ─────────────────────────────────────────────────────────────────
-
-  /// Song title label.
-  static const String title = 'Title';
-
-  /// Artist label.
-  static const String artist = 'Artist';
-
-  /// Genre label.
-  static const String genre = 'Genre';
-
-  /// Tempo (BPM) label.
-  static const String tempo = 'Tempo';
-
-  /// Notes label.
-  static const String notes = 'Notes';
-
-  /// Strumming pattern label.
-  static const String strummingPattern = 'Strumming Pattern';
-
-  // ── Community ─────────────────────────────────────────────────────────────
-
-  /// Placeholder for a new community post text field.
-  static const String writePostHint = 'Share something with the community…';
-
-  /// Post character limit hint.
-  static const String postCharacterLimit = '500 characters max';
-
-  /// Tags input hint.
-  static const String tagsHint = 'Add tags (e.g. beginner, jazz)';
-
-  /// Author label.
-  static const String author = 'Author';
-
-  /// No posts placeholder.
-  static const String noPostsYet = 'No posts yet. Be the first!';
-
-  // ── Achievements ──────────────────────────────────────────────────────────
-
-  /// Achievement unlocked notification title.
-  static const String achievementUnlocked = 'Achievement Unlocked!';
-
-  /// Label for locked achievements.
-  static const String locked = 'Locked';
-
-  /// Label for unlocked achievements.
-  static const String unlocked = 'Unlocked';
-
-  // ── Health / Practice ─────────────────────────────────────────────────────
-
-  /// Practice session duration label.
-  static const String sessionDuration = 'Session Duration';
-
-  /// Break reminder message.
-  static const String takeABreak = 'Time for a short break — rest your hands!';
-
-  /// Warm-up reminder message.
-  static const String warmUpReminder = 'Remember to warm up before playing.';
-
-  // ── Placeholder Texts ─────────────────────────────────────────────────────
-
-  /// Search bar hint.
-  static const String searchHint = 'Search…';
-
-  /// Empty state message for chord search.
-  static const String emptyChordsSearch = 'No chords match your search.';
-
-  /// Label shown for all chord categories.
-  static const String all = 'All';
-
-  /// Empty state message for scale search.
-  static const String emptyScalesSearch = 'No scales match your search.';
-
-  /// Empty state message for song search.
-  static const String emptySongsSearch = 'No songs match your search.';
-
-  /// Generic empty list message.
-  static const String emptyList = 'Nothing here yet.';
-
-  // ── Error Messages ────────────────────────────────────────────────────────
-
-  /// Generic unexpected error.
-  static const String errorGeneric = 'Something went wrong. Please try again.';
-
-  /// Audio engine error.
-  static const String errorAudio = 'Audio playback failed. Check your device settings.';
-
-  /// Microphone permission denied error.
-  static const String errorMicPermission =
-      'Microphone permission is required for this feature.';
-
-  /// Storage read error.
-  static const String errorStorage = 'Could not load saved data.';
-
-  /// Storage write error.
-  static const String errorStorageWrite = 'Could not save data. Please try again.';
-
-  /// JSON parse error.
-  static const String errorParse = 'Data format error. Please reinstall the app.';
-
-  /// Network unavailable error.
-  static const String errorNetwork = 'No internet connection.';
-
-  /// Input validation: field is required.
-  static const String errorFieldRequired = 'This field is required.';
-
-  /// Input validation: content exceeds maximum length.
-  static const String errorContentTooLong = 'Content exceeds the maximum allowed length.';
-
-  /// Input validation: invalid BPM range.
-  static const String errorInvalidBpm = 'BPM must be between 20 and 300.';
-
-  /// Input validation: invalid difficulty range.
-  static const String errorInvalidDifficulty = 'Difficulty must be between 1 and 5.';
-
-  // ── Permissions ───────────────────────────────────────────────────────────
-
-  /// Title for microphone permission rationale dialog.
-  static const String permissionMicTitle = 'Microphone Access Needed';
-
-  /// Body text for microphone permission rationale dialog.
-  static const String permissionMicBody =
-      'ChordMaster needs microphone access to power the tuner and '
-      'rhythm game features. Please grant access to continue.';
-
-  /// Message shown when permission is permanently denied.
-  static const String permissionPermanentlyDenied =
-      'Permission permanently denied. Please enable it in your device settings.';
+  static String get tabTools => tr(es: 'Afinar', en: 'Tune');
+  static String get toolsTitle => tr(es: 'Herramientas', en: 'Tools');
+  static String get tabProgress => tr(es: 'Progreso', en: 'Progress');
+
+  static String get learnIntro => tr(
+    es: 'Acordes, escalas y progresiones: qué tocar y por qué suena así.',
+    en: 'Chords, scales and progressions: what to play and why it sounds that way.',
+  );
+  static String get practiceIntro => tr(
+    es: 'Entrena el oído y el ritmo, y aplica lo aprendido en canciones.',
+    en: 'Train your ear and timing, and use what you learned in real songs.',
+  );
+  static String get progressIntro => tr(
+    es: 'Tus logros, tu tiempo de práctica y los ajustes de la app.',
+    en: 'Your achievements, your practice time and the app settings.',
+  );
+  static String get settingsTitle => tr(es: 'Ajustes', en: 'Settings');
+
+  static String get hubChords => tr(es: 'Acordes', en: 'Chords');
+  static String get hubChordsSub => tr(
+    es: 'Biblioteca de 288 acordes, formas CAGED, inversiones y comparador.',
+    en: 'A library of 288 chords, CAGED shapes, inversions and a comparer.',
+  );
+  static String get hubScales =>
+      tr(es: 'Escalas y double stops', en: 'Scales and double stops');
+  static String get hubScalesSub => tr(
+    es: 'Escalas y modos por sistema (CAGED, 3NPS…), cómo improvisar con '
+        'ellas y parejas de notas.',
+    en: 'Scales and modes by system (CAGED, 3NPS…), how to improvise with '
+        'them, and note pairs.',
+  );
+  static String get hubProgressions =>
+      tr(es: 'Progresiones', en: 'Progressions');
+  static String get hubProgressionsSub => tr(
+    es: 'Progresiones comunes con las digitaciones más cómodas, y las tuyas.',
+    en: 'Common progressions with the most comfortable fingerings, and your own.',
+  );
+  static String get hubComposition => tr(es: 'Componer', en: 'Compose');
+  static String get hubCompositionSub => tr(
+    es: 'Arma y guarda tus propias progresiones.',
+    en: 'Build and save your own progressions.',
+  );
+  static String get hubImprov => tr(es: 'Improvisación', en: 'Improvisation');
+  static String get hubImprovSub => tr(
+    es: 'Qué escala usar sobre cada acorde, patrones y licks.',
+    en: 'Which scale to use over each chord, patterns and licks.',
+  );
+  static String get hubEar => tr(es: 'Oído', en: 'Ear');
+  static String get hubEarSub => tr(
+    es: 'Reconoce intervalos y acordes de oído.',
+    en: 'Recognize intervals and chords by ear.',
+  );
+  static String get hubRhythm => tr(es: 'Ritmo', en: 'Rhythm');
+  static String get hubRhythmSub =>
+      tr(es: 'Toca a tiempo con el pulso.', en: 'Play in time with the beat.');
+  static String get hubSongs => tr(es: 'Canciones', en: 'Songs');
+  static String get hubSongsSub =>
+      tr(es: 'Practica con canciones reales.', en: 'Practice with real songs.');
+  static String get hubAchievements => tr(es: 'Logros', en: 'Achievements');
+  static String get hubAchievementsSub =>
+      tr(es: 'Lo que ya conseguiste.', en: 'What you have already achieved.');
+  static String get hubHealth =>
+      tr(es: 'Salud de práctica', en: 'Practice health');
+  static String get hubHealthSub => tr(
+    es: 'Tiempo de práctica, descansos y calentamiento.',
+    en: 'Practice time, breaks and warm-up.',
+  );
+  static String get toolTuner => tr(es: 'Afinador', en: 'Tuner');
+  static String get toolMetronome => tr(es: 'Metrónomo', en: 'Metronome');
+
+  // ── Filtros de acordes ─────────────────────────────────────────────────────
+
+  static String get filterRoot => tr(es: 'Raíz', en: 'Root');
+  static String get filterType => tr(es: 'Tipo', en: 'Type');
+  static String get filterStyle => tr(es: 'Estilo', en: 'Style');
+  static String get filterRootTitle => tr(es: 'Nota raíz', en: 'Root note');
+  static String get filterTypeTitle =>
+      tr(es: 'Tipo de acorde', en: 'Chord type');
+  static String get filterStyleTitle => tr(es: 'Estilo', en: 'Style');
+  static String get filterAllRoots =>
+      tr(es: 'Todas las raíces', en: 'All roots');
+  static String get filterAllTypes => tr(es: 'Todos los tipos', en: 'All types');
+  static String get filterAllStyles =>
+      tr(es: 'Todos los estilos', en: 'All styles');
+  static String get filterClear => tr(es: 'Quitar filtro', en: 'Clear filter');
+  static String get filterClearAll => tr(es: 'Limpiar', en: 'Clear');
+  static String chordsCount(int n) => n == 1
+      ? tr(es: '1 acorde', en: '1 chord')
+      : tr(es: '$n acordes', en: '$n chords');
+  static String get familyTriads => tr(es: 'Tríadas', en: 'Triads');
+  static String get familyTriadsHint => tr(
+    es: 'Tres notas: raíz, 3ª y 5ª (o sus variantes). La base de todo.',
+    en: 'Three notes: root, 3rd and 5th (or their variants). The basis of everything.',
+  );
+  static String get familySevenths =>
+      tr(es: 'Sextas y séptimas', en: 'Sixths and sevenths');
+  static String get familySeventhsHint => tr(
+    es: 'Una tríada más la 6ª o la 7ª: el sonido del blues, el jazz y el soul.',
+    en: 'A triad plus the 6th or 7th: the sound of blues, jazz and soul.',
+  );
+  static String get familyExtended =>
+      tr(es: 'Novenas y extendidas', en: 'Ninths and extended');
+  static String get familyExtendedHint => tr(
+    es: 'Añaden 9ª, 11ª o 13ª sobre la 7ª: color y tensión suave.',
+    en: 'They add a 9th, 11th or 13th on top of the 7th: color and soft tension.',
+  );
+  static String get familyAltered => tr(es: 'Alterados', en: 'Altered');
+  static String get familyAlteredHint => tr(
+    es: 'Tensiones alteradas (♭9, ♯9, ♯11) para dominantes con más tensión.',
+    en: 'Altered tensions (♭9, ♯9, ♯11) for dominants with more bite.',
+  );
+
+  // ── Escalas ────────────────────────────────────────────────────────────────
+
+  static String get scaleTonic => tr(es: 'Tónica', en: 'Tonic');
+  static String get scaleSystem => tr(es: 'Sistema', en: 'System');
+  static String get scaleSystemTitle =>
+      tr(es: 'Sistema de digitación', en: 'Fingering system');
+  static String get scaleAllSystems =>
+      tr(es: 'Todos los sistemas', en: 'All systems');
+  static String scaleHowItWorks(String system) =>
+      tr(es: 'Cómo funciona $system', en: 'How $system works');
+  static String get scaleNoPositions => tr(
+    es: 'Sin posiciones para este sistema',
+    en: 'No positions for this system',
+  );
+  static String get scaleShapeOrder => tr(es: 'Orden', en: 'Order');
+
+  // ── Double stops ───────────────────────────────────────────────────────────
+
+  static String get dsTitle =>
+      tr(es: 'Double stops diatónicos', en: 'Diatonic double stops');
+  static String get dsInterval => tr(es: 'Intervalo', en: 'Interval');
+  static String get dsAdjacent =>
+      tr(es: 'Cuerdas juntas', en: 'Adjacent strings');
+  static String get dsSkipOne => tr(es: 'Saltando una', en: 'Skip one');
+  static String get dsLowRange => tr(es: 'Trastes 0–12', en: 'Frets 0–12');
+  static String get dsHighRange => tr(es: 'Trastes 13–24', en: 'Frets 13–24');
+
+  // ── Progresiones ───────────────────────────────────────────────────────────
+
+  static String get progressionKey => tr(es: 'Tonalidad', en: 'Key');
+  static String get progressionKeyTitle =>
+      tr(es: 'Tonalidad (mayor)', en: 'Key (major)');
+  static String get progressionLabel => tr(es: 'Progresión', en: 'Progression');
+  static String get progressionPickTitle =>
+      tr(es: 'Elige una progresión', en: 'Pick a progression');
+  static String get transitionNoJump => tr(es: 'sin salto', en: 'no shift');
+  static String get transitionJump => tr(es: 'salto', en: 'shift');
+  static String get transitionCommonOne =>
+      tr(es: 'nota común', en: 'common note');
+  static String get transitionCommonMany =>
+      tr(es: 'notas comunes', en: 'common notes');
+  static String get transitionCost =>
+      tr(es: 'Costo de transición', en: 'Transition cost');
+  static String get modeStandard => tr(es: 'Estándar', en: 'Standard');
+  static String get modeBeginner => tr(es: 'Principiante', en: 'Beginner');
+  static String get barreFret => tr(es: 'Cejilla traste', en: 'Barre fret');
+  static String get barreLarge => tr(es: 'cejilla grande', en: 'full barre');
+
+  // ── Diagrama ───────────────────────────────────────────────────────────────
+
+  static String get legendRoot => tr(es: 'Raíz', en: 'Root');
+  static String get legendThird => tr(es: '3ª', en: '3rd');
+  static String get legendFifth => tr(es: '5ª', en: '5th');
+  static String get legendSeventh => tr(es: '7ª', en: '7th');
+  static String get legendTension => tr(es: 'Tensión', en: 'Tension');
+  static String get showFingers => tr(es: 'Dedos', en: 'Fingers');
+  static String get showIntervals => tr(es: 'Intervalos', en: 'Intervals');
+  static String get showNotes => tr(es: 'Notas', en: 'Notes');
+
+  // ── Oído ───────────────────────────────────────────────────────────────────
+
+  static String get identifyInterval =>
+      tr(es: '¿Qué intervalo escuchaste?', en: 'What interval did you hear?');
+  static String get correct => tr(es: '¡Correcto!', en: 'Correct!');
+  static String get incorrect => tr(es: 'Incorrecto', en: 'Incorrect');
+  static String get score => tr(es: 'Puntos', en: 'Score');
+  static String get streak => tr(es: 'Racha', en: 'Streak');
+
+  // ── Comunidad ──────────────────────────────────────────────────────────────
+
+  static String get writePostHint => tr(
+    es: 'Comparte algo con la comunidad…',
+    en: 'Share something with the community…',
+  );
+  static String get author => tr(es: 'Autor', en: 'Author');
+  static String get noPostsYet => tr(
+    es: 'Aún no hay publicaciones. ¡Sé el primero!',
+    en: 'No posts yet. Be the first!',
+  );
+
+  // ── Salud ──────────────────────────────────────────────────────────────────
+
+  static String get takeABreak => tr(
+    es: 'Hora de un descanso corto: relaja las manos.',
+    en: 'Time for a short break — rest your hands!',
+  );
+  static String get warmUpReminder => tr(
+    es: 'Recuerda calentar antes de tocar.',
+    en: 'Remember to warm up before playing.',
+  );
+
+  // ── Búsqueda y vacíos ──────────────────────────────────────────────────────
+
+  static String get searchHint => tr(es: 'Buscar…', en: 'Search…');
+  static String get emptyChordsSearch => tr(
+    es: 'Ningún acorde coincide con la búsqueda.',
+    en: 'No chords match your search.',
+  );
+  static String get emptySongsSearch => tr(
+    es: 'Ninguna canción coincide con la búsqueda.',
+    en: 'No songs match your search.',
+  );
+
+  // ── Errores ────────────────────────────────────────────────────────────────
+
+  static String get errorGeneric => tr(
+    es: 'Algo salió mal. Inténtalo de nuevo.',
+    en: 'Something went wrong. Please try again.',
+  );
+  static String get errorStorage => tr(
+    es: 'No se pudieron cargar los datos guardados.',
+    en: 'Could not load saved data.',
+  );
 }

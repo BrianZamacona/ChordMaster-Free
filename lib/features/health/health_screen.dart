@@ -92,19 +92,19 @@ class HealthScreen extends ConsumerWidget {
                           FilledButton.icon(
                             onPressed: vm.startSession,
                             icon: const Icon(Icons.play_arrow),
-                            label: const Text(AppStrings.start),
+                            label: Text(AppStrings.start),
                           )
                         else
                           FilledButton.icon(
                             onPressed: vm.stopSession,
                             icon: const Icon(Icons.stop),
-                            label: const Text(AppStrings.stop),
+                            label: Text(AppStrings.stop),
                           ),
                         const SizedBox(width: 12),
                         OutlinedButton.icon(
                           onPressed: vm.resetSession,
                           icon: const Icon(Icons.refresh),
-                          label: const Text(AppStrings.reset),
+                          label: Text(AppStrings.reset),
                         ),
                       ],
                     ),

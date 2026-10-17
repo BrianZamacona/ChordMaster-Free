@@ -52,7 +52,7 @@ class _ChordLibraryScreenState extends ConsumerState<ChordLibraryScreen> {
 
     return Scaffold(
       appBar: AppBar(
-        title: const Text(AppStrings.moduleChords),
+        title: Text(AppStrings.moduleChords),
         elevation: 0,
       ),
       body: Column(
@@ -91,7 +91,7 @@ class _ChordLibraryScreenState extends ConsumerState<ChordLibraryScreen> {
                       _searchController.clear();
                       vm.clearFilters();
                     },
-                    child: const Text(AppStrings.filterClearAll),
+                    child: Text(AppStrings.filterClearAll),
                   )
                 else
                   const SizedBox(height: 48),

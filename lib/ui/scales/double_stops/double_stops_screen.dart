@@ -69,7 +69,7 @@ class DoubleStopsScreen extends ConsumerWidget {
 
   @override
   Widget build(BuildContext context, WidgetRef ref) => Scaffold(
-        appBar: AppBar(title: const Text(AppStrings.dsTitle)),
+        appBar: AppBar(title: Text(AppStrings.dsTitle)),
         body: const DoubleStopsContent(),
       );
 }
@@ -126,7 +126,7 @@ class DoubleStopsContent extends ConsumerWidget {
             const SizedBox(height: 12),
             SegmentedButton<DoubleStopStringPattern>(
               showSelectedIcon: false,
-              segments: const [
+              segments: [
                 ButtonSegment(
                   value: DoubleStopStringPattern.adjacent,
                   label: Text(AppStrings.dsAdjacent),
@@ -142,7 +142,7 @@ class DoubleStopsContent extends ConsumerWidget {
             const SizedBox(height: 12),
             SegmentedButton<bool>(
               showSelectedIcon: false,
-              segments: const [
+              segments: [
                 ButtonSegment(value: false, label: Text(AppStrings.dsLowRange)),
                 ButtonSegment(value: true, label: Text(AppStrings.dsHighRange)),
               ],

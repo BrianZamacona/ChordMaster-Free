@@ -1,3 +1,4 @@
+import 'package:chordmaster_free/core/constants/app_strings.dart';
 import 'package:chordmaster_free/core/widgets/chord_diagram.dart';
 import 'package:chordmaster_free/features/chords/chord_detail_screen.dart';
 import 'package:chordmaster_free/features/chords/chord_explorer_screen.dart';
@@ -201,8 +202,8 @@ void main() {
 
     expect(find.text('CAGED Positions'), findsOneWidget);
     expect(find.text('Voicings'), findsOneWidget);
-    expect(find.text('Triad Inversions'), findsOneWidget);
-    expect(find.text('Advanced Inversions'), findsOneWidget);
+    expect(find.text(AppStrings.triadInversions), findsOneWidget);
+    expect(find.text(AppStrings.advancedInversions), findsOneWidget);
     expect(find.text('C Form'), findsOneWidget);
     expect(find.text('Shell 6-4-3'), findsOneWidget);
     expect(find.text('Root Position'), findsWidgets);

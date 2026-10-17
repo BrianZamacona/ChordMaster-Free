@@ -9,7 +9,7 @@ class LearnHubScreen extends StatelessWidget {
   const LearnHubScreen({super.key});
 
   @override
-  Widget build(BuildContext context) => const SectionHubScreen(
+  Widget build(BuildContext context) => SectionHubScreen(
         title: AppStrings.tabLearn,
         intro: AppStrings.learnIntro,
         entries: [
@@ -45,7 +45,7 @@ class PracticeHubScreen extends StatelessWidget {
   const PracticeHubScreen({super.key});
 
   @override
-  Widget build(BuildContext context) => const SectionHubScreen(
+  Widget build(BuildContext context) => SectionHubScreen(
         title: AppStrings.tabPractice,
         intro: AppStrings.practiceIntro,
         entries: [
@@ -84,7 +84,7 @@ class ProgressHubScreen extends StatelessWidget {
   Widget build(BuildContext context) => SectionHubScreen(
         title: AppStrings.tabProgress,
         intro: AppStrings.progressIntro,
-        entries: const [
+        entries: [
           HubEntry(
             icon: Icons.emoji_events_outlined,
             title: AppStrings.hubAchievements,

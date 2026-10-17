@@ -104,7 +104,7 @@ class ScaleDetailScreen extends ConsumerWidget {
                 key: PageStorageKey('theory-${pattern.systemId}'),
                 shape: const Border(),
                 leading: Icon(Icons.lightbulb_outline, color: context.palette.accent),
-                title: Text('${AppStrings.scaleHowItWorks} ${_systemName(pattern.systemId)}'),
+                title: Text(AppStrings.scaleHowItWorks(_systemName(pattern.systemId))),
                 childrenPadding: const EdgeInsets.fromLTRB(16, 0, 16, 16),
                 children: [FingeringTheoryCard(systemId: pattern.systemId)],
               ),
@@ -112,7 +112,7 @@ class ScaleDetailScreen extends ConsumerWidget {
           ] else if (state.isLoading)
             const _DiagramPlaceholder()
           else
-            const _DiagramPlaceholder(message: AppStrings.scaleNoPositions),
+            _DiagramPlaceholder(message: AppStrings.scaleNoPositions),
           ScaleInfoPanel(
             scaleName: scale.name,
             category: scale.category,
@@ -161,7 +161,7 @@ class ScaleDetailScreen extends ConsumerWidget {
                 width: double.infinity,
                 child: OutlinedButton(
                   onPressed: () => pick(null),
-                  child: const Text(AppStrings.scaleAllSystems),
+                  child: Text(AppStrings.scaleAllSystems),
                 ),
               ),
             ],

@@ -113,14 +113,14 @@ class RhythmGameScreen extends ConsumerWidget {
                       ? FilledButton.icon(
                           onPressed: vm.stop,
                           icon: const Icon(Icons.stop),
-                          label: const Text(AppStrings.stop),
+                          label: Text(AppStrings.stop),
                           style: FilledButton.styleFrom(
                               backgroundColor: context.palette.error),
                         )
                       : FilledButton.icon(
                           onPressed: vm.start,
                           icon: const Icon(Icons.play_arrow),
-                          label: const Text(AppStrings.start),
+                          label: Text(AppStrings.start),
                         ),
                 ),
               ],

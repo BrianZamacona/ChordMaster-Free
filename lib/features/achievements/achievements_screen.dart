@@ -29,10 +29,10 @@ class AchievementsScreen extends ConsumerWidget {
     final asyncData = ref.watch(_achievementsDataProvider);
 
     return Scaffold(
-      appBar: AppBar(title: const Text(AppStrings.moduleAchievements)),
+      appBar: AppBar(title: Text(AppStrings.moduleAchievements)),
       body: asyncData.when(
         loading: () => const Center(child: CircularProgressIndicator()),
-        error: (e, _) => const Center(child: Text(AppStrings.errorStorage)),
+        error: (e, _) => Center(child: Text(AppStrings.errorStorage)),
         data: (statuses) {
           final unlocked = statuses.values.where((v) => v != null).length;
           return Column(

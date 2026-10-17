@@ -1,13 +1,14 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 
+import '../../core/i18n/app_i18n.dart';
 import '../../services/storage_service.dart';
 
 /// Immutable state for [SettingsViewModel].
 class SettingsState {
   const SettingsState({
     this.themeMode = ThemeMode.system,
-    this.localeCode = 'en',
+    this.localeCode = 'es',
   });
 
   /// The currently selected [ThemeMode].
@@ -37,7 +38,7 @@ class SettingsViewModel extends Notifier<SettingsState> {
   @override
   SettingsState build() {
     _loadSettings();
-    return const SettingsState();
+    return SettingsState(localeCode: AppI18n.defaultLocaleCode());
   }
 
   Future<void> _loadSettings() async {
@@ -46,9 +47,10 @@ class SettingsViewModel extends Notifier<SettingsState> {
       final raw = await storage.get<String>(
             StorageService.settingsBox, _keyThemeMode) ??
           'system';
-      final localeCode = await storage.get<String>(
-            StorageService.settingsBox, _keyLocaleCode) ??
-          'en';
+      final stored = await storage.get<String>(
+          StorageService.settingsBox, _keyLocaleCode);
+      final localeCode =
+          stored == null ? state.localeCode : AppI18n.normalize(stored);
       state = state.copyWith(
         themeMode: _parseThemeMode(raw),
         localeCode: localeCode,

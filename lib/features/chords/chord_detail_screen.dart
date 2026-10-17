@@ -172,7 +172,7 @@ class _ChordDetailScreenState extends ConsumerState<ChordDetailScreen> {
               child: SegmentedButton<DiagramDotLabel>(
                 key: const Key('diagram-label-toggle'),
                 showSelectedIcon: false,
-                segments: const [
+                segments: [
                   ButtonSegment(
                     value: DiagramDotLabel.finger,
                     label: Text(AppStrings.showFingers),

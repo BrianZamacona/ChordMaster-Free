@@ -193,7 +193,7 @@ class EarTrainingScreen extends ConsumerWidget {
               FilledButton.icon(
                 onPressed: vm.nextQuestion,
                 icon: const Icon(Icons.arrow_forward),
-                label: const Text(AppStrings.next),
+                label: Text(AppStrings.next),
               ),
             ],
           ],

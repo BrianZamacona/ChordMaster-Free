@@ -81,7 +81,7 @@ class _MetronomeScreenState extends ConsumerState<MetronomeScreen>
     return Scaffold(
       appBar: AppBar(
         bottom: const ToolSwitcher(current: AppTool.metronome),
-        title: const Text(AppStrings.toolsTitle),
+        title: Text(AppStrings.toolsTitle),
       ),
       floatingActionButton: FloatingActionButton.extended(
         onPressed: state.isPlaying ? vm.stopMetronome : vm.startMetronome,
@@ -147,7 +147,7 @@ class _MetronomeScreenState extends ConsumerState<MetronomeScreen>
                     backgroundColor: context.palette.accent,
                     foregroundColor: context.palette.onAccent,
                   ),
-                  child: const Text(AppStrings.tap),
+                  child: Text(AppStrings.tap),
                 ),
                 const SizedBox(width: 16),
                 IconButton.filled(

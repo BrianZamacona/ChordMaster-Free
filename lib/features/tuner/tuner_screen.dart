@@ -80,7 +80,7 @@ class _TunerScreenState extends ConsumerState<TunerScreen> {
       appBar: AppBar(
         backgroundColor: context.palette.background,
         bottom: const ToolSwitcher(current: AppTool.tuner),
-        title: const Text(AppStrings.toolsTitle),
+        title: Text(AppStrings.toolsTitle),
         iconTheme: IconThemeData(color: context.palette.textPrimary),
       ),
       body: !state.hasPermission
@@ -140,7 +140,7 @@ class _PermissionDeniedView extends StatelessWidget {
               ElevatedButton.icon(
                 onPressed: onGrant,
                 icon: const Icon(Icons.mic),
-                label: const Text(AppStrings.grantPermission),
+                label: Text(AppStrings.grantPermission),
                 style: ElevatedButton.styleFrom(
                   backgroundColor: context.palette.accent,
                   foregroundColor: context.palette.onAccent,

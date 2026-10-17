@@ -5,7 +5,6 @@ import '../../features/settings/settings_viewmodel.dart';
 import '../../ui/theme.dart';
 import '../constants/app_strings.dart';
 import '../i18n/app_i18n.dart';
-import '../i18n/app_localizations.dart';
 
 /// Pestañas de la barra inferior, en orden; el índice es la rama del shell.
 enum AppTab { home, learn, practice, tools, progress }
@@ -32,30 +31,30 @@ class AppScaffold extends StatelessWidget {
         bottomNavigationBar: NavigationBar(
           selectedIndex: currentIndex,
           onDestinationSelected: onIndexChange,
-          destinations: const [
+          destinations: [
             NavigationDestination(
-              icon: Icon(Icons.home_outlined),
-              selectedIcon: Icon(Icons.home),
+              icon: const Icon(Icons.home_outlined),
+              selectedIcon: const Icon(Icons.home),
               label: AppStrings.tabHome,
             ),
             NavigationDestination(
-              icon: Icon(Icons.menu_book_outlined),
-              selectedIcon: Icon(Icons.menu_book),
+              icon: const Icon(Icons.menu_book_outlined),
+              selectedIcon: const Icon(Icons.menu_book),
               label: AppStrings.tabLearn,
             ),
             NavigationDestination(
-              icon: Icon(Icons.hearing_outlined),
-              selectedIcon: Icon(Icons.hearing),
+              icon: const Icon(Icons.hearing_outlined),
+              selectedIcon: const Icon(Icons.hearing),
               label: AppStrings.tabPractice,
             ),
             NavigationDestination(
-              icon: Icon(Icons.tune_outlined),
-              selectedIcon: Icon(Icons.tune),
+              icon: const Icon(Icons.tune_outlined),
+              selectedIcon: const Icon(Icons.tune),
               label: AppStrings.tabTools,
             ),
             NavigationDestination(
-              icon: Icon(Icons.insights_outlined),
-              selectedIcon: Icon(Icons.insights),
+              icon: const Icon(Icons.insights_outlined),
+              selectedIcon: const Icon(Icons.insights),
               label: AppStrings.tabProgress,
             ),
           ],
@@ -84,9 +83,9 @@ class SettingsPanel extends ConsumerWidget {
         children: [
           SwitchListTile(
             secondary: Icon(Icons.dark_mode_outlined, color: p.textSecondary),
-            title: const Text(AppStrings.darkMode),
+            title: Text(AppStrings.darkMode),
             subtitle: Text(
-              context.l10n.t('darkModeSubtitle'),
+              AppStrings.darkModeSubtitle,
               style: text.labelSmall?.copyWith(color: p.textSecondary),
             ),
             value: isDark,
@@ -102,7 +101,7 @@ class SettingsPanel extends ConsumerWidget {
               children: [
                 Icon(Icons.language, color: p.textSecondary),
                 const SizedBox(width: 16),
-                Expanded(child: Text(context.l10n.t('language'))),
+                Expanded(child: Text(AppStrings.language)),
                 DropdownButton<String>(
                   value: localeCode,
                   underline: const SizedBox.shrink(),

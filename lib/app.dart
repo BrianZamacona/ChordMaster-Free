@@ -4,7 +4,7 @@ import 'package:flutter_localizations/flutter_localizations.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 
 import 'core/i18n/app_i18n.dart';
-import 'core/i18n/app_localizations.dart';
+import 'core/i18n/tr.dart';
 import 'features/settings/settings_viewmodel.dart';
 import 'ui/navigation.dart';
 import 'ui/theme.dart';
@@ -20,6 +20,7 @@ class ChordMasterApp extends ConsumerWidget {
         ref.watch(settingsViewModelProvider.select((s) => s.themeMode));
     final localeCode =
         ref.watch(settingsViewModelProvider.select((s) => s.localeCode));
+    CurrentLanguage.value = appLanguageFor(localeCode);
     return MaterialApp.router(
       title: 'ChordMaster Free',
       theme: lightTheme,
@@ -28,7 +29,6 @@ class ChordMasterApp extends ConsumerWidget {
       locale: Locale(localeCode),
       supportedLocales: AppI18n.supportedLocales,
       localizationsDelegates: const [
-        AppLocalizations.delegate,
         GlobalMaterialLocalizations.delegate,
         GlobalWidgetsLocalizations.delegate,
         GlobalCupertinoLocalizations.delegate,
@@ -36,11 +36,46 @@ class ChordMasterApp extends ConsumerWidget {
       routerConfig: appRouter,
       debugShowCheckedModeBanner: false,
       // OWASP A05: warn when running in web (unencrypted storage).
-      builder: kIsWeb
-          ? (context, child) => _WebStorageWarningBanner(child: child!)
-          : null,
+      builder: (context, child) => _RebuildOnLanguageChange(
+        localeCode: localeCode,
+        child: kIsWeb ? _WebStorageWarningBanner(child: child!) : child!,
+      ),
     );
   }
+}
+
+/// Los textos (`AppStrings`, `tr`) se leen al construir cada widget, así que
+/// al cambiar de idioma se reconstruye todo el árbol, incluidas las pestañas
+/// ocultas y las rutas apiladas, sin perder la navegación ni el estado.
+class _RebuildOnLanguageChange extends StatefulWidget {
+  const _RebuildOnLanguageChange({required this.localeCode, required this.child});
+
+  final String localeCode;
+  final Widget child;
+
+  @override
+  State<_RebuildOnLanguageChange> createState() =>
+      _RebuildOnLanguageChangeState();
+}
+
+class _RebuildOnLanguageChangeState extends State<_RebuildOnLanguageChange> {
+  @override
+  void didUpdateWidget(_RebuildOnLanguageChange old) {
+    super.didUpdateWidget(old);
+    if (old.localeCode == widget.localeCode) return;
+    WidgetsBinding.instance.addPostFrameCallback((_) {
+      if (!mounted) return;
+      void mark(Element e) {
+        e.markNeedsBuild();
+        e.visitChildren(mark);
+      }
+
+      (context as Element).visitChildren(mark);
+    });
+  }
+
+  @override
+  Widget build(BuildContext context) => widget.child;
 }
 
 /// Banner shown on web to inform users that storage is not encrypted.

@@ -37,7 +37,7 @@ class DonationButton extends StatelessWidget {
   Widget build(BuildContext context) => OutlinedButton.icon(
       onPressed: _launch,
       icon: Icon(Icons.favorite, color: context.palette.accent),
-      label: const Text(AppStrings.supportApp),
+      label: Text(AppStrings.supportApp),
       style: OutlinedButton.styleFrom(
         foregroundColor: context.palette.accent,
         side: BorderSide(color: context.palette.accent),

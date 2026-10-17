@@ -113,7 +113,7 @@ class ChordFilterBar extends StatelessWidget {
                 width: double.infinity,
                 child: OutlinedButton(
                   onPressed: () => _pick(sheet, onType, null),
-                  child: const Text(AppStrings.filterAllTypes),
+                  child: Text(AppStrings.filterAllTypes),
                 ),
               ),
             ],
@@ -142,7 +142,7 @@ class ChordFilterBar extends StatelessWidget {
             const SizedBox(height: 12),
             OutlinedButton(
               onPressed: () => _pick(sheet, onTag, null),
-              child: const Text(AppStrings.filterAllStyles),
+              child: Text(AppStrings.filterAllStyles),
             ),
           ],
         ),

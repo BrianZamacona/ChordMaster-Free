@@ -18,9 +18,9 @@ class ProgressionsScreen extends StatelessWidget {
   const ProgressionsScreen({super.key});
 
   @override
-  Widget build(BuildContext context) => const FeatureModuleScaffold(
+  Widget build(BuildContext context) => FeatureModuleScaffold(
     title: AppStrings.moduleProgressions,
-    body: ProgressionsContent(),
+    body: const ProgressionsContent(),
   );
 }
 
@@ -76,7 +76,7 @@ class ProgressionsContent extends ConsumerWidget {
         ),
         const SizedBox(height: 12),
         SegmentedButton<bool>(
-          segments: const [
+          segments: [
             ButtonSegment(value: false, label: Text(AppStrings.modeStandard)),
             ButtonSegment(value: true, label: Text(AppStrings.modeBeginner)),
           ],

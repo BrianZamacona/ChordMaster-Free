@@ -22,15 +22,15 @@ class ToolSwitcher extends StatelessWidget implements PreferredSizeWidget {
           child: SegmentedButton<AppTool>(
             key: const Key('tool-switcher'),
             showSelectedIcon: false,
-            segments: const [
+            segments: [
               ButtonSegment(
                 value: AppTool.tuner,
-                icon: Icon(Icons.graphic_eq),
+                icon: const Icon(Icons.graphic_eq),
                 label: Text(AppStrings.toolTuner),
               ),
               ButtonSegment(
                 value: AppTool.metronome,
-                icon: Icon(Icons.timer_outlined),
+                icon: const Icon(Icons.timer_outlined),
                 label: Text(AppStrings.toolMetronome),
               ),
             ],

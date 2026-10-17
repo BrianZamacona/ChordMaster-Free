@@ -26,7 +26,7 @@ class ChordCompareScreen extends ConsumerWidget {
   Widget build(BuildContext context, WidgetRef ref) {
     final state = ref.watch(chordViewModelProvider);
     final appBar = AppBar(
-      title: const Text(AppStrings.compareTitle),
+      title: Text(AppStrings.compareTitle),
     );
 
     if (state.isLoading) {
@@ -160,7 +160,7 @@ class _EmptyCompare extends StatelessWidget {
                 key: const Key('compare-back'),
                 onPressed: () => Navigator.of(context).maybePop(),
                 icon: const Icon(Icons.arrow_back),
-                label: const Text(AppStrings.compareBack),
+                label: Text(AppStrings.compareBack),
               ),
             ],
           ),
