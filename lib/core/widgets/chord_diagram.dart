@@ -4,6 +4,18 @@ import 'package:flutter/material.dart';
 
 import '../constants/app_colors.dart';
 
+/// Traste base del diagrama cuando no se indica uno explícito.
+///
+/// Con cuerdas al aire y trastes ≤ 5 el diagrama parte del traste 1 (con nut).
+int diagramBaseFret(List<int> fretPositions) {
+  final fretted = fretPositions.where((f) => f > 0).toList(growable: false);
+  if (fretted.isEmpty) return 1;
+  final maxFret = fretted.reduce(math.max);
+  if (fretPositions.contains(0) && maxFret <= 5) return 1;
+  final minFret = fretted.reduce(math.min);
+  return minFret > 1 ? minFret : 1;
+}
+
 /// A widget that renders a guitar chord diagram using a [CustomPainter].
 class ChordDiagramWidget extends StatefulWidget {
   /// Creates a [ChordDiagramWidget].
@@ -98,11 +110,7 @@ class _ChordDiagramPainter extends CustomPainter {
     final stringSpacing = diagramWidth / 5;
     final fretSpacing = diagramHeight / _fretsShown;
 
-    final positiveFrets = fretPositions.where((fret) => fret > 0).toList(growable: false);
-    final detectedMinFret = positiveFrets.isEmpty
-        ? 1
-        : positiveFrets.reduce(math.min);
-    final effectiveBaseFret = baseFret ?? (detectedMinFret > 1 ? detectedMinFret : 1);
+    final effectiveBaseFret = baseFret ?? diagramBaseFret(fretPositions);
     final fretOffset = effectiveBaseFret > 1 ? effectiveBaseFret - 1 : 0;
 
     if (showChordName) {
