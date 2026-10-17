@@ -8,6 +8,9 @@ const _majorDegrees = {
   'vii°': (semitones: 11, type: 'diminished'),
 };
 
+/// Grados de la tonalidad mayor en orden (I … vii°).
+final majorDegreeNumerals = List<String>.unmodifiable(_majorDegrees.keys);
+
 class ProgressionDegree {
   const ProgressionDegree(this.numeral, this.semitones, this.type);
 

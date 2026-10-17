@@ -31,12 +31,6 @@ class LearnHubScreen extends StatelessWidget {
             subtitle: AppStrings.hubProgressionsSub,
             route: '/learn/progressions',
           ),
-          HubEntry(
-            icon: Icons.edit_note,
-            title: AppStrings.hubComposition,
-            subtitle: AppStrings.hubCompositionSub,
-            route: '/learn/composition',
-          ),
         ],
       );
 }

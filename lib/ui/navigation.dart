@@ -7,7 +7,6 @@ import '../features/chords/chord_compare_screen.dart';
 import '../features/chords/chord_detail_screen.dart';
 import '../features/chords/chord_explorer_screen.dart';
 import '../features/chords/chord_library_screen.dart';
-import '../features/composition/composition_screen.dart';
 import '../features/ear_training/ear_training_screen.dart';
 import '../features/health/health_screen.dart';
 import '../features/home/home_screen.dart';
@@ -31,7 +30,9 @@ const legacyRoutePrefixes = {
   '/chords': '/learn/chords',
   '/scales': '/learn/scales',
   '/progressions': '/learn/progressions',
-  '/composition': '/learn/composition',
+  // Componer se fusionó con Progresiones ("Mi progresión").
+  '/composition': '/learn/progressions',
+  '/learn/composition': '/learn/progressions',
   '/ear-training': '/practice/ear-training',
   '/rhythm-game': '/practice/rhythm',
   '/songs': '/practice/songs',
@@ -131,10 +132,6 @@ final GoRouter appRouter = GoRouter(
                 GoRoute(
                   path: 'progressions',
                   builder: (_, __) => const ProgressionsScreen(),
-                ),
-                GoRoute(
-                  path: 'composition',
-                  builder: (_, __) => const CompositionScreen(),
                 ),
               ],
             ),

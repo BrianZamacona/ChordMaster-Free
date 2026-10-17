@@ -24,7 +24,6 @@ class AppStrings {
   static String get moduleImprovisation =>
       tr(es: 'Improvisación', en: 'Improvisation');
   static String get moduleSongs => tr(es: 'Canciones', en: 'Songs');
-  static String get moduleComposition => tr(es: 'Componer', en: 'Compose');
   static String get moduleHealth =>
       tr(es: 'Salud de práctica', en: 'Practice Health');
   static String get moduleCommunity => tr(es: 'Comunidad', en: 'Community');
@@ -180,11 +179,6 @@ class AppStrings {
     es: 'Progresiones comunes con las digitaciones más cómodas, y las tuyas.',
     en: 'Common progressions with the most comfortable fingerings, and your own.',
   );
-  static String get hubComposition => tr(es: 'Componer', en: 'Compose');
-  static String get hubCompositionSub => tr(
-    es: 'Arma y guarda tus propias progresiones.',
-    en: 'Build and save your own progressions.',
-  );
   static String get hubImprov => tr(es: 'Improvisación', en: 'Improvisation');
   static String get hubImprovSub => tr(
     es: 'Qué escala usar sobre cada acorde, patrones y licks.',
@@ -298,6 +292,26 @@ class AppStrings {
       tr(es: 'notas comunes', en: 'common notes');
   static String get transitionCost =>
       tr(es: 'Costo de transición', en: 'Transition cost');
+  static String get progressionCustom =>
+      tr(es: 'Mi progresión', en: 'My progression');
+  static String get progressionCustomSub => tr(
+    es: 'Ármala por grados; la app elige las digitaciones.',
+    en: 'Build it by degrees; the app picks the fingerings.',
+  );
+  static String get progressionCustomHint => tr(
+    es: 'Toca los grados para armar tu progresión. Mantén pulsado uno para '
+        'ver qué función cumple.',
+    en: 'Tap the degrees to build your progression. Long-press one to see '
+        'its role.',
+  );
+  static String progressionCustomCount(int n, int max) =>
+      tr(es: '$n de $max acordes', en: '$n of $max chords');
+  static String get progressionLoadError => tr(
+    es: 'No se pudieron cargar los acordes',
+    en: 'Could not load the chords',
+  );
+  static String get whyTitle =>
+      tr(es: '¿Por qué suena así?', en: 'Why does it sound like this?');
   static String get modeStandard => tr(es: 'Estándar', en: 'Standard');
   static String get modeBeginner => tr(es: 'Principiante', en: 'Beginner');
   static String get barreFret => tr(es: 'Cejilla traste', en: 'Barre fret');

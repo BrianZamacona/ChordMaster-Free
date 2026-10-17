@@ -47,6 +47,37 @@ ProviderContainer _container(_MemoryStorage storage) {
 Future<void> _settle() => Future<void>.delayed(Duration.zero);
 
 void main() {
+  test('Mi progresión: grados válidos, máximo 8, se guarda y se recupera', () async {
+    final storage = _MemoryStorage();
+    final container = _container(storage);
+    final vm = container.read(progressionsViewModelProvider.notifier);
+    await vm.loaded;
+
+    vm
+      ..addCustomDegree('I')
+      ..addCustomDegree('X')
+      ..addCustomDegree('vi');
+    var s = container.read(progressionsViewModelProvider);
+    expect(s.isCustom, isTrue);
+    expect(s.custom, ['I', 'vi']);
+    expect(s.progression.degrees.map((d) => d.type), ['major', 'minor']);
+
+    for (var i = 0; i < 10; i++) {
+      vm.addCustomDegree('IV');
+    }
+    expect(container.read(progressionsViewModelProvider).custom, hasLength(8));
+    vm.removeCustomDegree(0);
+    await _settle();
+    expect(storage.data['progressions_custom'], hasLength(7));
+
+    final again = _container(storage);
+    final vm2 = again.read(progressionsViewModelProvider.notifier);
+    await vm2.loaded;
+    s = again.read(progressionsViewModelProvider);
+    expect(s.custom.first, 'vi');
+    expect(s.isCustom, isFalse); // abre en la progresión común por defecto
+  });
+
   test('cuenta una vez por progresión distinta (id + tónica)', () async {
     final storage = _MemoryStorage();
     final container = _container(storage);

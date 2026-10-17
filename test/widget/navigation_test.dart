@@ -32,6 +32,8 @@ void main() {
       expect(redirectLegacyRoute('/tuner'), '/tools/tuner');
       expect(redirectLegacyRoute('/rhythm-game'), '/practice/rhythm');
       expect(redirectLegacyRoute('/community'), '/progress');
+      expect(redirectLegacyRoute('/composition'), '/learn/progressions');
+      expect(redirectLegacyRoute('/learn/composition'), '/learn/progressions');
     });
 
     test('rutas actuales y prefijos parecidos no se tocan', () {

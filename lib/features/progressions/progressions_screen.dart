@@ -8,6 +8,7 @@ import '../../core/widgets/feature_module_scaffold.dart';
 import '../../core/widgets/selector_pill.dart';
 import '../../domain/progressions/progression_data.dart';
 import '../../domain/theory/double_stops.dart' show noteNames;
+import '../../domain/theory/harmony.dart';
 import '../../domain/voicing/barre_detection.dart';
 import '../../ui/theme.dart';
 import 'progressions_viewmodel.dart';
@@ -36,10 +37,7 @@ class ProgressionsContent extends ConsumerWidget {
     final state = ref.watch(progressionsViewModelProvider);
     final vm = ref.read(progressionsViewModelProvider.notifier);
     final plan = ref.watch(progressionPlanProvider);
-    final current = progressions.firstWhere(
-      (p) => p.id == state.progressionId,
-      orElse: () => progressions.first,
-    );
+    final current = state.progression;
 
     return ListView(
       padding: const EdgeInsets.fromLTRB(16, 12, 16, 24),
@@ -64,11 +62,14 @@ class ProgressionsContent extends ConsumerWidget {
             SelectorPill(
               key: const Key('progression-pick'),
               label: AppStrings.progressionLabel,
-              value: _numerals(current),
+              value: state.isCustom
+                  ? AppStrings.progressionCustom
+                  : _numerals(current),
               onOpen: () => _showProgressionSheet(
                 context,
                 tonic: state.tonic,
                 selectedId: current.id,
+                custom: state.custom,
                 onPicked: vm.setProgression,
               ),
             ),
@@ -84,34 +85,43 @@ class ProgressionsContent extends ConsumerWidget {
           onSelectionChanged: (s) => vm.setBeginner(beginner: s.first),
         ),
         const SizedBox(height: 16),
+        if (state.isCustom) ...[
+          _CustomBuilder(tonic: state.tonic, custom: state.custom),
+          const SizedBox(height: 16),
+        ],
         plan.when(
           data: (p) => p.problem != null
               ? _ProblemMessage(message: p.problem!)
               : _PlanView(plan: p),
           loading: () => const Center(child: CircularProgressIndicator()),
           error: (e, _) => _ProblemMessage(
-            message: 'No se pudieron cargar los acordes: $e',
+            message: '${AppStrings.progressionLoadError}: $e',
           ),
         ),
+        if (current.degrees.isNotEmpty) ...[
+          const SizedBox(height: 16),
+          _WhyCard(progression: current, tonic: state.tonic),
+        ],
       ],
     );
   }
 
+  static String _chordIn(ProgressionDegree d, int tonic) => chordDisplayName(
+    root: noteNames[(tonic + d.semitones) % 12],
+    type: d.type,
+  );
+
   static String _numerals(Progression p) =>
       [for (final d in p.degrees) d.numeral].join('–');
 
-  static String _chordsIn(Progression p, int tonic) => [
-        for (final d in p.degrees)
-          chordDisplayName(
-            root: noteNames[(tonic + d.semitones) % 12],
-            type: d.type,
-          ),
-      ].join(' · ');
+  static String _chordsIn(Progression p, int tonic) =>
+      [for (final d in p.degrees) _chordIn(d, tonic)].join(' · ');
 
   void _showProgressionSheet(
     BuildContext context, {
     required int tonic,
     required String selectedId,
+    required List<String> custom,
     required ValueChanged<String> onPicked,
   }) =>
       showSelectorSheet(
@@ -119,8 +129,29 @@ class ProgressionsContent extends ConsumerWidget {
         title: AppStrings.progressionPickTitle,
         builder: (sheet) {
           final p = sheet.palette;
+          final customSelected = selectedId == customProgressionId;
           return Column(
             children: [
+              Card(
+                color: customSelected ? p.accent.withValues(alpha: 0.18) : null,
+                child: ListTile(
+                  key: const Key('progression-custom'),
+                  leading: Icon(Icons.edit_note, color: p.accent),
+                  title: Text(AppStrings.progressionCustom),
+                  subtitle: Text(
+                    custom.isEmpty
+                        ? AppStrings.progressionCustomSub
+                        : custom.join('–'),
+                  ),
+                  trailing: customSelected
+                      ? Icon(Icons.check, color: p.accent)
+                      : null,
+                  onTap: () {
+                    onPicked(customProgressionId);
+                    Navigator.of(sheet).pop();
+                  },
+                ),
+              ),
               for (final prog in progressions)
                 Card(
                   color: prog.id == selectedId
@@ -299,6 +330,132 @@ class ProgressionTransitionChip extends StatelessWidget {
               style: Theme.of(context).textTheme.labelSmall?.copyWith(color: p.textSecondary),
             ),
           ),
+        ],
+      ),
+    );
+  }
+}
+
+/// "Mi progresión": se arma tocando grados de la tonalidad (antes era el
+/// módulo Componer, con nombres de acorde sueltos y sin teoría).
+class _CustomBuilder extends ConsumerWidget {
+  const _CustomBuilder({required this.tonic, required this.custom});
+
+  final int tonic;
+  final List<String> custom;
+
+  @override
+  Widget build(BuildContext context, WidgetRef ref) {
+    final vm = ref.read(progressionsViewModelProvider.notifier);
+    final p = context.palette;
+    final text = Theme.of(context).textTheme;
+    final degrees = Progression('all', '', majorDegreeNumerals).degrees;
+    final full = custom.length >= customProgressionMax;
+    return Card(
+      margin: EdgeInsets.zero,
+      child: Padding(
+        padding: const EdgeInsets.all(12),
+        child: Column(
+          crossAxisAlignment: CrossAxisAlignment.start,
+          children: [
+            Text(AppStrings.progressionCustomHint, style: text.bodySmall),
+            const SizedBox(height: 10),
+            Wrap(
+              spacing: 6,
+              runSpacing: 6,
+              children: [
+                for (final d in degrees)
+                  Tooltip(
+                    message: degreeRole(d.numeral).text,
+                    child: ActionChip(
+                      key: Key('add-degree-${d.numeral}'),
+                      label: Text(
+                        '${d.numeral} · ${ProgressionsContent._chordIn(d, tonic)}',
+                        style: musicMono(fontSize: 13, color: p.textPrimary),
+                      ),
+                      onPressed: full ? null : () => vm.addCustomDegree(d.numeral),
+                    ),
+                  ),
+              ],
+            ),
+            const SizedBox(height: 12),
+            Row(
+              children: [
+                Expanded(
+                  child: Text(
+                    AppStrings.progressionCustomCount(custom.length, customProgressionMax),
+                    style: text.labelMedium?.copyWith(color: p.textSecondary),
+                  ),
+                ),
+                if (custom.isNotEmpty)
+                  TextButton.icon(
+                    key: const Key('custom-clear'),
+                    onPressed: vm.clearCustom,
+                    icon: const Icon(Icons.delete_outline, size: 18),
+                    label: Text(AppStrings.filterClearAll),
+                  ),
+              ],
+            ),
+            if (custom.isNotEmpty)
+              Wrap(
+                spacing: 6,
+                runSpacing: 6,
+                children: [
+                  for (var i = 0; i < custom.length; i++)
+                    InputChip(
+                      key: Key('custom-$i'),
+                      label: Text(custom[i], style: musicMono(fontSize: 13, color: p.textPrimary)),
+                      onDeleted: () => vm.removeCustomDegree(i),
+                    ),
+                ],
+              ),
+          ],
+        ),
+      ),
+    );
+  }
+}
+
+/// "¿Por qué suena así?": teoría generada por reglas (`domain/theory/harmony`).
+class _WhyCard extends StatelessWidget {
+  const _WhyCard({required this.progression, required this.tonic});
+
+  final Progression progression;
+  final int tonic;
+
+  @override
+  Widget build(BuildContext context) {
+    final p = context.palette;
+    final text = Theme.of(context).textTheme;
+    final numerals = {for (final d in progression.degrees) d.numeral};
+    final lines = explainProgression(progression, tonic);
+    return Card(
+      margin: EdgeInsets.zero,
+      clipBehavior: Clip.antiAlias,
+      child: ExpansionTile(
+        key: const Key('progression-why'),
+        initiallyExpanded: true,
+        shape: const Border(),
+        leading: Icon(Icons.lightbulb_outline, color: p.accent),
+        title: Text(AppStrings.whyTitle),
+        childrenPadding: const EdgeInsets.fromLTRB(16, 0, 16, 16),
+        expandedCrossAxisAlignment: CrossAxisAlignment.start,
+        children: [
+          for (final l in lines)
+            Padding(
+              padding: const EdgeInsets.only(bottom: 6),
+              child: Text(l.text, style: text.bodyMedium),
+            ),
+          const SizedBox(height: 6),
+          for (final n in majorDegreeNumerals)
+            if (numerals.contains(n))
+              Padding(
+                padding: const EdgeInsets.only(bottom: 4),
+                child: Text(
+                  degreeRole(n).text,
+                  style: text.bodySmall?.copyWith(color: p.textSecondary),
+                ),
+              ),
         ],
       ),
     );

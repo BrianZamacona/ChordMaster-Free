@@ -104,6 +104,38 @@ void main() {
     expect(find.byKey(const Key('barre-chip')), findsNothing);
   });
 
+  testWidgets('Mi progresión: se arma por grados y explica por qué', (
+    tester,
+  ) async {
+    final container = await _pump(tester, builder);
+    expect(find.byKey(const Key('progression-why')), findsOneWidget);
+    expect(find.textContaining('cadencia rota'), findsOneWidget);
+
+    await tester.tap(find.byKey(const Key('progression-pick')));
+    await tester.pumpAndSettle();
+    await tester.tap(find.byKey(const Key('progression-custom')));
+    await tester.pumpAndSettle();
+
+    expect(container.read(progressionsViewModelProvider).isCustom, isTrue);
+    expect(find.byType(ChordDiagramWidget), findsNothing);
+    expect(find.byKey(const Key('progression-why')), findsNothing);
+
+    for (final n in ['ii', 'V', 'I']) {
+      await tester.tap(find.byKey(Key('add-degree-$n')));
+      await tester.pumpAndSettle();
+    }
+    expect(find.byType(ChordDiagramWidget), findsNWidgets(3));
+    for (final name in ['D Minor', 'G Major', 'C Major']) {
+      expect(find.text(name), findsOneWidget, reason: name);
+    }
+    expect(find.textContaining('cadencia auténtica'), findsOneWidget);
+
+    await tester.tap(find.byKey(const Key('custom-clear')));
+    await tester.pumpAndSettle();
+    expect(container.read(progressionsViewModelProvider).custom, isEmpty);
+    expect(find.byType(ChordDiagramWidget), findsNothing);
+  });
+
   testWidgets('sin candidatos muestra un mensaje claro', (tester) async {
     await _pump(tester, ProgressionBuilder(const []));
 
