@@ -8,6 +8,9 @@ import '../../core/widgets/fingering_theory_card.dart';
 import '../../domain/fingering_systems/fingering_systems_registry.dart';
 import '../../models/chord.dart';
 import 'chord_viewmodel.dart';
+import 'fingering_selection.dart';
+
+export 'fingering_selection.dart' show sharedShapeLabels;
 
 /// Explorer screen showing CAGED positions, curated voicings, and inversions.
 class ChordExplorerScreen extends ConsumerWidget {
@@ -99,23 +102,6 @@ class ChordExplorerScreen extends ConsumerWidget {
       ),
     );
   }
-}
-
-/// Etiquetas "G (usa la digitación E)" por índice, para formas con
-/// `fretPositions` idénticos; la última forma del grupo es la de referencia.
-@visibleForTesting
-Map<int, String> sharedShapeLabels(List<ChordExplorerItem> items) {
-  final groups = <String, List<int>>{};
-  for (var i = 0; i < items.length; i++) {
-    groups.putIfAbsent(items[i].fretPositions.join(','), () => []).add(i);
-  }
-  String name(ChordExplorerItem item) => item.shape ?? item.title;
-  return {
-    for (final group in groups.values)
-      if (group.length > 1)
-        for (final i in group.take(group.length - 1))
-          i: '${name(items[i])} (usa la digitación ${name(items[group.last])})',
-  };
 }
 
 class _ExplorerSection extends StatelessWidget {

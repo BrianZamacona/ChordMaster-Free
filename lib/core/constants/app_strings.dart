@@ -252,6 +252,51 @@ class AppStrings {
   /// Label for CAGED/voicing shape metadata.
   static const String shapeLabel = 'Shape';
 
+  // ── Comparador de digitaciones ────────────────────────────────────────────
+
+  /// Título de la pantalla del comparador.
+  static const String compareTitle = 'Comparar digitaciones';
+
+  /// Checkbox de cada digitación del explorador.
+  static const String compareCheckbox = 'Comparar';
+
+  /// Botón de la barra inferior; se completa con "(n)".
+  static const String compareButton = 'Comparar';
+
+  /// Tooltip cuando ya hay 3 digitaciones elegidas.
+  static const String compareMaxReached = 'Máximo 3 digitaciones';
+
+  /// Estado vacío del comparador.
+  static const String compareEmpty = 'Elige 2–3 digitaciones en el explorador';
+
+  /// Botón de volver desde el estado vacío.
+  static const String compareBack = 'Volver al explorador';
+
+  /// Marca de mejor valor en una fila.
+  static const String compareBest = 'Mejor';
+
+  /// Nota sobre el costo ergonómico frente a Progresiones.
+  static const String compareCostNote =
+      'El costo ergonómico incluye siempre la cejilla. En Progresiones, el '
+      'modo Estándar no la penaliza, así que los costos pueden diferir.';
+
+  /// Sección de la digitación principal del acorde.
+  static const String compareMainSection = 'Digitación principal';
+
+  static const String metricCost = 'Costo ergonómico';
+  static const String metricFingers = 'Dedos';
+  static const String metricBarre = 'Cejilla';
+  static const String metricPosition = 'Posición';
+  static const String metricSpan = 'Extensión';
+  static const String metricMuted = 'Cuerdas muteadas';
+  static const String metricBass = 'Bajo';
+  static const String metricInversion = 'Inversión';
+  static const String metricNotes = 'Notas';
+  static const String barreNone = 'Ninguna';
+  static const String openPosition = 'Al aire';
+  static const String fretWord = 'traste';
+  static const String fretsWord = 'trastes';
+
   // ── Scales ────────────────────────────────────────────────────────────────
 
   /// Scale type selector label.
