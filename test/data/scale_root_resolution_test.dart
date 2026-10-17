@@ -2,6 +2,7 @@ import 'dart:convert';
 import 'dart:io';
 
 import 'package:chordmaster_free/data/models/scale_definition.dart';
+import 'package:chordmaster_free/domain/fingering_systems/fingering_systems_registry.dart';
 import 'package:flutter_test/flutter_test.dart';
 
 const _openHighToLow = [4, 11, 7, 2, 9, 4];
@@ -34,4 +35,44 @@ void main() {
       }
     });
   }
+
+  group('chips de sistema', () {
+    List<String> chips(ScaleDefinition s) => [
+          for (final sys in s.systems)
+            FingeringSystemsRegistry.theoryFor(sys.id)?.name ?? sys.name,
+        ];
+
+    test('pentatónicas y blues muestran Pentatonic Box (2NPS)', () {
+      for (final id in ['pentatonic_minor', 'pentatonic_major', 'blues_minor']) {
+        final scale = scales.firstWhere((s) => s.id == id);
+        expect(chips(scale), contains('Pentatonic Box (2NPS)'), reason: id);
+        expect(chips(scale), isNot(contains('Linear (4NPS)')), reason: id);
+      }
+    });
+
+    test('escalas de 7 notas y modos muestran Linear (4NPS)', () {
+      final sevenNote = scales.where((s) => s.intervals.length == 7);
+      expect(sevenNote, isNotEmpty);
+      for (final scale in sevenNote) {
+        expect(chips(scale), contains('Linear (4NPS)'), reason: scale.id);
+      }
+    });
+
+    test('ningún chip es Berklee y cada sistema tiene posiciones', () {
+      expect(
+        FingeringSystemsRegistry.displayOrder,
+        isNot(contains('berklee')),
+      );
+      for (final scale in scales) {
+        expect(chips(scale).join(), isNot(contains('Berklee')));
+        for (final sys in scale.systems) {
+          expect(
+            scale.positions.where((p) => p.systemId == sys.id),
+            isNotEmpty,
+            reason: '${scale.id}/${sys.id}',
+          );
+        }
+      }
+    });
+  });
 }

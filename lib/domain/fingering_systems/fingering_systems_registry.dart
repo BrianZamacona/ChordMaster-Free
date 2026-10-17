@@ -1,5 +1,3 @@
-import 'berklee/berklee_generator.dart';
-import 'berklee/berklee_theory.dart';
 import 'caged/caged_shape_generator.dart';
 import 'caged/caged_theory.dart';
 import 'fingering_generator.dart';
@@ -26,7 +24,6 @@ class FingeringSystemsRegistry {
     'three_nps': threeNpsTheory,
     'linear_four_notes': linearFourNotesTheory,
     'pentatonic_two_notes': pentatonicTwoNotesTheory,
-    'berklee': berkleeTheory,
   };
 
   static const Map<String, FingeringGenerator> generators = {
@@ -34,7 +31,6 @@ class FingeringSystemsRegistry {
     'three_nps': ThreeNpsGenerator(),
     'linear_four_notes': LinearFourNotesGenerator(),
     'pentatonic_two_notes': PentatonicTwoNotesGenerator(),
-    'berklee': BerkleeGenerator(),
   };
 
   static FingeringSystemTheory? theoryFor(String systemId) =>
@@ -51,6 +47,5 @@ class FingeringSystemsRegistry {
     'three_nps',
     'pentatonic_two_notes',
     'linear_four_notes',
-    'berklee',
   ];
 }

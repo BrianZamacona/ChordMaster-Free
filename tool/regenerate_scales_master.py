@@ -13,6 +13,10 @@ Reglas
            dentro de esa ventana, en las 6 cuerdas.
   3NPS   : sólo escalas de 7 notas. Posición k = escalera ascendente de notas de la escala
            que arranca en el grado k sobre la 6ª cuerda; 3 notas consecutivas por cuerda.
+  2NPS   : sólo pentatónicas y blues. Caja k = escalera de 2 notas consecutivas por cuerda; en blues se
+           añade la b5 en las cuerdas que ya tienen 4ª y 5ª separadas por 2 trastes.
+  4NPS   : sólo escalas de 7 notas y modos. Cada posición 3NPS + la nota siguiente en cada cuerda
+           (la repetida en el cambio de cuerda). Berklee NO se genera: no hay definición verificable.
 Corrige además los `intervals` de los 7 modos (eran los de Jónico para todos).
 No toca id/name/category/description/systems. Idempotente.
 """
@@ -52,34 +56,62 @@ def caged_positions(intervals):
                     'coordinates': notes})
     return out
 
-def nps_positions(intervals):
+def ladder_from(intervals, k, octave, count):
+    """Escalera ascendente de `count` alturas absolutas que arranca en el grado k sobre la 6ª cuerda."""
+    n = len(intervals); pitch = None
+    for f in range(0, 12):
+        if (40 + f) % 12 == intervals[k] % 12: pitch = 40 + f + octave; break
+    out, idx, cur = [], k, pitch
+    for _ in range(count):
+        out.append(cur)
+        cur += (intervals[(idx + 1) % n] - intervals[idx % n]) % 12; idx += 1
+    return out
+
+def make_positions(intervals, system_id, prefix, per_string, extra, max_span):
+    """per_string notas consecutivas por cuerda; extra=1 añade la nota siguiente (4NPS)."""
     n = len(intervals); out = []
     for k in range(n):
         for octave in (0, 12):
-            # primera nota: grado k en la 6ª cuerda, traste >= 0
-            pitch = None
-            for f in range(0, 12):
-                if (40 + f) % 12 == intervals[k] % 12: pitch = 40 + f + octave; break
-            ladder = []; idx = k; cur = pitch
-            for _ in range(18):
-                ladder.append(cur)
-                # distancia hasta la siguiente nota de la escala (circular)
-                gap = (intervals[(idx + 1) % n] - intervals[idx % n]) % 12
-                cur += gap; idx += 1
-            notes = []; ok = True
+            ladder = ladder_from(intervals, k, octave, 6 * per_string + extra)
+            notes, ok = [], True
             for s in range(6):
-                for j in range(3):
-                    p = ladder[s * 3 + j]; fret = p - OPEN_ABS[s]
+                for j in range(per_string + extra):
+                    p = ladder[s * per_string + j]; fret = p - OPEN_ABS[s]
                     if fret < 0: ok = False
                     notes.append(coord(s, fret, p % 12 == 0))
             frets = [x['fret_offset'] for x in notes]
-            if ok and max(frets) - min(frets) <= 6:
-                out.append({'id': f'nps_{k + 1}', 'name': f'Posición {k + 1}', 'system_id': 'three_nps',
+            if ok and max(frets) - min(frets) <= max_span:
+                out.append({'id': f'{prefix}_{k + 1}', 'name': f'Posición {k + 1}', 'system_id': system_id,
                             'starting_fret': min(frets), 'fret_span': max(frets) - min(frets) + 1,
                             'coordinates': notes})
                 break
         else:
-            raise RuntimeError(f'3NPS sin posición válida: {intervals} grado {k}')
+            raise RuntimeError(f'{system_id} sin posición válida: {intervals} grado {k}')
+    return out
+
+def nps_positions(intervals):            # 3NPS
+    return make_positions(intervals, 'three_nps', 'nps', 3, 0, 6)
+
+def linear4_positions(intervals):        # 4NPS = cada posición 3NPS + 1 nota extra por cuerda
+    return make_positions(intervals, 'linear_four_notes', 'lin4', 3, 1, 9)
+
+def pentatonic_box_positions(intervals):  # 2 notas por cuerda; blues: añade la b5 entre 4ª y 5ª
+    base = [i for i in intervals if i != 6]
+    out = make_positions(base, 'pentatonic_two_notes', 'box', 2, 0, 5)
+    if 6 in intervals:
+        for p in out:
+            by = {}
+            for c in p['coordinates']: by.setdefault(c['string'], []).append(c['fret_offset'])
+            extra = []
+            for st, frets in by.items():
+                i = 6 - st
+                pcs = {(OPEN_LOW_TO_HIGH[i] + f) % 12: f for f in frets}
+                if 5 in pcs and 7 in pcs and pcs[7] == pcs[5] + 2:
+                    extra.append(coord(i, pcs[5] + 1, False))
+            p['coordinates'] += extra
+            p['coordinates'].sort(key=lambda c: (-c['string'], c['fret_offset']))
+            fr = [c['fret_offset'] for c in p['coordinates']]
+            p['starting_fret'], p['fret_span'] = min(fr), max(fr) - min(fr) + 1
     return out
 
 def main(path):
@@ -92,8 +124,12 @@ def main(path):
             systems.append({'id': 'caged', 'name': 'CAGED'}); pos += caged_positions(iv)
         if len(iv) == 7:
             systems.append({'id': 'three_nps', 'name': '3NPS'}); pos += nps_positions(iv)
+        if s in data['scales'] and s['id'] in ('pentatonic_minor', 'pentatonic_major', 'blues_minor'):
+            systems.append({'id': 'pentatonic_two_notes', 'name': 'Pentatonic Box (2NPS)'}); pos += pentatonic_box_positions(iv)
+        if len(iv) == 7:
+            systems.append({'id': 'linear_four_notes', 'name': 'Linear (4NPS)'}); pos += linear4_positions(iv)
         s['systems'], s['positions'] = systems, pos
-    data['_meta'] = {'version': 2, 'source': 'rule-generated: tool/regenerate_scales_master.py'}
+    data['_meta'] = {'version': 3, 'source': 'rule-generated: tool/regenerate_scales_master.py'}
     Path(path).write_text(json.dumps(data, indent=2, ensure_ascii=False) + '\n', encoding='utf-8')
     print('scales_master.json regenerado:', sum(len(s['positions']) for s in data['scales'] + data['modes']), 'posiciones')
 
