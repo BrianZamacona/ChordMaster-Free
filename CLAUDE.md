@@ -42,7 +42,11 @@ cada nota pertenezca a la escala. No bajar la tolerancia de 0.
 - Berklee NO está implementado: no hay definición con trastes verificada. No inventarla.
 - Progresiones: candidatos = digitaciones de `chords.json` sin costo ergonómico infinito;
   camino óptimo por programación dinámica (costo ergonómico + salto de soprano + cambio de
-  traste − notas retenidas). El costo ergonómico no penaliza cejillas completas.
+  traste − notas retenidas). En modo Estándar el costo no penaliza cejillas; el modo
+  Principiante (`ErgonomicOptions.beginner`) suma +2.0 por cejilla mini (2–3 cuerdas) y
+  +8.0 por grande (≥4). No es filtro duro: un grado solo con cejillas sigue dando camino.
+- Comparador de digitaciones: `analyzeFingering` incluye SIEMPRE la cejilla en el costo,
+  así que puede no coincidir con Progresiones en modo Estándar; la pantalla lo advierte.
 - Calidad de double stops por grado (3ª, 6ª, 7ª...) en `lib/domain/theory/double_stops.dart`,
   verificada contra resultados de referencia del sandbox TypeScript
   (`test/fixtures/golden/`).
@@ -61,16 +65,20 @@ cada nota pertenezca a la escala. No bajar la tolerancia de 0.
 
 ## Mapa del código
 - `lib/domain/theory/double_stops.dart` — double stops diatónicos y fijos.
-- `lib/domain/voicing/` — `ergonomics.dart`, `voice_leading.dart`, `voicing_adapter.dart`.
+- `lib/domain/voicing/` — `ergonomics.dart` (incl. modo principiante), `voice_leading.dart`,
+  `voicing_adapter.dart`, `barre_detection.dart` (`detectBarre`: cejilla mini/grande) y
+  `fingering_metrics.dart` (`analyzeFingering`, `bestIndices`).
 - `lib/domain/progressions/` — datos y `ProgressionBuilder`.
 - `lib/domain/fingering_systems/` — teoría de sistemas + registro.
 - `lib/data/` — modelos y repositorio de escalas (resolución por raíz).
 - `lib/features/` — pantallas por módulo (chords, progressions, ...).
+  - `features/chords/chord_compare_screen.dart` — ruta `/chords/:id/compare?sel=caged:0,voicings:2`
+    (claves `sección:índice`, máx. 3; secciones `main`, `caged`, `voicings`, `triadInversions`,
+    `advancedInversions`). Parseo y títulos en `fingering_selection.dart`; el explorador marca
+    con checkbox "Comparar".
 - `lib/ui/scales/` — escalas, detalle y `double_stops/`.
 
 ## Pendiente (en orden)
 1. Revisión visual en el dispositivo de Progresiones y Double stops (colores de nota cuando
    una nota es raíz en una pareja e intervalo en otra; contador del logro "composer").
-2. Pantalla para comparar varias digitaciones de un mismo acorde.
-3. Berklee, si se consigue una definición verificable.
-4. Penalizar cejillas completas en progresiones "para principiantes" (pasar `barre`/dedos).
+2. Berklee, si se consigue una definición verificable.
