@@ -6,6 +6,7 @@ import '../../core/widgets/chord_diagram.dart';
 import '../../core/widgets/feature_module_scaffold.dart';
 import '../../domain/progressions/progression_data.dart';
 import '../../domain/theory/double_stops.dart' show noteNames;
+import '../../domain/voicing/barre_detection.dart';
 import 'progressions_viewmodel.dart';
 
 /// Chord progressions screen.
@@ -38,6 +39,15 @@ class ProgressionsContent extends ConsumerWidget {
         children: [
           Text(AppStrings.key, style: theme.textTheme.titleSmall),
           const SizedBox(height: 8),
+          SegmentedButton<bool>(
+            segments: const [
+              ButtonSegment(value: false, label: Text(AppStrings.modeStandard)),
+              ButtonSegment(value: true, label: Text(AppStrings.modeBeginner)),
+            ],
+            selected: {state.beginner},
+            onSelectionChanged: (s) => vm.setBeginner(beginner: s.first),
+          ),
+          const SizedBox(height: 12),
           Wrap(
             spacing: 6,
             runSpacing: 6,
@@ -147,6 +157,21 @@ class _StepCard extends StatelessWidget {
           showChordName: false,
           size: 110,
         ),
+        // Solo el modo principiante calcula `barre`; en estándar es null y no hay chip.
+        if (step.voicing.barre case final barre?)
+          Padding(
+            padding: const EdgeInsets.only(top: 4),
+            child: Chip(
+              key: const Key('barre-chip'),
+              visualDensity: VisualDensity.compact,
+              label: Text(
+                barreKind(barre) == BarreKind.grande
+                    ? '${AppStrings.barreFret} ${barre.fret} · ${AppStrings.barreLarge}'
+                    : '${AppStrings.barreFret} ${barre.fret}',
+                style: theme.textTheme.labelSmall,
+              ),
+            ),
+          ),
       ],
     );
   }

@@ -17,6 +17,7 @@ class ProgressionsState {
     this.tonic = 0,
     this.progressionId = 'v1-2',
     this.progressionsGenerated = 0,
+    this.beginner = false,
   });
 
   /// Pitch class de la tónica (C = 0).
@@ -24,14 +25,19 @@ class ProgressionsState {
   final String progressionId;
   final int progressionsGenerated;
 
+  /// Modo principiante: penaliza las cejillas al elegir digitaciones.
+  final bool beginner;
+
   ProgressionsState copyWith({
     int? tonic,
     String? progressionId,
     int? progressionsGenerated,
+    bool? beginner,
   }) => ProgressionsState(
     tonic: tonic ?? this.tonic,
     progressionId: progressionId ?? this.progressionId,
     progressionsGenerated: progressionsGenerated ?? this.progressionsGenerated,
+    beginner: beginner ?? this.beginner,
   );
 }
 
@@ -87,9 +93,10 @@ String _degreeLabel(ProgressionDegree degree, int tonic) {
 ProgressionPlan buildProgressionPlan(
   ProgressionBuilder builder,
   Progression progression,
-  int tonic,
-) {
-  final layers = builder.layersFor(progression, tonic);
+  int tonic, {
+  bool beginner = false,
+}) {
+  final layers = builder.layersFor(progression, tonic, beginner: beginner);
   final missing = [
     for (var i = 0; i < layers.length; i++)
       if (layers[i].isEmpty) _degreeLabel(progression.degrees[i], tonic),
@@ -153,7 +160,14 @@ final progressionPlanProvider = Provider<AsyncValue<ProgressionPlan>>((ref) {
   );
   return ref
       .watch(progressionBuilderProvider)
-      .whenData((b) => buildProgressionPlan(b, progression, s.tonic));
+      .whenData(
+        (b) => buildProgressionPlan(
+          b,
+          progression,
+          s.tonic,
+          beginner: s.beginner,
+        ),
+      );
 });
 
 /// Manages progression selection state and the usage counter.
@@ -181,6 +195,9 @@ class ProgressionsViewModel extends Notifier<ProgressionsState> {
     state = state.copyWith(tonic: tonic);
     _countGeneration();
   }
+
+  void setBeginner({required bool beginner}) =>
+      state = state.copyWith(beginner: beginner);
 
   void setProgression(String id) {
     state = state.copyWith(progressionId: id);

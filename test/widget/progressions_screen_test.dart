@@ -81,6 +81,29 @@ void main() {
     expect(find.text('A Minor'), findsNothing);
   });
 
+  testWidgets('modo principiante en G con I-V-vi-IV: sin cejilla grande', (
+    tester,
+  ) async {
+    final container = await _pump(tester, builder);
+    container.read(progressionsViewModelProvider.notifier)
+      ..setProgression('v1-2')
+      ..setTonic(7);
+    await tester.pumpAndSettle();
+    expect(find.byKey(const Key('barre-chip')), findsNothing);
+
+    await tester.tap(find.text('Principiante'));
+    await tester.pumpAndSettle();
+
+    expect(container.read(progressionsViewModelProvider).beginner, isTrue);
+    expect(find.byType(ChordDiagramWidget), findsNWidgets(4));
+    expect(find.textContaining('cejilla grande'), findsNothing);
+
+    await tester.tap(find.text('Estándar'));
+    await tester.pumpAndSettle();
+    expect(container.read(progressionsViewModelProvider).beginner, isFalse);
+    expect(find.byKey(const Key('barre-chip')), findsNothing);
+  });
+
   testWidgets('sin candidatos muestra un mensaje claro', (tester) async {
     await _pump(tester, ProgressionBuilder(const []));
 

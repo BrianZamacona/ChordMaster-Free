@@ -268,6 +268,18 @@ class AppStrings {
   /// Key selector label.
   static const String key = 'Key';
 
+  /// Modo estándar de digitaciones.
+  static const String modeStandard = 'Estándar';
+
+  /// Modo principiante (penaliza cejillas).
+  static const String modeBeginner = 'Principiante';
+
+  /// Chip de cejilla; se completa con el traste.
+  static const String barreFret = 'Cejilla traste';
+
+  /// Chip de cejilla de 4 o más cuerdas.
+  static const String barreLarge = 'cejilla grande';
+
   /// Major / minor toggle label.
   static const String majorMinor = 'Major / Minor';
 
