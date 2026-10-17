@@ -3,6 +3,7 @@ import 'package:flutter_riverpod/flutter_riverpod.dart';
 
 import '../../core/constants/app_strings.dart';
 import '../../core/widgets/feature_module_scaffold.dart';
+import '../../ui/palette.dart';
 import 'rhythm_game_viewmodel.dart';
 
 /// Rhythm game screen.
@@ -114,7 +115,7 @@ class RhythmGameScreen extends ConsumerWidget {
                           icon: const Icon(Icons.stop),
                           label: const Text(AppStrings.stop),
                           style: FilledButton.styleFrom(
-                              backgroundColor: Colors.red),
+                              backgroundColor: context.palette.error),
                         )
                       : FilledButton.icon(
                           onPressed: vm.start,
@@ -176,7 +177,7 @@ class RhythmGameScreen extends ConsumerWidget {
                 Text(
                   '🥁 Rhythm Master achievement unlocked!',
                   style:
-                      theme.textTheme.bodySmall?.copyWith(color: Colors.amber),
+                      theme.textTheme.bodySmall?.copyWith(color: context.palette.accent),
                   textAlign: TextAlign.center,
                 ),
               const SizedBox(height: 8),
@@ -196,12 +197,12 @@ class RhythmGameScreen extends ConsumerWidget {
                                 : '${r.offsetMs}ms',
                             style: TextStyle(
                               fontSize: 11,
-                              color: r.isAccurate ? Colors.green : Colors.red,
+                              color: r.isAccurate ? context.palette.success : context.palette.error,
                             ),
                           ),
                           backgroundColor: r.isAccurate
-                              ? Colors.green.withAlpha(30)
-                              : Colors.red.withAlpha(30),
+                              ? context.palette.success.withAlpha(30)
+                              : context.palette.error.withAlpha(30),
                           padding: EdgeInsets.zero,
                           materialTapTargetSize:
                               MaterialTapTargetSize.shrinkWrap,
@@ -232,7 +233,7 @@ class _ScoreItem extends StatelessWidget {
           value,
           style: theme.textTheme.titleLarge?.copyWith(
             fontWeight: FontWeight.bold,
-            color: highlight ? Colors.green : null,
+            color: highlight ? context.palette.success : null,
           ),
         ),
         Text(label, style: theme.textTheme.labelSmall),

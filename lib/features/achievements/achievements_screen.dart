@@ -1,10 +1,10 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 
-import '../../core/constants/app_colors.dart';
 import '../../core/constants/app_strings.dart';
 import '../../services/achievement_service.dart';
 import '../../services/storage_service.dart';
+import '../../ui/palette.dart';
 
 /// Provider that loads all achievement unlock timestamps.
 final _achievementsDataProvider =
@@ -174,7 +174,7 @@ class _AchievementCard extends StatelessWidget {
                       Text(
                         '✅ Unlocked $dateLabel',
                         style: theme.textTheme.labelSmall?.copyWith(
-                          color: AppColors.success,
+                          color: context.palette.success,
                           fontWeight: FontWeight.w600,
                         ),
                       ),

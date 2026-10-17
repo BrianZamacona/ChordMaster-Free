@@ -4,7 +4,6 @@ import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:go_router/go_router.dart';
 
-import '../../core/constants/app_colors.dart';
 import '../../core/constants/app_strings.dart';
 import '../../core/constants/chord_metadata.dart';
 import '../../core/constants/music_theory.dart';
@@ -14,6 +13,7 @@ import '../../models/chord.dart';
 import '../../services/achievement_service.dart';
 import '../../services/audio_service.dart';
 import '../../ui/animations.dart';
+import '../../ui/palette.dart';
 import 'chord_viewmodel.dart';
 
 /// Detail screen for a single chord identified by [chordId] (URL-encoded name).
@@ -104,8 +104,6 @@ class _ChordDetailScreenState extends ConsumerState<ChordDetailScreen> {
     return Scaffold(
       appBar: AppBar(
         title: Text(displayName),
-        backgroundColor: AppColors.chords,
-        foregroundColor: Colors.white,
         elevation: 0,
         actions: [
           IconButton(
@@ -142,7 +140,7 @@ class _ChordDetailScreenState extends ConsumerState<ChordDetailScreen> {
                         Text(
                           chordTypeLabel(chord.type),
                           style: Theme.of(context).textTheme.titleMedium?.copyWith(
-                                color: AppColors.chords,
+                                color: context.palette.accent,
                               ),
                         ),
                         if (aliases.isNotEmpty) ...[
@@ -150,7 +148,7 @@ class _ChordDetailScreenState extends ConsumerState<ChordDetailScreen> {
                           Text(
                             aliases.join(' • '),
                             style: Theme.of(context).textTheme.bodyMedium?.copyWith(
-                                  color: AppColors.textSecondary,
+                                  color: context.palette.textSecondary,
                                 ),
                           ),
                         ],
@@ -188,8 +186,8 @@ class _ChordDetailScreenState extends ConsumerState<ChordDetailScreen> {
                       .map(
                         (tag) => Chip(
                           label: Text(chordTagLabel(tag)),
-                          backgroundColor: AppColors.chords.withAlpha(35),
-                          side: BorderSide(color: AppColors.chords.withAlpha(90)),
+                          backgroundColor: context.palette.accent.withAlpha(35),
+                          side: BorderSide(color: context.palette.accent.withAlpha(90)),
                         ),
                       )
                       .toList(),
@@ -397,11 +395,11 @@ class _PlayButton extends StatelessWidget {
           width: 64,
           height: 64,
           decoration: BoxDecoration(
-            color: isPlaying ? AppColors.chords.withAlpha(150) : AppColors.chords,
+            color: isPlaying ? context.palette.accent.withAlpha(150) : context.palette.accent,
             shape: BoxShape.circle,
             boxShadow: [
               BoxShadow(
-                color: AppColors.chords.withAlpha(80),
+                color: context.palette.accent.withAlpha(80),
                 blurRadius: 12,
                 offset: const Offset(0, 4),
               ),
@@ -409,7 +407,7 @@ class _PlayButton extends StatelessWidget {
           ),
           child: Icon(
             isPlaying ? Icons.volume_up : Icons.play_arrow,
-            color: Colors.white,
+            color: context.palette.onAccent,
             size: 32,
           ),
         ),
@@ -434,7 +432,7 @@ class _DifficultyRow extends StatelessWidget {
             (index) => Icon(
               index < difficulty ? Icons.star : Icons.star_border,
               size: 14,
-              color: AppColors.secondary,
+              color: context.palette.accent,
             ),
           ),
         ],
@@ -458,7 +456,7 @@ class _SectionCard extends StatelessWidget {
                 title,
                 style: Theme.of(context).textTheme.titleSmall?.copyWith(
                       fontWeight: FontWeight.bold,
-                      color: AppColors.chords,
+                      color: context.palette.accent,
                     ),
               ),
               const SizedBox(height: 8),
@@ -490,7 +488,7 @@ class _FretPositionRow extends StatelessWidget {
             children: [
               Text(
                 _stringLabels[index],
-                style: const TextStyle(fontSize: 11, color: AppColors.textSecondary),
+                style: TextStyle(fontSize: 11, color: context.palette.textSecondary),
               ),
               const SizedBox(height: 4),
               Container(
@@ -498,10 +496,10 @@ class _FretPositionRow extends StatelessWidget {
                 height: 32,
                 decoration: BoxDecoration(
                   color: fret == -1
-                      ? AppColors.error.withAlpha(40)
+                      ? context.palette.error.withAlpha(40)
                       : fret == 0
-                          ? AppColors.success.withAlpha(40)
-                          : AppColors.chords.withAlpha(40),
+                          ? context.palette.success.withAlpha(40)
+                          : context.palette.accent.withAlpha(40),
                   borderRadius: BorderRadius.circular(8),
                 ),
                 alignment: Alignment.center,
@@ -510,10 +508,10 @@ class _FretPositionRow extends StatelessWidget {
                   style: TextStyle(
                     fontWeight: FontWeight.bold,
                     color: fret == -1
-                        ? AppColors.error
+                        ? context.palette.error
                         : fret == 0
-                            ? AppColors.success
-                            : AppColors.chords,
+                            ? context.palette.success
+                            : context.palette.accent,
                   ),
                 ),
               ),
@@ -535,14 +533,14 @@ class _RelatedChordChip extends StatelessWidget {
         child: Container(
           padding: const EdgeInsets.symmetric(horizontal: 12, vertical: 8),
           decoration: BoxDecoration(
-            color: AppColors.chords.withAlpha(30),
+            color: context.palette.accent.withAlpha(30),
             borderRadius: BorderRadius.circular(12),
-            border: Border.all(color: AppColors.chords.withAlpha(80)),
+            border: Border.all(color: context.palette.accent.withAlpha(80)),
           ),
           child: Text(
             label,
-            style: const TextStyle(
-              color: AppColors.chords,
+            style: TextStyle(
+              color: context.palette.accent,
               fontWeight: FontWeight.w600,
               fontSize: 12,
             ),
@@ -561,7 +559,7 @@ class _InlineChordChip extends StatelessWidget {
   Widget build(BuildContext context) => ActionChip(
         label: Text(label),
         onPressed: onTap,
-        backgroundColor: AppColors.chords.withAlpha(25),
-        side: BorderSide(color: AppColors.chords.withAlpha(70)),
+        backgroundColor: context.palette.accent.withAlpha(25),
+        side: BorderSide(color: context.palette.accent.withAlpha(70)),
       );
 }

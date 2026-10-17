@@ -1,169 +1,207 @@
 import 'package:flutter/material.dart';
 import 'package:google_fonts/google_fonts.dart';
 
-import '../core/constants/app_colors.dart';
+import 'palette.dart';
 
-// ── Rock Elegant color seed ───────────────────────────────────────────────────
+export 'palette.dart';
 
-const _seedColor = AppColors.primary; // metallic red #C0392B
-
-// ── Shared sub-themes ─────────────────────────────────────────────────────────
-
-const _cardTheme = CardThemeData(
-  elevation: 2,
-  shape: RoundedRectangleBorder(
-    borderRadius: BorderRadius.all(Radius.circular(12)),
-  ),
-);
-
-const _elevatedButtonTheme = ElevatedButtonThemeData(
-  style: ButtonStyle(
-    shape: WidgetStatePropertyAll(StadiumBorder()),
-    backgroundColor: WidgetStatePropertyAll(AppColors.primary),
-    foregroundColor: WidgetStatePropertyAll(Colors.white),
-  ),
-);
-
-const _outlinedButtonTheme = OutlinedButtonThemeData(
-  style: ButtonStyle(shape: WidgetStatePropertyAll(StadiumBorder())),
-);
-
-const _filledButtonTheme = FilledButtonThemeData(
-  style: ButtonStyle(shape: WidgetStatePropertyAll(StadiumBorder())),
-);
-
-const _chipTheme = ChipThemeData(shape: StadiumBorder());
-
-/// Builds the shared [TextTheme] with Oswald for display/headline and Inter for body.
-TextTheme _buildTextTheme(TextTheme base) {
-  final inter = GoogleFonts.interTextTheme(base);
-  return inter.copyWith(
-    displayLarge: GoogleFonts.oswald(textStyle: inter.displayLarge, fontWeight: FontWeight.bold),
-    displayMedium: GoogleFonts.oswald(textStyle: inter.displayMedium, fontWeight: FontWeight.bold),
-    displaySmall: GoogleFonts.oswald(textStyle: inter.displaySmall, fontWeight: FontWeight.bold),
-    headlineLarge: GoogleFonts.oswald(textStyle: inter.headlineLarge, fontWeight: FontWeight.w700),
-    headlineMedium: GoogleFonts.oswald(textStyle: inter.headlineMedium, fontWeight: FontWeight.w700),
-    headlineSmall: GoogleFonts.oswald(textStyle: inter.headlineSmall, fontWeight: FontWeight.w600),
-    titleLarge: GoogleFonts.oswald(textStyle: inter.titleLarge, fontWeight: FontWeight.w600),
+/// Títulos: Bricolage Grotesque. Texto: Atkinson Hyperlegible (pensada para
+/// leerse sin esfuerzo). Las fuentes van empaquetadas en `assets/google_fonts/`,
+/// así que no se descargan en tiempo de ejecución.
+TextTheme _buildTextTheme(TextTheme base, AppPalette p) {
+  final body = GoogleFonts.atkinsonHyperlegibleTextTheme(base).apply(
+    bodyColor: p.textPrimary,
+    displayColor: p.textPrimary,
+  );
+  TextStyle? display(TextStyle? s, FontWeight w) =>
+      GoogleFonts.bricolageGrotesque(textStyle: s, fontWeight: w);
+  return body.copyWith(
+    displayLarge: display(body.displayLarge, FontWeight.w800),
+    displayMedium: display(body.displayMedium, FontWeight.w800),
+    displaySmall: display(body.displaySmall, FontWeight.w700),
+    headlineLarge: display(body.headlineLarge, FontWeight.w700),
+    headlineMedium: display(body.headlineMedium, FontWeight.w700),
+    headlineSmall: display(body.headlineSmall, FontWeight.w700),
+    titleLarge: display(body.titleLarge, FontWeight.w700),
+    titleMedium: display(body.titleMedium, FontWeight.w700),
+    titleSmall: display(body.titleSmall, FontWeight.w700),
   );
 }
 
-/// Light Material Design 3 theme for ChordMaster Free.
-final ThemeData lightTheme = ThemeData(
-  useMaterial3: true,
-  colorScheme: ColorScheme.fromSeed(seedColor: _seedColor).copyWith(
-    surface: AppColors.surfaceLight,
-    surfaceContainer: AppColors.surfaceLight,
-    surfaceContainerLow: AppColors.backgroundLight,
-    surfaceContainerHigh: const Color(0xFFF1E9E6),
-    surfaceContainerHighest: const Color(0xFFE9DEDA),
-    outline: AppColors.outlineLight,
-    onSurface: AppColors.textPrimaryLight,
-  ),
-  scaffoldBackgroundColor: AppColors.backgroundLight,
-  textTheme: _buildTextTheme(ThemeData.light().textTheme),
-  cardTheme: _cardTheme,
-  appBarTheme: const AppBarTheme(
-    backgroundColor: AppColors.backgroundLight,
-    foregroundColor: AppColors.textPrimaryLight,
-    elevation: 0,
-    scrolledUnderElevation: 0,
-    surfaceTintColor: Colors.transparent,
-    shape: Border(bottom: BorderSide(color: AppColors.primary)),
-  ),
-  elevatedButtonTheme: _elevatedButtonTheme,
-  outlinedButtonTheme: _outlinedButtonTheme,
-  filledButtonTheme: _filledButtonTheme,
-  chipTheme: _chipTheme,
-  navigationBarTheme: NavigationBarThemeData(
-    indicatorColor: AppColors.primary.withAlpha(30),
-    iconTheme: WidgetStateProperty.resolveWith((states) {
-      if (states.contains(WidgetState.selected)) {
-        return const IconThemeData(color: AppColors.primary);
-      }
-      return const IconThemeData(color: Color(0xFF5A5A5A));
-    }),
-    labelTextStyle: WidgetStateProperty.resolveWith((states) {
-      if (states.contains(WidgetState.selected)) {
-        return const TextStyle(color: AppColors.primary, fontSize: 12);
-      }
-      return const TextStyle(color: AppColors.textSecondaryLight, fontSize: 12);
-    }),
-  ),
-  bottomNavigationBarTheme: const BottomNavigationBarThemeData(
-    type: BottomNavigationBarType.fixed,
-  ),
-);
+/// Estilo monoespaciado para notas, intervalos y trastes (IBM Plex Mono).
+TextStyle musicMono({
+  double? fontSize,
+  FontWeight fontWeight = FontWeight.w400,
+  Color? color,
+}) =>
+    GoogleFonts.ibmPlexMono(
+      fontSize: fontSize,
+      fontWeight: fontWeight,
+      color: color,
+    );
 
-/// Dark Material Design 3 theme — Rock Elegant.
-final ThemeData darkTheme = ThemeData(
-  useMaterial3: true,
-  colorScheme: ColorScheme.fromSeed(
-    seedColor: _seedColor,
-    brightness: Brightness.dark,
-    surface: AppColors.surface,
-    onSurface: AppColors.textPrimary,
-    surfaceContainerHighest: const Color(0xFF2A2A2A),
-    secondary: AppColors.secondary,
+ThemeData _buildTheme(AppPalette p, Brightness brightness) {
+  final scheme = ColorScheme.fromSeed(
+    seedColor: p.accent,
+    brightness: brightness,
   ).copyWith(
-    surface: AppColors.surface,
-    surfaceContainer: AppColors.surface,
-    surfaceContainerLow: const Color(0xFF111111),
-    surfaceContainerHigh: const Color(0xFF222222),
-    outline: AppColors.outline,
-  ),
-  scaffoldBackgroundColor: AppColors.background,
-  textTheme: _buildTextTheme(ThemeData.dark().textTheme),
-  cardTheme: const CardThemeData(
-    elevation: 2,
-    color: AppColors.surface,
-    shape: RoundedRectangleBorder(
-      borderRadius: BorderRadius.all(Radius.circular(12)),
-      side: BorderSide(color: AppColors.outline, width: 0.5),
+    primary: p.accent,
+    onPrimary: p.onAccent,
+    secondary: p.intervalThird,
+    onSecondary: p.onInterval,
+    surface: p.surface,
+    onSurface: p.textPrimary,
+    onSurfaceVariant: p.textSecondary,
+    surfaceContainerLowest: p.background,
+    surfaceContainerLow: p.background,
+    surfaceContainer: p.surface,
+    surfaceContainerHigh: p.surfaceHigh,
+    surfaceContainerHighest: p.surfaceHigh,
+    outline: p.outline,
+    outlineVariant: p.outline,
+    error: p.error,
+  );
+  final text = _buildTextTheme(
+    brightness == Brightness.dark
+        ? ThemeData.dark().textTheme
+        : ThemeData.light().textTheme,
+    p,
+  );
+  const radius = BorderRadius.all(Radius.circular(14));
+  final buttonStyle = ButtonStyle(
+    shape: const WidgetStatePropertyAll(StadiumBorder()),
+    textStyle: WidgetStatePropertyAll(text.labelLarge),
+  );
+
+  return ThemeData(
+    useMaterial3: true,
+    brightness: brightness,
+    colorScheme: scheme,
+    scaffoldBackgroundColor: p.background,
+    textTheme: text,
+    extensions: [p],
+    cardTheme: CardThemeData(
+      elevation: 0,
+      color: p.surface,
+      surfaceTintColor: Colors.transparent,
+      shape: RoundedRectangleBorder(
+        borderRadius: radius,
+        side: BorderSide(color: p.outline),
+      ),
     ),
-  ),
-  appBarTheme: const AppBarTheme(
-    backgroundColor: AppColors.background,
-    foregroundColor: AppColors.textPrimary,
-    elevation: 0,
-    scrolledUnderElevation: 0,
-    surfaceTintColor: Colors.transparent,
-    shape: Border(
-      bottom: BorderSide(color: AppColors.primary),
+    appBarTheme: AppBarTheme(
+      backgroundColor: p.background,
+      foregroundColor: p.textPrimary,
+      elevation: 0,
+      scrolledUnderElevation: 0,
+      surfaceTintColor: Colors.transparent,
+      centerTitle: false,
+      titleTextStyle: text.titleLarge,
+      shape: Border(bottom: BorderSide(color: p.outline)),
     ),
-  ),
-  navigationBarTheme: NavigationBarThemeData(
-    backgroundColor: AppColors.surfaceDark,
-    indicatorColor: AppColors.primary.withAlpha(60),
-    iconTheme: WidgetStateProperty.resolveWith((states) {
-      if (states.contains(WidgetState.selected)) {
-        return const IconThemeData(color: AppColors.primary);
-      }
-      return const IconThemeData(color: AppColors.textSecondary);
-    }),
-    labelTextStyle: WidgetStateProperty.resolveWith((states) {
-      if (states.contains(WidgetState.selected)) {
-        return const TextStyle(color: AppColors.primary, fontSize: 12);
-      }
-      return const TextStyle(color: AppColors.textSecondary, fontSize: 12);
-    }),
-  ),
-  elevatedButtonTheme: _elevatedButtonTheme,
-  outlinedButtonTheme: _outlinedButtonTheme,
-  filledButtonTheme: _filledButtonTheme,
-  chipTheme: ChipThemeData(
-    shape: const StadiumBorder(),
-    backgroundColor: AppColors.surface,
-    selectedColor: AppColors.primary.withAlpha(60),
-    side: const BorderSide(color: AppColors.outline),
-    labelStyle: const TextStyle(color: AppColors.textPrimary),
-  ),
-  bottomNavigationBarTheme: const BottomNavigationBarThemeData(
-    type: BottomNavigationBarType.fixed,
-    backgroundColor: AppColors.surfaceDark,
-  ),
-  dividerTheme: const DividerThemeData(color: AppColors.outline),
-);
+    filledButtonTheme: FilledButtonThemeData(
+      style: buttonStyle.merge(
+        FilledButton.styleFrom(
+          backgroundColor: p.accent,
+          foregroundColor: p.onAccent,
+          disabledBackgroundColor: p.surfaceHigh,
+          disabledForegroundColor: p.textDisabled,
+        ),
+      ),
+    ),
+    elevatedButtonTheme: ElevatedButtonThemeData(
+      style: buttonStyle.merge(
+        ElevatedButton.styleFrom(
+          backgroundColor: p.accent,
+          foregroundColor: p.onAccent,
+          elevation: 0,
+        ),
+      ),
+    ),
+    outlinedButtonTheme: OutlinedButtonThemeData(
+      style: buttonStyle.merge(
+        OutlinedButton.styleFrom(
+          foregroundColor: p.textPrimary,
+          side: BorderSide(color: p.outline),
+        ),
+      ),
+    ),
+    textButtonTheme: TextButtonThemeData(
+      style: TextButton.styleFrom(foregroundColor: p.accent),
+    ),
+    chipTheme: ChipThemeData(
+      shape: const StadiumBorder(),
+      backgroundColor: p.surface,
+      selectedColor: p.accent.withValues(alpha: 0.22),
+      checkmarkColor: p.accent,
+      side: BorderSide(color: p.outline),
+      labelStyle: text.labelLarge?.copyWith(color: p.textPrimary),
+    ),
+    inputDecorationTheme: InputDecorationTheme(
+      filled: true,
+      fillColor: p.surface,
+      hintStyle: TextStyle(color: p.textSecondary),
+      border: OutlineInputBorder(
+        borderRadius: radius,
+        borderSide: BorderSide(color: p.outline),
+      ),
+      enabledBorder: OutlineInputBorder(
+        borderRadius: radius,
+        borderSide: BorderSide(color: p.outline),
+      ),
+      focusedBorder: OutlineInputBorder(
+        borderRadius: radius,
+        borderSide: BorderSide(color: p.accent, width: 1.5),
+      ),
+    ),
+    navigationBarTheme: NavigationBarThemeData(
+      backgroundColor: p.surface,
+      surfaceTintColor: Colors.transparent,
+      indicatorColor: p.accent.withValues(alpha: 0.22),
+      iconTheme: WidgetStateProperty.resolveWith(
+        (states) => IconThemeData(
+          color: states.contains(WidgetState.selected)
+              ? p.accent
+              : p.textSecondary,
+        ),
+      ),
+      labelTextStyle: WidgetStateProperty.resolveWith(
+        (states) => text.labelSmall?.copyWith(
+          color: states.contains(WidgetState.selected)
+              ? p.accent
+              : p.textSecondary,
+          fontWeight: states.contains(WidgetState.selected)
+              ? FontWeight.w700
+              : FontWeight.w400,
+        ),
+      ),
+    ),
+    bottomNavigationBarTheme: BottomNavigationBarThemeData(
+      type: BottomNavigationBarType.fixed,
+      backgroundColor: p.surface,
+      selectedItemColor: p.accent,
+      unselectedItemColor: p.textSecondary,
+    ),
+    drawerTheme: DrawerThemeData(backgroundColor: p.background),
+    dividerTheme: DividerThemeData(color: p.outline),
+    sliderTheme: SliderThemeData(
+      activeTrackColor: p.accent,
+      thumbColor: p.accent,
+      inactiveTrackColor: p.outline,
+    ),
+    snackBarTheme: SnackBarThemeData(
+      backgroundColor: p.surfaceHigh,
+      contentTextStyle: text.bodyMedium,
+      behavior: SnackBarBehavior.floating,
+    ),
+  );
+}
+
+/// Tema claro: hueso y madera.
+final ThemeData lightTheme = _buildTheme(AppPalette.light, Brightness.light);
+
+/// Tema oscuro: palisandro y latón.
+final ThemeData darkTheme = _buildTheme(AppPalette.dark, Brightness.dark);
 
 /// Convenience text style accessors on [BuildContext].
 extension AppTextStyles on BuildContext {

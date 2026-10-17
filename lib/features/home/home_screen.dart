@@ -2,10 +2,10 @@ import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:go_router/go_router.dart';
 
-import '../../core/constants/app_colors.dart';
 import '../../core/constants/app_strings.dart';
 import '../../core/widgets/donation_button.dart';
 import '../../ui/animations.dart';
+import '../../ui/palette.dart';
 import 'home_viewmodel.dart';
 
 /// Home screen showing the daily challenge, streak, and 12 module cards.
@@ -62,8 +62,8 @@ class _HomeScreenState extends ConsumerState<HomeScreen>
                   begin: Alignment.topLeft,
                   end: Alignment.bottomRight,
                   colors: [
-                    AppColors.primary,
-                    AppColors.primary.withAlpha(180),
+                    context.palette.accent,
+                    context.palette.accent.withAlpha(180),
                   ],
                 ),
               ),
@@ -99,7 +99,7 @@ class _HomeScreenState extends ConsumerState<HomeScreen>
                         'Modules',
                         style: theme.textTheme.titleMedium?.copyWith(
                           fontWeight: FontWeight.bold,
-                          color: AppColors.textPrimary,
+                          color: context.palette.textPrimary,
                         ),
                       ),
                     ),
@@ -162,7 +162,7 @@ class _StreakBadge extends StatelessWidget {
       child: Container(
         padding: const EdgeInsets.symmetric(horizontal: 10, vertical: 4),
         decoration: BoxDecoration(
-          color: AppColors.secondary,
+          color: context.palette.accent,
           borderRadius: BorderRadius.circular(20),
         ),
         child: Row(
@@ -172,8 +172,8 @@ class _StreakBadge extends StatelessWidget {
             const SizedBox(width: 4),
             Text(
               '$streak',
-              style: const TextStyle(
-                color: Colors.black87,
+              style: TextStyle(
+                color: context.palette.onAccent,
                 fontWeight: FontWeight.bold,
                 fontSize: 14,
               ),
@@ -202,8 +202,8 @@ class _DailyChallengeCard extends StatelessWidget {
               begin: Alignment.topLeft,
               end: Alignment.bottomRight,
               colors: [
-                AppColors.secondary.withAlpha(200),
-                AppColors.secondary.withAlpha(100),
+                context.palette.accent.withAlpha(200),
+                context.palette.accent.withAlpha(100),
               ],
             ),
           ),
@@ -227,14 +227,14 @@ class _DailyChallengeCard extends StatelessWidget {
                       'Daily Challenge',
                       style: Theme.of(context).textTheme.labelMedium?.copyWith(
                             fontWeight: FontWeight.bold,
-                            color: Colors.black54,
+                            color: context.palette.onAccent.withValues(alpha: 0.75),
                           ),
                     ),
                     const SizedBox(height: 4),
                     Text(
                       challenge,
                       style: Theme.of(context).textTheme.bodyMedium?.copyWith(
-                            color: Colors.black87,
+                            color: context.palette.onAccent,
                             fontWeight: FontWeight.w500,
                           ),
                     ),
@@ -252,13 +252,11 @@ class _ModuleInfo {
   const _ModuleInfo({
     required this.label,
     required this.icon,
-    required this.color,
     required this.route,
   });
 
   final String label;
   final IconData icon;
-  final Color color;
   final String route;
 }
 
@@ -266,62 +264,50 @@ const List<_ModuleInfo> _modules = [
   _ModuleInfo(
       label: AppStrings.moduleChords,
       icon: Icons.piano,
-      color: AppColors.chords,
       route: '/chords'),
   _ModuleInfo(
       label: AppStrings.moduleScales,
       icon: Icons.music_note,
-      color: AppColors.scales,
       route: '/scales'),
   _ModuleInfo(
       label: AppStrings.moduleTuner,
       icon: Icons.graphic_eq,
-      color: AppColors.tuner,
       route: '/tuner'),
   _ModuleInfo(
       label: AppStrings.moduleMetronome,
       icon: Icons.timer,
-      color: AppColors.metronome,
       route: '/metronome'),
   _ModuleInfo(
       label: AppStrings.moduleProgressions,
       icon: Icons.queue_music,
-      color: AppColors.progressions,
       route: '/progressions'),
   _ModuleInfo(
       label: AppStrings.moduleEarTraining,
       icon: Icons.hearing,
-      color: AppColors.earTraining,
       route: '/ear-training'),
   _ModuleInfo(
       label: AppStrings.moduleRhythmGame,
       icon: Icons.sports_esports,
-      color: AppColors.rhythmGame,
       route: '/rhythm-game'),
   _ModuleInfo(
       label: AppStrings.moduleImprovisation,
       icon: Icons.auto_awesome,
-      color: AppColors.improvisation,
       route: '/improvisation'),
   _ModuleInfo(
       label: AppStrings.moduleSongs,
       icon: Icons.library_music,
-      color: AppColors.songs,
       route: '/songs'),
   _ModuleInfo(
       label: AppStrings.moduleComposition,
       icon: Icons.edit_note,
-      color: AppColors.composition,
       route: '/composition'),
   _ModuleInfo(
       label: AppStrings.moduleHealth,
       icon: Icons.favorite,
-      color: AppColors.health,
       route: '/health'),
   _ModuleInfo(
       label: AppStrings.moduleCommunity,
       icon: Icons.people,
-      color: AppColors.community,
       route: '/community'),
 ];
 
@@ -335,26 +321,23 @@ class _ModuleCard extends StatelessWidget {
   Widget build(BuildContext context) => GestureDetector(
       onTap: onTap,
       child: Card(
-        elevation: 2,
-        shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(16)),
         clipBehavior: Clip.antiAlias,
         child: Container(
-          decoration: BoxDecoration(
-            color: AppColors.surface,
-            border: Border(
-              left: BorderSide(color: module.color, width: 4),
-            ),
-          ),
+          color: context.palette.surface,
           child: Column(
             mainAxisAlignment: MainAxisAlignment.center,
             children: [
               Container(
                 padding: const EdgeInsets.all(12),
                 decoration: BoxDecoration(
-                  color: module.color.withAlpha(30),
+                  color: context.palette.accent.withValues(alpha: 0.14),
                   borderRadius: BorderRadius.circular(14),
                 ),
-                child: Icon(module.icon, color: module.color, size: 28),
+                child: Icon(
+                  module.icon,
+                  color: context.palette.accent,
+                  size: 28,
+                ),
               ),
               const SizedBox(height: 10),
               Padding(
@@ -362,12 +345,10 @@ class _ModuleCard extends StatelessWidget {
                 child: Text(
                   module.label,
                   textAlign: TextAlign.center,
-                  style: const TextStyle(
-                    color: AppColors.textPrimary,
-                    fontWeight: FontWeight.bold,
-                    fontSize: 12,
-                    height: 1.2,
-                  ),
+                  style: Theme.of(context).textTheme.titleSmall?.copyWith(
+                        color: context.palette.textPrimary,
+                        height: 1.2,
+                      ),
                 ),
               ),
             ],

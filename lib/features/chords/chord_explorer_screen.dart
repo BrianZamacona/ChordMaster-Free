@@ -2,12 +2,12 @@ import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:go_router/go_router.dart';
 
-import '../../core/constants/app_colors.dart';
 import '../../core/constants/app_strings.dart';
 import '../../core/widgets/chord_diagram.dart';
 import '../../core/widgets/fingering_theory_card.dart';
 import '../../domain/fingering_systems/fingering_systems_registry.dart';
 import '../../models/chord.dart';
+import '../../ui/palette.dart';
 import 'chord_viewmodel.dart';
 import 'fingering_selection.dart';
 
@@ -54,8 +54,6 @@ class _ChordExplorerScreenState extends ConsumerState<ChordExplorerScreen> {
       return Scaffold(
         appBar: AppBar(
           title: const Text(AppStrings.chordExplorer),
-          backgroundColor: AppColors.chords,
-          foregroundColor: Colors.white,
         ),
         body: const Center(child: CircularProgressIndicator()),
       );
@@ -66,8 +64,6 @@ class _ChordExplorerScreenState extends ConsumerState<ChordExplorerScreen> {
       return Scaffold(
         appBar: AppBar(
           title: const Text(AppStrings.chordExplorer),
-          backgroundColor: AppColors.chords,
-          foregroundColor: Colors.white,
         ),
         body: Center(
           child: Text(
@@ -83,8 +79,6 @@ class _ChordExplorerScreenState extends ConsumerState<ChordExplorerScreen> {
         title: Text(
           '${chord.displayName ?? chord.name} • ${AppStrings.chordExplorer}',
         ),
-        backgroundColor: AppColors.chords,
-        foregroundColor: Colors.white,
       ),
       body: SingleChildScrollView(
         padding: const EdgeInsets.all(16),
@@ -131,7 +125,7 @@ class _ChordExplorerScreenState extends ConsumerState<ChordExplorerScreen> {
                 child: Text(
                   AppStrings.chordExplorerEmpty,
                   style: Theme.of(context).textTheme.bodyMedium?.copyWith(
-                        color: AppColors.textSecondary,
+                        color: context.palette.textSecondary,
                       ),
                 ),
               ),
@@ -145,7 +139,7 @@ class _ChordExplorerScreenState extends ConsumerState<ChordExplorerScreen> {
                 child: FilledButton.icon(
                   key: const Key('compare-bar-button'),
                   style: FilledButton.styleFrom(
-                    backgroundColor: AppColors.chords,
+                    backgroundColor: context.palette.accent,
                   ),
                   onPressed:
                       _selected.length >= 2 ? () => _openCompare(chord) : null,
@@ -188,7 +182,7 @@ class _ExplorerSection extends StatelessWidget {
         child: Text(
           AppStrings.noDataAvailable,
           style: Theme.of(context).textTheme.bodySmall?.copyWith(
-                color: AppColors.textSecondary,
+                color: context.palette.textSecondary,
               ),
         ),
       );
@@ -247,9 +241,9 @@ class _ExplorerItemCard extends StatelessWidget {
   Widget build(BuildContext context) => Container(
         padding: const EdgeInsets.all(12),
         decoration: BoxDecoration(
-          color: AppColors.surface,
+          color: context.palette.surface,
           borderRadius: BorderRadius.circular(12),
-          border: Border.all(color: AppColors.chords.withValues(alpha: 0.31)),
+          border: Border.all(color: context.palette.accent.withValues(alpha: 0.31)),
         ),
         child: Column(
           crossAxisAlignment: CrossAxisAlignment.start,
@@ -265,7 +259,7 @@ class _ExplorerItemCard extends StatelessWidget {
               Text(
                 _buildSubtitle(),
                 style: Theme.of(context).textTheme.bodySmall?.copyWith(
-                      color: AppColors.textSecondary,
+                      color: context.palette.textSecondary,
                     ),
               ),
             ],
@@ -310,13 +304,13 @@ class _CompareCheckbox extends StatelessWidget {
         Checkbox(
           key: Key('compare-${fingering.key}'),
           value: isSelected,
-          activeColor: AppColors.chords,
+          activeColor: context.palette.accent,
           onChanged: enabled ? (_) => onToggle(fingering) : null,
         ),
         Text(
           AppStrings.compareCheckbox,
           style: Theme.of(context).textTheme.bodySmall?.copyWith(
-                color: enabled ? null : AppColors.textSecondary,
+                color: enabled ? null : context.palette.textSecondary,
               ),
         ),
       ],
@@ -344,7 +338,7 @@ class _SectionCard extends StatelessWidget {
                 title,
                 style: Theme.of(context).textTheme.titleSmall?.copyWith(
                       fontWeight: FontWeight.bold,
-                      color: AppColors.chords,
+                      color: context.palette.accent,
                     ),
               ),
               const SizedBox(height: 8),

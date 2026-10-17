@@ -3,7 +3,7 @@ import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:go_router/go_router.dart';
 
 import '../../features/settings/settings_viewmodel.dart';
-import '../constants/app_colors.dart';
+import '../../ui/palette.dart';
 import '../constants/app_strings.dart';
 import '../i18n/app_i18n.dart';
 import '../i18n/app_localizations.dart';
@@ -212,7 +212,7 @@ class AppEndDrawer extends ConsumerWidget {
                 gradient: LinearGradient(
                   begin: Alignment.topLeft,
                   end: Alignment.bottomRight,
-                  colors: [AppColors.primary, scheme.surfaceContainerHigh],
+                  colors: [context.palette.accent, scheme.surfaceContainerHigh],
                 ),
               ),
               child: Padding(

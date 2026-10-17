@@ -1,12 +1,12 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 
-import '../../core/constants/app_colors.dart';
 import '../../core/constants/app_strings.dart';
 import '../../core/widgets/chord_diagram.dart';
 import '../../domain/voicing/barre_detection.dart';
 import '../../domain/voicing/fingering_metrics.dart';
 import '../../models/chord.dart';
+import '../../ui/palette.dart';
 import 'chord_viewmodel.dart';
 import 'fingering_selection.dart';
 
@@ -27,8 +27,6 @@ class ChordCompareScreen extends ConsumerWidget {
     final state = ref.watch(chordViewModelProvider);
     final appBar = AppBar(
       title: const Text(AppStrings.compareTitle),
-      backgroundColor: AppColors.chords,
-      foregroundColor: Colors.white,
     );
 
     if (state.isLoading) {
@@ -67,8 +65,6 @@ class ChordCompareScreen extends ConsumerWidget {
         title: Text(
           '${chord.displayName ?? chord.name} • ${AppStrings.compareTitle}',
         ),
-        backgroundColor: AppColors.chords,
-        foregroundColor: Colors.white,
       ),
       body: LayoutBuilder(
         builder: (context, constraints) {
@@ -110,7 +106,7 @@ class ChordCompareScreen extends ConsumerWidget {
                     Text(
                       AppStrings.compareCostNote,
                       style: Theme.of(context).textTheme.bodySmall?.copyWith(
-                            color: AppColors.textSecondary,
+                            color: context.palette.textSecondary,
                           ),
                     ),
                   ],
@@ -148,10 +144,10 @@ class _EmptyCompare extends StatelessWidget {
           child: Column(
             mainAxisSize: MainAxisSize.min,
             children: [
-              const Icon(
+              Icon(
                 Icons.compare_arrows,
                 size: 48,
-                color: AppColors.textSecondary,
+                color: context.palette.textSecondary,
               ),
               const SizedBox(height: 12),
               Text(
@@ -222,7 +218,7 @@ class _CompareColumn extends StatelessWidget {
                 if (item.shape != null) '${AppStrings.shapeLabel}: ${item.shape}',
               ].join(' • '),
               style: Theme.of(context).textTheme.bodySmall?.copyWith(
-                    color: AppColors.textSecondary,
+                    color: context.palette.textSecondary,
                   ),
             ),
             const SizedBox(height: 8),
@@ -333,7 +329,7 @@ class _MetricRow extends StatelessWidget {
             child: Text(
               label,
               style: textTheme.bodySmall?.copyWith(
-                color: AppColors.textSecondary,
+                color: context.palette.textSecondary,
               ),
             ),
           ),
@@ -346,7 +342,7 @@ class _MetricRow extends StatelessWidget {
                     Icons.star,
                     key: Key('best-$id-$column'),
                     size: 14,
-                    color: AppColors.chords,
+                    color: context.palette.accent,
                     semanticLabel: AppStrings.compareBest,
                   ),
                   const SizedBox(width: 4),

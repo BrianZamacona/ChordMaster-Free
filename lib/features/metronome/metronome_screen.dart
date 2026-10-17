@@ -1,9 +1,9 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:go_router/go_router.dart';
-import '../../core/constants/app_colors.dart';
 import '../../core/constants/app_strings.dart';
 import '../../core/widgets/donation_button.dart';
+import '../../ui/palette.dart';
 import 'metronome_viewmodel.dart';
 
 /// Full-featured metronome screen.
@@ -80,12 +80,10 @@ class _MetronomeScreenState extends ConsumerState<MetronomeScreen>
           icon: const Icon(Icons.arrow_back),
         ),
         title: const Text(AppStrings.moduleMetronome),
-        backgroundColor: AppColors.metronome,
-        foregroundColor: Colors.white,
       ),
       floatingActionButton: FloatingActionButton.extended(
         onPressed: state.isPlaying ? vm.stopMetronome : vm.startMetronome,
-        backgroundColor: AppColors.metronome,
+        backgroundColor: context.palette.accent,
         icon: Icon(state.isPlaying ? Icons.stop : Icons.play_arrow),
         label: Text(state.isPlaying ? AppStrings.stop : AppStrings.play),
       ),
@@ -110,7 +108,7 @@ class _MetronomeScreenState extends ConsumerState<MetronomeScreen>
                 style: Theme.of(context).textTheme.displayLarge?.copyWith(
                     fontSize: 80,
                     fontWeight: FontWeight.bold,
-                    color: AppColors.metronome),
+                    color: context.palette.accent),
               ),
             ),
             Center(
@@ -125,7 +123,7 @@ class _MetronomeScreenState extends ConsumerState<MetronomeScreen>
               min: 20,
               max: 300,
               divisions: 280,
-              activeColor: AppColors.metronome,
+              activeColor: context.palette.accent,
               label: '${state.bpm}',
               onChanged: (v) => vm.setBpm(v.round()),
             ),
@@ -138,14 +136,14 @@ class _MetronomeScreenState extends ConsumerState<MetronomeScreen>
                   onPressed: () => vm.setBpm(state.bpm - 1),
                   icon: const Icon(Icons.remove),
                   style: IconButton.styleFrom(
-                      backgroundColor: AppColors.metronome),
+                      backgroundColor: context.palette.accent),
                 ),
                 const SizedBox(width: 16),
                 ElevatedButton(
                   onPressed: () => vm.tapTempo(DateTime.now()),
                   style: ElevatedButton.styleFrom(
-                    backgroundColor: AppColors.secondary,
-                    foregroundColor: Colors.black,
+                    backgroundColor: context.palette.accent,
+                    foregroundColor: context.palette.onAccent,
                   ),
                   child: const Text(AppStrings.tap),
                 ),
@@ -154,7 +152,7 @@ class _MetronomeScreenState extends ConsumerState<MetronomeScreen>
                   onPressed: () => vm.setBpm(state.bpm + 1),
                   icon: const Icon(Icons.add),
                   style: IconButton.styleFrom(
-                      backgroundColor: AppColors.metronome),
+                      backgroundColor: context.palette.accent),
                 ),
               ],
             ),
@@ -170,7 +168,7 @@ class _MetronomeScreenState extends ConsumerState<MetronomeScreen>
                   .map((ts) => ChoiceChip(
                         label: Text(ts),
                         selected: state.timeSignature == ts,
-                        selectedColor: AppColors.metronome,
+                        selectedColor: context.palette.accent,
                         onSelected: (_) => vm.setTimeSignature(ts),
                       ))
                   .toList(),
@@ -188,7 +186,7 @@ class _MetronomeScreenState extends ConsumerState<MetronomeScreen>
                   (i) => ChoiceChip(
                         label: Text(subdivisionLabels[i]),
                         selected: state.subdivision == subdivisions[i],
-                        selectedColor: AppColors.metronome,
+                        selectedColor: context.palette.accent,
                         onSelected: (_) => vm.setSubdivision(subdivisions[i]),
                       )),
             ),
@@ -231,15 +229,15 @@ class _BeatIndicator extends StatelessWidget {
               decoration: BoxDecoration(
                 shape: BoxShape.circle,
                 color: isActive
-                    ? AppColors.metronome
-                    : AppColors.metronome.withValues(alpha: 0.2),
+                    ? context.palette.accent
+                    : context.palette.accent.withValues(alpha: 0.2),
                 border: Border.all(
-                  color: AppColors.metronome,
+                  color: context.palette.accent,
                   width: isAccent ? 3 : 1.5,
                 ),
               ),
               child: isActive
-                  ? const Icon(Icons.music_note, color: Colors.white, size: 18)
+                  ? Icon(Icons.music_note, color: context.palette.onAccent, size: 18)
                   : null,
             );
           }),

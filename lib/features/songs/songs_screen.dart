@@ -5,6 +5,7 @@ import 'package:go_router/go_router.dart';
 import '../../core/constants/app_strings.dart';
 import '../../core/widgets/feature_module_scaffold.dart';
 import '../../models/song.dart';
+import '../../ui/palette.dart';
 import 'songs_viewmodel.dart';
 
 /// Song library screen.
@@ -147,7 +148,7 @@ class _SongTile extends StatelessWidget {
           mainAxisSize: MainAxisSize.min,
           children: [
             if (isViewed)
-              const Icon(Icons.check_circle, color: Colors.green, size: 18),
+              Icon(Icons.check_circle, color: context.palette.success, size: 18),
             const Icon(Icons.chevron_right),
           ],
         ),

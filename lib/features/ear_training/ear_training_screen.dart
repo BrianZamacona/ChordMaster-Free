@@ -4,6 +4,7 @@ import 'package:flutter_riverpod/flutter_riverpod.dart';
 import '../../core/constants/app_strings.dart';
 import '../../core/widgets/feature_module_scaffold.dart';
 import '../../models/interval_model.dart';
+import '../../ui/palette.dart';
 import 'ear_training_viewmodel.dart';
 
 /// Ear training screen.
@@ -140,11 +141,11 @@ class EarTrainingScreen extends ConsumerWidget {
                 padding: const EdgeInsets.all(16),
                 decoration: BoxDecoration(
                   color: state.lastAnswerCorrect!
-                      ? Colors.green.withAlpha(40)
-                      : Colors.red.withAlpha(40),
+                      ? context.palette.success.withAlpha(40)
+                      : context.palette.error.withAlpha(40),
                   borderRadius: BorderRadius.circular(14),
                   border: Border.all(
-                    color: state.lastAnswerCorrect! ? Colors.green : Colors.red,
+                    color: state.lastAnswerCorrect! ? context.palette.success : context.palette.error,
                     width: 2,
                   ),
                 ),
@@ -156,8 +157,8 @@ class EarTrainingScreen extends ConsumerWidget {
                           : '❌ ${AppStrings.incorrect}',
                       style: theme.textTheme.titleLarge?.copyWith(
                         color: state.lastAnswerCorrect!
-                            ? Colors.green
-                            : Colors.red,
+                            ? context.palette.success
+                            : context.palette.error,
                         fontWeight: FontWeight.bold,
                       ),
                       textAlign: TextAlign.center,
@@ -185,7 +186,7 @@ class EarTrainingScreen extends ConsumerWidget {
                   child: Text(
                     '👂 Ear Wizard achievement unlocked!',
                     style: theme.textTheme.bodySmall
-                        ?.copyWith(color: Colors.amber),
+                        ?.copyWith(color: context.palette.accent),
                     textAlign: TextAlign.center,
                   ),
                 ),

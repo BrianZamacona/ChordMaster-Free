@@ -4,6 +4,7 @@ import 'package:flutter_riverpod/flutter_riverpod.dart';
 import '../../core/constants/app_strings.dart';
 import '../../core/widgets/feature_module_scaffold.dart';
 import '../../models/community_post.dart';
+import '../../ui/palette.dart';
 import 'community_viewmodel.dart';
 
 /// Community feed screen.
@@ -44,7 +45,7 @@ class _CommunityScreenState extends ConsumerState<CommunityScreen> {
     if (!context.mounted) return;
     if (error != null) {
       ScaffoldMessenger.of(context).showSnackBar(
-        SnackBar(content: Text(error), backgroundColor: Colors.red),
+        SnackBar(content: Text(error), backgroundColor: context.palette.error),
       );
     } else {
       _contentController.clear();
@@ -105,7 +106,7 @@ class _CommunityScreenState extends ConsumerState<CommunityScreen> {
                       '$_contentLength / ${CommunityPost.maxContentLength}',
                       style: theme.textTheme.labelSmall?.copyWith(
                         color: _contentLength > CommunityPost.maxContentLength
-                            ? Colors.red
+                            ? context.palette.error
                             : theme.colorScheme.onSurface.withAlpha(150),
                       ),
                     ),

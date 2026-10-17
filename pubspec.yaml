@@ -41,4 +41,5 @@ flutter:
     - assets/data/
     - assets/audio/
     - assets/images/
+    - assets/google_fonts/
   

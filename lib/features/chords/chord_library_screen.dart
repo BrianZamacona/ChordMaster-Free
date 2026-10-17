@@ -2,7 +2,6 @@ import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:go_router/go_router.dart';
 
-import '../../core/constants/app_colors.dart';
 import '../../core/constants/app_strings.dart';
 import '../../core/constants/chord_metadata.dart';
 import '../../core/constants/music_theory.dart';
@@ -10,6 +9,7 @@ import '../../core/widgets/chord_diagram.dart';
 import '../../core/widgets/donation_button.dart';
 import '../../models/chord.dart';
 import '../../ui/animations.dart';
+import '../../ui/palette.dart';
 import 'chord_viewmodel.dart';
 
 /// Chord library screen with search, style/root/type filters, and chord card grid.
@@ -54,8 +54,6 @@ class _ChordLibraryScreenState extends ConsumerState<ChordLibraryScreen> {
     return Scaffold(
       appBar: AppBar(
         title: const Text(AppStrings.moduleChords),
-        backgroundColor: AppColors.chords,
-        foregroundColor: Colors.white,
         elevation: 0,
       ),
       body: Column(
@@ -86,7 +84,7 @@ class _ChordLibraryScreenState extends ConsumerState<ChordLibraryScreen> {
                 Text(
                   '${state.filteredChords.length} results',
                   style: theme.textTheme.bodySmall?.copyWith(
-                    color: AppColors.textSecondary,
+                    color: context.palette.textSecondary,
                   ),
                 ),
                 const Spacer(),
@@ -118,16 +116,16 @@ class _ChordLibraryScreenState extends ConsumerState<ChordLibraryScreen> {
                             child: Column(
                               mainAxisSize: MainAxisSize.min,
                               children: [
-                                const Icon(
+                                Icon(
                                   Icons.search_off,
                                   size: 48,
-                                  color: AppColors.textSecondary,
+                                  color: context.palette.textSecondary,
                                 ),
                                 const SizedBox(height: 12),
                                 Text(
                                   AppStrings.emptyChordsSearch,
                                   style: theme.textTheme.bodyLarge?.copyWith(
-                                    color: AppColors.textSecondary,
+                                    color: context.palette.textSecondary,
                                   ),
                                 ),
                               ],
@@ -209,9 +207,9 @@ class _TagFilterRow extends StatelessWidget {
             return FilterChip(
               label: Text(label),
               selected: isSelected,
-              selectedColor: AppColors.chords.withAlpha(190),
+              selectedColor: context.palette.accent.withAlpha(190),
               labelStyle: TextStyle(
-                color: isSelected ? Colors.white : null,
+                color: isSelected ? context.palette.onAccent : null,
                 fontSize: 12,
               ),
               onSelected: (_) => onSelected(tag),
@@ -241,9 +239,9 @@ class _RootFilterRow extends StatelessWidget {
             return FilterChip(
               label: Text(root ?? AppStrings.all),
               selected: isSelected,
-              selectedColor: AppColors.chords,
+              selectedColor: context.palette.accent,
               labelStyle: TextStyle(
-                color: isSelected ? Colors.white : null,
+                color: isSelected ? context.palette.onAccent : null,
                 fontSize: 12,
               ),
               onSelected: (_) => onSelected(root),
@@ -278,9 +276,9 @@ class _TypeFilterRow extends StatelessWidget {
             return FilterChip(
               label: Text(type?.displayName ?? AppStrings.all),
               selected: isSelected,
-              selectedColor: AppColors.chords.withAlpha(200),
+              selectedColor: context.palette.accent.withAlpha(200),
               labelStyle: TextStyle(
-                color: isSelected ? Colors.white : null,
+                color: isSelected ? context.palette.onAccent : null,
                 fontSize: 12,
               ),
               onSelected: (_) => onSelected(type?.key),
@@ -335,8 +333,6 @@ class _ChordCard extends StatelessWidget {
         context.go('/chords/$encoded');
       },
       child: Card(
-        elevation: 2,
-        shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(14)),
         child: Padding(
           padding: const EdgeInsets.all(10),
           child: Column(
@@ -363,7 +359,7 @@ class _ChordCard extends StatelessWidget {
               Text(
                 chordTypeLabel(chord.type),
                 style: theme.textTheme.bodySmall?.copyWith(
-                  color: AppColors.textSecondary,
+                  color: context.palette.textSecondary,
                 ),
                 overflow: TextOverflow.ellipsis,
               ),
@@ -391,7 +387,7 @@ class _DifficultyStars extends StatelessWidget {
           (index) => Icon(
             index < difficulty ? Icons.star : Icons.star_border,
             size: 12,
-            color: AppColors.secondary,
+            color: context.palette.accent,
           ),
         ),
       );

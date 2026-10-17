@@ -31,6 +31,13 @@ cada nota pertenezca a la escala. No bajar la tolerancia de 0.
 - Notas siempre con sostenidos (`C C# D D# E F F# G G# A A# B`).
 - Dibujo de diapasón con líneas/notas: UNA función de coordenadas (`noteOffset`) y un solo
   `CustomPainter`; nada de medir widgets por separado.
+- Colores: SOLO desde `context.palette` (`lib/ui/palette.dart`, paleta Palisandro con versión
+  clara y oscura) o `Theme.of(context).colorScheme`. Nada de `Colors.red`/hex sueltos ni
+  colores por módulo. El color codifica intervalos (`palette.intervalColor('b3')`) y siempre
+  va con etiqueta o forma (raíz = cuadrado). `test/ui/palette_test.dart` exige contraste.
+- Tipografía: Bricolage Grotesque (títulos), Atkinson Hyperlegible (texto), IBM Plex Mono
+  (`musicMono()`, notas/intervalos). Empaquetadas en `assets/google_fonts/` (OFL); los tests
+  que tocan `lightTheme`/`darkTheme` deben llamar `TestWidgetsFlutterBinding.ensureInitialized()`.
 
 ## Decisiones musicales vigentes
 - Formas CAGED menores: la forma G usa la digitación de E (sustitución práctica); la UI lo

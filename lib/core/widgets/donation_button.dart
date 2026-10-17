@@ -1,11 +1,12 @@
 import 'package:flutter/material.dart';
 import 'package:url_launcher/url_launcher.dart';
 
+import '../../ui/palette.dart';
 import '../constants/app_strings.dart';
 
 /// A button that opens the ChordMaster Free Ko-fi donation page.
 ///
-/// Renders as an [OutlinedButton] with an amber heart icon so it is visually
+/// Renders as an [OutlinedButton] with an heart icon in the accent color so it is visually
 /// distinct from primary-action buttons.
 ///
 /// Example:
@@ -35,11 +36,11 @@ class DonationButton extends StatelessWidget {
   @override
   Widget build(BuildContext context) => OutlinedButton.icon(
       onPressed: _launch,
-      icon: const Icon(Icons.favorite, color: Colors.amber),
+      icon: Icon(Icons.favorite, color: context.palette.accent),
       label: const Text(AppStrings.supportApp),
       style: OutlinedButton.styleFrom(
-        foregroundColor: Colors.amber,
-        side: const BorderSide(color: Colors.amber),
+        foregroundColor: context.palette.accent,
+        side: BorderSide(color: context.palette.accent),
       ),
     );
 }

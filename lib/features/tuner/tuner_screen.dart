@@ -1,9 +1,9 @@
 import 'dart:math' as math;
 
-import 'package:chordmaster_free/core/constants/app_colors.dart';
 import 'package:chordmaster_free/core/constants/app_strings.dart';
 import 'package:chordmaster_free/core/widgets/donation_button.dart';
 import 'package:chordmaster_free/services/achievement_service.dart';
+import 'package:chordmaster_free/ui/palette.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:go_router/go_router.dart';
@@ -43,11 +43,11 @@ class _TunerScreenState extends ConsumerState<TunerScreen> {
   }
 
   Color _needleColor(double? cents) {
-    if (cents == null) return AppColors.textDisabled;
+    if (cents == null) return context.palette.textDisabled;
     final abs = cents.abs();
-    if (abs < 5) return AppColors.tunerInTune;
-    if (abs < 20) return AppColors.tunerClose;
-    return AppColors.tunerOff;
+    if (abs < 5) return context.palette.success;
+    if (abs < 20) return context.palette.warning;
+    return context.palette.error;
   }
 
   @override
@@ -57,9 +57,9 @@ class _TunerScreenState extends ConsumerState<TunerScreen> {
     if (state.isInTune) _maybeUnlockAchievement(true);
 
     return Scaffold(
-      backgroundColor: AppColors.background,
+      backgroundColor: context.palette.background,
       appBar: AppBar(
-        backgroundColor: AppColors.background,
+        backgroundColor: context.palette.background,
         leading: IconButton(
           tooltip: MaterialLocalizations.of(context).backButtonTooltip,
           onPressed: () {
@@ -71,11 +71,11 @@ class _TunerScreenState extends ConsumerState<TunerScreen> {
           },
           icon: const Icon(Icons.arrow_back),
         ),
-        title: const Text(
+        title: Text(
           AppStrings.moduleTuner,
-          style: TextStyle(color: AppColors.textPrimary),
+          style: TextStyle(color: context.palette.textPrimary),
         ),
-        iconTheme: const IconThemeData(color: AppColors.textPrimary),
+        iconTheme: IconThemeData(color: context.palette.textPrimary),
       ),
       body: !state.hasPermission
           ? _PermissionDeniedView(
@@ -123,12 +123,12 @@ class _PermissionDeniedView extends StatelessWidget {
           child: Column(
             mainAxisSize: MainAxisSize.min,
             children: [
-              const Icon(Icons.mic_off, color: AppColors.error, size: 64),
+              Icon(Icons.mic_off, color: context.palette.error, size: 64),
               const SizedBox(height: 16),
-              const Text(
+              Text(
                 'Microphone access is required to use the tuner. Please grant permission.',
                 textAlign: TextAlign.center,
-                style: TextStyle(color: AppColors.textSecondary, fontSize: 16),
+                style: TextStyle(color: context.palette.textSecondary, fontSize: 16),
               ),
               const SizedBox(height: 24),
               ElevatedButton.icon(
@@ -136,8 +136,8 @@ class _PermissionDeniedView extends StatelessWidget {
                 icon: const Icon(Icons.mic),
                 label: const Text(AppStrings.grantPermission),
                 style: ElevatedButton.styleFrom(
-                  backgroundColor: AppColors.tuner,
-                  foregroundColor: Colors.black,
+                  backgroundColor: context.palette.accent,
+                  foregroundColor: context.palette.onAccent,
                 ),
               ),
             ],
@@ -158,7 +158,11 @@ class _NeedleGauge extends StatelessWidget {
     return SizedBox(
       height: 200,
       child: CustomPaint(
-        painter: _GaugePainter(fraction: fraction, color: color),
+        painter: _GaugePainter(
+          fraction: fraction,
+          color: color,
+          palette: context.palette,
+        ),
         child: const SizedBox.expand(),
       ),
     );
@@ -166,9 +170,14 @@ class _NeedleGauge extends StatelessWidget {
 }
 
 class _GaugePainter extends CustomPainter {
-  _GaugePainter({required this.fraction, required this.color});
+  _GaugePainter({
+    required this.fraction,
+    required this.color,
+    required this.palette,
+  });
 
   final double fraction;
+  final AppPalette palette;
   final Color color;
 
   @override
@@ -178,7 +187,7 @@ class _GaugePainter extends CustomPainter {
 
     // Arc track
     final trackPaint = Paint()
-      ..color = AppColors.outline
+      ..color = palette.outline
       ..style = PaintingStyle.stroke
       ..strokeWidth = 8
       ..strokeCap = StrokeCap.round;
@@ -192,7 +201,7 @@ class _GaugePainter extends CustomPainter {
 
     // Center tick
     final tickPaint = Paint()
-      ..color = AppColors.textDisabled
+      ..color = palette.textDisabled
       ..strokeWidth = 2;
     canvas.drawLine(
       center - Offset(0, radius - 10),
@@ -218,7 +227,9 @@ class _GaugePainter extends CustomPainter {
 
   @override
   bool shouldRepaint(_GaugePainter old) =>
-      old.fraction != fraction || old.color != color;
+      old.fraction != fraction ||
+      old.color != color ||
+      old.palette != palette;
 }
 
 class _NoteDisplay extends StatelessWidget {
@@ -244,8 +255,8 @@ class _NoteDisplay extends StatelessWidget {
       children: [
         Text(
           state.note ?? '—',
-          style: const TextStyle(
-            color: AppColors.textPrimary,
+          style: TextStyle(
+            color: context.palette.textPrimary,
             fontSize: 64,
             fontWeight: FontWeight.bold,
           ),
@@ -255,19 +266,19 @@ class _NoteDisplay extends StatelessWidget {
           state.note == null ? AppStrings.tunerIdle : statusLabel,
           style: TextStyle(
             color: state.isInTune
-                ? AppColors.tunerInTune
-                : AppColors.textSecondary,
+                ? context.palette.success
+                : context.palette.textSecondary,
             fontSize: 18,
           ),
         ),
         const SizedBox(height: 4),
         Text(
           freqLabel,
-          style: const TextStyle(color: AppColors.textSecondary, fontSize: 14),
+          style: TextStyle(color: context.palette.textSecondary, fontSize: 14),
         ),
         Text(
           centsLabel,
-          style: const TextStyle(color: AppColors.textSecondary, fontSize: 14),
+          style: TextStyle(color: context.palette.textSecondary, fontSize: 14),
         ),
       ],
     );
@@ -286,9 +297,9 @@ class _ReferenceChips extends StatelessWidget {
   Widget build(BuildContext context) => Column(
         crossAxisAlignment: CrossAxisAlignment.start,
         children: [
-          const Text(
+          Text(
             'Reference Pitch',
-            style: TextStyle(color: AppColors.textSecondary, fontSize: 14),
+            style: TextStyle(color: context.palette.textSecondary, fontSize: 14),
           ),
           const SizedBox(height: 8),
           Wrap(
@@ -299,11 +310,11 @@ class _ReferenceChips extends StatelessWidget {
                 label: Text('${hz.toInt()} Hz'),
                 selected: selected,
                 onSelected: (_) => onSelect(hz),
-                selectedColor: AppColors.tuner,
+                selectedColor: context.palette.accent,
                 labelStyle: TextStyle(
-                  color: selected ? Colors.black : AppColors.textPrimary,
+                  color: selected ? context.palette.onAccent : context.palette.textPrimary,
                 ),
-                backgroundColor: AppColors.surface,
+                backgroundColor: context.palette.surface,
               );
             }).toList(),
           ),
@@ -320,9 +331,9 @@ class _GuitarStringsRow extends StatelessWidget {
   Widget build(BuildContext context) => Column(
         crossAxisAlignment: CrossAxisAlignment.start,
         children: [
-          const Text(
+          Text(
             'Standard Tuning Reference',
-            style: TextStyle(color: AppColors.textSecondary, fontSize: 14),
+            style: TextStyle(color: context.palette.textSecondary, fontSize: 14),
           ),
           const SizedBox(height: 8),
           Row(
@@ -333,14 +344,14 @@ class _GuitarStringsRow extends StatelessWidget {
                       height: 44,
                       decoration: BoxDecoration(
                         shape: BoxShape.circle,
-                        color: AppColors.surface,
-                        border: Border.all(color: AppColors.tuner, width: 1.5),
+                        color: context.palette.surface,
+                        border: Border.all(color: context.palette.accent, width: 1.5),
                       ),
                       alignment: Alignment.center,
                       child: Text(
                         s,
-                        style: const TextStyle(
-                          color: AppColors.textPrimary,
+                        style: TextStyle(
+                          color: context.palette.textPrimary,
                           fontSize: 12,
                           fontWeight: FontWeight.bold,
                         ),

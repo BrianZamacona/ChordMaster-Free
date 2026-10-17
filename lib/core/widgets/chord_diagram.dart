@@ -2,7 +2,6 @@ import 'dart:math' as math;
 
 import 'package:flutter/material.dart';
 
-import '../constants/app_colors.dart';
 
 /// Traste base del diagrama cuando no se indica uno explícito.
 ///
@@ -205,7 +204,7 @@ class _ChordDiagramPainter extends CustomPainter {
           Offset(x, indicatorY),
           fontSize: fretSpacing * 0.38,
           bold: true,
-          color: AppColors.error,
+          color: colorScheme.error,
           align: TextAlign.center,
           centered: true,
         );
@@ -213,7 +212,7 @@ class _ChordDiagramPainter extends CustomPainter {
     }
 
     final dotPaint = Paint()
-      ..color = AppColors.chords
+      ..color = colorScheme.primary
       ..style = PaintingStyle.fill;
 
     final dotRadius = math.min(stringSpacing, fretSpacing) * 0.32;
