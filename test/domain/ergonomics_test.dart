@@ -28,6 +28,16 @@ void main() {
     expect(finite, greaterThanOrEqualTo(167));
   });
 
+  test('isOpenPosition: cuerda al aire y nada más allá del traste 4', () {
+    bool open(List<int> json) =>
+        isOpenPosition(VoicingAdapter.fromChordJson(json));
+    expect(open([-1, 3, 2, 0, 1, 0]), isTrue); // C
+    expect(open([3, 2, 0, 0, 0, 3]), isTrue); // G
+    expect(open([-1, 3, 5, 5, 5, 3]), isFalse); // C con cejilla
+    expect(open([1, 3, 3, 2, 1, 1]), isFalse); // F, sin cuerdas al aire
+    expect(open([-1, -1, 0, 9, 8, 8]), isFalse); // al aire pero arriba
+  });
+
   test('el adaptador invierte 6ª→1ª y convierte -1 en null', () {
     expect(
       VoicingAdapter.fromChordJson([-1, 3, 2, 0, 1, 0]),

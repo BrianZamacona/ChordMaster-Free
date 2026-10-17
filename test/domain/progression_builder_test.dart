@@ -91,6 +91,43 @@ void main() {
     }
   });
 
+  test('formas abiertas primero: si el acorde la tiene, el camino la usa', () {
+    for (final beginner in [false, true]) {
+      for (final progression in progressions) {
+        for (var tonic = 0; tonic < 12; tonic++) {
+          final path = builder.build(progression, tonic, beginner: beginner);
+          for (var i = 0; i < path.length; i++) {
+            final d = progression.degrees[i];
+            final chord = chords.firstWhere(
+              (c) => c.root == degreeRoot(tonic, d) && c.type == d.type,
+            );
+            final hasOpen = chord.fingerings.any(
+              (f) => isOpenPosition(VoicingAdapter.fromChordJson(f)),
+            );
+            if (hasOpen) {
+              expect(
+                isOpenPosition(path[i].fretPositions),
+                isTrue,
+                reason: '${progression.label} en ${noteNames[tonic]}: ${chord.name}',
+              );
+            }
+          }
+        }
+      }
+    }
+  });
+
+  test('I-V-vi-IV en C: todo abierto salvo F, que lleva cejilla', () {
+    final progression = progressions.firstWhere((p) => p.id == 'v1-2');
+    final path = builder.build(progression, 0);
+    expect([for (final v in path) v.jsonFrets.join(',')], [
+      '-1,3,2,0,1,0',
+      '3,2,0,0,0,3',
+      '-1,0,2,2,1,0',
+      '1,3,3,2,1,1',
+    ]);
+  });
+
   test('I-IV-V en C usa solo digitaciones que existen en el JSON', () {
     final progression = progressions.firstWhere((p) => p.id == 'v1-3');
     final path = builder.build(progression, 0);
@@ -159,11 +196,26 @@ void main() {
       expect(grandeWidth(inG), 0);
     });
 
-    test('I-IV-V en D, A, E, G, C: sin cejilla grande', () {
+    test('I-IV-V en D, A, G: sin cejilla grande', () {
       final progression = progressions.firstWhere((p) => p.id == 'v1-3');
-      for (final tonic in [2, 9, 4, 7, 0]) {
+      for (final tonic in [2, 9, 7]) {
         final path = builder.build(progression, tonic, beginner: true);
         expect(grandeWidth(path), 0, reason: noteNames[tonic]);
+      }
+    });
+
+    test('I-IV-V en C y E: la cejilla solo cae en el acorde sin forma abierta', () {
+      // chords.json no tiene F ni B en primera posición sin cejilla.
+      final progression = progressions.firstWhere((p) => p.id == 'v1-3');
+      for (final (tonic, barred) in [(0, 'F Major'), (4, 'B Major')]) {
+        final path = builder.build(progression, tonic, beginner: true);
+        for (final v in path) {
+          if (v.chord.name == barred) {
+            expect(v.anchorFret, lessThanOrEqualTo(2), reason: barred);
+          } else {
+            expect(isOpenPosition(v.fretPositions), isTrue, reason: v.chord.name);
+          }
+        }
       }
     });
 

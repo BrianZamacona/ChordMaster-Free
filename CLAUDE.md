@@ -48,6 +48,9 @@ cada nota pertenezca a la escala. No bajar la tolerancia de 0.
   `intervals` (rotaciones de la mayor).
 - Berklee NO está implementado: no hay definición con trastes verificada. No inventarla.
 - Progresiones: candidatos = digitaciones de `chords.json` sin costo ergonómico infinito;
+  **formas abiertas primero** (decisión del usuario): si el acorde tiene alguna forma abierta
+  (`isOpenPosition`: una cuerda al aire y nada más allá del traste 4), solo entran esas; si no
+  (F, B, Bm, F#m...), entran todas, cejillas incluidas. Vale en ambos modos. Después,
   camino óptimo por programación dinámica (costo ergonómico + salto de soprano + cambio de
   traste − notas retenidas). En modo Estándar el costo no penaliza cejillas; el modo
   Principiante (`ErgonomicOptions.beginner`) suma +2.0 por cejilla mini (2–3 cuerdas) y

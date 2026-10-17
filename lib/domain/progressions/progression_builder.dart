@@ -87,6 +87,10 @@ class ProgressionBuilder {
 
   /// Candidatos ergonómicamente válidos de un acorde, sin duplicados y en el
   /// orden del JSON.
+  ///
+  /// Las formas abiertas ([isOpenPosition]) son el estándar y van primero: si
+  /// el acorde tiene alguna, solo se ofrecen esas. Si no (F, Bm, F#m...),
+  /// entran todas, cejillas incluidas. Vale en ambos modos.
   List<ProgressionVoicing> candidatesFor(
     String root,
     String type, {
@@ -95,7 +99,7 @@ class ProgressionBuilder {
     final chord = _chords['$root|$type'];
     if (chord == null) return [];
     final seen = <String>{};
-    final result = <ProgressionVoicing>[];
+    final candidates = <ProgressionVoicing>[];
     for (var i = 0; i < chord.fingerings.length; i++) {
       final raw = chord.fingerings[i];
       final frets = VoicingAdapter.fromChordJson(raw);
@@ -117,7 +121,7 @@ class ProgressionBuilder {
       }
       final cost = calculateErgonomicCost(voicing, options);
       if (!cost.isFinite) continue;
-      result.add(
+      candidates.add(
         ProgressionVoicing(
           fretPositions: frets,
           anchorFret: _anchorFret(frets),
@@ -129,7 +133,11 @@ class ProgressionBuilder {
         ),
       );
     }
-    return result;
+    final open = [
+      for (final v in candidates)
+        if (isOpenPosition(v.fretPositions)) v,
+    ];
+    return open.isEmpty ? candidates : open;
   }
 
   List<List<ProgressionVoicing>> layersFor(

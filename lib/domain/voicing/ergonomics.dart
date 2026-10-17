@@ -198,6 +198,16 @@ double _optionalFifthPenalty(
       : 0;
 }
 
+/// Forma abierta: suena al menos una cuerda al aire y nada se pisa más allá
+/// del traste 4 (primera posición: C x32010, G 320003, Am x02210...).
+bool isOpenPosition(EngineFrets frets) {
+  final sounding = [
+    for (final f in frets)
+      if (f != null) f,
+  ];
+  return sounding.contains(0) && sounding.every((f) => f <= 4);
+}
+
 /// Devuelve `double.infinity` si viola una restricción física o armónica dura.
 double calculateErgonomicCost(
   ErgonomicVoicing voicing, [
