@@ -139,6 +139,7 @@ class DiatonicChord {
     required this.numeral,
     required this.semitones,
     required this.type,
+    this.seventhType = '',
   });
 
   /// Número romano con alteración (`bIII`, `ii`, `vii°`, `III+`).
@@ -149,6 +150,12 @@ class DiatonicChord {
 
   /// `major`, `minor`, `diminished` o `augmented` (claves de chords.json).
   final String type;
+
+  /// Cuatríada del grado (1-3-5-7 con notas de la escala): `major7`,
+  /// `dominant7`, `minor7`, `halfDiminished`, `diminished7` (claves de
+  /// chords.json) o `minorMajor7` / `augmentedMajor7`, que no están en los
+  /// datos. Vacío si la escala no es de 7 notas.
+  final String seventhType;
 }
 
 const _romans = ['I', 'II', 'III', 'IV', 'V', 'VI', 'VII'];
@@ -164,6 +171,7 @@ List<DiatonicChord> diatonicTriads(List<int> scale) {
         final root = s[d];
         final third = (s[(d + 2) % 7] - root + 12) % 12;
         final fifth = (s[(d + 4) % 7] - root + 12) % 12;
+        final seventh = (s[(d + 6) % 7] - root + 12) % 12;
         final type = switch ((third, fifth)) {
           (4, 7) => 'major',
           (3, 7) => 'minor',
@@ -181,13 +189,59 @@ List<DiatonicChord> diatonicTriads(List<int> scale) {
           'augmented' => '+',
           _ => '',
         };
+        final seventhType = switch ((type, seventh)) {
+          ('major', 11) => 'major7',
+          ('major', 10) => 'dominant7',
+          ('minor', 10) => 'minor7',
+          ('minor', 11) => 'minorMajor7',
+          ('diminished', 10) => 'halfDiminished',
+          ('diminished', 9) => 'diminished7',
+          ('augmented', 11) => 'augmentedMajor7',
+          _ => 'other',
+        };
         return DiatonicChord(
           numeral: '$accidental$roman$suffix',
           semitones: root,
           type: type,
+          seventhType: seventhType,
         );
       }(),
   ];
+}
+
+/// De qué escala de 7 notas salen los acordes que acompañan a [scale]:
+/// ella misma; o, si es una pentatónica o la blues, la mayor o menor
+/// natural de la que procede (sus acordes armonizan igual). `null` para
+/// las simétricas, que se armonizan con [symmetricChords].
+List<int>? harmonizationSource(List<int> scale) {
+  final s = _normalized(scale);
+  if (s.length == 7) return s;
+  if (s.length > 7) return null;
+  final c = compareScale(s);
+  if (c == null) return null;
+  if (c.added.isEmpty) return c.referenceIntervals;
+  // Blues: pentatónica menor + b5 -> la menor natural.
+  if (c.referenceIntervals.join(',') == _minorPentatonic.join(',')) {
+    return naturalMinorScale;
+  }
+  return null;
+}
+
+/// Acordes propios de una escala simétrica (semitonos sobre la tónica y
+/// tipo): tonos enteros -> tríadas aumentadas en cada nota; disminuida
+/// semitono-tono -> acordes 7 a distancia de 3 trastes (0, 3, 6, 9);
+/// tono-semitono -> los dos dim7 que contiene (sobre 1 y 2).
+List<({int semitones, String type})> symmetricChords(List<int> scale) {
+  final s = _normalized(scale);
+  if (s.length == 6 && symmetryPeriod(s) == 2) {
+    return [for (final i in s) (semitones: i, type: 'augmented')];
+  }
+  if (s.length == 8) {
+    return s[1] == 1
+        ? [for (final i in [0, 3, 6, 9]) (semitones: i, type: 'dominant7')]
+        : [(semitones: 0, type: 'diminished7'), (semitones: 2, type: 'diminished7')];
+  }
+  return const [];
 }
 
 /// Ideas para improvisar con cada escala (texto curado, no datos de trastes).

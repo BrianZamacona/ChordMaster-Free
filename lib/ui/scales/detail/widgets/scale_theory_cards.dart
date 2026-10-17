@@ -1,4 +1,6 @@
 import 'package:flutter/material.dart';
+import 'package:flutter_riverpod/flutter_riverpod.dart';
+import 'package:go_router/go_router.dart';
 
 import '../../../../core/constants/app_strings.dart';
 import '../../../../core/constants/chord_metadata.dart';
@@ -6,6 +8,7 @@ import '../../../../core/i18n/tr.dart';
 import '../../../../domain/theory/double_stops.dart' show noteNames;
 import '../../../../domain/theory/intervals.dart';
 import '../../../../domain/theory/scale_insights.dart';
+import '../../../../features/chords/chord_viewmodel.dart';
 import '../../../theme.dart';
 
 /// "¿Por qué suena así?" de una escala: pasos, qué la distingue y sus
@@ -26,7 +29,6 @@ class ScaleWhyCard extends StatelessWidget {
     final p = context.palette;
     final comparison = compareScale(intervals);
     final period = symmetryPeriod(intervals);
-    final triads = diatonicTriads(intervals);
     return _TheoryCard(
       key: const Key('scale-why'),
       icon: Icons.lightbulb_outline,
@@ -49,26 +51,6 @@ class ScaleWhyCard extends StatelessWidget {
             ),
             style: text.bodyMedium,
           ),
-        if (triads.isNotEmpty) ...[
-          const SizedBox(height: 4),
-          Text(AppStrings.scaleDiatonicChords, style: text.titleSmall),
-          Text(AppStrings.scaleDiatonicHint, style: text.bodySmall?.copyWith(color: p.textSecondary)),
-          const SizedBox(height: 6),
-          Wrap(
-            spacing: 6,
-            runSpacing: 6,
-            children: [
-              for (final c in triads)
-                _ChordChip(
-                  top: c.numeral,
-                  bottom: chordDisplayName(
-                    root: noteNames[(rootSemitone + c.semitones) % 12],
-                    type: c.type,
-                  ),
-                ),
-            ],
-          ),
-        ],
       ],
     );
   }
@@ -102,6 +84,126 @@ String describeComparison(ScaleComparison c, List<int> scale) {
     es: 'Comparada con $ref: añade ${added.join(', ')} y quita ${removed.join(', ')}.',
     en: 'Compared with $ref: it adds ${added.join(', ')} and drops ${removed.join(', ')}.',
   );
+}
+
+/// Acordes que armonizan la escala: por grado, su tríada y su cuatríada
+/// (escalas de 7 notas), los de la escala de la que sale (pentatónicas y
+/// blues) o los propios de las simétricas. Cada acorde abre su detalle.
+class ScaleHarmonyCard extends ConsumerWidget {
+  const ScaleHarmonyCard({
+    super.key,
+    required this.intervals,
+    required this.rootSemitone,
+  });
+
+  final List<int> intervals;
+  final int rootSemitone;
+
+  String _note(int semitones) => noteNames[(rootSemitone + semitones) % 12];
+
+  /// Nombre del acorde; los tipos que no están en chords.json se escriben
+  /// con su cifrado habitual.
+  String _symbol(int semitones, String type) => switch (type) {
+    'minorMajor7' => '${_note(semitones)}m(maj7)',
+    'augmentedMajor7' => '${_note(semitones)}maj7#5',
+    _ => chordDisplayName(root: _note(semitones), type: type),
+  };
+
+  @override
+  Widget build(BuildContext context, WidgetRef ref) {
+    final text = Theme.of(context).textTheme;
+    final p = context.palette;
+    final vm = ref.read(chordViewModelProvider.notifier);
+    ref.watch(chordViewModelProvider.select((s) => s.allChords.length));
+
+    Widget chip(int semitones, String type) {
+      final symbol = _symbol(semitones, type);
+      final chord = vm.findByName(symbol);
+      return _ChordChip(
+        key: Key('harmony-$symbol'),
+        top: symbol,
+        bottom: switch (type) {
+          'minorMajor7' => tr(es: 'Menor con 7ª mayor', en: 'Minor-major 7th'),
+          'augmentedMajor7' => tr(es: 'Maj7 aumentado', en: 'Augmented major 7th'),
+          _ => chordTypeLabel(type),
+        },
+        onTap: chord == null
+            ? null
+            : () => context.push('/learn/chords/${Uri.encodeComponent(chord.name)}'),
+      );
+    }
+
+    final source = harmonizationSource(intervals);
+    final List<Widget> body;
+    if (source != null) {
+      final chords = diatonicTriads(source);
+      final fromParent = source.length != intervals.toSet().length;
+      body = [
+        Text(
+          fromParent
+              ? tr(
+                  es: 'Esta escala sale de ${_note(0)} ${source.contains(3) ? 'menor natural' : 'mayor'}: '
+                      'se acompaña con sus acordes. Cada grado forma un acorde apilando terceras '
+                      'con las notas de la escala: 1-3-5 (tríada) y 1-3-5-7 (cuatríada).',
+                  en: 'This scale comes from ${_note(0)} ${source.contains(3) ? 'natural minor' : 'major'}: '
+                      'it is accompanied by its chords. Each degree builds a chord by stacking '
+                      'thirds with the notes of the scale: 1-3-5 (triad) and 1-3-5-7 (seventh chord).',
+                )
+              : AppStrings.harmonyHint,
+          style: text.bodySmall?.copyWith(color: p.textSecondary),
+        ),
+        for (final c in chords)
+          Row(
+            children: [
+              SizedBox(
+                width: 52,
+                child: Text(
+                  c.numeral,
+                  style: musicMono(fontSize: 15, fontWeight: FontWeight.w600, color: p.accent),
+                ),
+              ),
+              Expanded(child: chip(c.semitones, c.type)),
+              const SizedBox(width: 8),
+              Expanded(child: chip(c.semitones, c.seventhType)),
+            ],
+          ),
+      ];
+    } else {
+      final chords = symmetricChords(intervals);
+      if (chords.isEmpty) return const SizedBox.shrink();
+      body = [
+        Text(
+          switch (chords.first.type) {
+            'augmented' => tr(
+              es: 'Todas sus tríadas son aumentadas: cada una está a 2 trastes de la siguiente.',
+              en: 'All of its triads are augmented: each one sits 2 frets from the next.',
+            ),
+            'dominant7' => tr(
+              es: 'Funciona sobre acordes 7 separados 3 trastes: los cuatro comparten la escala.',
+              en: 'It works over 7 chords 3 frets apart: all four share the scale.',
+            ),
+            _ => tr(
+              es: 'Contiene dos acordes dim7; cada uno se repite cada 3 trastes.',
+              en: 'It holds two dim7 chords; each repeats every 3 frets.',
+            ),
+          },
+          style: text.bodySmall?.copyWith(color: p.textSecondary),
+        ),
+        Wrap(
+          spacing: 6,
+          runSpacing: 6,
+          children: [for (final c in chords) chip(c.semitones, c.type)],
+        ),
+      ];
+    }
+
+    return _TheoryCard(
+      key: const Key('scale-harmony'),
+      icon: Icons.piano_outlined,
+      title: AppStrings.harmonyTitle,
+      children: body,
+    );
+  }
 }
 
 /// Cómo improvisar con la escala (antes era un módulo aparte).
@@ -207,27 +309,41 @@ class _Line extends StatelessWidget {
 }
 
 class _ChordChip extends StatelessWidget {
-  const _ChordChip({required this.top, required this.bottom});
+  const _ChordChip({super.key, required this.top, required this.bottom, this.onTap});
 
   final String top;
   final String bottom;
 
+  /// Si no es null, el chip abre el acorde (borde de acento).
+  final VoidCallback? onTap;
+
   @override
   Widget build(BuildContext context) {
     final p = context.palette;
-    return Container(
-      padding: const EdgeInsets.symmetric(horizontal: 10, vertical: 6),
-      decoration: BoxDecoration(
-        color: p.surfaceHigh,
+    return Material(
+      color: p.surfaceHigh,
+      shape: RoundedRectangleBorder(
         borderRadius: BorderRadius.circular(10),
-        border: Border.all(color: p.outline),
+        side: BorderSide(color: onTap == null ? p.outline : p.accent.withValues(alpha: 0.6)),
       ),
-      child: Column(
-        mainAxisSize: MainAxisSize.min,
-        children: [
-          Text(top, style: musicMono(fontSize: 14, fontWeight: FontWeight.w600, color: p.textPrimary)),
-          Text(bottom, style: Theme.of(context).textTheme.labelSmall?.copyWith(color: p.textSecondary)),
-        ],
+      clipBehavior: Clip.antiAlias,
+      child: InkWell(
+        onTap: onTap,
+        child: Padding(
+          padding: const EdgeInsets.symmetric(horizontal: 10, vertical: 6),
+          child: Column(
+            mainAxisSize: MainAxisSize.min,
+            children: [
+              Text(top, style: musicMono(fontSize: 14, fontWeight: FontWeight.w600, color: p.textPrimary)),
+              Text(
+                bottom,
+                maxLines: 1,
+                overflow: TextOverflow.ellipsis,
+                style: Theme.of(context).textTheme.labelSmall?.copyWith(color: p.textSecondary),
+              ),
+            ],
+          ),
+        ),
       ),
     );
   }

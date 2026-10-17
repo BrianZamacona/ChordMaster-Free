@@ -33,7 +33,14 @@ class ScalesScreen extends ConsumerWidget {
                 onTap: () => context.go('/learn/scales/double-stops'),
               ),
             ),
-            const SizedBox(height: 8),
+            Padding(
+              padding: const EdgeInsets.fromLTRB(4, 12, 4, 12),
+              child: Text(
+                AppStrings.scaleStepsLegend,
+                key: const Key('steps-legend'),
+                style: Theme.of(context).textTheme.bodySmall,
+              ),
+            ),
             for (final c in _categories)
               _Section(
                 title: scaleCategoryName(c),

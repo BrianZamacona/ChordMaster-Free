@@ -270,14 +270,28 @@ class AppStrings {
     en: 'Note pairs by degree and string pair',
   );
   static String get scaleSteps => tr(
-    es: 'Pasos entre notas (T = tono, S = semitono)',
-    en: 'Steps between notes (W = whole, H = half)',
+    es: 'Pasos entre notas: S = semitono (1 traste), T = tono (2), '
+        'T+S = tono y medio (3)',
+    en: 'Steps between notes: H = half step (1 fret), W = whole step (2), '
+        'W+H = step and a half (3)',
   );
-  static String get scaleDiatonicChords =>
-      tr(es: 'Acordes de la escala', en: 'Chords of the scale');
-  static String get scaleDiatonicHint => tr(
-    es: 'Tríadas formadas con sus propias notas, tomando una sí y una no.',
-    en: 'Triads built from its own notes, taking every other note.',
+  static String get scaleStepsLegend => tr(
+    es: 'Pasos entre notas: S = semitono (1 traste) · T = tono (2 trastes) · '
+        'T+S = tono y medio (3 trastes). Solo algunas escalas tienen saltos de '
+        'tono y medio.',
+    en: 'Steps between notes: H = half step (1 fret) · W = whole step (2 frets) · '
+        'W+H = step and a half (3 frets). Only some scales have step-and-a-half '
+        'leaps.',
+  );
+  static String get harmonyTitle => tr(
+    es: 'Acordes que armonizan la escala',
+    en: 'Chords that harmonize the scale',
+  );
+  static String get harmonyHint => tr(
+    es: 'Cada grado forma un acorde apilando terceras con las notas de la '
+        'escala: 1-3-5 (tríada) y 1-3-5-7 (cuatríada). Toca uno para verlo.',
+    en: 'Each degree builds a chord by stacking thirds with the notes of the '
+        'scale: 1-3-5 (triad) and 1-3-5-7 (seventh chord). Tap one to see it.',
   );
   static String get scaleImproviseTitle =>
       tr(es: 'Improvisar con esta escala', en: 'Improvise with this scale');

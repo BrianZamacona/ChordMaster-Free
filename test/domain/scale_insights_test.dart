@@ -97,6 +97,49 @@ void main() {
     expect(scaleDisplayName('unknown', majorScale, fallback: 'X'), 'X');
   });
 
+  test('armonización: cuatríadas de la mayor y de la menor armónica', () {
+    expect([for (final c in diatonicTriads(majorScale)) c.seventhType], [
+      'major7', 'minor7', 'minor7', 'major7', 'dominant7', 'minor7', 'halfDiminished',
+    ]);
+    expect([for (final c in diatonicTriads(harmonicMinor)) c.seventhType], [
+      'minorMajor7', 'halfDiminished', 'augmentedMajor7', 'minor7', 'dominant7',
+      'major7', 'diminished7',
+    ]);
+  });
+
+  test('pentatónicas y blues se armonizan con la escala de la que salen', () {
+    expect(harmonizationSource(majorScale), majorScale);
+    expect(harmonizationSource(pentMajor), majorScale);
+    expect(harmonizationSource(pentMinor), naturalMinorScale);
+    expect(harmonizationSource(blues), naturalMinorScale);
+    expect(harmonizationSource(wholeTone), isNull);
+    expect(harmonizationSource(dimHalfWhole), isNull);
+  });
+
+  test('simétricas: aumentados, 7 cada 3 trastes o dos dim7', () {
+    expect(symmetricChords(wholeTone).map((c) => c.type).toSet(), {'augmented'});
+    expect(symmetricChords(wholeTone), hasLength(6));
+    expect([for (final c in symmetricChords(dimHalfWhole)) c.semitones], [0, 3, 6, 9]);
+    expect(symmetricChords(dimHalfWhole).first.type, 'dominant7');
+    expect(
+      symmetricChords([0, 2, 3, 5, 6, 8, 9, 11]),
+      [(semitones: 0, type: 'diminished7'), (semitones: 2, type: 'diminished7')],
+    );
+    // Cada acorde propuesto suena dentro de la escala.
+    for (final scale in [wholeTone, dimHalfWhole, [0, 2, 3, 5, 6, 8, 9, 11]]) {
+      for (final c in symmetricChords(scale)) {
+        final tones = switch (c.type) {
+          'augmented' => [0, 4, 8],
+          'dominant7' => [0, 4, 7, 10],
+          _ => [0, 3, 6, 9],
+        };
+        for (final t in tones) {
+          expect(scale, contains((c.semitones + t) % 12), reason: '$scale $c');
+        }
+      }
+    }
+  });
+
   test('cada escala y modo del JSON tiene ideas de improvisación', () {
     final data =
         jsonDecode(File('assets/data/scales_master.json').readAsStringSync())
