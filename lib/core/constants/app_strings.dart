@@ -379,6 +379,27 @@ class AppStrings {
   static const String scaleHowItWorks = 'Cómo funciona';
   static const String scaleNoPositions = 'Sin posiciones para este sistema';
 
+  // ── Double stops ──────────────────────────────────────────────────────────
+
+  static const String dsTitle = 'Double stops diatónicos';
+  static const String dsInterval = 'Intervalo';
+  static const String dsAdjacent = 'Cuerdas juntas';
+  static const String dsSkipOne = 'Saltando una';
+  static const String dsLowRange = 'Trastes 0–12';
+  static const String dsHighRange = 'Trastes 13–24';
+
+  // ── Progresiones ──────────────────────────────────────────────────────────
+
+  static const String progressionKey = 'Tonalidad';
+  static const String progressionKeyTitle = 'Tonalidad (mayor)';
+  static const String progressionLabel = 'Progresión';
+  static const String progressionPickTitle = 'Elige una progresión';
+  static const String transitionNoJump = 'sin salto';
+  static const String transitionJump = 'salto';
+  static const String transitionCommonOne = 'nota común';
+  static const String transitionCommonMany = 'notas comunes';
+  static const String transitionCost = 'Costo de transición';
+
   // ── Diagrama ──────────────────────────────────────────────────────────────
 
   static const String legendRoot = 'Raíz';

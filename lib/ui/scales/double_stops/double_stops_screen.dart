@@ -1,7 +1,9 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 
+import '../../../core/constants/app_strings.dart';
 import '../../../core/widgets/interval_legend.dart';
+import '../../../core/widgets/selector_pill.dart';
 import '../../../domain/theory/double_stops.dart';
 import 'double_stops_fretboard.dart';
 
@@ -67,7 +69,7 @@ class DoubleStopsScreen extends ConsumerWidget {
 
   @override
   Widget build(BuildContext context, WidgetRef ref) => Scaffold(
-        appBar: AppBar(title: const Text('Double stops diatónicos')),
+        appBar: AppBar(title: const Text(AppStrings.dsTitle)),
         body: const DoubleStopsContent(),
       );
 }
@@ -93,62 +95,59 @@ class DoubleStopsContent extends ConsumerWidget {
         child: ListView(
           padding: const EdgeInsets.all(16),
           children: [
-            Text('Tónica', style: theme.textTheme.titleSmall),
-            Wrap(
-              spacing: 6,
-              children: [
-                for (var i = 0; i < 12; i++)
-                  ChoiceChip(
-                    label: Text(noteNames[i]),
-                    selected: c.tonic == i,
-                    onSelected: (_) => notifier.setTonic(i),
-                  ),
-              ],
+            Align(
+              alignment: Alignment.centerLeft,
+              child: SelectorPill(
+                key: const Key('ds-tonic'),
+                label: AppStrings.scaleTonic,
+                value: noteNames[c.tonic],
+                onOpen: () => showNotePicker(
+                  context,
+                  title: AppStrings.scaleTonic,
+                  selected: noteNames[c.tonic],
+                  onPicked: (note) {
+                    if (note != null) notifier.setTonic(noteNames.indexOf(note));
+                  },
+                ),
+              ),
             ),
-            const SizedBox(height: 12),
-            Text('Intervalo', style: theme.textTheme.titleSmall),
-            Wrap(
-              spacing: 6,
-              children: [
+            const SizedBox(height: 16),
+            Text(AppStrings.dsInterval, style: theme.textTheme.titleSmall),
+            const SizedBox(height: 6),
+            SegmentedButton<DiatonicDoubleStopInterval>(
+              showSelectedIcon: false,
+              segments: [
                 for (final i in DiatonicDoubleStopInterval.values)
-                  ChoiceChip(
-                    label: Text(i.label),
-                    selected: c.interval == i,
-                    onSelected: (_) => notifier.setInterval(i),
-                  ),
+                  ButtonSegment(value: i, label: Text('${i.index + 2}ª')),
               ],
+              selected: {c.interval},
+              onSelectionChanged: (v) => notifier.setInterval(v.first),
             ),
             const SizedBox(height: 12),
-            Text('Patrón de cuerdas', style: theme.textTheme.titleSmall),
-            Wrap(
-              spacing: 6,
-              children: [
-                for (final p in DoubleStopStringPattern.values)
-                  ChoiceChip(
-                    label: Text(p == DoubleStopStringPattern.adjacent
-                        ? 'adjacent'
-                        : 'skip-one'),
-                    selected: c.effectivePattern == p,
-                    onSelected: (_) => notifier.setPattern(p),
-                  ),
+            SegmentedButton<DoubleStopStringPattern>(
+              showSelectedIcon: false,
+              segments: const [
+                ButtonSegment(
+                  value: DoubleStopStringPattern.adjacent,
+                  label: Text(AppStrings.dsAdjacent),
+                ),
+                ButtonSegment(
+                  value: DoubleStopStringPattern.skipOne,
+                  label: Text(AppStrings.dsSkipOne),
+                ),
               ],
+              selected: {c.effectivePattern},
+              onSelectionChanged: (v) => notifier.setPattern(v.first),
             ),
             const SizedBox(height: 12),
-            Text('Rango de trastes', style: theme.textTheme.titleSmall),
-            Wrap(
-              spacing: 6,
-              children: [
-                ChoiceChip(
-                  label: const Text('0–12'),
-                  selected: !c.upperRange,
-                  onSelected: (_) => notifier.setUpperRange(upper: false),
-                ),
-                ChoiceChip(
-                  label: const Text('13–24'),
-                  selected: c.upperRange,
-                  onSelected: (_) => notifier.setUpperRange(upper: true),
-                ),
+            SegmentedButton<bool>(
+              showSelectedIcon: false,
+              segments: const [
+                ButtonSegment(value: false, label: Text(AppStrings.dsLowRange)),
+                ButtonSegment(value: true, label: Text(AppStrings.dsHighRange)),
               ],
+              selected: {c.upperRange},
+              onSelectionChanged: (v) => notifier.setUpperRange(upper: v.first),
             ),
             const SizedBox(height: 16),
             for (final group in groups)
