@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 
 import '../../core/constants/app_strings.dart';
+import '../../core/i18n/tr.dart';
 import '../../core/widgets/feature_module_scaffold.dart';
 import 'health_viewmodel.dart';
 
@@ -20,27 +21,46 @@ class HealthScreen extends ConsumerWidget {
     return '${m.toString().padLeft(2, '0')}:${s.toString().padLeft(2, '0')}';
   }
 
-  static const _warmupExercises = [
+  static List<(String, String, String)> get _warmupExercises => [
     (
       '🤲',
-      'Finger stretches',
-      'Spread fingers wide, hold 5 sec, relax. Repeat 5x.'
+      tr(es: 'Estirar los dedos', en: 'Finger stretches'),
+      tr(
+        es: 'Abre bien los dedos, aguanta 5 s y relaja. Repite 5 veces.',
+        en: 'Spread fingers wide, hold 5 sec, relax. Repeat 5x.',
+      ),
     ),
-    ('✊', 'Fist pump', 'Clench fist tight, hold 3 sec, open wide. Repeat 10x.'),
+    (
+      '✊',
+      tr(es: 'Puño', en: 'Fist pump'),
+      tr(
+        es: 'Cierra el puño fuerte 3 s y ábrelo del todo. Repite 10 veces.',
+        en: 'Clench fist tight, hold 3 sec, open wide. Repeat 10x.',
+      ),
+    ),
     (
       '🔄',
-      'Wrist circles',
-      'Rotate wrists clockwise then counter-clockwise, 10x each.'
+      tr(es: 'Círculos de muñeca', en: 'Wrist circles'),
+      tr(
+        es: 'Gira las muñecas en un sentido y luego en el otro, 10 veces cada uno.',
+        en: 'Rotate wrists clockwise then counter-clockwise, 10x each.',
+      ),
     ),
     (
       '💪',
-      'Forearm stretch',
-      'Extend arm, pull fingers back gently. Hold 15 sec per hand.'
+      tr(es: 'Estirar el antebrazo', en: 'Forearm stretch'),
+      tr(
+        es: 'Extiende el brazo y tira suave de los dedos hacia atrás. 15 s por mano.',
+        en: 'Extend arm, pull fingers back gently. Hold 15 sec per hand.',
+      ),
     ),
     (
       '👐',
-      'Piano walk',
-      'Tap each finger to thumb one-by-one, both hands, 3 rounds.'
+      tr(es: 'Caminata de piano', en: 'Piano walk'),
+      tr(
+        es: 'Toca el pulgar con cada dedo, uno a uno, con ambas manos. 3 rondas.',
+        en: 'Tap each finger to thumb one-by-one, both hands, 3 rounds.',
+      ),
     ),
   ];
 
@@ -72,7 +92,7 @@ class HealthScreen extends ConsumerWidget {
                 child: Column(
                   children: [
                     Text(
-                      '⏱️ Practice Session',
+                      AppStrings.practiceSession,
                       style: theme.textTheme.titleMedium
                           ?.copyWith(fontWeight: FontWeight.bold),
                     ),
@@ -124,19 +144,19 @@ class HealthScreen extends ConsumerWidget {
                   crossAxisAlignment: CrossAxisAlignment.start,
                   children: [
                     Text(
-                      '🔔 Break Reminders',
+                      AppStrings.breakReminders,
                       style: theme.textTheme.titleMedium
                           ?.copyWith(fontWeight: FontWeight.bold),
                     ),
                     SwitchListTile(
                       contentPadding: EdgeInsets.zero,
-                      title: const Text('Enable reminders'),
-                      subtitle: const Text('Get notified to rest your hands'),
+                      title: Text(AppStrings.enableReminders),
+                      subtitle: Text(AppStrings.enableRemindersSub),
                       value: state.remindersEnabled,
                       onChanged: (v) => vm.toggleReminders(enabled: v),
                     ),
                     if (state.remindersEnabled) ...[
-                      Text('Remind every:', style: theme.textTheme.bodyMedium),
+                      Text(AppStrings.remindEvery, style: theme.textTheme.bodyMedium),
                       const SizedBox(height: 8),
                       Wrap(
                         spacing: 8,
@@ -165,7 +185,7 @@ class HealthScreen extends ConsumerWidget {
                   crossAxisAlignment: CrossAxisAlignment.start,
                   children: [
                     Text(
-                      '🤸 Warm-up Exercises',
+                      AppStrings.warmupExercises,
                       style: theme.textTheme.titleMedium
                           ?.copyWith(fontWeight: FontWeight.bold),
                     ),

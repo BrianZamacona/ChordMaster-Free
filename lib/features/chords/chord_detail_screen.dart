@@ -6,6 +6,7 @@ import 'package:go_router/go_router.dart';
 
 import '../../core/constants/app_strings.dart';
 import '../../core/constants/chord_metadata.dart';
+import '../../core/constants/interval_texts.dart';
 import '../../core/constants/music_theory.dart';
 import '../../core/constants/scale_names.dart';
 import '../../core/widgets/chord_diagram.dart';
@@ -363,7 +364,7 @@ class _ChordDetailScreenState extends ConsumerState<ChordDetailScreen> {
         .map((interval) => intervalSymbols[interval] ?? '$interval semitones')
         .join(' • ');
     final names = chord.intervals
-        .map((interval) => intervalNames[interval] ?? '$interval semitones')
+        .map(intervalLongName)
         .join(' — ');
     return '$symbols\n$names';
   }

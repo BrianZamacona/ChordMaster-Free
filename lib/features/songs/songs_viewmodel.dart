@@ -1,12 +1,14 @@
 import 'package:flutter/foundation.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 
+import '../../core/i18n/tr.dart';
 import '../../models/song.dart';
 import '../../services/achievement_service.dart';
 import '../../services/storage_service.dart';
 
 /// Hardcoded song catalogue for ChordMaster Free.
-const List<Song> _catalogue = [
+/// Las notas y el rasgueo se leen en el idioma actual (por eso es getter).
+List<Song> get _catalogue => [
   Song(
     id: 'knocking-on-heavens-door',
     title: "Knockin' on Heaven's Door",
@@ -16,8 +18,10 @@ const List<Song> _catalogue = [
     strummingPattern: 'D DU UDU',
     tempo: 72,
     timeSignature: '4/4',
-    notes:
-        'Great beginner song. Focus on smooth chord transitions between G and D.',
+    notes: tr(
+      es: 'Gran canción para empezar. Concéntrate en cambiar con fluidez entre G y D.',
+      en: 'Great beginner song. Focus on smooth chord transitions between G and D.',
+    ),
   ),
   Song(
     id: 'wonderwall',
@@ -29,8 +33,10 @@ const List<Song> _catalogue = [
     tempo: 87,
     timeSignature: '4/4',
     difficulty: 2,
-    notes:
-        'Use a capo on the 2nd fret. The strumming pattern is the key challenge.',
+    notes: tr(
+      es: 'Usa cejilla (capo) en el traste 2. El reto principal es el patrón de rasgueo.',
+      en: 'Use a capo on the 2nd fret. The strumming pattern is the key challenge.',
+    ),
   ),
   Song(
     id: 'hotel-california',
@@ -42,7 +48,10 @@ const List<Song> _catalogue = [
     tempo: 75,
     timeSignature: '4/4',
     difficulty: 4,
-    notes: 'Iconic intro fingerpicking. Master the barre chord transitions.',
+    notes: tr(
+      es: 'Intro icónica con fingerpicking. Domina los cambios de acordes con cejilla.',
+      en: 'Iconic intro fingerpicking. Master the barre chord transitions.',
+    ),
   ),
   Song(
     id: 'house-of-the-rising-sun',
@@ -50,11 +59,14 @@ const List<Song> _catalogue = [
     artist: 'The Animals',
     genre: 'Folk / Blues',
     chordProgression: ['Am', 'C', 'D', 'F', 'Am', 'E', 'Am', 'E'],
-    strummingPattern: 'Fingerpick (arpeggio)',
+    strummingPattern: tr(es: 'Fingerpicking (arpegio)', en: 'Fingerpick (arpeggio)'),
     tempo: 98,
     timeSignature: '6/8',
     difficulty: 3,
-    notes: 'Arpeggio picking pattern: bass note + 2 treble notes per beat.',
+    notes: tr(
+      es: 'Patrón de arpegio: nota grave + 2 notas agudas por tiempo.',
+      en: 'Arpeggio picking pattern: bass note + 2 treble notes per beat.',
+    ),
   ),
   Song(
     id: 'let-it-be',
@@ -65,7 +77,10 @@ const List<Song> _catalogue = [
     strummingPattern: 'D DU DU',
     tempo: 75,
     timeSignature: '4/4',
-    notes: 'Classic I-V-vi-IV progression in C major. Perfect for beginners.',
+    notes: tr(
+      es: 'La clásica progresión I-V-vi-IV en C mayor. Perfecta para empezar.',
+      en: 'Classic I-V-vi-IV progression in C major. Perfect for beginners.',
+    ),
   ),
   Song(
     id: 'wish-you-were-here',
@@ -73,12 +88,14 @@ const List<Song> _catalogue = [
     artist: 'Pink Floyd',
     genre: 'Rock',
     chordProgression: ['G', 'Em', 'Am', 'Em', 'G'],
-    strummingPattern: 'Fingerpick',
+    strummingPattern: tr(es: 'Fingerpicking', en: 'Fingerpick'),
     tempo: 62,
     timeSignature: '4/4',
     difficulty: 3,
-    notes:
-        'Intro uses fingerpicking. Great for developing right-hand technique.',
+    notes: tr(
+      es: 'La intro es con fingerpicking. Ideal para desarrollar la mano derecha.',
+      en: 'Intro uses fingerpicking. Great for developing right-hand technique.',
+    ),
   ),
   Song(
     id: 'brown-eyed-girl',
@@ -90,8 +107,10 @@ const List<Song> _catalogue = [
     tempo: 150,
     timeSignature: '4/4',
     difficulty: 2,
-    notes:
-        'Upbeat strumming required. Practice at 120 BPM before going full speed.',
+    notes: tr(
+      es: 'Rasgueo enérgico. Practica a 120 BPM antes de ir a velocidad completa.',
+      en: 'Upbeat strumming required. Practice at 120 BPM before going full speed.',
+    ),
   ),
   Song(
     id: 'stairway-to-heaven',
@@ -99,11 +118,14 @@ const List<Song> _catalogue = [
     artist: 'Led Zeppelin',
     genre: 'Rock',
     chordProgression: ['Am', 'G#', 'C', 'G', 'Fmaj7', 'G', 'Am'],
-    strummingPattern: 'Fingerpick + strum',
+    strummingPattern: tr(es: 'Fingerpicking + rasgueo', en: 'Fingerpick + strum'),
     tempo: 78,
     timeSignature: '4/4',
     difficulty: 5,
-    notes: 'Iconic fingerpicking intro. Transitions to a full rock ending.',
+    notes: tr(
+      es: 'Intro icónica con fingerpicking que termina en un final de rock completo.',
+      en: 'Iconic fingerpicking intro. Transitions to a full rock ending.',
+    ),
   ),
   Song(
     id: 'country-roads',
@@ -114,8 +136,10 @@ const List<Song> _catalogue = [
     strummingPattern: 'D DU DU',
     tempo: 82,
     timeSignature: '4/4',
-    notes:
-        'Capo 2nd fret to play in the original key. Simple, friendly chord shapes.',
+    notes: tr(
+      es: 'Capo en el traste 2 para el tono original. Formas de acorde sencillas.',
+      en: 'Capo 2nd fret to play in the original key. Simple, friendly chord shapes.',
+    ),
   ),
   Song(
     id: 'smells-like-teen-spirit',
@@ -123,12 +147,14 @@ const List<Song> _catalogue = [
     artist: 'Nirvana',
     genre: 'Grunge / Rock',
     chordProgression: ['F', 'Bb', 'Ab', 'Db'],
-    strummingPattern: 'Power chord DDUUDU',
+    strummingPattern: tr(es: 'Power chord DDUUDU', en: 'Power chord DDUUDU'),
     tempo: 117,
     timeSignature: '4/4',
     difficulty: 3,
-    notes:
-        'Power chords with palm muting. Iconic riff uses F5, Bb5, Ab5, Db5.',
+    notes: tr(
+      es: 'Power chords con palm muting. El riff usa F5, Bb5, Ab5 y Db5.',
+      en: 'Power chords with palm muting. Iconic riff uses F5, Bb5, Ab5, Db5.',
+    ),
   ),
 ];
 

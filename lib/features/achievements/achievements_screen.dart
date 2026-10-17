@@ -85,7 +85,7 @@ class _ProgressHeader extends StatelessWidget {
               crossAxisAlignment: CrossAxisAlignment.start,
               children: [
                 Text(
-                  '$unlocked / $total Unlocked',
+                  AppStrings.achievementsUnlocked(unlocked, total),
                   style: theme.textTheme.titleMedium
                       ?.copyWith(fontWeight: FontWeight.bold),
                 ),
@@ -158,13 +158,13 @@ class _AchievementCard extends StatelessWidget {
                   crossAxisAlignment: CrossAxisAlignment.start,
                   children: [
                     Text(
-                      definition.title,
+                      definition.title.text,
                       style: theme.textTheme.titleSmall
                           ?.copyWith(fontWeight: FontWeight.bold),
                     ),
                     const SizedBox(height: 4),
                     Text(
-                      definition.description,
+                      definition.description.text,
                       style: theme.textTheme.bodySmall?.copyWith(
                         color: theme.colorScheme.onSurface.withAlpha(180),
                       ),
@@ -172,7 +172,7 @@ class _AchievementCard extends StatelessWidget {
                     if (isUnlocked && dateLabel != null) ...[
                       const SizedBox(height: 6),
                       Text(
-                        '✅ Unlocked $dateLabel',
+                        AppStrings.unlockedOn(dateLabel),
                         style: theme.textTheme.labelSmall?.copyWith(
                           color: context.palette.success,
                           fontWeight: FontWeight.w600,

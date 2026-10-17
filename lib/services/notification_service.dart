@@ -2,6 +2,7 @@
 import 'dart:io' show Platform;
 import 'package:flutter/foundation.dart';
 import 'package:flutter_local_notifications/flutter_local_notifications.dart';
+import '../core/constants/app_strings.dart';
 
 /// Servicio singleton que gestiona las notificaciones locales para ChordMaster Free.
 class NotificationService {
@@ -88,7 +89,7 @@ class NotificationService {
       final repeatInterval = _durationToRepeatInterval(interval);
       await _notifications.periodicallyShow(
         id: _healthReminderId,
-        title: 'ChordMaster Reminder',
+        title: AppStrings.reminderTitle,
         body: 'Time for a break! Stretch your hands 🎸',
         repeatInterval: repeatInterval,
         notificationDetails: notificationDetails,

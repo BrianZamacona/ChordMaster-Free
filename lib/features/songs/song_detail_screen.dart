@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 
+import '../../core/constants/app_strings.dart';
 import 'songs_viewmodel.dart';
 
 /// Detail screen for a single song.
@@ -24,14 +25,6 @@ class _SongDetailScreenState extends ConsumerState<SongDetailScreen> {
     });
   }
 
-  static const _difficultyLabels = [
-    '',
-    'Beginner',
-    'Easy',
-    'Intermediate',
-    'Advanced',
-    'Expert',
-  ];
 
   @override
   Widget build(BuildContext context) {
@@ -40,8 +33,8 @@ class _SongDetailScreenState extends ConsumerState<SongDetailScreen> {
 
     if (song == null) {
       return Scaffold(
-        appBar: AppBar(title: const Text('Song')),
-        body: const Center(child: Text('Song not found.')),
+        appBar: AppBar(title: Text(AppStrings.songTitle)),
+        body: Center(child: Text(AppStrings.songNotFound)),
       );
     }
 
@@ -106,7 +99,7 @@ class _SongDetailScreenState extends ConsumerState<SongDetailScreen> {
                     icon: Icons.music_note),
                 const SizedBox(width: 8),
                 _InfoChip(
-                    label: _difficultyLabels[song.difficulty.clamp(1, 5)],
+                    label: AppStrings.songDifficulty[song.difficulty.clamp(1, 5)],
                     icon: Icons.bar_chart),
               ],
             ),
@@ -114,7 +107,7 @@ class _SongDetailScreenState extends ConsumerState<SongDetailScreen> {
 
             // Chord Progression
             _SectionCard(
-              title: '🎸 Chord Progression',
+              title: AppStrings.songChords,
               child: Wrap(
                 spacing: 8,
                 runSpacing: 8,
@@ -133,7 +126,7 @@ class _SongDetailScreenState extends ConsumerState<SongDetailScreen> {
 
             // Strumming Pattern
             _SectionCard(
-              title: '🎼 Strumming Pattern',
+              title: AppStrings.songStrumming,
               child: Container(
                 padding: const EdgeInsets.all(12),
                 decoration: BoxDecoration(
@@ -155,7 +148,7 @@ class _SongDetailScreenState extends ConsumerState<SongDetailScreen> {
             // Practice Notes
             if (song.notes.isNotEmpty)
               _SectionCard(
-                title: '📝 Practice Notes',
+                title: AppStrings.songNotes,
                 child: Text(song.notes, style: theme.textTheme.bodyMedium),
               ),
           ],

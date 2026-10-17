@@ -2,6 +2,7 @@ import 'package:flutter/foundation.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 
 import '../core/errors/failures.dart';
+import '../core/i18n/tr.dart';
 import 'storage_service.dart';
 
 /// Riverpod provider that exposes the [AchievementService] singleton.
@@ -22,10 +23,10 @@ class AchievementDefinition {
   final String id;
 
   /// Short display title shown in the UI.
-  final String title;
+  final LocalizedText title;
 
   /// Sentence describing how to earn the achievement.
-  final String description;
+  final LocalizedText description;
 
   /// Emoji icon that represents the achievement.
   final String emoji;
@@ -67,62 +68,92 @@ class AchievementService {
   static const List<AchievementDefinition> allAchievements = [
     AchievementDefinition(
       id: 'first_chord',
-      title: 'First Chord',
-      description: 'View your first chord diagram.',
+      title: LocalizedText(es: 'Primer acorde', en: 'First Chord'),
+      description: LocalizedText(
+        es: 'Mira tu primer diagrama de acorde.',
+        en: 'View your first chord diagram.',
+      ),
       emoji: '🎸',
     ),
     AchievementDefinition(
       id: 'tuned_up',
-      title: 'Tuned Up',
-      description: 'Use the chromatic tuner for the first time.',
+      title: LocalizedText(es: 'Afinado', en: 'Tuned Up'),
+      description: LocalizedText(
+        es: 'Usa el afinador cromático por primera vez.',
+        en: 'Use the chromatic tuner for the first time.',
+      ),
       emoji: '🎵',
     ),
     AchievementDefinition(
       id: 'seven_day_streak',
-      title: '7-Day Streak',
-      description: 'Practice on 7 consecutive days.',
+      title: LocalizedText(es: 'Racha de 7 días', en: '7-Day Streak'),
+      description: LocalizedText(
+        es: 'Practica 7 días seguidos.',
+        en: 'Practice on 7 consecutive days.',
+      ),
       emoji: '🔥',
     ),
     AchievementDefinition(
       id: 'scale_explorer',
-      title: 'Scale Explorer',
-      description: 'View 10 different scales.',
+      title: LocalizedText(es: 'Explorador de escalas', en: 'Scale Explorer'),
+      description: LocalizedText(
+        es: 'Mira 10 escalas distintas.',
+        en: 'View 10 different scales.',
+      ),
       emoji: '🗺️',
     ),
     AchievementDefinition(
       id: 'rhythm_master',
-      title: 'Rhythm Master',
-      description: 'Score 90% or higher in a rhythm game.',
+      title: LocalizedText(es: 'Maestro del ritmo', en: 'Rhythm Master'),
+      description: LocalizedText(
+        es: 'Logra 90% o más en un juego de ritmo.',
+        en: 'Score 90% or higher in a rhythm game.',
+      ),
       emoji: '🥁',
     ),
     AchievementDefinition(
       id: 'ear_wizard',
-      title: 'Ear Wizard',
-      description: 'Complete 20 ear training exercises.',
+      title: LocalizedText(es: 'Oído mágico', en: 'Ear Wizard'),
+      description: LocalizedText(
+        es: 'Completa 20 ejercicios de oído.',
+        en: 'Complete 20 ear training exercises.',
+      ),
       emoji: '👂',
     ),
     AchievementDefinition(
       id: 'composer',
-      title: 'Composer',
-      description: 'Generate 5 chord progressions.',
+      title: LocalizedText(es: 'Compositor', en: 'Composer'),
+      description: LocalizedText(
+        es: 'Genera 5 progresiones de acordes.',
+        en: 'Generate 5 chord progressions.',
+      ),
       emoji: '🎼',
     ),
     AchievementDefinition(
       id: 'community_member',
-      title: 'Community Member',
-      description: 'Post in the community for the first time.',
+      title: LocalizedText(es: 'Miembro de la comunidad', en: 'Community Member'),
+      description: LocalizedText(
+        es: 'Publica en la comunidad por primera vez.',
+        en: 'Post in the community for the first time.',
+      ),
       emoji: '🤝',
     ),
     AchievementDefinition(
       id: 'health_conscious',
-      title: 'Health Conscious',
-      description: 'Enable health reminders to protect your hands.',
+      title: LocalizedText(es: 'Manos sanas', en: 'Health Conscious'),
+      description: LocalizedText(
+        es: 'Activa los recordatorios para cuidar tus manos.',
+        en: 'Enable health reminders to protect your hands.',
+      ),
       emoji: '💪',
     ),
     AchievementDefinition(
       id: 'song_learner',
-      title: 'Song Learner',
-      description: 'View 5 different songs.',
+      title: LocalizedText(es: 'Aprendiz de canciones', en: 'Song Learner'),
+      description: LocalizedText(
+        es: 'Mira 5 canciones distintas.',
+        en: 'View 5 different songs.',
+      ),
       emoji: '🎤',
     ),
   ];

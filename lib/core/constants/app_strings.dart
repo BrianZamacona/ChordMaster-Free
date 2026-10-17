@@ -410,6 +410,81 @@ class AppStrings {
     en: 'Remember to warm up before playing.',
   );
 
+  // ── Practicar y progreso ───────────────────────────────────────────────────
+
+  static String get statTotal => tr(es: 'Hechos', en: 'Total done');
+  static String get statAccuracy => tr(es: 'Precisión', en: 'Accuracy');
+  static String get statTaps => tr(es: 'Toques', en: 'Taps');
+  static String get statBest => tr(es: 'Mejor', en: 'Best');
+  static String get chooseInterval =>
+      tr(es: 'Elige el intervalo:', en: 'Choose the interval:');
+  static String semitonesCount(int n) => n == 1
+      ? tr(es: '1 semitono', en: '1 semitone')
+      : tr(es: '$n semitonos', en: '$n semitones');
+  static String itWas(String name, String short) =>
+      tr(es: 'Era: $name ($short)', en: 'It was: $name ($short)');
+  static String get earWizardUnlocked => tr(
+    es: '👂 ¡Logro Oído mágico desbloqueado!',
+    en: '👂 Ear Wizard achievement unlocked!',
+  );
+  static String get rhythmMasterUnlocked => tr(
+    es: '🥁 ¡Logro Maestro del ritmo desbloqueado!',
+    en: '🥁 Rhythm Master achievement unlocked!',
+  );
+  static String lastTaps(int n) =>
+      tr(es: 'Últimos $n toques:', en: 'Last $n taps:');
+  static String get micRequired => tr(
+    es: 'El afinador necesita el micrófono. Concede el permiso para usarlo.',
+    en: 'Microphone access is required to use the tuner. Please grant permission.',
+  );
+  static String get referencePitch =>
+      tr(es: 'Tono de referencia', en: 'Reference pitch');
+  static String get standardTuning =>
+      tr(es: 'Afinación estándar', en: 'Standard tuning reference');
+  static String get subQuarter => tr(es: '♩ Negras', en: '♩ Quarter');
+  static String get subEighth => tr(es: '♪ Corcheas', en: '♪ Eighth');
+  static String get subSixteenth => tr(es: '♬ Semicorcheas', en: '♬ Sixteenth');
+  static String get subTriplet => tr(es: '♪♪♪ Tresillos', en: '♪♪♪ Triplet');
+  static String achievementsUnlocked(int n, int total) =>
+      tr(es: '$n / $total desbloqueados', en: '$n / $total unlocked');
+  static String unlockedOn(String date) =>
+      tr(es: '✅ Desbloqueado el $date', en: '✅ Unlocked $date');
+  static String get homeModules => tr(es: 'Módulos', en: 'Modules');
+  static String get dailyChallenge => tr(es: 'Reto del día', en: 'Daily challenge');
+  static String get songTitle => tr(es: 'Canción', en: 'Song');
+  static String get songNotFound =>
+      tr(es: 'Canción no encontrada.', en: 'Song not found.');
+  static String get songChords =>
+      tr(es: '🎸 Progresión de acordes', en: '🎸 Chord progression');
+  static String get songStrumming =>
+      tr(es: '🎼 Patrón de rasgueo', en: '🎼 Strumming pattern');
+  static String get songNotes => tr(es: '📝 Notas de práctica', en: '📝 Practice notes');
+  static List<String> get songDifficulty => [
+    '',
+    tr(es: 'Principiante', en: 'Beginner'),
+    tr(es: 'Fácil', en: 'Easy'),
+    tr(es: 'Intermedia', en: 'Intermediate'),
+    tr(es: 'Avanzada', en: 'Advanced'),
+    tr(es: 'Experta', en: 'Expert'),
+  ];
+  static String get practiceSession =>
+      tr(es: '⏱️ Sesión de práctica', en: '⏱️ Practice session');
+  static String get breakReminders =>
+      tr(es: '🔔 Recordatorios de descanso', en: '🔔 Break reminders');
+  static String get enableReminders =>
+      tr(es: 'Activar recordatorios', en: 'Enable reminders');
+  static String get enableRemindersSub => tr(
+    es: 'Te avisa para que descanses las manos',
+    en: 'Get notified to rest your hands',
+  );
+  static String get remindEvery => tr(es: 'Avisar cada:', en: 'Remind every:');
+  static String get warmupExercises =>
+      tr(es: '🤸 Ejercicios de calentamiento', en: '🤸 Warm-up exercises');
+  static String waitSeconds(int s) =>
+      tr(es: 'Espera ${s}s…', en: 'Wait ${s}s…');
+  static String get reminderTitle =>
+      tr(es: 'Recordatorio de ChordMaster', en: 'ChordMaster reminder');
+
   // ── Búsqueda y vacíos ──────────────────────────────────────────────────────
 
   static String get searchHint => tr(es: 'Buscar…', en: 'Search…');

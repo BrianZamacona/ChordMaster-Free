@@ -132,7 +132,7 @@ class _PermissionDeniedView extends StatelessWidget {
               Icon(Icons.mic_off, color: context.palette.error, size: 64),
               const SizedBox(height: 16),
               Text(
-                'Microphone access is required to use the tuner. Please grant permission.',
+                AppStrings.micRequired,
                 textAlign: TextAlign.center,
                 style: TextStyle(color: context.palette.textSecondary, fontSize: 16),
               ),
@@ -304,7 +304,7 @@ class _ReferenceChips extends StatelessWidget {
         crossAxisAlignment: CrossAxisAlignment.start,
         children: [
           Text(
-            'Reference Pitch',
+            AppStrings.referencePitch,
             style: TextStyle(color: context.palette.textSecondary, fontSize: 14),
           ),
           const SizedBox(height: 8),
@@ -338,7 +338,7 @@ class _GuitarStringsRow extends StatelessWidget {
         crossAxisAlignment: CrossAxisAlignment.start,
         children: [
           Text(
-            'Standard Tuning Reference',
+            AppStrings.standardTuning,
             style: TextStyle(color: context.palette.textSecondary, fontSize: 14),
           ),
           const SizedBox(height: 8),

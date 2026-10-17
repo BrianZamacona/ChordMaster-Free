@@ -160,12 +160,12 @@ class RhythmGameScreen extends ConsumerWidget {
                   child: Row(
                     mainAxisAlignment: MainAxisAlignment.spaceAround,
                     children: [
-                      _ScoreItem(label: 'Taps', value: '${state.tapsCount}'),
+                      _ScoreItem(label: AppStrings.statTaps, value: '${state.tapsCount}'),
                       _ScoreItem(
-                          label: 'Accuracy',
+                          label: AppStrings.statAccuracy,
                           value: '${state.accuracy}%',
                           highlight: state.accuracy >= 90),
-                      _ScoreItem(label: 'Best', value: '${state.bestScore}%'),
+                      _ScoreItem(label: AppStrings.statBest, value: '${state.bestScore}%'),
                     ],
                   ),
                 ),
@@ -175,14 +175,14 @@ class RhythmGameScreen extends ConsumerWidget {
               const SizedBox(height: 8),
               if (state.accuracy >= 90)
                 Text(
-                  '🥁 Rhythm Master achievement unlocked!',
+                  AppStrings.rhythmMasterUnlocked,
                   style:
                       theme.textTheme.bodySmall?.copyWith(color: context.palette.accent),
                   textAlign: TextAlign.center,
                 ),
               const SizedBox(height: 8),
               Text(
-                'Last ${state.tapResults.take(10).length} taps:',
+                AppStrings.lastTaps(state.tapResults.take(10).length),
                 style: theme.textTheme.labelSmall,
               ),
               const SizedBox(height: 4),

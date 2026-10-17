@@ -1,6 +1,7 @@
 import 'package:flutter/foundation.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 
+import '../../core/i18n/tr.dart';
 import '../../services/storage_service.dart';
 
 /// Immutable state for [HomeViewModel].
@@ -9,7 +10,7 @@ class HomeState {
   const HomeState({
     this.streak = 0,
     this.lastModule = '',
-    this.dailyChallenge = '',
+    this.dailyChallengeIndex = -1,
     this.recentAchievements = const [],
     this.isLoading = true,
   });
@@ -19,8 +20,12 @@ class HomeState {
   /// Route path of the last visited module.
   final String lastModule;
 
-  /// Daily challenge description, seeded by day-of-year.
-  final String dailyChallenge;
+  /// Reto del día (índice en [dailyChallenges]), según el día del año;
+  /// -1 = aún sin calcular. El texto se lee al construir, en el idioma actual.
+  final int dailyChallengeIndex;
+
+  String get dailyChallenge =>
+      dailyChallengeIndex < 0 ? '' : dailyChallenges[dailyChallengeIndex].text;
 
   /// List of recently unlocked achievement IDs.
   final List<String> recentAchievements;
@@ -31,13 +36,13 @@ class HomeState {
   HomeState copyWith({
     int? streak,
     String? lastModule,
-    String? dailyChallenge,
+    int? dailyChallengeIndex,
     List<String>? recentAchievements,
     bool? isLoading,
   }) => HomeState(
       streak: streak ?? this.streak,
       lastModule: lastModule ?? this.lastModule,
-      dailyChallenge: dailyChallenge ?? this.dailyChallenge,
+      dailyChallengeIndex: dailyChallengeIndex ?? this.dailyChallengeIndex,
       recentAchievements: recentAchievements ?? this.recentAchievements,
       isLoading: isLoading ?? this.isLoading,
     );
@@ -60,39 +65,7 @@ class HomeViewModel extends Notifier<HomeState> {
   static const _keyRecentAchievements = 'recentAchievements';
   static const _keyLastPracticeDate = 'lastPracticeDate';
 
-  static const List<String> _dailyChallenges = [
-    'Learn a new chord today — try a Bm7!',
-    'Practice scales for 10 minutes using the pentatonic minor.',
-    'Play a I–IV–V progression in three different keys.',
-    'Slow down a tricky lick to 60% speed and nail it.',
-    'Learn one mode and name its characteristic note.',
-    'Transcribe a short melody by ear.',
-    'Practice alternate picking for 5 minutes on a single string.',
-    'Learn an open G chord and a G barre chord.',
-    'Play the blues scale in C from memory.',
-    'Try a chord progression using a diminished chord.',
-    'Learn the notes on the low E string up to the 12th fret.',
-    'Practice a song you know at 120% speed.',
-    'Identify three different chord types by ear in a song you like.',
-    'Practice hammer-ons and pull-offs for 10 minutes.',
-    'Learn two new chord voicings for A minor.',
-    'Improvise freely over a drone note for 5 minutes.',
-    'Learn the interval patterns of a major scale.',
-    'Practice switching between C, G and D without stopping.',
-    'Find three ways to play a G major chord on the fretboard.',
-    'Learn a song intro using power chords.',
-    'Play through the circle of fifths naming each key.',
-    'Practice vibrato on each string for 2 minutes.',
-    'Compose a 4-bar chord progression and play it repeatedly.',
-    'Learn the dorian mode and compare it to natural minor.',
-    'Practice palm muting on an E minor riff.',
-    'Tune your guitar by ear using harmonics.',
-    'Learn a diminished chord and where it resolves.',
-    'Identify the tonic, subdominant and dominant in C major.',
-    'Try playing a familiar song in a new key.',
-    'Practice a chord progression with a suspended chord.',
-    'Learn the Lydian mode and its raised 4th character.',
-  ];
+
 
   /// Loads persisted data and calculates the daily challenge.
   Future<void> loadData() async {
@@ -115,13 +88,12 @@ class HomeViewModel extends Notifier<HomeState> {
       final dayOfYear = DateTime.now().difference(
             DateTime(DateTime.now().year),
           ).inDays %
-          _dailyChallenges.length;
-      final challenge = _dailyChallenges[dayOfYear];
+          dailyChallenges.length;
 
       state = state.copyWith(
         streak: updatedStreak,
         lastModule: lastModule,
-        dailyChallenge: challenge,
+        dailyChallengeIndex: dayOfYear,
         recentAchievements: recentAchievements,
         isLoading: false,
       );
@@ -172,3 +144,131 @@ class HomeViewModel extends Notifier<HomeState> {
     }
   }
 }
+
+/// Retos del día, uno por día del año (en bucle).
+const dailyChallenges = <LocalizedText>[
+  LocalizedText(
+    es: 'Aprende un acorde nuevo hoy: ¡prueba Bm7!',
+    en: 'Learn a new chord today — try a Bm7!',
+  ),
+  LocalizedText(
+    es: 'Practica escalas 10 minutos con la pentatónica menor.',
+    en: 'Practice scales for 10 minutes using the pentatonic minor.',
+  ),
+  LocalizedText(
+    es: 'Toca una progresión I–IV–V en tres tonalidades distintas.',
+    en: 'Play a I–IV–V progression in three different keys.',
+  ),
+  LocalizedText(
+    es: 'Baja un lick difícil al 60% de velocidad y sácalo limpio.',
+    en: 'Slow down a tricky lick to 60% speed and nail it.',
+  ),
+  LocalizedText(
+    es: 'Aprende un modo y nombra su nota característica.',
+    en: 'Learn one mode and name its characteristic note.',
+  ),
+  LocalizedText(
+    es: 'Transcribe de oído una melodía corta.',
+    en: 'Transcribe a short melody by ear.',
+  ),
+  LocalizedText(
+    es: 'Practica púa alterna 5 minutos en una sola cuerda.',
+    en: 'Practice alternate picking for 5 minutes on a single string.',
+  ),
+  LocalizedText(
+    es: 'Aprende un G abierto y un G con cejilla.',
+    en: 'Learn an open G chord and a G barre chord.',
+  ),
+  LocalizedText(
+    es: 'Toca de memoria la escala blues en C.',
+    en: 'Play the blues scale in C from memory.',
+  ),
+  LocalizedText(
+    es: 'Prueba una progresión que use un acorde disminuido.',
+    en: 'Try a chord progression using a diminished chord.',
+  ),
+  LocalizedText(
+    es: 'Aprende las notas de la 6ª cuerda hasta el traste 12.',
+    en: 'Learn the notes on the low E string up to the 12th fret.',
+  ),
+  LocalizedText(
+    es: 'Toca una canción que ya sepas al 120% de velocidad.',
+    en: 'Practice a song you know at 120% speed.',
+  ),
+  LocalizedText(
+    es: 'Identifica de oído tres tipos de acorde en una canción que te guste.',
+    en: 'Identify three different chord types by ear in a song you like.',
+  ),
+  LocalizedText(
+    es: 'Practica hammer-ons y pull-offs durante 10 minutos.',
+    en: 'Practice hammer-ons and pull-offs for 10 minutes.',
+  ),
+  LocalizedText(
+    es: 'Aprende dos voicings nuevos de La menor.',
+    en: 'Learn two new chord voicings for A minor.',
+  ),
+  LocalizedText(
+    es: 'Improvisa libremente 5 minutos sobre una nota pedal.',
+    en: 'Improvise freely over a drone note for 5 minutes.',
+  ),
+  LocalizedText(
+    es: 'Aprende el patrón de intervalos de la escala mayor (T T S T T T S).',
+    en: 'Learn the interval patterns of a major scale.',
+  ),
+  LocalizedText(
+    es: 'Cambia entre C, G y D sin parar.',
+    en: 'Practice switching between C, G and D without stopping.',
+  ),
+  LocalizedText(
+    es: 'Encuentra tres formas de tocar G mayor en el diapasón.',
+    en: 'Find three ways to play a G major chord on the fretboard.',
+  ),
+  LocalizedText(
+    es: 'Aprende la intro de una canción con power chords.',
+    en: 'Learn a song intro using power chords.',
+  ),
+  LocalizedText(
+    es: 'Recorre el círculo de quintas nombrando cada tonalidad.',
+    en: 'Play through the circle of fifths naming each key.',
+  ),
+  LocalizedText(
+    es: 'Practica vibrato en cada cuerda durante 2 minutos.',
+    en: 'Practice vibrato on each string for 2 minutes.',
+  ),
+  LocalizedText(
+    es: 'Compón una progresión de 4 compases y tócala en bucle.',
+    en: 'Compose a 4-bar chord progression and play it repeatedly.',
+  ),
+  LocalizedText(
+    es: 'Aprende el modo dórico y compáralo con la menor natural.',
+    en: 'Learn the dorian mode and compare it to natural minor.',
+  ),
+  LocalizedText(
+    es: 'Practica palm muting en un riff en Mi menor.',
+    en: 'Practice palm muting on an E minor riff.',
+  ),
+  LocalizedText(
+    es: 'Afina la guitarra de oído usando armónicos.',
+    en: 'Tune your guitar by ear using harmonics.',
+  ),
+  LocalizedText(
+    es: 'Aprende un acorde disminuido y hacia dónde resuelve.',
+    en: 'Learn a diminished chord and where it resolves.',
+  ),
+  LocalizedText(
+    es: 'Identifica tónica, subdominante y dominante en C mayor.',
+    en: 'Identify the tonic, subdominant and dominant in C major.',
+  ),
+  LocalizedText(
+    es: 'Toca una canción conocida en otra tonalidad.',
+    en: 'Try playing a familiar song in a new key.',
+  ),
+  LocalizedText(
+    es: 'Practica una progresión con un acorde suspendido.',
+    en: 'Practice a chord progression with a suspended chord.',
+  ),
+  LocalizedText(
+    es: 'Aprende el modo lidio y el carácter de su 4ª aumentada.',
+    en: 'Learn the Lydian mode and its raised 4th character.',
+  ),
+];

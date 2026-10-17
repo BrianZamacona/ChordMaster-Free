@@ -72,10 +72,10 @@ class _MetronomeScreenState extends ConsumerState<MetronomeScreen>
     ];
     final subdivisions = ['quarter', 'eighth', 'sixteenth', 'triplet'];
     final subdivisionLabels = [
-      '♩ Quarter',
-      '♪ Eighth',
-      '♬ Sixteenth',
-      '♪♪♪ Triplet'
+      AppStrings.subQuarter,
+      AppStrings.subEighth,
+      AppStrings.subSixteenth,
+      AppStrings.subTriplet,
     ];
 
     return Scaffold(

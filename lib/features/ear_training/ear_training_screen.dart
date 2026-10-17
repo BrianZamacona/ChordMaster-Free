@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 
 import '../../core/constants/app_strings.dart';
+import '../../core/constants/interval_texts.dart';
 import '../../core/widgets/feature_module_scaffold.dart';
 import '../../models/interval_model.dart';
 import '../../ui/palette.dart';
@@ -47,12 +48,12 @@ class EarTrainingScreen extends ConsumerWidget {
                     label: AppStrings.streak, value: '${state.streak} 🔥'),
                 const SizedBox(width: 8),
                 _StatChip(
-                  label: 'Total Done',
+                  label: AppStrings.statTotal,
                   value: '${state.totalExercisesDone}',
                 ),
                 const SizedBox(width: 8),
                 _StatChip(
-                  label: 'Accuracy',
+                  label: AppStrings.statAccuracy,
                   value: '${(state.accuracy * 100).toStringAsFixed(0)}%',
                 ),
               ],
@@ -102,7 +103,7 @@ class EarTrainingScreen extends ConsumerWidget {
                     ),
                     const SizedBox(height: 8),
                     Text(
-                      '${state.currentInterval.semitones} semitone${state.currentInterval.semitones == 1 ? "" : "s"}',
+                      AppStrings.semitonesCount(state.currentInterval.semitones),
                       style: theme.textTheme.bodySmall?.copyWith(
                         color:
                             theme.colorScheme.onPrimaryContainer.withAlpha(180),
@@ -117,7 +118,7 @@ class EarTrainingScreen extends ConsumerWidget {
             // Answer choices
             if (state.lastAnswerCorrect == null) ...[
               Text(
-                'Choose the interval:',
+                AppStrings.chooseInterval,
                 style: theme.textTheme.titleSmall,
               ),
               const SizedBox(height: 12),
@@ -165,13 +166,19 @@ class EarTrainingScreen extends ConsumerWidget {
                     ),
                     const SizedBox(height: 4),
                     Text(
-                      'It was: ${state.currentInterval.name} (${state.currentInterval.shortName})',
+                      AppStrings.itWas(
+                        intervalLongName(
+                          state.currentInterval.semitones,
+                          fallback: state.currentInterval.name,
+                        ),
+                        state.currentInterval.shortName,
+                      ),
                       style: theme.textTheme.bodyMedium,
                       textAlign: TextAlign.center,
                     ),
                     const SizedBox(height: 4),
                     Text(
-                      '"${state.currentInterval.sound}"',
+                      '"${intervalSound(state.currentInterval.semitones, fallback: state.currentInterval.sound)}"',
                       style: theme.textTheme.bodySmall
                           ?.copyWith(fontStyle: FontStyle.italic),
                       textAlign: TextAlign.center,
@@ -184,7 +191,7 @@ class EarTrainingScreen extends ConsumerWidget {
                 Padding(
                   padding: const EdgeInsets.only(bottom: 8),
                   child: Text(
-                    '👂 Ear Wizard achievement unlocked!',
+                    AppStrings.earWizardUnlocked,
                     style: theme.textTheme.bodySmall
                         ?.copyWith(color: context.palette.accent),
                     textAlign: TextAlign.center,
@@ -267,7 +274,7 @@ class _ChoiceButton extends StatelessWidget {
         mainAxisAlignment: MainAxisAlignment.center,
         children: [
           Text(
-            interval.name,
+            intervalLongName(interval.semitones, fallback: interval.name),
             style: theme.textTheme.labelLarge
                 ?.copyWith(fontWeight: FontWeight.bold),
             textAlign: TextAlign.center,

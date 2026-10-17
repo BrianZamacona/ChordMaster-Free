@@ -96,7 +96,7 @@ class _HomeScreenState extends ConsumerState<HomeScreen>
                     Padding(
                       padding: const EdgeInsets.fromLTRB(16, 20, 16, 8),
                       child: Text(
-                        'Modules',
+                        AppStrings.homeModules,
                         style: theme.textTheme.titleMedium?.copyWith(
                           fontWeight: FontWeight.bold,
                           color: context.palette.textPrimary,
@@ -224,7 +224,7 @@ class _DailyChallengeCard extends StatelessWidget {
                   crossAxisAlignment: CrossAxisAlignment.start,
                   children: [
                     Text(
-                      'Daily Challenge',
+                      AppStrings.dailyChallenge,
                       style: Theme.of(context).textTheme.labelMedium?.copyWith(
                             fontWeight: FontWeight.bold,
                             color: context.palette.onAccent.withValues(alpha: 0.75),

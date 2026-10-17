@@ -120,7 +120,7 @@ class _CommunityScreenState extends ConsumerState<CommunityScreen> {
                     icon: const Icon(Icons.send),
                     label: Text(state.canPost
                         ? AppStrings.post
-                        : 'Wait ${state.rateLimitSecondsLeft}s…'),
+                        : AppStrings.waitSeconds(state.rateLimitSecondsLeft)),
                   ),
                 ],
               ),
