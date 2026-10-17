@@ -11,16 +11,6 @@ const _flats = {'Db': 'C#', 'Eb': 'D#', 'Gb': 'F#', 'Ab': 'G#', 'Bb': 'A#'};
 // Estándar E A D G B e (6ª → 1ª).
 const _openPitch = [4, 9, 2, 7, 11, 4];
 
-/// Digitaciones con notas ajenas por campo. Cada número debe bajar a 0 en la
-/// Fase 2; el test exige el conteo exacto para que la deuda no crezca ni
-/// quede desactualizada al corregirla.
-const knownDataDebt = <String, int>{
-  'fretPositions': 16,
-  'voicings': 12,
-  'advancedInversions': 72,
-};
-
-const _strictFields = ['cagedPositions', 'triadInversions'];
 const _listFields = [
   'cagedPositions',
   'voicings',
@@ -88,26 +78,15 @@ void main() {
       }
     }
 
-    for (final field in _strictFields) {
+    for (final field in ['fretPositions', ..._listFields]) {
+      final found = defects[field] ?? const <String>[];
       expect(
-        defects[field] ?? const <String>[],
+        found,
         isEmpty,
-        reason: '$field debe tener 0 defectos',
-      );
-    }
-    for (final entry in knownDataDebt.entries) {
-      final found = defects[entry.key] ?? const <String>[];
-      expect(
-        found.length,
-        entry.value,
         reason:
-            '${entry.key}: esperado ${entry.value} defectos, hay '
-            '${found.length} (de ${totals[entry.key]}).\n${found.join('\n')}',
+            '$field: ${found.length} defectos de ${totals[field]}.\n'
+            '${found.join('\n')}',
       );
     }
-    // ignore: avoid_print
-    print(
-      'Defectos reales: ${{for (final f in [...knownDataDebt.keys, ..._strictFields]) f: defects[f]?.length ?? 0}}',
-    );
   });
 }
