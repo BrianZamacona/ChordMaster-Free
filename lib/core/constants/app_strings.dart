@@ -370,6 +370,15 @@ class AppStrings {
   static const String familyAlteredHint =
       'Tensiones alteradas (♭9, ♯9, ♯11) para dominantes con más tensión.';
 
+  // ── Escalas ───────────────────────────────────────────────────────────────
+
+  static const String scaleTonic = 'Tónica';
+  static const String scaleSystem = 'Sistema';
+  static const String scaleSystemTitle = 'Sistema de digitación';
+  static const String scaleAllSystems = 'Todos los sistemas';
+  static const String scaleHowItWorks = 'Cómo funciona';
+  static const String scaleNoPositions = 'Sin posiciones para este sistema';
+
   // ── Diagrama ──────────────────────────────────────────────────────────────
 
   static const String legendRoot = 'Raíz';

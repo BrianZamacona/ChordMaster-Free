@@ -2,7 +2,7 @@ import 'package:flutter/material.dart';
 
 import '../../core/constants/app_strings.dart';
 import '../../core/constants/chord_metadata.dart';
-import '../../core/constants/music_theory.dart';
+import '../../core/widgets/selector_pill.dart';
 import '../../domain/theory/chord_families.dart';
 import '../../ui/theme.dart';
 
@@ -38,15 +38,21 @@ class ChordFilterBar extends StatelessWidget {
         padding: const EdgeInsets.symmetric(horizontal: 16),
         child: Row(
           children: [
-            _FilterButton(
+            SelectorPill(
               key: const Key('filter-root'),
               label: AppStrings.filterRoot,
               value: root,
-              onOpen: () => _showRootSheet(context),
+              onOpen: () => showNotePicker(
+                context,
+                title: AppStrings.filterRootTitle,
+                selected: root,
+                onPicked: onRoot,
+                noneLabel: AppStrings.filterAllRoots,
+              ),
               onClear: () => onRoot(null),
             ),
             const SizedBox(width: 8),
-            _FilterButton(
+            SelectorPill(
               key: const Key('filter-type'),
               label: AppStrings.filterType,
               value: type == null ? null : chordTypeLabel(type!),
@@ -54,7 +60,7 @@ class ChordFilterBar extends StatelessWidget {
               onClear: () => onType(null),
             ),
             const SizedBox(width: 8),
-            _FilterButton(
+            SelectorPill(
               key: const Key('filter-tag'),
               label: AppStrings.filterStyle,
               value: tag == null ? null : chordTagLabel(tag!),
@@ -65,77 +71,15 @@ class ChordFilterBar extends StatelessWidget {
         ),
       );
 
-  Future<void> _sheet(
-    BuildContext context,
-    String title,
-    Widget Function(BuildContext sheetContext) body,
-  ) =>
-      showModalBottomSheet<void>(
-        context: context,
-        isScrollControlled: true,
-        showDragHandle: true,
-        // Por encima de la barra inferior del shell.
-        useRootNavigator: true,
-        builder: (sheetContext) => SafeArea(
-          child: ConstrainedBox(
-            constraints: BoxConstraints(
-              maxHeight: MediaQuery.sizeOf(sheetContext).height * 0.8,
-            ),
-            child: SingleChildScrollView(
-              padding: const EdgeInsets.fromLTRB(20, 0, 20, 20),
-              child: Column(
-                crossAxisAlignment: CrossAxisAlignment.start,
-                children: [
-                  Text(title, style: Theme.of(sheetContext).textTheme.titleLarge),
-                  const SizedBox(height: 16),
-                  body(sheetContext),
-                ],
-              ),
-            ),
-          ),
-        ),
-      );
-
   void _pick(BuildContext sheetContext, ValueChanged<String?> onPick, String? v) {
     onPick(v);
     Navigator.of(sheetContext).pop();
   }
 
-  void _showRootSheet(BuildContext context) => _sheet(
+  void _showTypeSheet(BuildContext context) => showSelectorSheet(
         context,
-        AppStrings.filterRootTitle,
-        (sheet) => Column(
-          crossAxisAlignment: CrossAxisAlignment.stretch,
-          children: [
-            GridView.count(
-              crossAxisCount: 6,
-              shrinkWrap: true,
-              physics: const NeverScrollableScrollPhysics(),
-              mainAxisSpacing: 8,
-              crossAxisSpacing: 8,
-              childAspectRatio: 1.1,
-              children: [
-                for (final note in chromaticNotes)
-                  _NoteKey(
-                    note: note,
-                    selected: note == root,
-                    onTap: () => _pick(sheet, onRoot, note),
-                  ),
-              ],
-            ),
-            const SizedBox(height: 12),
-            OutlinedButton(
-              onPressed: () => _pick(sheet, onRoot, null),
-              child: const Text(AppStrings.filterAllRoots),
-            ),
-          ],
-        ),
-      );
-
-  void _showTypeSheet(BuildContext context) => _sheet(
-        context,
-        AppStrings.filterTypeTitle,
-        (sheet) {
+        title: AppStrings.filterTypeTitle,
+        builder: (sheet) {
           final text = Theme.of(sheet).textTheme;
           final p = sheet.palette;
           return Column(
@@ -177,10 +121,10 @@ class ChordFilterBar extends StatelessWidget {
         },
       );
 
-  void _showTagSheet(BuildContext context) => _sheet(
+  void _showTagSheet(BuildContext context) => showSelectorSheet(
         context,
-        AppStrings.filterStyleTitle,
-        (sheet) => Column(
+        title: AppStrings.filterStyleTitle,
+        builder: (sheet) => Column(
           crossAxisAlignment: CrossAxisAlignment.stretch,
           children: [
             Wrap(
@@ -217,106 +161,4 @@ class ChordFilterBar extends StatelessWidget {
         ChordFamily.extended => AppStrings.familyExtendedHint,
         ChordFamily.altered => AppStrings.familyAlteredHint,
       };
-}
-
-class _FilterButton extends StatelessWidget {
-  const _FilterButton({
-    super.key,
-    required this.label,
-    required this.value,
-    required this.onOpen,
-    required this.onClear,
-  });
-
-  final String label;
-  final String? value;
-  final VoidCallback onOpen;
-  final VoidCallback onClear;
-
-  @override
-  Widget build(BuildContext context) {
-    final p = context.palette;
-    final active = value != null;
-    return Material(
-      color: active ? p.accent.withValues(alpha: 0.18) : p.surface,
-      shape: StadiumBorder(side: BorderSide(color: active ? p.accent : p.outline)),
-      clipBehavior: Clip.antiAlias,
-      child: InkWell(
-        onTap: onOpen,
-        child: Padding(
-          padding: const EdgeInsets.fromLTRB(14, 8, 6, 8),
-          child: Row(
-            mainAxisSize: MainAxisSize.min,
-            children: [
-              Text(
-                active ? '$label: $value' : label,
-                style: Theme.of(context).textTheme.labelLarge?.copyWith(
-                      fontWeight: active ? FontWeight.w700 : FontWeight.w400,
-                    ),
-              ),
-              const SizedBox(width: 2),
-              if (active)
-                InkResponse(
-                  onTap: onClear,
-                  radius: 16,
-                  child: Padding(
-                    padding: const EdgeInsets.all(4),
-                    child: Icon(
-                      Icons.close,
-                      size: 16,
-                      semanticLabel: '${AppStrings.filterClear} $label',
-                    ),
-                  ),
-                )
-              else
-                const Padding(
-                  padding: EdgeInsets.all(4),
-                  child: Icon(Icons.expand_more, size: 18),
-                ),
-            ],
-          ),
-        ),
-      ),
-    );
-  }
-}
-
-class _NoteKey extends StatelessWidget {
-  const _NoteKey({
-    required this.note,
-    required this.selected,
-    required this.onTap,
-  });
-
-  final String note;
-  final bool selected;
-  final VoidCallback onTap;
-
-  @override
-  Widget build(BuildContext context) {
-    final p = context.palette;
-    final sharp = note.contains('#');
-    return Material(
-      color: selected ? p.accent : (sharp ? p.background : p.surfaceHigh),
-      shape: RoundedRectangleBorder(
-        borderRadius: BorderRadius.circular(10),
-        side: BorderSide(color: selected ? p.accent : p.outline),
-      ),
-      child: InkWell(
-        key: Key('root-$note'),
-        borderRadius: BorderRadius.circular(10),
-        onTap: onTap,
-        child: Center(
-          child: Text(
-            note,
-            style: musicMono(
-              fontSize: 15,
-              fontWeight: FontWeight.w600,
-              color: selected ? p.onAccent : p.textPrimary,
-            ),
-          ),
-        ),
-      ),
-    );
-  }
 }

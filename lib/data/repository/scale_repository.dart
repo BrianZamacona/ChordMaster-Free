@@ -65,18 +65,17 @@ class ScaleRepository {
     return _modes!;
   }
 
-  Future<List<ResolvedPattern>> getVisiblePatterns({
+  /// Una instancia completa por posición de [scaleId] en la raíz
+  /// [rootSemitone], ordenadas por traste. Nunca recorta una posición: la
+  /// resolución ya la desplaza ±12 entera para que quepa entre 0 y 24.
+  Future<List<ResolvedPattern>> getPositions({
     required String scaleId,
     required int rootSemitone,
-    required int startFret,
-    required int endFret,
-    required int stringCount,
     String? systemFilter,
   }) async {
     await _ensureLoaded();
-    final all = [..._scales!, ..._modes!];
     ScaleDefinition? scale;
-    for (final candidate in all) {
+    for (final candidate in [..._scales!, ..._modes!]) {
       if (candidate.id == scaleId) {
         scale = candidate;
         break;
@@ -86,47 +85,25 @@ class ScaleRepository {
 
     final systemsById = {for (final s in scale.systems) s.id: s};
     final result = <ResolvedPattern>[];
-
     for (final p in scale.positions) {
       if (systemFilter != null && p.systemId != systemFilter) continue;
-      final base = p.resolveCoordinates(rootSemitone);
-      if (base.isEmpty) continue;
-      final baseShift = base.first.fret - p.coordinates.first.fretOffset;
-      final instances = [
-        base,
-        p.resolveShifted(rootSemitone, baseShift - 12),
-        p.resolveShifted(rootSemitone, baseShift + 12),
-      ];
-      for (final instance in instances) {
-        final coords = instance
-            .where((c) => c.string >= 1 && c.string <= stringCount)
-            .where((c) => c.fret >= startFret && c.fret <= endFret)
-            .toList(growable: false);
-        if (coords.isEmpty) continue;
-
-        final minFret =
-            coords.map((c) => c.fret).reduce((a, b) => a < b ? a : b);
-        final maxFret =
-            coords.map((c) => c.fret).reduce((a, b) => a > b ? a : b);
-
-        final resolvedStart = minFret < startFret ? startFret : minFret;
-        final resolvedEnd = maxFret > endFret ? endFret : maxFret;
-        result.add(
-          ResolvedPattern(
-            scaleId: scale.id,
-            scaleName: scale.name,
-            systemId: p.systemId,
-            systemName: systemsById[p.systemId]?.name ?? p.systemId,
-            positionId: p.id,
-            positionName: p.name,
-            startingFret: resolvedStart,
-            endFret: resolvedEnd,
-            coordinates: coords,
-          ),
-        );
-      }
+      final coords = p.resolveCoordinates(rootSemitone);
+      if (coords.isEmpty) continue;
+      final frets = coords.map((c) => c.fret);
+      result.add(
+        ResolvedPattern(
+          scaleId: scale.id,
+          scaleName: scale.name,
+          systemId: p.systemId,
+          systemName: systemsById[p.systemId]?.name ?? p.systemId,
+          positionId: p.id,
+          positionName: p.name,
+          startingFret: frets.reduce((a, b) => a < b ? a : b),
+          endFret: frets.reduce((a, b) => a > b ? a : b),
+          coordinates: coords,
+        ),
+      );
     }
-
     result.sort((a, b) => a.startingFret.compareTo(b.startingFret));
     return result;
   }

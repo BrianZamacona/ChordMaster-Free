@@ -1,5 +1,9 @@
 import 'package:flutter/material.dart';
 
+import '../../../theme.dart';
+
+/// Notas de la escala con su grado (1, b3, 5…), coloreadas como en el
+/// diapasón para que se lea qué nota es cada punto.
 class ScaleInfoPanel extends StatelessWidget {
   const ScaleInfoPanel({
     super.key,
@@ -7,38 +11,44 @@ class ScaleInfoPanel extends StatelessWidget {
     required this.category,
     required this.rootName,
     required this.notes,
-    required this.rangeLabel,
+    required this.degrees,
   });
 
   final String scaleName;
   final String category;
   final String rootName;
   final List<String> notes;
-  final String rangeLabel;
+
+  /// Paralelo a [notes]: etiqueta de intervalo de cada nota.
+  final List<String> degrees;
 
   @override
   Widget build(BuildContext context) {
     final theme = Theme.of(context);
-    final cs = theme.colorScheme;
+    final p = context.palette;
 
     return Card(
       margin: const EdgeInsets.symmetric(horizontal: 16, vertical: 8),
       child: Padding(
-        padding: const EdgeInsets.all(12),
+        padding: const EdgeInsets.all(14),
         child: Column(
           crossAxisAlignment: CrossAxisAlignment.start,
           children: [
-            Text('$rootName $scaleName', style: theme.textTheme.titleMedium?.copyWith(fontWeight: FontWeight.w700)),
+            Text('$rootName $scaleName', style: theme.textTheme.titleMedium),
             const SizedBox(height: 2),
-            Text(category, style: theme.textTheme.bodySmall?.copyWith(color: cs.onSurfaceVariant)),
-            const SizedBox(height: 10),
-            Wrap(
-              spacing: 6,
-              runSpacing: 6,
-              children: notes.map((n) => _NotePill(note: n)).toList(growable: false),
+            Text(
+              category,
+              style: theme.textTheme.bodySmall?.copyWith(color: p.textSecondary),
             ),
-            const SizedBox(height: 10),
-            _InfoRow(icon: Icons.straighten, label: 'Rango', value: rangeLabel),
+            const SizedBox(height: 12),
+            Wrap(
+              spacing: 8,
+              runSpacing: 8,
+              children: [
+                for (var i = 0; i < notes.length; i++)
+                  _NoteDegree(note: notes[i], degree: degrees[i]),
+              ],
+            ),
           ],
         ),
       ),
@@ -46,43 +56,30 @@ class ScaleInfoPanel extends StatelessWidget {
   }
 }
 
-class _NotePill extends StatelessWidget {
-  const _NotePill({required this.note});
+class _NoteDegree extends StatelessWidget {
+  const _NoteDegree({required this.note, required this.degree});
 
   final String note;
+  final String degree;
 
   @override
   Widget build(BuildContext context) {
-    final cs = Theme.of(context).colorScheme;
+    final p = context.palette;
+    final color = p.intervalColor(degree);
     return Container(
-      padding: const EdgeInsets.symmetric(horizontal: 10, vertical: 4),
+      padding: const EdgeInsets.symmetric(horizontal: 10, vertical: 6),
       decoration: BoxDecoration(
-        color: cs.surfaceContainerHighest,
-        borderRadius: BorderRadius.circular(12),
+        color: color.withValues(alpha: 0.14),
+        borderRadius: BorderRadius.circular(10),
+        border: Border.all(color: color.withValues(alpha: 0.6)),
       ),
-      child: Text(note, style: Theme.of(context).textTheme.labelSmall),
-    );
-  }
-}
-
-class _InfoRow extends StatelessWidget {
-  const _InfoRow({required this.icon, required this.label, required this.value});
-
-  final IconData icon;
-  final String label;
-  final String value;
-
-  @override
-  Widget build(BuildContext context) {
-    final cs = Theme.of(context).colorScheme;
-    return Row(
-      children: [
-        Icon(icon, size: 14, color: cs.onSurfaceVariant),
-        const SizedBox(width: 6),
-        Text(label, style: Theme.of(context).textTheme.labelSmall?.copyWith(color: cs.onSurfaceVariant)),
-        const SizedBox(width: 6),
-        Expanded(child: Text(value, style: Theme.of(context).textTheme.labelSmall)),
-      ],
+      child: Column(
+        mainAxisSize: MainAxisSize.min,
+        children: [
+          Text(note, style: musicMono(fontSize: 14, fontWeight: FontWeight.w600, color: p.textPrimary)),
+          Text(degree, style: musicMono(fontSize: 11, color: color)),
+        ],
+      ),
     );
   }
 }

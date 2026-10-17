@@ -133,13 +133,14 @@ class ScalePosition {
           note: c.note.isNotEmpty ? c.note : _noteNames[noteSemitone],
           interval: c.interval.isNotEmpty
               ? c.interval
-              : _intervalName(intervalSemitone),
+              : intervalName(intervalSemitone),
           finger: c.finger,
         );
       }).toList(growable: false);
 }
 
-String _intervalName(int interval) {
+/// Etiqueta de un intervalo en semitonos: `1`, `b3`, `#5`…
+String intervalName(int interval) {
   const names = {
     0: '1',
     1: 'b2',

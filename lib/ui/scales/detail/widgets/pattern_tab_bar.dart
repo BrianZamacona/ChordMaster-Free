@@ -34,7 +34,7 @@ class PatternTabBar extends StatelessWidget {
             const SizedBox(width: 8),
             Expanded(
               child: Text(
-                'Sin patrones en este rango — desliza para ampliar',
+                'Sin posiciones para este sistema',
                 style: theme.textTheme.bodySmall?.copyWith(color: cs.onSurfaceVariant),
               ),
             ),
@@ -49,7 +49,7 @@ class PatternTabBar extends StatelessWidget {
         Padding(
           padding: const EdgeInsets.fromLTRB(16, 4, 16, 4),
           child: Text(
-            '${patterns.length} patrón${patterns.length > 1 ? "es" : ""} disponible${patterns.length > 1 ? "s" : ""}',
+            patterns.length == 1 ? '1 posición' : '${patterns.length} posiciones',
             style: theme.textTheme.labelSmall?.copyWith(color: cs.onSurfaceVariant),
           ),
         ),
@@ -71,7 +71,7 @@ class PatternTabBar extends StatelessWidget {
                     color: active ? cs.secondaryContainer : cs.surfaceContainerHighest,
                     borderRadius: BorderRadius.circular(20),
                     border: active
-                        ? Border.all(color: cs.secondary, width: 1.5)
+                        ? Border.all(color: cs.primary, width: 1.5)
                         : Border.all(color: cs.outlineVariant, width: 0.5),
                   ),
                   child: InkWell(

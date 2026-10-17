@@ -45,23 +45,31 @@ void main() {
     await tester.pumpAndSettle();
   }
 
+  // Los sistemas se eligen en la hoja del botón Sistema.
+  Future<void> openSystems(WidgetTester tester) async {
+    await tester.tap(find.byKey(const Key('scale-system')));
+    await tester.pumpAndSettle();
+  }
+
   for (final id in ['pentatonic_minor', 'pentatonic_major', 'blues_minor']) {
-    testWidgets('$id: chip Pentatonic Box (2NPS), sin Linear', (tester) async {
+    testWidgets('$id: ofrece Pentatonic Box (2NPS), sin Linear', (tester) async {
       await pump(tester, scales.firstWhere((s) => s.id == id));
-      expect(find.widgetWithText(ChoiceChip, 'Pentatonic Box (2NPS)'), findsOneWidget);
-      expect(find.widgetWithText(ChoiceChip, 'Linear (4NPS)'), findsNothing);
+      await openSystems(tester);
+      expect(find.widgetWithText(ListTile, 'Pentatonic Box (2NPS)'), findsOneWidget);
+      expect(find.widgetWithText(ListTile, 'Linear (4NPS)'), findsNothing);
     });
   }
 
   for (final scale in scales.where((s) => s.intervals.length == 7)) {
-    testWidgets('${scale.id}: chip Linear (4NPS)', (tester) async {
+    testWidgets('${scale.id}: ofrece Linear (4NPS)', (tester) async {
       await pump(tester, scale);
-      expect(find.widgetWithText(ChoiceChip, 'Linear (4NPS)'), findsOneWidget);
-      expect(find.widgetWithText(ChoiceChip, 'Pentatonic Box (2NPS)'), findsNothing);
+      await openSystems(tester);
+      expect(find.widgetWithText(ListTile, 'Linear (4NPS)'), findsOneWidget);
+      expect(find.widgetWithText(ListTile, 'Pentatonic Box (2NPS)'), findsNothing);
     });
   }
 
-  // Ventana 0..24: sin recorte por viewport, cada instancia es completa.
+  // Cada posición aparece una vez, completa (nunca recortada) y de la escala.
   const openHighToLow = [4, 11, 7, 2, 9, 4];
   for (final root in [0, 4, 9, 11]) {
     test('raíz $root: todos los sistemas, instancias completas y de la escala',
@@ -74,14 +82,12 @@ void main() {
             for (final p in scale.positions)
               if (p.systemId == sys.id) p.id: p.coordinates.length,
           };
-          final patterns = await repo.getVisiblePatterns(
+          final patterns = await repo.getPositions(
             scaleId: scale.id,
             rootSemitone: root,
-            startFret: 0,
-            endFret: 24,
-            stringCount: 6,
             systemFilter: sys.id,
           );
+          expect(patterns, hasLength(sizes.length), reason: '${scale.id}/${sys.id}');
           final seen = <String>{};
           for (final pat in patterns) {
             seen.add(pat.positionId);

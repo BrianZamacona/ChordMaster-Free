@@ -9,9 +9,6 @@ class ScaleDetailState {
   const ScaleDetailState({
     required this.scale,
     required this.rootSemitone,
-    required this.stringCount,
-    required this.startFret,
-    required this.endFret,
     required this.selectedSystemId,
     required this.visiblePatterns,
     required this.selectedPatternIndex,
@@ -20,16 +17,12 @@ class ScaleDetailState {
 
   final ScaleDefinition scale;
   final int rootSemitone;
-  final int stringCount;
-  final int startFret;
-  final int endFret;
   final String? selectedSystemId;
   final List<ResolvedPattern> visiblePatterns;
   final int selectedPatternIndex;
   final bool isLoading;
 
   String get rootName => _noteNames[rootSemitone];
-  int get viewSpan => endFret - startFret;
   bool get hasPattern => visiblePatterns.isNotEmpty;
 
   ResolvedPattern? get currentPattern => visiblePatterns.isEmpty
@@ -43,9 +36,6 @@ class ScaleDetailState {
 
   ScaleDetailState copyWith({
     int? rootSemitone,
-    int? stringCount,
-    int? startFret,
-    int? endFret,
     String? selectedSystemId,
     List<ResolvedPattern>? visiblePatterns,
     int? selectedPatternIndex,
@@ -55,9 +45,6 @@ class ScaleDetailState {
       ScaleDetailState(
         scale: scale,
         rootSemitone: rootSemitone ?? this.rootSemitone,
-        stringCount: stringCount ?? this.stringCount,
-        startFret: startFret ?? this.startFret,
-        endFret: endFret ?? this.endFret,
         selectedSystemId: clearSystem ? null : selectedSystemId ?? this.selectedSystemId,
         visiblePatterns: visiblePatterns ?? this.visiblePatterns,
         selectedPatternIndex: selectedPatternIndex ?? this.selectedPatternIndex,
@@ -75,9 +62,6 @@ class ScaleDetailNotifier extends Notifier<ScaleDetailState> {
     final initial = ScaleDetailState(
       scale: _arg,
       rootSemitone: 0,
-      stringCount: 6,
-      startFret: 0,
-      endFret: 12,
       selectedSystemId: null,
       visiblePatterns: const [],
       selectedPatternIndex: 0,
@@ -88,8 +72,6 @@ class ScaleDetailNotifier extends Notifier<ScaleDetailState> {
 
   void changeRoot(int semitone) =>
       _load(state.copyWith(rootSemitone: semitone, selectedPatternIndex: 0));
-  void changeStringCount(int n) =>
-      _load(state.copyWith(stringCount: n, selectedPatternIndex: 0));
   void changeSystem(String? systemId) => _load(systemId == null
       ? state.copyWith(clearSystem: true, selectedPatternIndex: 0)
       : state.copyWith(selectedSystemId: systemId, selectedPatternIndex: 0));
@@ -99,19 +81,11 @@ class ScaleDetailNotifier extends Notifier<ScaleDetailState> {
     }
   }
 
-  void changeRange(int start, int end) {
-    if (end - start < 4) return;
-    _load(state.copyWith(startFret: start, endFret: end, selectedPatternIndex: 0));
-  }
-
   Future<void> _load(ScaleDetailState pending) async {
     state = pending.copyWith(isLoading: true);
-    final patterns = await ref.read(scaleRepositoryProvider).getVisiblePatterns(
+    final patterns = await ref.read(scaleRepositoryProvider).getPositions(
           scaleId: pending.scale.id,
           rootSemitone: pending.rootSemitone,
-          startFret: pending.startFret,
-          endFret: pending.endFret,
-          stringCount: pending.stringCount,
           systemFilter: pending.selectedSystemId,
         );
     state = pending.copyWith(

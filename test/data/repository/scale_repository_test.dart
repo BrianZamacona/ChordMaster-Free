@@ -19,7 +19,7 @@ class _FakeAssetBundle extends CachingAssetBundle {
 }
 
 void main() {
-  test('getVisiblePatterns returns resolved pattern in viewport', () async {
+  test('getPositions devuelve una instancia completa por posición', () async {
     const json = '''
 {
   "scales": [
@@ -49,17 +49,15 @@ void main() {
       bundle: _FakeAssetBundle({'assets/data/scales_master.json': json}),
     );
 
-    final patterns = await repository.getVisiblePatterns(
+    final patterns = await repository.getPositions(
       scaleId: 'major',
       rootSemitone: 0,
-      startFret: 0,
-      endFret: 12,
-      stringCount: 6,
     );
 
-    // Instancia base (traste 0) y su octava (traste 12), ambas en la ventana.
-    expect(patterns, hasLength(2));
-    expect(patterns.first.coordinates.first.fret, 0);
-    expect(patterns.last.coordinates.first.fret, 12);
+    // Sin copia a la octava: cada posición aparece una sola vez.
+    expect(patterns, hasLength(1));
+    expect(patterns.single.coordinates.single.fret, 0);
+    expect(patterns.single.startingFret, 0);
+    expect(patterns.single.endFret, 0);
   });
 }
