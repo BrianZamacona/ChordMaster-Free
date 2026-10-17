@@ -6,7 +6,8 @@ import 'package:flutter_riverpod/flutter_riverpod.dart';
 import '../models/note_coordinate.dart';
 import '../models/scale_definition.dart';
 
-final scaleRepositoryProvider = Provider<ScaleRepository>((ref) => ScaleRepository());
+final scaleRepositoryProvider =
+    Provider<ScaleRepository>((ref) => ScaleRepository());
 
 final allScalesProvider = FutureProvider<List<ScaleDefinition>>(
   (ref) => ref.read(scaleRepositoryProvider).getAllScales(),
@@ -88,31 +89,42 @@ class ScaleRepository {
 
     for (final p in scale.positions) {
       if (systemFilter != null && p.systemId != systemFilter) continue;
-      final coords = p
-          .resolveCoordinates(rootSemitone)
-          .where((c) => c.string >= 1 && c.string <= stringCount)
-          .where((c) => c.fret >= startFret && c.fret <= endFret)
-          .toList(growable: false);
-      if (coords.isEmpty) continue;
+      final base = p.resolveCoordinates(rootSemitone);
+      if (base.isEmpty) continue;
+      final baseShift = base.first.fret - p.coordinates.first.fretOffset;
+      final instances = [
+        base,
+        p.resolveShifted(rootSemitone, baseShift - 12),
+        p.resolveShifted(rootSemitone, baseShift + 12),
+      ];
+      for (final instance in instances) {
+        final coords = instance
+            .where((c) => c.string >= 1 && c.string <= stringCount)
+            .where((c) => c.fret >= startFret && c.fret <= endFret)
+            .toList(growable: false);
+        if (coords.isEmpty) continue;
 
-      final minFret = coords.map((c) => c.fret).reduce((a, b) => a < b ? a : b);
-      final maxFret = coords.map((c) => c.fret).reduce((a, b) => a > b ? a : b);
+        final minFret =
+            coords.map((c) => c.fret).reduce((a, b) => a < b ? a : b);
+        final maxFret =
+            coords.map((c) => c.fret).reduce((a, b) => a > b ? a : b);
 
-      final resolvedStart = minFret < startFret ? startFret : minFret;
-      final resolvedEnd = maxFret > endFret ? endFret : maxFret;
-      result.add(
-        ResolvedPattern(
-          scaleId: scale.id,
-          scaleName: scale.name,
-          systemId: p.systemId,
-          systemName: systemsById[p.systemId]?.name ?? p.systemId,
-          positionId: p.id,
-          positionName: p.name,
-          startingFret: resolvedStart,
-          endFret: resolvedEnd,
-          coordinates: coords,
-        ),
-      );
+        final resolvedStart = minFret < startFret ? startFret : minFret;
+        final resolvedEnd = maxFret > endFret ? endFret : maxFret;
+        result.add(
+          ResolvedPattern(
+            scaleId: scale.id,
+            scaleName: scale.name,
+            systemId: p.systemId,
+            systemName: systemsById[p.systemId]?.name ?? p.systemId,
+            positionId: p.id,
+            positionName: p.name,
+            startingFret: resolvedStart,
+            endFret: resolvedEnd,
+            coordinates: coords,
+          ),
+        );
+      }
     }
 
     result.sort((a, b) => a.startingFret.compareTo(b.startingFret));

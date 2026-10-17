@@ -57,7 +57,9 @@ void main() {
       stringCount: 6,
     );
 
-    expect(patterns, hasLength(1));
+    // Instancia base (traste 0) y su octava (traste 12), ambas en la ventana.
+    expect(patterns, hasLength(2));
     expect(patterns.first.coordinates.first.fret, 0);
+    expect(patterns.last.coordinates.first.fret, 12);
   });
 }
