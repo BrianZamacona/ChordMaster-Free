@@ -7,6 +7,7 @@ import '../../../core/widgets/interval_legend.dart';
 import '../../../core/widgets/selector_pill.dart';
 import '../../../data/models/scale_definition.dart';
 import '../../../domain/fingering_systems/fingering_systems_registry.dart';
+import '../../../domain/theory/intervals.dart';
 import '../../../ui/widgets/fretboard_diagram.dart';
 import '../../theme.dart';
 import 'scale_detail_notifier.dart';
@@ -118,7 +119,7 @@ class ScaleDetailScreen extends ConsumerWidget {
             category: scale.category,
             rootName: state.rootName,
             notes: state.scaleNoteNames,
-            degrees: [for (final i in scale.intervals) intervalName(i)],
+            degrees: scaleDegreeLabels(scale.intervals),
           ),
         ],
       ),

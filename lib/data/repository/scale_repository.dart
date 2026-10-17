@@ -87,7 +87,10 @@ class ScaleRepository {
     final result = <ResolvedPattern>[];
     for (final p in scale.positions) {
       if (systemFilter != null && p.systemId != systemFilter) continue;
-      final coords = p.resolveCoordinates(rootSemitone);
+      final coords = p.resolveCoordinates(
+        rootSemitone,
+        scaleIntervals: scale.intervals,
+      );
       if (coords.isEmpty) continue;
       final frets = coords.map((c) => c.fret);
       result.add(

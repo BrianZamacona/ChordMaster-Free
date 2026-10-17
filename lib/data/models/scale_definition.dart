@@ -1,3 +1,4 @@
+import '../../domain/theory/intervals.dart';
 import 'note_coordinate.dart';
 
 const _noteNames = [
@@ -101,26 +102,36 @@ class ScalePosition {
   final List<RootAnchor> rootAnchors;
 
   /// Posición completa dentro de los trastes 0..24; nunca recortada.
-  List<NoteCoordinate> resolveCoordinates(int rootSemitone) {
+  ///
+  /// [scaleIntervals] (los `intervals` de la escala) sirve para nombrar cada
+  /// nota por su grado (`b6` en la menor, no `#5`); ver [spellInterval].
+  List<NoteCoordinate> resolveCoordinates(
+    int rootSemitone, {
+    List<int> scaleIntervals = const [],
+  }) {
     if (coordinates.isEmpty) return const [];
     var shift = rootSemitone % 12;
     final offsets = coordinates.map((c) => c.fretOffset);
     if (offsets.reduce((a, b) => a > b ? a : b) + shift > maxFret) shift -= 12;
     if (offsets.reduce((a, b) => a < b ? a : b) + shift < 0) shift += 12;
-    return resolveShifted(rootSemitone, shift);
+    return resolveShifted(rootSemitone, shift, scaleIntervals: scaleIntervals);
   }
 
   /// Instancia con desplazamiento absoluto [shift]; vacía si no cabe en 0..24.
-  List<NoteCoordinate> resolveShifted(int rootSemitone, int shift) {
+  List<NoteCoordinate> resolveShifted(
+    int rootSemitone,
+    int shift, {
+    List<int> scaleIntervals = const [],
+  }) {
     for (final c in coordinates) {
       final fret = c.fretOffset + shift;
       if (fret < 0 || fret > maxFret) return const [];
     }
-    return _resolveWithShift(rootSemitone, shift);
+    return _resolveWithShift(rootSemitone, shift, scaleIntervals);
   }
 
   List<NoteCoordinate> _resolveWithShift(
-          int rootSemitone, int semitoneOffset) =>
+          int rootSemitone, int semitoneOffset, List<int> scaleIntervals) =>
       coordinates.map((c) {
         final fret = c.fretOffset + semitoneOffset;
         final open = _standardTuningHighToLow[(c.string - 1).clamp(0, 5)];
@@ -133,30 +144,12 @@ class ScalePosition {
           note: c.note.isNotEmpty ? c.note : _noteNames[noteSemitone],
           interval: c.interval.isNotEmpty
               ? c.interval
-              : intervalName(intervalSemitone),
+              : spellInterval(intervalSemitone, scaleIntervals),
           finger: c.finger,
         );
       }).toList(growable: false);
 }
 
-/// Etiqueta de un intervalo en semitonos: `1`, `b3`, `#5`…
-String intervalName(int interval) {
-  const names = {
-    0: '1',
-    1: 'b2',
-    2: '2',
-    3: 'b3',
-    4: '3',
-    5: '4',
-    6: 'b5',
-    7: '5',
-    8: '#5',
-    9: '6',
-    10: 'b7',
-    11: '7',
-  };
-  return names[interval % 12] ?? '';
-}
 
 class StringPatterns {
   const StringPatterns({required this.patterns});
