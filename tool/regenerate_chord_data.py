@@ -11,6 +11,10 @@ Corrige, con reglas musicales explícitas (no parches manuales):
   5. advancedInversions (7mas, 144 entradas)     -> búsqueda por reglas (ver generate_inversion)
   6. Formas de principiante en 4 cuerdas, sin cejilla grande, para acordes cuya única forma
      baja es una cejilla completa (F, B, Bm, F#m): se añaden a `voicings` como 'Beginner Grip'.
+  7. Power chords (tipo power5): raíz-5ª-octava (R-5-R) sin repetir la 5ª, con la raíz en la
+     6ª, 5ª, 4ª y 3ª cuerda (en la 4ª y 3ª la octava cae un traste más arriba por la afinación
+     de la 2ª cuerda). Al aire si cae en el traste 0. Van a `voicings`; la principal es la
+     abierta si hay (E5, A5, D5) o la más baja con raíz en la 6ª o la 5ª cuerda.
 No toca ningún otro campo. Idempotente: correrlo dos veces da el mismo archivo.
 """
 import json, sys
@@ -85,6 +89,30 @@ BEGINNER_GRIPS = {
 }
 BEGINNER_TITLE = 'Beginner Grip'
 
+# 7. Power chords: cuerda de la raíz (0 = 6ª) -> desplazamientos de traste de R, 5, R.
+POWER_SHAPES = [
+    (0, 'Root on 6th string', (0, 2, 2)),
+    (1, 'Root on 5th string', (0, 2, 2)),
+    (2, 'Root on 4th string', (0, 2, 3)),
+    (3, 'Root on 3rd string', (0, 3, 3)),
+]
+
+def power_chord(root, string, offsets):
+    base = (root - OPEN[string]) % 12
+    frets = [-1] * 6
+    fingers = [0] * 6
+    for k, off in enumerate(offsets):
+        frets[string + k] = base + off
+    # Móvil: índice, anular y meñique. Al aire: la raíz suena sin pisar
+    # (E5/A5/D5: dedos 1 y 2; G5, con la 5ª y la octava en el 3: anular y meñique).
+    if base == 0:
+        used = (0, 3, 4) if offsets == (0, 3, 3) else (0, 1, 2)
+    else:
+        used = (1, 3, 4)
+    for k, finger in enumerate(used):
+        fingers[string + k] = finger
+    return frets, fingers
+
 def main(path):
     data = json.load(open(path, encoding='utf-8'))
     changed = {'sus2': 0, 'F': 0, 'Edim': 0, 'TopSet': 0, 'inversiones': 0, 'principiante': 0}
@@ -123,6 +151,28 @@ def main(path):
             new = (frets, fingers, min(f for f in frets if f > 0))
             if (p['fretPositions'], p['fingerPositions'], p['baseFret']) != new: changed['inversiones'] += 1
             p['fretPositions'], p['fingerPositions'], p['baseFret'] = new
+        # 7. power chords
+        if t == 'power5':
+            shapes = []
+            for string, title, offsets in POWER_SHAPES:
+                frets, fingers = power_chord(r, string, offsets)
+                got = {(OPEN[i] + f) % 12 for i, f in enumerate(frets) if f >= 0}
+                if got != {r, (r + 7) % 12}:
+                    raise RuntimeError(f"power chord inválido: {c['name']} {frets}")
+                shapes.append({'title': title, 'shape': 'Power chord',
+                               'description': 'Root, fifth and octave (R-5-R).',
+                               'fretPositions': frets, 'fingerPositions': fingers,
+                               'baseFret': 1 if 0 in frets else min(f for f in frets if f > 0)})
+            # Principal: la abierta (E5, A5, D5) si existe; si no, la más baja con raíz
+            # en la 6ª o la 5ª cuerda.
+            opened = [v for v in shapes[:3] if 0 in v['fretPositions']]
+            low = opened[0] if opened else min(
+                shapes[:2], key=lambda v: min(f for f in v['fretPositions'] if f >= 0))
+            new_main = (low['fretPositions'], low['fingerPositions'], low['baseFret'])
+            if (c['fretPositions'], c['fingerPositions'], c['baseFret']) != new_main or c.get('voicings') != shapes:
+                changed['power'] = changed.get('power', 0) + 1
+            c['fretPositions'], c['fingerPositions'], c['baseFret'] = list(new_main[0]), list(new_main[1]), new_main[2]
+            c['voicings'] = shapes
         # 6. forma de principiante
         grip = BEGINNER_GRIPS.get((c['root'], t))
         if grip:

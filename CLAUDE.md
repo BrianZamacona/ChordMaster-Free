@@ -63,6 +63,9 @@ cada nota pertenezca a la escala. No bajar la tolerancia de 0.
 - Formas de principiante ('Beginner Grip' en `voicings`): F xx3211, B xx4442, Bm xx4432,
   F#m xx4222, generadas por `regenerate_chord_data.py`. El modo Principiante las elige; el
   Estándar sigue usando la cejilla completa.
+- Power chords (power5): R-5-R sin repetir la 5ª, con raíz en la 6ª, 5ª, 4ª y 3ª cuerda (en la
+  4ª y 3ª la octava sube un traste por la afinación de la 2ª), en `voicings`. Principal: la
+  abierta (E5, A5, D5) o la más baja con raíz en 6ª/5ª. Los genera `regenerate_chord_data.py`.
 - Berklee NO está implementado: no hay definición con trastes verificada. No inventarla.
 - Progresiones: candidatos = digitaciones de `chords.json` sin costo ergonómico infinito;
   **formas abiertas primero** (decisión del usuario): si el acorde tiene alguna forma abierta

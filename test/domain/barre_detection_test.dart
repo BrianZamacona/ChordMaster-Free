@@ -118,9 +118,9 @@ void main() {
       'voicings: $total, con cejilla: ${mini + grande} '
       '(mini $mini, grande $grande), imposibles: ${impossible.length}',
     );
-    expect(total, 1096); // 1092 + 4 formas de principiante (F, B, Bm, F#m)
+    expect(total, 1144); // 1092 + 4 formas de principiante + 48 power chords (12 × 4 cuerdas)
     expect(mini, 360); // + F xx3211 y F#m xx4222
-    expect(grande, 241);
+    expect(grande, 229); // los 12 power chords viejos (índice de la 5ª a la 1ª) ya no existen
     // Deuda de datos en chords.json (dedos repetidos con cuerdas muteadas, al aire
     // o más bajas entre medias); el conteo exacto evita que crezca en silencio.
     expect(impossible, hasLength(_knownImpossibleBarres), reason: '$impossible');
@@ -152,4 +152,5 @@ void main() {
   });
 }
 
-const _knownImpossibleBarres = 27;
+// 27 -> 15: los 12 power chords viejos (índice sobre una cuerda muteada) se regeneraron.
+const _knownImpossibleBarres = 15;
