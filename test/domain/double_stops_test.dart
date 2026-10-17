@@ -21,6 +21,9 @@ List<List<Object?>> _rows(List<DoubleStopGroup> groups) => [
 ];
 
 void main() {
+  // Golden del sandbox TS, salvo la 7ª diatónica del grado VII: el sandbox la
+  // daba como disminuida (9 semitonos) y en la escala mayor es menor (10). Esas
+  // filas se regeneraron con la versión corregida; el sandbox debe corregirse igual.
   test('coincide con el golden del sandbox TS (118 casos)', () {
     final cases =
         jsonDecode(
@@ -54,7 +57,7 @@ void main() {
       total += expected.length;
       expect(_rows(groups), expected, reason: jsonEncode({...c, 'rows': null}));
     }
-    expect(total, 2005);
+    expect(total, 1983);
   });
 
   group('propiedades en C mayor', () {
@@ -78,6 +81,10 @@ void main() {
 
     test('la 5ª del VII es disminuida', () {
       expect(quality(DiatonicDoubleStopInterval.fifth, 7), '5ª disminuida');
+    });
+
+    test('la 7ª del VII es menor (Bm7♭5), no disminuida', () {
+      expect(quality(DiatonicDoubleStopInterval.seventh, 7), '7ª menor');
     });
   });
 
@@ -112,10 +119,7 @@ void main() {
           }
         }
       }
-      // Deuda conocida, compartida con los fixtures golden del sandbox TS: la
-      // 7ª del grado VII figura como disminuida (9 semitonos, B→G# en C) y en
-      // la escala mayor es menor (10, B→A). Pendiente de decisión del usuario.
-      expect(outside, {'seventh grado 7'});
+      expect(outside, isEmpty);
     });
   });
 }

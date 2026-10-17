@@ -89,8 +89,6 @@ cada nota pertenezca a la escala. No bajar la tolerancia de 0.
 1. Revisión visual en el dispositivo del rediseño (fases 7A/7C: paleta, diagramas con dedos e
    intervalos, escalas y double stops). En double stops el color de cada nota es ahora su
    grado en la tonalidad (igual en todas las parejas).
-2. DECISIÓN DEL USUARIO: la 7ª diatónica del grado VII figura como "7ª disminuida" (9
-   semitonos, B→G# en C) en `double_stops.dart` y en los fixtures golden del sandbox TS; en la
-   escala mayor es "7ª menor" (10, B→A). Corregir exige regenerar los fixtures en el sandbox.
-   `double_stops_test` ("toda nota … en la tonalidad") documenta el caso exacto.
+2. Sandbox TS: corregir la 7ª diatónica del grado VII (allí sigue como disminuida; aquí se
+   corrigió a 7ª menor y se regeneraron solo esas filas del golden, 2005 → 1983).
 3. Berklee, si se consigue una definición verificable.

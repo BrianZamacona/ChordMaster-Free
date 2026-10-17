@@ -146,7 +146,9 @@ const _diatonicIntervals = {
     _IntervalDef(11, '7ª mayor'),
     _IntervalDef(10, '7ª menor'),
     _IntervalDef(10, '7ª menor'),
-    _IntervalDef(9, '7ª disminuida'),
+    // VII–VI de la escala mayor (B–A en C): 7ª menor, acorde m7♭5. La 7ª
+    // disminuida (9) es del VII de la menor armónica, no de la mayor.
+    _IntervalDef(10, '7ª menor'),
   ],
 };
 
