@@ -10,12 +10,8 @@ class GeneratedNote {
   /// `NoteCoordinate.string` in `lib/data/models/note_coordinate.dart`:
   /// 1 = highest-pitched string (high e), 6 = lowest (low E).
   ///
-  /// This is the OPPOSITE convention from the old, orphaned
-  /// `lib/features/scales/domain/strategies/fingering_strategy.dart`
-  /// (which used 1 = lowest string). That mismatch was never caught
-  /// because that module was never wired to the current fretboard
-  /// renderer. Every generator under `domain/fingering_systems/` must
-  /// use the 1 = highest-string convention.
+  /// Every generator under `domain/fingering_systems/` must use this
+  /// 1 = highest-string convention.
   final int string;
 
   /// Absolute fret number (0 = open string).

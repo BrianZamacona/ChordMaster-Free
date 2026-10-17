@@ -7,10 +7,7 @@ import '../fingering_generator.dart';
 /// standard 3-notes-per-string (3NPS) approach used in modern guitar
 /// pedagogy.
 ///
-/// Migrated from the orphaned
-/// `lib/features/scales/domain/strategies/three_notes_per_string_strategy.dart`.
-/// See `fingering_generator.dart` for the string-numbering convention
-/// this migration corrects.
+/// See `fingering_generator.dart` for the string-numbering convention.
 class ThreeNpsGenerator extends FingeringGenerator {
   const ThreeNpsGenerator();
 

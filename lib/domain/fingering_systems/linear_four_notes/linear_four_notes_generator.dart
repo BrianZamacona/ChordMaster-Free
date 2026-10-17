@@ -7,10 +7,7 @@ import '../fingering_generator.dart';
 /// fretboard without skipping strings. Useful for legato runs and
 /// wide-stretch patterns.
 ///
-/// Migrated from the orphaned
-/// `lib/features/scales/domain/strategies/linear_four_notes_strategy.dart`.
-/// See `fingering_generator.dart` for the string-numbering convention
-/// this migration corrects.
+/// See `fingering_generator.dart` for the string-numbering convention.
 class LinearFourNotesGenerator extends FingeringGenerator {
   const LinearFourNotesGenerator();
 

@@ -7,10 +7,7 @@ import '../fingering_generator.dart';
 /// 3-note cluster (4-b5-5) when the blue note is between the other two
 /// notes on the same string.
 ///
-/// Migrated from the orphaned
-/// `lib/features/scales/domain/strategies/pentatonic_two_notes_strategy.dart`.
-/// See `fingering_generator.dart` for the string-numbering convention
-/// this migration corrects.
+/// See `fingering_generator.dart` for the string-numbering convention.
 class PentatonicTwoNotesGenerator extends FingeringGenerator {
   const PentatonicTwoNotesGenerator();
 

@@ -6,10 +6,7 @@ import '../fingering_generator.dart';
 /// patterns for diatonic scales, producing a wide horizontal shape
 /// ideal for high-speed picking technique.
 ///
-/// Migrated from the orphaned
-/// `lib/features/scales/domain/strategies/berklee_strategy.dart`.
-/// See `fingering_generator.dart` for the string-numbering convention
-/// this migration corrects.
+/// See `fingering_generator.dart` for the string-numbering convention.
 class BerkleeGenerator extends FingeringGenerator {
   const BerkleeGenerator();
 

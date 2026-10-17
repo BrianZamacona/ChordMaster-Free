@@ -7,17 +7,8 @@ import '../fingering_generator.dart';
 /// outside the [_cagedSpan] window relative to [startingFret] are
 /// excluded.
 ///
-/// Migrated from the orphaned
-/// `lib/features/scales/domain/strategies/caged_strategy.dart` (that
-/// file, and the rest of `lib/features/scales/`, is no longer imported
-/// by anything reachable from `navigation.dart` — confirm and delete it
-/// once this replacement is wired in).
-///
-/// The only functional change from the original: this version uses the
-/// 1 = highest-string convention (see [GeneratedNote]), not the old
-/// 1 = lowest-string convention the orphaned code used. The loop below
-/// iterates low to high pitch (string count down to 1) to preserve the
-/// original's outer-to-inner note-taking order.
+/// The loop below uses the 1 = highest-string convention (see
+/// [GeneratedNote]) and iterates low to high pitch (string count down to 1).
 class CagedShapeGenerator extends FingeringGenerator {
   const CagedShapeGenerator();
 
