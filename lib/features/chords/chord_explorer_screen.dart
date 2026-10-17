@@ -66,6 +66,7 @@ class ChordExplorerScreen extends ConsumerWidget {
               title:
                   '${FingeringSystemsRegistry.theoryFor('caged')?.name ?? 'CAGED'} Positions',
               header: const FingeringTheoryCard(systemId: 'caged'),
+              labelSharedShapes: true,
               items: chord.cagedPositions,
             ),
             const SizedBox(height: 16),
@@ -100,16 +101,35 @@ class ChordExplorerScreen extends ConsumerWidget {
   }
 }
 
+/// Etiquetas "G (usa la digitación E)" por índice, para formas con
+/// `fretPositions` idénticos; la última forma del grupo es la de referencia.
+@visibleForTesting
+Map<int, String> sharedShapeLabels(List<ChordExplorerItem> items) {
+  final groups = <String, List<int>>{};
+  for (var i = 0; i < items.length; i++) {
+    groups.putIfAbsent(items[i].fretPositions.join(','), () => []).add(i);
+  }
+  String name(ChordExplorerItem item) => item.shape ?? item.title;
+  return {
+    for (final group in groups.values)
+      if (group.length > 1)
+        for (final i in group.take(group.length - 1))
+          i: '${name(items[i])} (usa la digitación ${name(items[group.last])})',
+  };
+}
+
 class _ExplorerSection extends StatelessWidget {
   const _ExplorerSection({
     required this.title,
     required this.items,
     this.header,
+    this.labelSharedShapes = false,
   });
 
   final String title;
   final List<ChordExplorerItem> items;
   final Widget? header;
+  final bool labelSharedShapes;
 
   @override
   Widget build(BuildContext context) {
@@ -125,13 +145,18 @@ class _ExplorerSection extends StatelessWidget {
       );
     }
 
+    final sharedLabels =
+        labelSharedShapes ? sharedShapeLabels(items) : const <int, String>{};
     return _SectionCard(
       title: title,
       child: Column(
         children: [
           if (header != null) ...[header!, const SizedBox(height: 12)],
           for (var index = 0; index < items.length; index++) ...[
-            _ExplorerItemCard(item: items[index]),
+            _ExplorerItemCard(
+              item: items[index],
+              titleOverride: sharedLabels[index],
+            ),
             if (index != items.length - 1) const SizedBox(height: 12),
           ],
         ],
@@ -141,9 +166,10 @@ class _ExplorerSection extends StatelessWidget {
 }
 
 class _ExplorerItemCard extends StatelessWidget {
-  const _ExplorerItemCard({required this.item});
+  const _ExplorerItemCard({required this.item, this.titleOverride});
 
   final ChordExplorerItem item;
+  final String? titleOverride;
 
   String _buildSubtitle() {
     final parts = <String>[];
@@ -168,7 +194,7 @@ class _ExplorerItemCard extends StatelessWidget {
           crossAxisAlignment: CrossAxisAlignment.start,
           children: [
             Text(
-              item.title,
+              titleOverride ?? item.title,
               style: Theme.of(context).textTheme.titleSmall?.copyWith(
                     fontWeight: FontWeight.bold,
                   ),
