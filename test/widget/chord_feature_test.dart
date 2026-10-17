@@ -140,8 +140,22 @@ void main() {
     await tester.pumpWidget(_wrapWithFakeChords(const ChordLibraryScreen()));
     await tester.pump(const Duration(milliseconds: 700));
 
+    // Los estilos están en la hoja del botón Estilo, no en filas apiladas.
+    expect(find.text('Jazz'), findsNothing);
+    await tester.tap(find.byKey(const Key('filter-tag')));
+    await tester.pumpAndSettle();
     expect(find.text('Jazz'), findsOneWidget);
     expect(find.text('Blues'), findsOneWidget);
+
+    await tester.tap(find.text('Blues'));
+    await tester.pumpAndSettle();
+    expect(find.text('Estilo: Blues'), findsOneWidget);
+    expect(find.text('1 acorde'), findsOneWidget);
+
+    // La ✕ del botón quita el filtro.
+    await tester.tap(find.byIcon(Icons.close));
+    await tester.pumpAndSettle();
+    expect(find.text('Estilo: Blues'), findsNothing);
 
     final diagram = tester.widget<ChordDiagramWidget>(
       find.byType(ChordDiagramWidget).first,

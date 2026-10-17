@@ -4,12 +4,11 @@ import 'package:go_router/go_router.dart';
 
 import '../../core/constants/app_strings.dart';
 import '../../core/constants/chord_metadata.dart';
-import '../../core/constants/music_theory.dart';
 import '../../core/widgets/chord_diagram.dart';
-import '../../core/widgets/donation_button.dart';
 import '../../models/chord.dart';
 import '../../ui/animations.dart';
 import '../../ui/palette.dart';
+import 'chord_filters.dart';
 import 'chord_viewmodel.dart';
 
 /// Chord library screen with search, style/root/type filters, and chord card grid.
@@ -63,41 +62,39 @@ class _ChordLibraryScreenState extends ConsumerState<ChordLibraryScreen> {
             controller: _searchController,
             onChanged: vm.search,
           ),
-          _TagFilterRow(
-            selected: state.selectedTag,
+          const SizedBox(height: 4),
+          ChordFilterBar(
+            root: state.selectedRoot,
+            type: state.selectedType,
+            tag: state.selectedTag,
+            availableTypes: [for (final t in availableTypes) t.key],
             availableTags: availableTags,
-            onSelected: vm.filterByTag,
-          ),
-          _RootFilterRow(
-            selected: state.selectedRoot,
-            onSelected: vm.filterByRoot,
-          ),
-          _TypeFilterRow(
-            selected: state.selectedType,
-            types: availableTypes,
-            onSelected: vm.filterByType,
+            onRoot: vm.filterByRoot,
+            onType: vm.filterByType,
+            onTag: vm.filterByTag,
           ),
           Padding(
-            padding: const EdgeInsets.fromLTRB(16, 4, 16, 8),
+            padding: const EdgeInsets.fromLTRB(16, 4, 8, 0),
             child: Row(
               children: [
                 Text(
-                  '${state.filteredChords.length} results',
+                  AppStrings.chordsCount(state.filteredChords.length),
+                  key: const Key('chords-count'),
                   style: theme.textTheme.bodySmall?.copyWith(
                     color: context.palette.textSecondary,
                   ),
                 ),
                 const Spacer(),
-                TextButton.icon(
-                  onPressed: hasActiveFilters
-                      ? () {
-                          _searchController.clear();
-                          vm.clearFilters();
-                        }
-                      : null,
-                  icon: const Icon(Icons.filter_alt_off),
-                  label: const Text(AppStrings.reset),
-                ),
+                if (hasActiveFilters)
+                  TextButton(
+                    onPressed: () {
+                      _searchController.clear();
+                      vm.clearFilters();
+                    },
+                    child: const Text(AppStrings.filterClearAll),
+                  )
+                else
+                  const SizedBox(height: 48),
               ],
             ),
           ),
@@ -132,10 +129,6 @@ class _ChordLibraryScreenState extends ConsumerState<ChordLibraryScreen> {
                             ),
                           )
                         : _ChordGrid(chords: state.filteredChords),
-          ),
-          const Padding(
-            padding: EdgeInsets.all(16),
-            child: DonationButton(),
           ),
         ],
       ),
@@ -181,112 +174,8 @@ class _SearchBar extends StatelessWidget {
       );
 }
 
-class _TagFilterRow extends StatelessWidget {
-  const _TagFilterRow({
-    required this.selected,
-    required this.availableTags,
-    required this.onSelected,
-  });
 
-  final String? selected;
-  final List<String> availableTags;
-  final ValueChanged<String?> onSelected;
 
-  @override
-  Widget build(BuildContext context) => SizedBox(
-        height: 44,
-        child: ListView.separated(
-          scrollDirection: Axis.horizontal,
-          padding: const EdgeInsets.symmetric(horizontal: 12, vertical: 6),
-          itemCount: availableTags.length + 1,
-          separatorBuilder: (_, __) => const SizedBox(width: 6),
-          itemBuilder: (context, index) {
-            final tag = index == 0 ? null : availableTags[index - 1];
-            final isSelected = selected == tag || (selected == null && tag == null);
-            final label = tag == null ? AppStrings.all : chordTagLabel(tag);
-            return FilterChip(
-              label: Text(label),
-              selected: isSelected,
-              selectedColor: context.palette.accent.withAlpha(190),
-              labelStyle: TextStyle(
-                color: isSelected ? context.palette.onAccent : null,
-                fontSize: 12,
-              ),
-              onSelected: (_) => onSelected(tag),
-            );
-          },
-        ),
-      );
-}
-
-class _RootFilterRow extends StatelessWidget {
-  const _RootFilterRow({required this.selected, required this.onSelected});
-
-  final String? selected;
-  final ValueChanged<String?> onSelected;
-
-  @override
-  Widget build(BuildContext context) => SizedBox(
-        height: 44,
-        child: ListView.separated(
-          scrollDirection: Axis.horizontal,
-          padding: const EdgeInsets.symmetric(horizontal: 12, vertical: 6),
-          itemCount: chromaticNotes.length + 1,
-          separatorBuilder: (_, __) => const SizedBox(width: 6),
-          itemBuilder: (context, index) {
-            final root = index == 0 ? null : chromaticNotes[index - 1];
-            final isSelected = selected == root || (selected == null && root == null);
-            return FilterChip(
-              label: Text(root ?? AppStrings.all),
-              selected: isSelected,
-              selectedColor: context.palette.accent,
-              labelStyle: TextStyle(
-                color: isSelected ? context.palette.onAccent : null,
-                fontSize: 12,
-              ),
-              onSelected: (_) => onSelected(root),
-            );
-          },
-        ),
-      );
-}
-
-class _TypeFilterRow extends StatelessWidget {
-  const _TypeFilterRow({
-    required this.selected,
-    required this.types,
-    required this.onSelected,
-  });
-
-  final String? selected;
-  final List<ChordTypeDefinition> types;
-  final ValueChanged<String?> onSelected;
-
-  @override
-  Widget build(BuildContext context) => SizedBox(
-        height: 44,
-        child: ListView.separated(
-          scrollDirection: Axis.horizontal,
-          padding: const EdgeInsets.symmetric(horizontal: 12, vertical: 6),
-          itemCount: types.length + 1,
-          separatorBuilder: (_, __) => const SizedBox(width: 6),
-          itemBuilder: (context, index) {
-            final type = index == 0 ? null : types[index - 1];
-            final isSelected = selected == type?.key || (selected == null && type == null);
-            return FilterChip(
-              label: Text(type?.displayName ?? AppStrings.all),
-              selected: isSelected,
-              selectedColor: context.palette.accent.withAlpha(200),
-              labelStyle: TextStyle(
-                color: isSelected ? context.palette.onAccent : null,
-                fontSize: 12,
-              ),
-              onSelected: (_) => onSelected(type?.key),
-            );
-          },
-        ),
-      );
-}
 
 class _ChordGrid extends StatelessWidget {
   const _ChordGrid({required this.chords});

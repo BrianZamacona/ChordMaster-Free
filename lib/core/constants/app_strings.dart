@@ -343,6 +343,33 @@ class AppStrings {
   static const String toolTuner = 'Afinador';
   static const String toolMetronome = 'Metrónomo';
 
+  // ── Filtros de acordes ────────────────────────────────────────────────────
+
+  static const String filterRoot = 'Raíz';
+  static const String filterType = 'Tipo';
+  static const String filterStyle = 'Estilo';
+  static const String filterRootTitle = 'Nota raíz';
+  static const String filterTypeTitle = 'Tipo de acorde';
+  static const String filterStyleTitle = 'Estilo';
+  static const String filterAllRoots = 'Todas las raíces';
+  static const String filterAllTypes = 'Todos los tipos';
+  static const String filterAllStyles = 'Todos los estilos';
+  static const String filterClear = 'Quitar filtro';
+  static const String filterClearAll = 'Limpiar';
+  static String chordsCount(int n) => n == 1 ? '1 acorde' : '$n acordes';
+  static const String familyTriads = 'Tríadas';
+  static const String familyTriadsHint =
+      'Tres notas: raíz, 3ª y 5ª (o sus variantes). La base de todo.';
+  static const String familySevenths = 'Sextas y séptimas';
+  static const String familySeventhsHint =
+      'Una tríada más la 6ª o la 7ª: el sonido del blues, el jazz y el soul.';
+  static const String familyExtended = 'Novenas y extendidas';
+  static const String familyExtendedHint =
+      'Añaden 9ª, 11ª o 13ª sobre la 7ª: color y tensión suave.';
+  static const String familyAltered = 'Alterados';
+  static const String familyAlteredHint =
+      'Tensiones alteradas (♭9, ♯9, ♯11) para dominantes con más tensión.';
+
   // ── Diagrama ──────────────────────────────────────────────────────────────
 
   static const String legendRoot = 'Raíz';
