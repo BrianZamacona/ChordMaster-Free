@@ -39,7 +39,7 @@ class _ChordLibraryScreenState extends ConsumerState<ChordLibraryScreen> {
       state.allChords.map((chord) => chord.type),
     );
     final hasActiveFilters = state.searchQuery.isNotEmpty ||
-        state.selectedRoot != null ||
+        state.selectedRoot != ChordViewModel.defaultRoot ||
         state.selectedType != null ||
         state.selectedTag != null;
     final availableTags = chordPrimaryTagOrder

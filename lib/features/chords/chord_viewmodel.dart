@@ -150,12 +150,15 @@ int _compareChords(Chord a, Chord b) {
 
 /// Manages chord library state: loading, filtering by root/type/tag, and search.
 class ChordViewModel extends Notifier<ChordState> {
+  /// Raíz con la que abre la biblioteca (288 acordes de golpe abruman).
+  static const defaultRoot = 'C';
+
   final Map<String, Chord> _nameIndex = {};
 
   @override
   ChordState build() {
     _load();
-    return const ChordState();
+    return const ChordState(selectedRoot: defaultRoot);
   }
 
   Future<void> _load() async {
@@ -185,10 +188,10 @@ class ChordViewModel extends Notifier<ChordState> {
 
       state = state.copyWith(
         allChords: chords,
-        filteredChords: chords,
         isLoading: false,
         errorMessage: null,
       );
+      _applyFilters();
     } catch (e, st) {
       debugPrint('ChordViewModel._load error: $e\n$st');
       state = state.copyWith(
@@ -199,8 +202,17 @@ class ChordViewModel extends Notifier<ChordState> {
   }
 
   /// Filters chords by [query] text, keeping active root/type/tag filters.
+  ///
+  /// Al empezar a escribir se quita la raíz por defecto: buscar "Bm7" no
+  /// debe quedar escondido tras el filtro de C que el usuario no eligió.
   void search(String query) {
-    state = state.copyWith(searchQuery: query);
+    final dropDefault = query.isNotEmpty &&
+        state.searchQuery.isEmpty &&
+        state.selectedRoot == defaultRoot;
+    state = state.copyWith(
+      searchQuery: query,
+      selectedRoot: dropDefault ? null : state.selectedRoot,
+    );
     _applyFilters();
   }
 
@@ -222,15 +234,15 @@ class ChordViewModel extends Notifier<ChordState> {
     _applyFilters();
   }
 
-  /// Clears all active filters.
+  /// Vuelve a los filtros iniciales (raíz C, sin tipo ni estilo).
   void clearFilters() {
     state = state.copyWith(
       searchQuery: '',
-      selectedRoot: null,
+      selectedRoot: defaultRoot,
       selectedType: null,
       selectedTag: null,
-      filteredChords: state.allChords,
     );
+    _applyFilters();
   }
 
   void _applyFilters() {
