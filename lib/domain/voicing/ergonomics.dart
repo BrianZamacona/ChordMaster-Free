@@ -7,6 +7,16 @@ const _maxFret = 24;
 const _mutedIntermediateStringCost = 1.5;
 const _registerBiasCost = 2.0;
 const _optionalFifthCost = 3.0;
+const _beginnerMiniBarrePenalty = 2.0;
+const _beginnerGrandeBarrePenalty = 8.0;
+
+enum BarreKind { mini, grande }
+
+int barreWidth(Barre barre) => barre.fromString - barre.endString + 1;
+
+/// `mini` = 2–3 cuerdas de ancho, `grande` = 4 o más.
+BarreKind barreKind(Barre barre) =>
+    barreWidth(barre) >= 4 ? BarreKind.grande : BarreKind.mini;
 
 class Barre {
   const Barre({
@@ -40,6 +50,7 @@ class ErgonomicOptions {
     this.allowRootless = false,
     this.allowAdjacentUnisons = false,
     this.maxFingerCount,
+    this.beginner = false,
   });
 
   final int? rootPitchClass;
@@ -48,6 +59,9 @@ class ErgonomicOptions {
   final bool allowRootless;
   final bool allowAdjacentUnisons;
   final int? maxFingerCount;
+
+  /// Penaliza las cejillas; con `false` el costo no cambia.
+  final bool beginner;
 }
 
 class _Pitch {
@@ -132,6 +146,14 @@ double _barreDifficulty(ErgonomicVoicing voicing) {
   return math.max(0, width - 2) * 0.75 + (barre.fret <= 2 ? 1 : 0);
 }
 
+double _beginnerBarrePenalty(ErgonomicVoicing voicing) {
+  final barre = voicing.barre;
+  if (barre == null) return 0;
+  return barreKind(barre) == BarreKind.grande
+      ? _beginnerGrandeBarrePenalty
+      : _beginnerMiniBarrePenalty;
+}
+
 double? _fretStretchCost(List<_Pitch> pitches) {
   final fretted = [
     for (final p in pitches)
@@ -197,5 +219,6 @@ double calculateErgonomicCost(
           _mutedIntermediateStringCost +
       _barreDifficulty(voicing) +
       _registerPreferenceCost(pitches) +
-      _optionalFifthPenalty(pitches, fingerCount, options);
+      _optionalFifthPenalty(pitches, fingerCount, options) +
+      (options.beginner ? _beginnerBarrePenalty(voicing) : 0);
 }

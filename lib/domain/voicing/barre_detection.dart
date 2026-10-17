@@ -1,15 +1,7 @@
 import 'ergonomics.dart';
 import 'voicing_adapter.dart';
 
-enum BarreKind { mini, grande }
-
-/// `mini` = 2–3 cuerdas de ancho, `grande` = 4 o más.
-BarreKind barreKind(Barre barre) =>
-    barre.fromString - barre.endString + 1 >= 4
-    ? BarreKind.grande
-    : BarreKind.mini;
-
-int barreWidth(Barre barre) => barre.fromString - barre.endString + 1;
+export 'ergonomics.dart' show BarreKind, barreKind, barreWidth;
 
 /// Cejilla inferida de [frets] + [engineFingers] (orden del motor, 0 = 1ª cuerda).
 ///
