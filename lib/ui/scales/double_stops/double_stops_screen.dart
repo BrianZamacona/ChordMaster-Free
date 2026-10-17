@@ -19,7 +19,8 @@ class DoubleStopsControls {
   final DoubleStopStringPattern? pattern;
   final bool upperRange;
 
-  FretRange get range => upperRange ? const FretRange(13, 24) : const FretRange(0, 12);
+  FretRange get range =>
+      upperRange ? const FretRange(13, 24) : const FretRange(0, 12);
 
   DoubleStopStringPattern get effectivePattern =>
       pattern ??
@@ -33,12 +34,13 @@ class DoubleStopsControls {
     DoubleStopStringPattern? pattern,
     bool clearPattern = false,
     bool? upperRange,
-  }) => DoubleStopsControls(
-    tonic: tonic ?? this.tonic,
-    interval: interval ?? this.interval,
-    pattern: clearPattern ? null : pattern ?? this.pattern,
-    upperRange: upperRange ?? this.upperRange,
-  );
+  }) =>
+      DoubleStopsControls(
+        tonic: tonic ?? this.tonic,
+        interval: interval ?? this.interval,
+        pattern: clearPattern ? null : pattern ?? this.pattern,
+        upperRange: upperRange ?? this.upperRange,
+      );
 }
 
 class DoubleStopsNotifier extends Notifier<DoubleStopsControls> {
@@ -56,17 +58,17 @@ class DoubleStopsNotifier extends Notifier<DoubleStopsControls> {
 
 final doubleStopsControlsProvider =
     NotifierProvider<DoubleStopsNotifier, DoubleStopsControls>(
-      DoubleStopsNotifier.new,
-    );
+  DoubleStopsNotifier.new,
+);
 
 class DoubleStopsScreen extends ConsumerWidget {
   const DoubleStopsScreen({super.key});
 
   @override
   Widget build(BuildContext context, WidgetRef ref) => Scaffold(
-    appBar: AppBar(title: const Text('Double stops diatónicos')),
-    body: const DoubleStopsContent(),
-  );
+        appBar: AppBar(title: const Text('Double stops diatónicos')),
+        body: const DoubleStopsContent(),
+      );
 }
 
 class DoubleStopsContent extends ConsumerWidget {
@@ -84,67 +86,75 @@ class DoubleStopsContent extends ConsumerWidget {
     );
     final theme = Theme.of(context);
 
-    return ListView(
-      padding: const EdgeInsets.all(16),
-      children: [
-        Text('Tónica', style: theme.textTheme.titleSmall),
-        Wrap(
-          spacing: 6,
+    return Center(
+      child: ConstrainedBox(
+        constraints: const BoxConstraints(maxWidth: 900),
+        child: ListView(
+          padding: const EdgeInsets.all(16),
           children: [
-            for (var i = 0; i < 12; i++)
-              ChoiceChip(
-                label: Text(noteNames[i]),
-                selected: c.tonic == i,
-                onSelected: (_) => notifier.setTonic(i),
-              ),
-          ],
-        ),
-        const SizedBox(height: 12),
-        Text('Intervalo', style: theme.textTheme.titleSmall),
-        Wrap(
-          spacing: 6,
-          children: [
-            for (final i in DiatonicDoubleStopInterval.values)
-              ChoiceChip(
-                label: Text(i.label),
-                selected: c.interval == i,
-                onSelected: (_) => notifier.setInterval(i),
-              ),
-          ],
-        ),
-        const SizedBox(height: 12),
-        Text('Patrón de cuerdas', style: theme.textTheme.titleSmall),
-        Wrap(
-          spacing: 6,
-          children: [
-            for (final p in DoubleStopStringPattern.values)
-              ChoiceChip(
-                label: Text(p == DoubleStopStringPattern.adjacent ? 'adjacent' : 'skip-one'),
-                selected: c.effectivePattern == p,
-                onSelected: (_) => notifier.setPattern(p),
-              ),
-          ],
-        ),
-        const SizedBox(height: 12),
-        Text('Rango de trastes', style: theme.textTheme.titleSmall),
-        Wrap(
-          spacing: 6,
-          children: [
-            ChoiceChip(
-              label: const Text('0–12'),
-              selected: !c.upperRange,
-              onSelected: (_) => notifier.setUpperRange(upper: false),
+            Text('Tónica', style: theme.textTheme.titleSmall),
+            Wrap(
+              spacing: 6,
+              children: [
+                for (var i = 0; i < 12; i++)
+                  ChoiceChip(
+                    label: Text(noteNames[i]),
+                    selected: c.tonic == i,
+                    onSelected: (_) => notifier.setTonic(i),
+                  ),
+              ],
             ),
-            ChoiceChip(
-              label: const Text('13–24'),
-              selected: c.upperRange,
-              onSelected: (_) => notifier.setUpperRange(upper: true),
+            const SizedBox(height: 12),
+            Text('Intervalo', style: theme.textTheme.titleSmall),
+            Wrap(
+              spacing: 6,
+              children: [
+                for (final i in DiatonicDoubleStopInterval.values)
+                  ChoiceChip(
+                    label: Text(i.label),
+                    selected: c.interval == i,
+                    onSelected: (_) => notifier.setInterval(i),
+                  ),
+              ],
             ),
+            const SizedBox(height: 12),
+            Text('Patrón de cuerdas', style: theme.textTheme.titleSmall),
+            Wrap(
+              spacing: 6,
+              children: [
+                for (final p in DoubleStopStringPattern.values)
+                  ChoiceChip(
+                    label: Text(p == DoubleStopStringPattern.adjacent
+                        ? 'adjacent'
+                        : 'skip-one'),
+                    selected: c.effectivePattern == p,
+                    onSelected: (_) => notifier.setPattern(p),
+                  ),
+              ],
+            ),
+            const SizedBox(height: 12),
+            Text('Rango de trastes', style: theme.textTheme.titleSmall),
+            Wrap(
+              spacing: 6,
+              children: [
+                ChoiceChip(
+                  label: const Text('0–12'),
+                  selected: !c.upperRange,
+                  onSelected: (_) => notifier.setUpperRange(upper: false),
+                ),
+                ChoiceChip(
+                  label: const Text('13–24'),
+                  selected: c.upperRange,
+                  onSelected: (_) => notifier.setUpperRange(upper: true),
+                ),
+              ],
+            ),
+            const SizedBox(height: 16),
+            for (final group in groups)
+              _GroupSection(group: group, range: c.range),
           ],
         ),
-        const SizedBox(height: 16),
-        for (final group in groups) _GroupSection(group: group, range: c.range),
-      ],
+      ),
     );
   }
 }
