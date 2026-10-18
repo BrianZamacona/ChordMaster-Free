@@ -14,7 +14,12 @@ class HealthState {
     this.remindersEnabled = false,
     this.reminderIntervalMinutes = 30,
     this.isLoading = true,
+    this.breakDue = false,
   });
+
+  /// Toca pausa: se cumplió el intervalo durante la sesión (aviso en pantalla
+  /// hasta que el usuario lo cierre).
+  final bool breakDue;
 
   final bool isSessionActive;
   final int sessionSeconds;
@@ -28,12 +33,14 @@ class HealthState {
     bool? remindersEnabled,
     int? reminderIntervalMinutes,
     bool? isLoading,
+    bool? breakDue,
   }) => HealthState(
     isSessionActive: isSessionActive ?? this.isSessionActive,
     sessionSeconds: sessionSeconds ?? this.sessionSeconds,
     remindersEnabled: remindersEnabled ?? this.remindersEnabled,
     reminderIntervalMinutes: reminderIntervalMinutes ?? this.reminderIntervalMinutes,
     isLoading: isLoading ?? this.isLoading,
+    breakDue: breakDue ?? this.breakDue,
   );
 }
 
@@ -75,27 +82,52 @@ class HealthViewModel extends Notifier<HealthState> {
     }
   }
 
-  /// Starts the practice session timer.
+  /// Reloj de la sesión: el tiempo sale de [clock] (no de contar ticks), así
+  /// no se atrasa si el sistema retrasa el temporizador. Los tests lo
+  /// reemplazan para avanzar el tiempo sin esperar.
+  @visibleForTesting
+  DateTime Function() clock = DateTime.now;
+  DateTime? _startedAt;
+  int _secondsBefore = 0;
+
+
+  /// Empieza (o reanuda) la sesión de práctica.
   void startSession() {
     if (state.isSessionActive) return;
-    state = state.copyWith(isSessionActive: true, sessionSeconds: 0);
-    _timer = Timer.periodic(const Duration(seconds: 1), (_) {
-      state = state.copyWith(sessionSeconds: state.sessionSeconds + 1);
-    });
+    _startedAt = clock();
+    _secondsBefore = state.sessionSeconds;
+    state = state.copyWith(isSessionActive: true);
+    _timer = Timer.periodic(const Duration(seconds: 1), (_) => _tick());
   }
 
-  /// Stops the practice session timer.
+  void _tick() {
+    final previous = state.sessionSeconds;
+    final now = _secondsBefore + clock().difference(_startedAt!).inSeconds;
+    state = state.copyWith(sessionSeconds: now);
+    // Aviso de pausa al cruzar cada múltiplo del intervalo.
+    final every = state.reminderIntervalMinutes * 60;
+    if (state.remindersEnabled && now ~/ every > previous ~/ every) {
+      state = state.copyWith(breakDue: true);
+      ref.read(notificationServiceProvider).showBreakReminder();
+    }
+  }
+
+  /// Pausa la sesión (se puede reanudar).
   void stopSession() {
     _timer?.cancel();
     _timer = null;
+    _startedAt = null;
     state = state.copyWith(isSessionActive: false);
   }
 
-  /// Resets the session timer.
+  /// Vuelve el reloj a cero.
   void resetSession() {
     stopSession();
-    state = state.copyWith(sessionSeconds: 0);
+    state = state.copyWith(sessionSeconds: 0, breakDue: false);
   }
+
+  /// El usuario vio el aviso de pausa.
+  void dismissBreak() => state = state.copyWith(breakDue: false);
 
   /// Toggles break reminders on/off.
   Future<void> toggleReminders({required bool enabled}) async {
@@ -104,37 +136,28 @@ class HealthViewModel extends Notifier<HealthState> {
       state = state.copyWith(remindersEnabled: enabled);
       await storage.save(StorageService.settingsBox, _keyRemindersEnabled, enabled);
       if (enabled) {
-        final granted = await NotificationService.instance.requestPermissions();
-        if (granted) {
-          await NotificationService.instance.scheduleHealthReminder(
-            Duration(minutes: state.reminderIntervalMinutes),
-          );
-          await AchievementService.instance.unlock('health_conscious');
-        } else {
-          state = state.copyWith(remindersEnabled: false);
-          await storage.save(StorageService.settingsBox, _keyRemindersEnabled, false);
-        }
+        // Sin permiso de notificaciones el aviso igual sale en pantalla.
+        await ref.read(notificationServiceProvider).requestPermissions();
+        await AchievementService.instance.unlock('health_conscious');
       } else {
-        await NotificationService.instance.cancelAllReminders();
+        state = state.copyWith(breakDue: false);
+        await ref.read(notificationServiceProvider).cancelAllReminders();
       }
     } catch (e, st) {
       debugPrint('HealthViewModel.toggleReminders error: $e\n$st');
     }
   }
 
-  /// Sets the break reminder interval in minutes.
+  /// Cada cuántos minutos de práctica avisar.
   Future<void> setReminderInterval(int minutes) async {
     try {
-      final storage = ref.read(storageServiceProvider);
       state = state.copyWith(reminderIntervalMinutes: minutes);
-      await storage.save(StorageService.settingsBox, _keyReminderInterval, minutes);
-      if (state.remindersEnabled) {
-        await NotificationService.instance.scheduleHealthReminder(
-          Duration(minutes: minutes),
-        );
-      }
+      await ref
+          .read(storageServiceProvider)
+          .save(StorageService.settingsBox, _keyReminderInterval, minutes);
     } catch (e, st) {
       debugPrint('HealthViewModel.setReminderInterval error: $e\n$st');
     }
   }
+
 }

@@ -574,9 +574,12 @@ class AppStrings {
   static String get enableReminders =>
       tr(es: 'Activar recordatorios', en: 'Enable reminders');
   static String get enableRemindersSub => tr(
-    es: 'Te avisa para que descanses las manos',
-    en: 'Get notified to rest your hands',
+    es: 'Mientras la sesión de práctica está en marcha, te avisa para que descanses las manos',
+    en: 'While a practice session is running, reminds you to rest your hands',
   );
+  static String get breakDone => tr(es: 'Listo', en: 'Done');
+  static String get pause => tr(es: 'Pausa', en: 'Pause');
+  static String minutesShort(int m) => tr(es: '$m min', en: '$m min');
   static String get remindEvery => tr(es: 'Avisar cada:', en: 'Remind every:');
   static String get warmupExercises =>
       tr(es: '🤸 Ejercicios de calentamiento', en: '🤸 Warm-up exercises');

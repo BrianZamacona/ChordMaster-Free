@@ -4,6 +4,7 @@ import 'package:flutter_riverpod/flutter_riverpod.dart';
 import '../../core/constants/app_strings.dart';
 import '../../core/i18n/tr.dart';
 import '../../core/widgets/feature_module_scaffold.dart';
+import '../../ui/palette.dart';
 import 'health_viewmodel.dart';
 
 /// Practice health and wellness screen.
@@ -118,7 +119,7 @@ class HealthScreen extends ConsumerWidget {
                           FilledButton.icon(
                             onPressed: vm.stopSession,
                             icon: const Icon(Icons.stop),
-                            label: Text(AppStrings.stop),
+                            label: Text(AppStrings.pause),
                           ),
                         const SizedBox(width: 12),
                         OutlinedButton.icon(
@@ -133,6 +134,23 @@ class HealthScreen extends ConsumerWidget {
               ),
             ),
             const SizedBox(height: 16),
+
+            if (state.breakDue) ...[
+              Card(
+                key: const Key('break-due'),
+                color: context.palette.accent.withValues(alpha: 0.18),
+                child: ListTile(
+                  leading: Icon(Icons.self_improvement, color: context.palette.accent),
+                  title: Text(AppStrings.reminderTitle),
+                  subtitle: Text(AppStrings.reminderBody),
+                  trailing: TextButton(
+                    onPressed: vm.dismissBreak,
+                    child: Text(AppStrings.breakDone),
+                  ),
+                ),
+              ),
+              const SizedBox(height: 16),
+            ],
 
             // Break Reminders Card
             Card(
@@ -162,7 +180,7 @@ class HealthScreen extends ConsumerWidget {
                         spacing: 8,
                         children: [15, 30, 45, 60]
                             .map((m) => ChoiceChip(
-                                  label: Text('${m}m'),
+                                  label: Text(AppStrings.minutesShort(m)),
                                   selected: state.reminderIntervalMinutes == m,
                                   onSelected: (_) => vm.setReminderInterval(m),
                                 ))

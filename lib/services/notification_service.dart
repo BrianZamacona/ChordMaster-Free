@@ -2,12 +2,21 @@
 import 'dart:io' show Platform;
 import 'package:flutter/foundation.dart';
 import 'package:flutter_local_notifications/flutter_local_notifications.dart';
+import 'package:flutter_riverpod/flutter_riverpod.dart';
 import '../core/constants/app_strings.dart';
 
 /// Servicio singleton que gestiona las notificaciones locales para ChordMaster Free.
+/// Provider del servicio (los tests lo reemplazan por un doble).
+final notificationServiceProvider = Provider<NotificationService>((ref) => NotificationService.instance);
+
 class NotificationService {
   factory NotificationService() => instance;
   NotificationService._internal();
+
+  /// Para dobles de prueba (se inyectan con [notificationServiceProvider]).
+  @visibleForTesting
+  NotificationService.forTesting();
+
   static final NotificationService instance = NotificationService._internal();
 
   final FlutterLocalNotificationsPlugin _notifications = FlutterLocalNotificationsPlugin();
@@ -72,32 +81,27 @@ class NotificationService {
     }
   }
 
-  /// Programa un recordatorio de salud periódico.
-  Future<void> scheduleHealthReminder(Duration interval) async {
+  /// Muestra ahora el aviso de pausa (lo dispara la sesión de práctica cada
+  /// N minutos; no hay notificaciones programadas fuera de la práctica).
+  Future<void> showBreakReminder() async {
     try {
-      await cancelAllReminders();
-      final androidDetails = AndroidNotificationDetails(
-        _channelId,
-        _channelName,
-        channelDescription: _channelDesc,
-        icon: '@mipmap/ic_launcher',
+      final details = NotificationDetails(
+        android: AndroidNotificationDetails(
+          _channelId,
+          _channelName,
+          channelDescription: _channelDesc,
+          icon: '@mipmap/ic_launcher',
+        ),
+        iOS: const DarwinNotificationDetails(presentBadge: false),
       );
-      const iosDetails = DarwinNotificationDetails(presentBadge: false);
-      final notificationDetails = NotificationDetails(
-        android: androidDetails,
-        iOS: iosDetails,
-      );
-      final repeatInterval = _durationToRepeatInterval(interval);
-      await _notifications.periodicallyShow(
+      await _notifications.show(
         id: _healthReminderId,
         title: AppStrings.reminderTitle,
         body: AppStrings.reminderBody,
-        repeatInterval: repeatInterval,
-        notificationDetails: notificationDetails,
-        androidScheduleMode: AndroidScheduleMode.inexactAllowWhileIdle,
+        notificationDetails: details,
       );
     } catch (e, st) {
-      debugPrint('NotificationService.scheduleHealthReminder error: $e\n$st');
+      debugPrint('NotificationService.showBreakReminder error: $e\n$st');
     }
   }
 
@@ -108,14 +112,5 @@ class NotificationService {
     } catch (e, st) {
       debugPrint('NotificationService.cancelAllReminders error: $e\n$st');
     }
-  }
-
-  /// Mapea una [Duration] al [RepeatInterval] más cercano soportado.
-  RepeatInterval _durationToRepeatInterval(Duration interval) {
-    if (interval.inHours < 1) return RepeatInterval.hourly;
-    if (interval.inHours == 1) return RepeatInterval.hourly;
-    if (interval.inDays >= 7) return RepeatInterval.weekly;
-    if (interval.inDays >= 1) return RepeatInterval.daily;
-    return RepeatInterval.hourly;
   }
 }
