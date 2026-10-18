@@ -173,7 +173,14 @@ class RhythmGameScreen extends ConsumerWidget {
 
             if (!state.isRunning && state.tapResults.isNotEmpty) ...[
               const SizedBox(height: 8),
-              if (state.accuracy >= 90)
+              if (!state.countsForRecord)
+                Text(
+                  AppStrings.rhythmMinTaps(rhythmMinTapsForRecord),
+                  key: const Key('rhythm-min-taps'),
+                  style: theme.textTheme.bodySmall,
+                  textAlign: TextAlign.center,
+                )
+              else if (state.accuracy >= 90)
                 Text(
                   AppStrings.rhythmMasterUnlocked,
                   style:

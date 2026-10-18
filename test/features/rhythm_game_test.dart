@@ -56,4 +56,32 @@ void main() {
 
     expect(audio.ticks, [true, false, false, false, true, false, false, false]);
   });
+
+  group('puntuación', () {
+    TapResult tap(int offset) => TapResult(offsetMs: offset, timestamp: DateTime(2026));
+
+    test('un solo toque bien dado ya no es 100 %: los pulsos sin tocar cuentan', () {
+      final s = RhythmGameState(tapResults: [tap(10)], beatCount: 8);
+      expect(s.accuracy, 13); // 1 de 8
+      expect(s.countsForRecord, isFalse);
+    });
+
+    test('margen de ±75 ms', () {
+      expect(tap(75).isAccurate, isTrue);
+      expect(tap(-75).isAccurate, isTrue);
+      expect(tap(76).isAccurate, isFalse);
+      expect(tap(-150).isAccurate, isFalse);
+    });
+
+    test('16 toques a tiempo en 16 pulsos: 100 % y cuenta como récord', () {
+      final s = RhythmGameState(tapResults: [for (var i = 0; i < 16; i++) tap(20)], beatCount: 16);
+      expect(s.accuracy, 100);
+      expect(s.countsForRecord, isTrue);
+    });
+
+    test('tocar de más también resta', () {
+      final s = RhythmGameState(tapResults: [for (var i = 0; i < 20; i++) tap(i.isEven ? 0 : 300)], beatCount: 10);
+      expect(s.accuracy, 50); // 10 a tiempo de 20 toques
+    });
+  });
 }

@@ -508,6 +508,10 @@ class AppStrings {
     es: '👂 ¡Logro Oído mágico desbloqueado!',
     en: '👂 Ear Wizard achievement unlocked!',
   );
+  static String rhythmMinTaps(int n) => tr(
+    es: 'Toca al menos $n veces para que la sesión cuente como récord.',
+    en: 'Tap at least $n times for the session to count as a record.',
+  );
   static String get rhythmMasterUnlocked => tr(
     es: '🥁 ¡Logro Maestro del ritmo desbloqueado!',
     en: '🥁 Rhythm Master achievement unlocked!',

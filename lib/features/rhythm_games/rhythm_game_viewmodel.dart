@@ -9,6 +9,14 @@ import '../../services/storage_service.dart';
 
 // ── State ────────────────────────────────────────────────────────────────────
 
+/// Margen para que un toque cuente a tiempo. Con ±150 ms, a 80 BPM tocar al
+/// azar acertaba el 40 % de las veces; ±75 ms exige escuchar el pulso.
+const rhythmToleranceMs = 75;
+
+/// Toques mínimos para que la sesión cuente como récord (y para el logro):
+/// con uno solo bien dado ya salía 100 %.
+const rhythmMinTapsForRecord = 16;
+
 /// Result of a single tap attempt: timing offset in milliseconds.
 class TapResult {
   const TapResult({required this.offsetMs, required this.timestamp});
@@ -17,8 +25,8 @@ class TapResult {
   final int offsetMs;
   final DateTime timestamp;
 
-  /// Whether this tap is considered accurate (within ±150 ms).
-  bool get isAccurate => offsetMs.abs() <= 150;
+  /// A tiempo: a ±[rhythmToleranceMs] del pulso.
+  bool get isAccurate => offsetMs.abs() <= rhythmToleranceMs;
 }
 
 /// Immutable state for [RhythmGameViewModel].
@@ -49,12 +57,18 @@ class RhythmGameState {
 
   int get tapsCount => tapResults.length;
 
-  /// Accuracy percentage 0-100 for the current session.
+  /// Precisión 0-100: toques a tiempo entre lo que había que tocar. Los
+  /// pulsos que pasaron sin tocar cuentan como fallos, y tocar de más
+  /// también resta.
   int get accuracy {
-    if (tapResults.isEmpty) return 0;
+    final expected = max(tapResults.length, beatCount);
+    if (expected == 0) return 0;
     final accurate = tapResults.where((r) => r.isAccurate).length;
-    return ((accurate / tapResults.length) * 100).round();
+    return (accurate / expected * 100).round();
   }
+
+  /// La sesión tiene toques suficientes para contar como récord.
+  bool get countsForRecord => tapResults.length >= rhythmMinTapsForRecord;
 
   RhythmGameState copyWith({
     int? bpm,
@@ -136,7 +150,7 @@ class RhythmGameViewModel extends Notifier<RhythmGameState> {
     final score = state.accuracy;
     state = state.copyWith(isRunning: false);
 
-    if (score > 0) {
+    if (score > 0 && state.countsForRecord) {
       final newBest = max(score, state.bestScore);
       state = state.copyWith(bestScore: newBest);
       try {
