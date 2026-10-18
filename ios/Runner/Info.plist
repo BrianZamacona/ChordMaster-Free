@@ -24,6 +24,8 @@
 	<string>????</string>
 	<key>CFBundleVersion</key>
 	<string>$(FLUTTER_BUILD_NUMBER)</string>
+	<key>NSMicrophoneUsageDescription</key>
+	<string>ChordMaster usa el micrófono solo para el afinador; el audio no se graba ni sale del teléfono. / ChordMaster uses the microphone only for the tuner; audio is never recorded or sent anywhere.</string>
 	<key>LSRequiresIPhoneOS</key>
 	<true/>
 	<key>UIApplicationSceneManifest</key>

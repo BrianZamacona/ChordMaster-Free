@@ -579,6 +579,16 @@ class AppStrings {
       tr(es: 'Espera ${s}s…', en: 'Wait ${s}s…');
   static String get reminderTitle =>
       tr(es: 'Recordatorio de ChordMaster', en: 'ChordMaster reminder');
+  static String get reminderChannelName =>
+      tr(es: 'Recordatorios de pausa', en: 'Break reminders');
+  static String get reminderChannelDesc => tr(
+    es: 'Avisos periódicos para descansar y estirar las manos.',
+    en: 'Periodic reminders to take a break and stretch your hands.',
+  );
+  static String get reminderBody => tr(
+    es: '¡Hora de una pausa! Estira las manos 🎸',
+    en: 'Time for a break! Stretch your hands 🎸',
+  );
 
   // ── Búsqueda y vacíos ──────────────────────────────────────────────────────
 

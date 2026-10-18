@@ -161,3 +161,8 @@ cada nota pertenezca a la escala. No bajar la tolerancia de 0.
 2. Sandbox TS: corregir la 7ª diatónica del grado VII (allí sigue como disminuida; aquí se
    corrigió a 7ª menor y se regeneraron solo esas filas del golden, 2005 → 1983).
 3. Berklee, si se consigue una definición verificable.
+4. iOS (al compilar por primera vez en una Mac): `permission_handler` necesita en el
+   `post_install` del `ios/Podfile` que genere Flutter
+   `config.build_settings['GCC_PREPROCESSOR_DEFINITIONS'] ||= ['$(inherited)', 'PERMISSION_MICROPHONE=1', 'PERMISSION_NOTIFICATIONS=1']`;
+   sin eso el micrófono queda siempre denegado. `Info.plist` ya trae
+   `NSMicrophoneUsageDescription`.

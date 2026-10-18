@@ -14,8 +14,9 @@ class NotificationService {
 
   static const int _healthReminderId = 1001;
   static const String _channelId = 'health_reminders';
-  static const String _channelName = 'Health Reminders';
-  static const String _channelDesc = 'Periodic reminders to take a break and stretch your hands.';
+  // Se ven en los ajustes de notificaciones de Android: en el idioma de la app.
+  static String get _channelName => AppStrings.reminderChannelName;
+  static String get _channelDesc => AppStrings.reminderChannelDesc;
 
   bool _initialised = false;
 
@@ -35,7 +36,7 @@ class NotificationService {
       );
       await _notifications.initialize(settings: initSettings);
       if (!kIsWeb && Platform.isAndroid) {
-        const channel = AndroidNotificationChannel(
+        final channel = AndroidNotificationChannel(
           _channelId,
           _channelName,
           description: _channelDesc,
@@ -75,14 +76,14 @@ class NotificationService {
   Future<void> scheduleHealthReminder(Duration interval) async {
     try {
       await cancelAllReminders();
-      const androidDetails = AndroidNotificationDetails(
+      final androidDetails = AndroidNotificationDetails(
         _channelId,
         _channelName,
         channelDescription: _channelDesc,
         icon: '@mipmap/ic_launcher',
       );
       const iosDetails = DarwinNotificationDetails(presentBadge: false);
-      const notificationDetails = NotificationDetails(
+      final notificationDetails = NotificationDetails(
         android: androidDetails,
         iOS: iosDetails,
       );
@@ -90,7 +91,7 @@ class NotificationService {
       await _notifications.periodicallyShow(
         id: _healthReminderId,
         title: AppStrings.reminderTitle,
-        body: 'Time for a break! Stretch your hands 🎸',
+        body: AppStrings.reminderBody,
         repeatInterval: repeatInterval,
         notificationDetails: notificationDetails,
         androidScheduleMode: AndroidScheduleMode.inexactAllowWhileIdle,
