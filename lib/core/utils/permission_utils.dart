@@ -31,6 +31,17 @@ class PermissionUtils {
     }
   }
 
+  /// `true` si el usuario negó el micrófono para siempre: el sistema ya no
+  /// muestra el diálogo y solo se puede activar desde los ajustes.
+  static Future<bool> isMicrophonePermanentlyDenied() async {
+    try {
+      return (await ph.Permission.microphone.status).isPermanentlyDenied;
+    } catch (e, st) {
+      debugPrint('PermissionUtils.isMicrophonePermanentlyDenied error: $e\n$st');
+      return false;
+    }
+  }
+
   /// Opens the operating-system app settings page for ChordMaster Free.
   ///
   /// Useful when a permission has been permanently denied and the user must

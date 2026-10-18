@@ -1,39 +1,31 @@
 import 'dart:async';
-import 'dart:math';
 
 import 'package:flutter/foundation.dart';
 import 'package:record/record.dart';
 
 import '../core/errors/failures.dart';
-import '../core/utils/audio_utils.dart';
 import '../core/utils/permission_utils.dart';
+import '../domain/audio/pitch_detection.dart';
 
-/// The result of a single pitch-detection sample.
-///
-/// Contains the detected [noteName] (e.g. `"A4"`), the raw [frequency] in Hz,
-/// the [centsDeviation] from the nearest equal-tempered pitch, and a
-/// convenience [isInTune] flag (within ±5 cents).
+/// Una lectura del afinador.
 class PitchResult {
-
-  /// Creates a [PitchResult].
   const PitchResult({
     required this.noteName,
     required this.frequency,
     required this.centsDeviation,
     required this.isInTune,
   });
-  /// The name of the nearest note, e.g. `"A4"` or `"C#3"`.
+
+  /// Nota más cercana con octava, p. ej. `"A4"` o `"C#3"`.
   final String noteName;
 
-  /// The detected fundamental frequency in Hz.
+  /// Frecuencia fundamental detectada, en Hz.
   final double frequency;
 
-  /// Signed deviation from the nearest note in cents.
-  ///
-  /// Positive ⇒ sharp; negative ⇒ flat.
+  /// Desvío respecto de la nota en cents (positivo = alto).
   final double centsDeviation;
 
-  /// Whether the frequency is within ±5 cents of the nearest note.
+  /// A ±5 cents o menos.
   final bool isInTune;
 
   @override
@@ -42,216 +34,124 @@ class PitchResult {
       'cents: ${centsDeviation.toStringAsFixed(1)}, inTune: $isInTune)';
 }
 
-/// Singleton service that captures microphone input and emits detected pitch
-/// information as a [Stream<PitchResult>].
+/// Escucha el micrófono y emite la afinación detectada.
 ///
-/// ### Architecture note
-/// The `record` package records audio to a stream of raw bytes, but
-/// performing real-time autocorrelation from compressed codec output is
-/// platform-dependent and fragile.  This implementation uses the `record`
-/// package to **gate permission checking and mic lifecycle** while emitting a
-/// physically-plausible simulated pitch stream suitable for UI development
-/// and testing.  The public API is fully structured for a production
-/// autocorrelation back-end: swap out [_emitSimulatedPitch] for a real DSP
-/// pipeline without changing any callers.
-///
-/// ### Usage
-/// ```dart
-/// await PitchService().startListening();
-/// PitchService().pitchStream.listen((result) { ... });
-/// await PitchService().stopListening();
-/// ```
+/// El micrófono entrega PCM de 16 bits a 44.1 kHz; se baja a 22.05 kHz y,
+/// cada ~46 ms, se analiza una ventana de ~93 ms con YIN
+/// (`domain/audio/pitch_detection.dart`). La mediana de las últimas 5
+/// lecturas estabiliza la aguja. Nada se graba ni se guarda.
 class PitchService {
-
-  /// Factory constructor always returns [instance].
   factory PitchService() => instance;
 
   PitchService._internal();
-  /// The singleton instance.
+
+  /// Para dobles de prueba (se inyectan con `pitchServiceProvider`).
+  @visibleForTesting
+  PitchService.forTesting();
+
   static final PitchService instance = PitchService._internal();
 
-  /// Override to change the A4 reference frequency (default 440 Hz).
-  double referenceA4 = AudioUtils.a4Frequency;
+  static const _micRate = 44100;
+  static const _rate = _micRate ~/ 2;
+  static const _window = 2048; // muestras a 22.05 kHz (~93 ms)
+  static const _hop = 1024; // nueva lectura cada ~46 ms
+  static const _median = 5;
 
-  final AudioRecorder _recorder = AudioRecorder();
-  final StreamController<PitchResult> _controller =
-      StreamController<PitchResult>.broadcast();
+  /// La de referencia (440 Hz por defecto); lo cambia el afinador.
+  double referenceA4 = 440;
 
-  Timer? _simulationTimer;
+  /// Se crea al usarlo por primera vez (abre el plugin del micrófono).
+  late final AudioRecorder _recorder = AudioRecorder();
+  final StreamController<PitchResult> _controller = StreamController<PitchResult>.broadcast();
+  StreamSubscription<Uint8List>? _mic;
+
+  /// Muestras a 22.05 kHz pendientes de analizar.
+  final _buffer = <double>[];
+  final _recent = <double>[];
   bool _isListening = false;
 
-  // Guitar open-string frequencies for realistic simulation (E2–E4 range).
-  static const List<double> _guitarFrequencies = [
-    82.41,  // E2
-    110.00, // A2
-    146.83, // D3
-    196.00, // G3
-    246.94, // B3
-    329.63, // E4
-  ];
-
-  int _simIndex = 0;
-  final Random _random = Random();
-
-  // ── Public API ────────────────────────────────────────────────────────────
-
-  /// Broadcast stream of [PitchResult] objects emitted while listening.
-  ///
-  /// Subscribe before calling [startListening].  The stream stays open
-  /// between [startListening] / [stopListening] cycles.
   Stream<PitchResult> get pitchStream => _controller.stream;
 
-  /// Returns `true` while the service is actively capturing audio.
   bool get isListening => _isListening;
 
-  /// Starts microphone capture and begins emitting [PitchResult] values on
-  /// [pitchStream].
-  ///
-  /// Requests microphone permission via [PermissionUtils].  Throws a
-  /// [PermissionFailure] if permission is denied so that callers can surface
-  /// an appropriate UI prompt.
-  ///
-  /// Calling this method while already listening is a no-op.
+  /// Pide el micrófono y empieza a emitir en [pitchStream]. Lanza
+  /// [PermissionFailure] si el permiso se niega.
   Future<void> startListening() async {
     if (_isListening) return;
+    final granted = await PermissionUtils.requestMicrophonePermission();
+    if (!granted || !await _recorder.hasPermission()) {
+      throw const PermissionFailure(
+        message: 'Microphone permission denied. Please enable it in app settings.',
+      );
+    }
     try {
-      final granted = await PermissionUtils.requestMicrophonePermission();
-      if (!granted) {
-        throw const PermissionFailure(
-          message:
-              'Microphone permission denied. Please enable it in app settings.',
-        );
-      }
-
-      // Start the recorder so the OS mic indicator is active and permissions
-      // remain valid.  Audio is streamed but processed via the simulation
-      // pipeline for now.
-      final hasPermission = await _recorder.hasPermission();
-      if (!hasPermission) {
-        throw const PermissionFailure(
-          message: 'Record package could not obtain microphone permission.',
-        );
-      }
-
+      final stream = await _recorder.startStream(
+        // 44.1 kHz mono, sin procesado de voz (autoGain, echoCancel y noiseSuppress
+        // quedan en su valor por defecto, desactivados): altera la guitarra.
+        const RecordConfig(encoder: AudioEncoder.pcm16bits, numChannels: 1),
+      );
+      _buffer.clear();
+      _recent.clear();
       _isListening = true;
-      _startSimulation();
-    } on PermissionFailure {
-      rethrow;
+      _mic = stream.listen(_onBytes, onError: _controller.addError);
     } catch (e, st) {
       debugPrint('PitchService.startListening error: $e\n$st');
       _isListening = false;
+      rethrow;
     }
   }
 
-  /// Stops microphone capture and halts pitch emission.
-  ///
-  /// Safe to call even when not listening.
   Future<void> stopListening() async {
     if (!_isListening) return;
+    _isListening = false;
     try {
-      _simulationTimer?.cancel();
-      _simulationTimer = null;
-      if (await _recorder.isRecording()) {
-        await _recorder.stop();
-      }
-      _isListening = false;
+      await _mic?.cancel();
+      _mic = null;
+      if (await _recorder.isRecording()) await _recorder.stop();
     } catch (e, st) {
       debugPrint('PitchService.stopListening error: $e\n$st');
-      _isListening = false;
     }
   }
 
-  /// Releases all resources held by this service.
-  ///
-  /// After calling [dispose] the service must not be used again.
   Future<void> dispose() async {
     await stopListening();
     await _controller.close();
     await _recorder.dispose();
   }
 
-  // ── Simulation / DSP pipeline ─────────────────────────────────────────────
-
-  /// Starts a 100 ms periodic timer that drives the pitch simulation.
-  void _startSimulation() {
-    _simulationTimer?.cancel();
-    _simulationTimer = Timer.periodic(
-      const Duration(milliseconds: 100),
-      (_) => _emitSimulatedPitch(),
-    );
-  }
-
-  /// Produces a [PitchResult] that cycles through guitar open-string
-  /// frequencies with a small random cents offset to simulate natural
-  /// intonation drift.
-  ///
-  /// **Replace this method** with a real autocorrelation implementation once a
-  /// PCM byte stream is available from the recorder.
-  void _emitSimulatedPitch() {
-    try {
-      // Advance through guitar strings slowly (every ~20 samples = 2 s).
-      if (_random.nextInt(20) == 0) {
-        _simIndex = (_simIndex + 1) % _guitarFrequencies.length;
-      }
-
-      // Apply a small random cents offset (-15 … +15) to simulate real pitch.
-      final centsOffset = (_random.nextDouble() * 30) - 15;
-      final baseFreq = _guitarFrequencies[_simIndex];
-      final detectedFreq = baseFreq * pow(2, centsOffset / 1200);
-
-      final result = _buildPitchResult(detectedFreq);
-      if (!_controller.isClosed) {
-        _controller.add(result);
-      }
-    } catch (e, st) {
-      debugPrint('PitchService._emitSimulatedPitch error: $e\n$st');
+  void _onBytes(Uint8List bytes) {
+    _buffer.addAll(decimateByTwo(pcm16ToSamples(bytes)));
+    while (_buffer.length >= _window) {
+      final reading = analyze(Float64List.fromList(_buffer.sublist(0, _window)));
+      _buffer.removeRange(0, _hop);
+      if (reading != null && !_controller.isClosed) _controller.add(reading);
     }
   }
 
-  /// Applies the autocorrelation algorithm to [pcmSamples] (16-bit signed,
-  /// mono) and returns a [PitchResult].
-  ///
-  /// This method is provided for a real DSP implementation.  It is not
-  /// called by the simulation path but is fully functional.
-  ///
-  /// Returns `null` when no clear fundamental is detected (e.g. silence).
-  PitchResult? autocorrelate(List<int> pcmSamples, int sampleRate) {
-    if (pcmSamples.length < 2) return null;
-
-    final n = pcmSamples.length;
-    double bestCorrelation = 0;
-    int bestPeriod = -1;
-
-    // Search for periods corresponding to 60 Hz – 1 500 Hz.
-    final minPeriod = (sampleRate ~/ 1500).clamp(2, n ~/ 2);
-    final maxPeriod = (sampleRate ~/ 60).clamp(minPeriod + 1, n ~/ 2);
-
-    for (int period = minPeriod; period < maxPeriod; period++) {
-      double correlation = 0;
-      for (int i = 0; i < n - period; i++) {
-        correlation += pcmSamples[i] * pcmSamples[i + period];
-      }
-      if (correlation > bestCorrelation) {
-        bestCorrelation = correlation;
-        bestPeriod = period;
-      }
+  /// Analiza una ventana (22.05 kHz) y devuelve la lectura estabilizada, o
+  /// `null` si no hay nota (silencio, ruido): entonces se olvida el
+  /// historial para que la nota siguiente no arrastre la anterior.
+  @visibleForTesting
+  PitchResult? analyze(Float64List window) {
+    final hz = detectPitchHz(window, _rate);
+    if (hz == null) {
+      _recent.clear();
+      return null;
     }
-
-    if (bestPeriod <= 0) return null;
-
-    final frequency = sampleRate / bestPeriod;
-    return _buildPitchResult(frequency);
+    _recent.add(hz);
+    if (_recent.length > _median) _recent.removeAt(0);
+    final sorted = [..._recent]..sort();
+    return resultFor(sorted[sorted.length ~/ 2]);
   }
 
-  /// Converts a raw [frequency] (Hz) into a fully-populated [PitchResult].
-  PitchResult _buildPitchResult(double frequency) {
-    final noteName = AudioUtils.frequencyToNote(frequency);
-    final cents = AudioUtils.centsDeviation(frequency, noteName);
+  /// Lectura de [hz] con el La de referencia actual.
+  PitchResult resultFor(double hz) {
+    final note = nearestNote(hz, a4: referenceA4);
     return PitchResult(
-      noteName: noteName,
-      frequency: frequency,
-      centsDeviation: cents,
-      isInTune: AudioUtils.isInTune(cents),
+      noteName: note.name,
+      frequency: hz,
+      centsDeviation: note.cents,
+      isInTune: note.cents.abs() <= 5,
     );
   }
 }

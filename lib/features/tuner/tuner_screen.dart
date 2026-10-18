@@ -85,8 +85,10 @@ class _TunerScreenState extends ConsumerState<TunerScreen> {
       ),
       body: !state.hasPermission
           ? _PermissionDeniedView(
-              onGrant: () =>
-                  ref.read(tunerViewModelProvider.notifier).startListening(),
+              permanentlyDenied: state.permanentlyDenied,
+              onGrant: state.permanentlyDenied
+                  ? ref.read(tunerViewModelProvider.notifier).openSettings
+                  : () => ref.read(tunerViewModelProvider.notifier).startListening(),
             )
           : SingleChildScrollView(
               padding: const EdgeInsets.all(16),
@@ -118,9 +120,12 @@ class _TunerScreenState extends ConsumerState<TunerScreen> {
 }
 
 class _PermissionDeniedView extends StatelessWidget {
-  const _PermissionDeniedView({required this.onGrant});
+  const _PermissionDeniedView({required this.onGrant, required this.permanentlyDenied});
 
   final VoidCallback onGrant;
+
+  /// Negado para siempre: el botón abre los ajustes en vez de volver a pedir.
+  final bool permanentlyDenied;
 
   @override
   Widget build(BuildContext context) => Center(
@@ -132,15 +137,18 @@ class _PermissionDeniedView extends StatelessWidget {
               Icon(Icons.mic_off, color: context.palette.error, size: 64),
               const SizedBox(height: 16),
               Text(
-                AppStrings.micRequired,
+                permanentlyDenied ? AppStrings.micDeniedForever : AppStrings.micRequired,
                 textAlign: TextAlign.center,
                 style: TextStyle(color: context.palette.textSecondary, fontSize: 16),
               ),
               const SizedBox(height: 24),
               ElevatedButton.icon(
+                key: const Key('mic-grant'),
                 onPressed: onGrant,
-                icon: const Icon(Icons.mic),
-                label: Text(AppStrings.grantPermission),
+                icon: Icon(permanentlyDenied ? Icons.settings : Icons.mic),
+                label: Text(
+                  permanentlyDenied ? AppStrings.openSettings : AppStrings.grantPermission,
+                ),
                 style: ElevatedButton.styleFrom(
                   backgroundColor: context.palette.accent,
                   foregroundColor: context.palette.onAccent,

@@ -106,6 +106,11 @@ cada nota pertenezca a la escala. No bajar la tolerancia de 0.
   `AudioService.forTesting()` para un doble que registra lo que se pidió sonar.
 - Usos: rasgueo del acorde (detalle), escuchar la progresión, intervalos (oído), metrónomo y
   pulso del juego de ritmo.
+- Afinador: `PitchService` lee el micrófono con `record` (PCM 16 bits, 44.1 kHz mono, sin
+  procesado de voz), baja a 22.05 kHz y detecta con YIN (`lib/domain/audio/pitch_detection.dart`,
+  test con cuerdas sintetizadas: < 2 cents, sin errores de octava, silencio/ruido = sin
+  lectura). Mediana de 5 lecturas; el La de referencia (440/442…) llega al cálculo. Antes era
+  una simulación: no volver a eso.
 
 ## Flujo de trabajo (obligatorio)
 1. Antes de cada commit: `flutter analyze` y `flutter test` limpios. Un commit que no

@@ -528,6 +528,11 @@ class AppStrings {
   );
   static String lastTaps(int n) =>
       tr(es: 'Últimos $n toques:', en: 'Last $n taps:');
+  static String get micDeniedForever => tr(
+    es: 'El permiso del micrófono está desactivado. Actívalo en los ajustes de la app para usar el afinador.',
+    en: 'Microphone access is turned off. Enable it in the app settings to use the tuner.',
+  );
+  static String get openSettings => tr(es: 'Abrir ajustes', en: 'Open settings');
   static String get micRequired => tr(
     es: 'El afinador necesita el micrófono. Concede el permiso para usarlo.',
     en: 'Microphone access is required to use the tuner. Please grant permission.',

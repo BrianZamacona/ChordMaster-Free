@@ -3,6 +3,7 @@ import 'dart:async';
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 
+import '../../core/utils/permission_utils.dart';
 import '../../services/pitch_service.dart';
 
 /// Provider for the [PitchService] singleton.
@@ -25,7 +26,11 @@ class TunerState {
     this.hasPermission = true,
     this.isListening = false,
     this.referenceHz = 440.0,
+    this.permanentlyDenied = false,
   });
+
+  /// El micrófono se negó para siempre: hay que ir a los ajustes.
+  final bool permanentlyDenied;
   final String? note;
   final double? frequency;
   final double? cents;
@@ -50,6 +55,7 @@ class TunerState {
     bool? hasPermission,
     bool? isListening,
     double? referenceHz,
+    bool? permanentlyDenied,
   }) => TunerState(
       note: identical(note, _unset) ? this.note : note as String?,
       frequency:
@@ -59,6 +65,7 @@ class TunerState {
       hasPermission: hasPermission ?? this.hasPermission,
       isListening: isListening ?? this.isListening,
       referenceHz: referenceHz ?? this.referenceHz,
+      permanentlyDenied: permanentlyDenied ?? this.permanentlyDenied,
     );
 }
 
@@ -84,11 +91,19 @@ class TunerViewModel extends Notifier<TunerState> {
     if (state.isListening) return;
     try {
       await _pitchService.startListening();
-      state = state.copyWith(isListening: true, hasPermission: true);
+      state = state.copyWith(
+        isListening: true,
+        hasPermission: true,
+        permanentlyDenied: false,
+      );
       _sub = _pitchService.pitchStream.listen(_onPitch, onError: _onError);
     } catch (e) {
       debugPrint('TunerViewModel.startListening error: $e');
-      state = state.copyWith(hasPermission: false, isListening: false);
+      state = state.copyWith(
+        hasPermission: false,
+        isListening: false,
+        permanentlyDenied: await PermissionUtils.isMicrophonePermanentlyDenied(),
+      );
     }
   }
 
@@ -127,9 +142,14 @@ class TunerViewModel extends Notifier<TunerState> {
     );
   }
 
+  /// Cambia el La de referencia; las lecturas siguientes ya lo usan.
   void setReference(double hz) {
+    _pitchService.referenceA4 = hz;
     state = state.copyWith(referenceHz: hz);
   }
+
+  /// Abre los ajustes de la app (micrófono negado para siempre).
+  Future<void> openSettings() => PermissionUtils.openAppSettings();
 
 }
 
