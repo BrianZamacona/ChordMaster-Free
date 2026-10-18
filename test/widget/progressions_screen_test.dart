@@ -42,13 +42,19 @@ Future<ProviderContainer> _pump(
   return container;
 }
 
+/// Nombres visibles de los acordes de la progresión, en orden.
+List<String> _stepNames(WidgetTester tester) => [
+  for (var i = 0; tester.any(find.byKey(Key('step-name-$i'))); i++)
+    tester.widget<Text>(find.byKey(Key('step-name-$i'))).data!,
+];
+
 void main() {
   final builder = _realBuilder();
 
   const expectedNames = {
-    0: ['C Major', 'G Major', 'A Minor', 'F Major'],
-    7: ['G Major', 'D Major', 'E Minor', 'C Major'],
-    5: ['F Major', 'C Major', 'D Minor', 'A# Major'],
+    0: ['C', 'G', 'Am', 'F'],
+    7: ['G', 'D', 'Em', 'C'],
+    5: ['F', 'C', 'Dm', 'A#'],
   };
 
   for (final entry in expectedNames.entries) {
@@ -63,22 +69,18 @@ void main() {
 
       expect(find.byType(ChordDiagramWidget), findsNWidgets(4));
       expect(find.byType(ProgressionTransitionChip), findsNWidgets(3));
-      for (final name in entry.value) {
-        expect(find.text(name), findsOneWidget, reason: name);
-      }
+      expect(_stepNames(tester), entry.value);
     });
   }
 
   testWidgets('cambiar de tónica cambia los nombres de acordes', (tester) async {
     final container = await _pump(tester, builder);
-    expect(find.text('C Major'), findsOneWidget);
+    expect(_stepNames(tester), ['C', 'G', 'Am', 'F']);
 
     container.read(progressionsViewModelProvider.notifier).setTonic(7);
     await tester.pumpAndSettle();
 
-    expect(find.text('C Major'), findsOneWidget); // IV de G
-    expect(find.text('G Major'), findsOneWidget);
-    expect(find.text('A Minor'), findsNothing);
+    expect(_stepNames(tester), ['G', 'D', 'Em', 'C']); // C = IV de G
   });
 
   testWidgets('modo principiante en G con I-V-vi-IV: sin cejilla grande', (
@@ -125,9 +127,7 @@ void main() {
       await tester.pumpAndSettle();
     }
     expect(find.byType(ChordDiagramWidget), findsNWidgets(3));
-    for (final name in ['D Minor', 'G Major', 'C Major']) {
-      expect(find.text(name), findsOneWidget, reason: name);
-    }
+    expect(_stepNames(tester), ['Dm', 'G', 'C']);
     expect(find.textContaining('cadencia auténtica'), findsOneWidget);
 
     await tester.tap(find.byKey(const Key('custom-clear')));

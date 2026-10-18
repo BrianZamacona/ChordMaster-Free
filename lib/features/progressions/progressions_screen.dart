@@ -278,8 +278,10 @@ class _StepCard extends StatelessWidget {
                     ),
                     const SizedBox(width: 8),
                     Flexible(
+                      // Cifrado internacional (C, Am, G7), no el id en inglés.
                       child: Text(
-                        chord.name,
+                        chordDisplayName(root: chord.root, type: chord.type),
+                        key: Key('step-name-$index'),
                         style: theme.textTheme.titleSmall,
                         overflow: TextOverflow.ellipsis,
                       ),
