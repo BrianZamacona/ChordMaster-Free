@@ -87,14 +87,15 @@ List<Song> get _catalogue => [
     title: 'Wish You Were Here',
     artist: 'Pink Floyd',
     genre: 'Rock',
-    chordProgression: ['G', 'Em', 'Am', 'Em', 'G'],
+    // Estrofa ("So, so you think you can tell..."); la intro es Em7, G y A7sus4.
+    chordProgression: ['C', 'D', 'Am', 'G', 'D', 'C', 'Am', 'G'],
     strummingPattern: tr(es: 'Fingerpicking', en: 'Fingerpick'),
     tempo: 62,
     timeSignature: '4/4',
     difficulty: 3,
     notes: tr(
-      es: 'La intro es con fingerpicking. Ideal para desarrollar la mano derecha.',
-      en: 'Intro uses fingerpicking. Great for developing right-hand technique.',
+      es: 'Estrofa: C, D, Am y G. La intro (Em7, G, A7sus4) es con fingerpicking: ideal para la mano derecha.',
+      en: 'Verse: C, D, Am and G. The intro (Em7, G, A7sus4) is fingerpicked: great for right-hand technique.',
     ),
   ),
   Song(
@@ -117,14 +118,15 @@ List<Song> get _catalogue => [
     title: 'Stairway to Heaven',
     artist: 'Led Zeppelin',
     genre: 'Rock',
-    chordProgression: ['Am', 'G#', 'C', 'G', 'Fmaj7', 'G', 'Am'],
+    // Bajo descendente de la intro: la, sol#, sol, fa#.
+    chordProgression: ['Am', 'Am/G#', 'Am/G', 'D/F#', 'Fmaj7', 'G', 'Am'],
     strummingPattern: tr(es: 'Fingerpicking + rasgueo', en: 'Fingerpick + strum'),
     tempo: 78,
     timeSignature: '4/4',
     difficulty: 5,
     notes: tr(
-      es: 'Intro icónica con fingerpicking que termina en un final de rock completo.',
-      en: 'Iconic fingerpicking intro. Transitions to a full rock ending.',
+      es: 'Intro con fingerpicking sobre un bajo que baja de La a Fa#: Am, Am/G#, Am/G, D/F#. Termina en un final de rock completo.',
+      en: 'Fingerpicked intro over a bass line falling from A to F#: Am, Am/G#, Am/G, D/F#. Ends in a full rock finale.',
     ),
   ),
   Song(
@@ -146,17 +148,21 @@ List<Song> get _catalogue => [
     title: 'Smells Like Teen Spirit',
     artist: 'Nirvana',
     genre: 'Grunge / Rock',
-    chordProgression: ['F', 'Bb', 'Ab', 'Db'],
+    chordProgression: ['F5', 'A#5', 'G#5', 'C#5'],
     strummingPattern: tr(es: 'Power chord DDUUDU', en: 'Power chord DDUUDU'),
     tempo: 117,
     timeSignature: '4/4',
     difficulty: 3,
     notes: tr(
-      es: 'Power chords con palm muting. El riff usa F5, Bb5, Ab5 y Db5.',
-      en: 'Power chords with palm muting. Iconic riff uses F5, Bb5, Ab5, Db5.',
+      es: 'Power chords con palm muting: F5, A#5, G#5 y C#5.',
+      en: 'Power chords with palm muting: F5, A#5, G#5 and C#5.',
     ),
   ),
 ];
+
+/// Acorde de la biblioteca que corresponde a [symbol]: en los slash (Am/G),
+/// el acorde de arriba (Am); el bajo se elige en su ficha.
+String songChordBase(String symbol) => symbol.split('/').first;
 
 /// Returns the full hardcoded song catalogue.
 List<Song> get allSongs => _catalogue;

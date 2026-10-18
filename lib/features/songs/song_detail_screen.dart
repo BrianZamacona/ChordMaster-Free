@@ -1,7 +1,9 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
+import 'package:go_router/go_router.dart';
 
 import '../../core/constants/app_strings.dart';
+import '../chords/chord_viewmodel.dart';
 import 'songs_viewmodel.dart';
 
 /// Detail screen for a single song.
@@ -30,6 +32,8 @@ class _SongDetailScreenState extends ConsumerState<SongDetailScreen> {
   Widget build(BuildContext context) {
     final song = findSongById(widget.songId);
     final theme = Theme.of(context);
+    // Reconstruye al terminar de cargar la biblioteca (enlaces de los acordes).
+    ref.watch(chordViewModelProvider.select((s) => s.allChords.length));
 
     if (song == null) {
       return Scaffold(
@@ -111,15 +115,28 @@ class _SongDetailScreenState extends ConsumerState<SongDetailScreen> {
               child: Wrap(
                 spacing: 8,
                 runSpacing: 8,
-                children: song.chordProgression
-                    .map((chord) => Chip(
-                          label: Text(
-                            chord,
-                            style: const TextStyle(fontWeight: FontWeight.bold),
-                          ),
-                          backgroundColor: theme.colorScheme.primaryContainer,
-                        ))
-                    .toList(),
+                children: [
+                  for (final (i, symbol) in song.chordProgression.indexed)
+                    // Toca un acorde para ver su ficha (si está en la biblioteca).
+                    if (ref
+                            .read(chordViewModelProvider.notifier)
+                            .findByName(songChordBase(symbol))
+                        case final chord?)
+                      ActionChip(
+                        key: Key('song-chord-$i'),
+                        label: Text(symbol, style: const TextStyle(fontWeight: FontWeight.bold)),
+                        backgroundColor: theme.colorScheme.primaryContainer,
+                        onPressed: () => context.push(
+                          '/learn/chords/${Uri.encodeComponent(chord.name)}',
+                        ),
+                      )
+                    else
+                      Chip(
+                        key: Key('song-chord-$i'),
+                        label: Text(symbol, style: const TextStyle(fontWeight: FontWeight.bold)),
+                        backgroundColor: theme.colorScheme.primaryContainer,
+                      ),
+                ],
               ),
             ),
             const SizedBox(height: 12),
