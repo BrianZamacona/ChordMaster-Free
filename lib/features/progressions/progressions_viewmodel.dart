@@ -21,6 +21,7 @@ class ProgressionsState {
     this.progressionsGenerated = 0,
     this.beginner = false,
     this.custom = const [],
+    this.chosen = const {},
   });
 
   /// Pitch class de la tónica (C = 0).
@@ -33,6 +34,10 @@ class ProgressionsState {
 
   /// Grados de "Mi progresión" (lo que antes era el módulo Componer).
   final List<String> custom;
+
+  /// Digitaciones elegidas a mano en el glosario, por índice de acorde
+  /// (orden de chords.json). El resto sigue el camino óptimo.
+  final Map<int, FingeringChoice> chosen;
 
   bool get isCustom => progressionId == customProgressionId;
 
@@ -50,14 +55,19 @@ class ProgressionsState {
     int? progressionsGenerated,
     bool? beginner,
     List<String>? custom,
+    Map<int, FingeringChoice>? chosen,
   }) => ProgressionsState(
     tonic: tonic ?? this.tonic,
     progressionId: progressionId ?? this.progressionId,
     progressionsGenerated: progressionsGenerated ?? this.progressionsGenerated,
     beginner: beginner ?? this.beginner,
     custom: custom ?? this.custom,
+    chosen: chosen ?? this.chosen,
   );
 }
+
+/// Digitación elegida para un acorde (orden de chords.json, 6ª → 1ª).
+typedef FingeringChoice = ({List<int> frets, List<int> fingers});
 
 /// Id de la progresión armada por el usuario.
 const customProgressionId = 'custom';
@@ -83,10 +93,14 @@ class ProgressionStep {
     required this.numeral,
     required this.voicing,
     this.transition,
+    this.chosen = false,
   });
 
   final String numeral;
   final ProgressionVoicing voicing;
+
+  /// `true` si el usuario la eligió en el glosario (no es la del camino).
+  final bool chosen;
 
   /// `null` en el primer acorde.
   final ProgressionTransition? transition;
@@ -119,6 +133,7 @@ ProgressionPlan buildProgressionPlan(
   Progression progression,
   int tonic, {
   bool beginner = false,
+  Map<int, FingeringChoice> chosen = const {},
 }) {
   final layers = builder.layersFor(progression, tonic, beginner: beginner);
   final missing = [
@@ -136,7 +151,22 @@ ProgressionPlan buildProgressionPlan(
     );
   }
 
-  final path = findOptimalProgressionPath(layers);
+  final optimal = findOptimalProgressionPath(layers);
+  // Las elegidas a mano reemplazan solo su acorde; los demás quedan como en
+  // el camino óptimo (la progresión por defecto no cambia).
+  final path = [
+    for (var i = 0; i < optimal.length; i++)
+      if (chosen[i] case final c?)
+        builder.voicingFor(
+              optimal[i].chord.root,
+              optimal[i].chord.type,
+              c.frets,
+              c.fingers,
+            ) ??
+            optimal[i]
+      else
+        optimal[i],
+  ];
   if (path.isEmpty) {
     return ProgressionPlan(
       progression: progression,
@@ -156,6 +186,7 @@ ProgressionPlan buildProgressionPlan(
         ProgressionStep(
           numeral: progression.degrees[i].numeral,
           voicing: path[i],
+          chosen: chosen.containsKey(i),
           transition: i == 0
               ? null
               : ProgressionTransition(
@@ -196,6 +227,7 @@ final progressionPlanProvider = Provider<AsyncValue<ProgressionPlan>>((ref) {
           progression,
           s.tonic,
           beginner: s.beginner,
+          chosen: s.chosen,
         ),
       );
 });
@@ -254,8 +286,18 @@ class ProgressionsViewModel extends Notifier<ProgressionsState> {
     }
   }
 
+  /// Usa [choice] para el acorde [index] de la progresión (glosario).
+  void chooseFingering(int index, FingeringChoice choice) =>
+      state = state.copyWith(chosen: {...state.chosen, index: choice});
+
+  /// Vuelve a la digitación del camino óptimo en el acorde [index].
+  void resetFingering(int index) =>
+      state = state.copyWith(chosen: {...state.chosen}..remove(index));
+
+  // Las elegidas a mano se descartan al cambiar tonalidad, progresión o modo:
+  // los acordes ya no son los mismos.
   void setTonic(int tonic) {
-    state = state.copyWith(tonic: tonic);
+    state = state.copyWith(tonic: tonic, chosen: const {});
     if (!state.isCustom) {
       _countGeneration('${state.progressionId}@$tonic');
     } else if (state.custom.length >= 3) {
@@ -264,10 +306,10 @@ class ProgressionsViewModel extends Notifier<ProgressionsState> {
   }
 
   void setBeginner({required bool beginner}) =>
-      state = state.copyWith(beginner: beginner);
+      state = state.copyWith(beginner: beginner, chosen: const {});
 
   void setProgression(String id) {
-    state = state.copyWith(progressionId: id);
+    state = state.copyWith(progressionId: id, chosen: const {});
     if (id != customProgressionId) _countGeneration('$id@${state.tonic}');
   }
 
@@ -288,7 +330,11 @@ class ProgressionsViewModel extends Notifier<ProgressionsState> {
   void clearCustom() => _setCustom(const []);
 
   void _setCustom(List<String> custom) {
-    state = state.copyWith(custom: custom, progressionId: customProgressionId);
+    state = state.copyWith(
+      custom: custom,
+      progressionId: customProgressionId,
+      chosen: const {},
+    );
     _saveCustom(custom);
     // Cuenta como progresión generada a partir de 3 acordes.
     if (custom.length >= 3) {

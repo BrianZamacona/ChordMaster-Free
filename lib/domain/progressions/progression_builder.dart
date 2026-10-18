@@ -140,6 +140,31 @@ class ProgressionBuilder {
     return open.isEmpty ? candidates : open;
   }
 
+  /// Una digitación concreta del acorde (la que el usuario eligió en el
+  /// glosario), con el mismo cálculo de costo que los candidatos pero sin
+  /// filtrar: puede ser una tríada, una inversión o una cejilla. `null` si
+  /// el acorde no existe.
+  ProgressionVoicing? voicingFor(
+    String root,
+    String type,
+    List<int> jsonFrets,
+    List<int> jsonFingers,
+  ) {
+    final chord = _chords['$root|$type'];
+    if (chord == null || jsonFrets.length != 6 || jsonFingers.length != 6) {
+      return null;
+    }
+    final frets = VoicingAdapter.fromChordJson(jsonFrets);
+    return ProgressionVoicing(
+      fretPositions: frets,
+      anchorFret: _anchorFret(frets),
+      individualCost: calculateErgonomicCost(ErgonomicVoicing(fretPositions: frets)),
+      chord: chord,
+      jsonFrets: jsonFrets,
+      jsonFingers: jsonFingers,
+    );
+  }
+
   List<List<ProgressionVoicing>> layersFor(
     Progression progression,
     int tonic, {

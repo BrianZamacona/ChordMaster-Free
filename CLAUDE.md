@@ -86,6 +86,10 @@ cada nota pertenezca a la escala. No bajar la tolerancia de 0.
   traste − notas retenidas). En modo Estándar el costo no penaliza cejillas; el modo
   Principiante (`ErgonomicOptions.beginner`) suma +2.0 por cejilla mini (2–3 cuerdas) y
   +8.0 por grande (≥4). No es filtro duro: un grado solo con cejillas sigue dando camino.
+- Progresiones, glosario: la progresión siempre se arma con el camino óptimo; tocar un acorde
+  abre todas sus posiciones (principal, CAGED, voicings, tríadas, inversiones) y la elegida
+  reemplaza SOLO ese acorde (`chosen` en el estado; las transiciones se recalculan). Se
+  descarta al cambiar tonalidad, progresión o modo.
 - Comparador de digitaciones: `analyzeFingering` incluye SIEMPRE la cejilla en el costo,
   así que puede no coincidir con Progresiones en modo Estándar; la pantalla lo advierte.
 - Calidad de double stops por grado (3ª, 6ª, 7ª...) en `lib/domain/theory/double_stops.dart`,

@@ -291,6 +291,15 @@ class AppStrings {
         'W+H = step and a half (3 frets). Only some scales have step-and-a-half '
         'leaps.',
   );
+  static String get progressionTapHint => tr(
+    es: 'Toca un acorde para ver todas sus posiciones y cambiarla.',
+    en: 'Tap a chord to see all of its positions and change it.',
+  );
+  static String progressionPositionsOf(String chord) =>
+      tr(es: 'Posiciones de $chord', en: '$chord positions');
+  static String get progressionChosen => tr(es: 'Elegida por ti', en: 'Your choice');
+  static String get progressionResetFingering =>
+      tr(es: 'Volver a la recomendada', en: 'Back to the recommended one');
   static String get slashTitle =>
       tr(es: 'Bajo (acorde slash)', en: 'Bass note (slash chord)');
   static String get slashHint => tr(

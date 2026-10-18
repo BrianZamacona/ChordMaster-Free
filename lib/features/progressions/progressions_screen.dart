@@ -11,6 +11,8 @@ import '../../domain/theory/double_stops.dart' show noteNames;
 import '../../domain/theory/harmony.dart';
 import '../../domain/voicing/barre_detection.dart';
 import '../../ui/theme.dart';
+import '../chords/chord_viewmodel.dart';
+import '../chords/fingering_selection.dart';
 import 'progressions_viewmodel.dart';
 
 /// Chord progressions screen.
@@ -209,12 +211,24 @@ class _PlanView extends StatelessWidget {
       const gap = 12.0;
       final columns = constraints.maxWidth >= 640 ? 4 : 2;
       final width = (constraints.maxWidth - gap * (columns - 1)) / columns;
-      return Wrap(
-        spacing: gap,
-        runSpacing: gap,
+      return Column(
+        crossAxisAlignment: CrossAxisAlignment.start,
         children: [
-          for (final step in plan.steps)
-            SizedBox(width: width, child: _StepCard(step: step)),
+          Text(
+            AppStrings.progressionTapHint,
+            style: Theme.of(context).textTheme.bodySmall?.copyWith(
+              color: context.palette.textSecondary,
+            ),
+          ),
+          const SizedBox(height: 8),
+          Wrap(
+            spacing: gap,
+            runSpacing: gap,
+            children: [
+              for (final (i, step) in plan.steps.indexed)
+                SizedBox(width: width, child: _StepCard(index: i, step: step)),
+            ],
+          ),
         ],
       );
     },
@@ -222,8 +236,9 @@ class _PlanView extends StatelessWidget {
 }
 
 class _StepCard extends StatelessWidget {
-  const _StepCard({required this.step});
+  const _StepCard({required this.index, required this.step});
 
+  final int index;
   final ProgressionStep step;
 
   @override
@@ -232,70 +247,194 @@ class _StepCard extends StatelessWidget {
     final p = context.palette;
     final chord = step.voicing.chord;
     return Card(
+      key: Key('step-$index'),
       margin: EdgeInsets.zero,
-      child: Padding(
-        padding: const EdgeInsets.fromLTRB(8, 10, 8, 10),
-        child: LayoutBuilder(
-          builder: (context, constraints) => Column(
-            children: [
-              Row(
-                mainAxisAlignment: MainAxisAlignment.center,
-                crossAxisAlignment: CrossAxisAlignment.baseline,
-                textBaseline: TextBaseline.alphabetic,
-                children: [
-                  Text(
-                    step.numeral,
-                    style: musicMono(
-                      fontSize: 16,
-                      fontWeight: FontWeight.w600,
-                      color: p.accent,
+      clipBehavior: Clip.antiAlias,
+      shape: step.chosen
+          ? RoundedRectangleBorder(
+              borderRadius: BorderRadius.circular(12),
+              side: BorderSide(color: p.accent, width: 1.5),
+            )
+          : null,
+      child: InkWell(
+        onTap: () => _showPositionsSheet(context, index, step),
+        child: Padding(
+          padding: const EdgeInsets.fromLTRB(8, 10, 8, 10),
+          child: LayoutBuilder(
+            builder: (context, constraints) => Column(
+              children: [
+                Row(
+                  mainAxisAlignment: MainAxisAlignment.center,
+                  crossAxisAlignment: CrossAxisAlignment.baseline,
+                  textBaseline: TextBaseline.alphabetic,
+                  children: [
+                    Text(
+                      step.numeral,
+                      style: musicMono(
+                        fontSize: 16,
+                        fontWeight: FontWeight.w600,
+                        color: p.accent,
+                      ),
                     ),
-                  ),
-                  const SizedBox(width: 8),
-                  Flexible(
-                    child: Text(
-                      chord.name,
-                      style: theme.textTheme.titleSmall,
-                      overflow: TextOverflow.ellipsis,
+                    const SizedBox(width: 8),
+                    Flexible(
+                      child: Text(
+                        chord.name,
+                        style: theme.textTheme.titleSmall,
+                        overflow: TextOverflow.ellipsis,
+                      ),
                     ),
-                  ),
-                ],
-              ),
-              const SizedBox(height: 6),
-              ChordDiagramWidget(
-                chordName: chord.name,
-                fretPositions: step.voicing.jsonFrets,
-                fingerPositions: step.voicing.jsonFingers,
-                root: chord.root,
-                toneRow: DiagramToneRow.intervals,
-                showChordName: false,
-                size: constraints.maxWidth.clamp(100, 170).toDouble(),
-              ),
-              // Solo el modo principiante calcula `barre`; en estándar es null y no hay chip.
-              if (step.voicing.barre case final barre?)
-                Padding(
-                  padding: const EdgeInsets.only(top: 4),
-                  child: Chip(
-                    key: const Key('barre-chip'),
-                    visualDensity: VisualDensity.compact,
-                    label: Text(
-                      barreKind(barre) == BarreKind.grande
-                          ? '${AppStrings.barreFret} ${barre.fret} · ${AppStrings.barreLarge}'
-                          : '${AppStrings.barreFret} ${barre.fret}',
-                      style: theme.textTheme.labelSmall,
-                    ),
-                  ),
+                  ],
                 ),
-              if (step.transition case final t?) ...[
                 const SizedBox(height: 6),
-                ProgressionTransitionChip(transition: t),
+                ChordDiagramWidget(
+                  chordName: chord.name,
+                  fretPositions: step.voicing.jsonFrets,
+                  fingerPositions: step.voicing.jsonFingers,
+                  root: chord.root,
+                  toneRow: DiagramToneRow.intervals,
+                  showChordName: false,
+                  size: constraints.maxWidth.clamp(100, 170).toDouble(),
+                ),
+                // Solo el modo principiante calcula `barre`; en estándar es null y no hay chip.
+                if (step.voicing.barre case final barre?)
+                  Padding(
+                    padding: const EdgeInsets.only(top: 4),
+                    child: Chip(
+                      key: const Key('barre-chip'),
+                      visualDensity: VisualDensity.compact,
+                      label: Text(
+                        barreKind(barre) == BarreKind.grande
+                            ? '${AppStrings.barreFret} ${barre.fret} · ${AppStrings.barreLarge}'
+                            : '${AppStrings.barreFret} ${barre.fret}',
+                        style: theme.textTheme.labelSmall,
+                      ),
+                    ),
+                  ),
+                if (step.chosen)
+                  Padding(
+                    padding: const EdgeInsets.only(top: 4),
+                    child: Text(
+                      AppStrings.progressionChosen,
+                      key: Key('step-chosen-$index'),
+                      style: theme.textTheme.labelSmall?.copyWith(color: p.accent),
+                    ),
+                  ),
+                if (step.transition case final t?) ...[
+                  const SizedBox(height: 6),
+                  ProgressionTransitionChip(transition: t),
+                ],
               ],
-            ],
+            ),
           ),
         ),
       ),
     );
   }
+}
+
+/// Glosario: todas las posiciones del acorde (principal, CAGED, voicings,
+/// tríadas e inversiones). Tocar una la usa en la progresión.
+void _showPositionsSheet(BuildContext context, int index, ProgressionStep step) {
+  final name = step.voicing.chord.name;
+  showSelectorSheet(
+    context,
+    title: AppStrings.progressionPositionsOf(
+      chordDisplayName(root: step.voicing.chord.root, type: step.voicing.chord.type),
+    ),
+    builder: (sheet) => Consumer(
+      builder: (sheet, ref, _) {
+        final vm = ref.read(progressionsViewModelProvider.notifier);
+        final loading = ref.watch(chordViewModelProvider.select((s) => s.isLoading));
+        final chord = loading
+            ? null
+            : ref.read(chordViewModelProvider.notifier).findByName(name);
+        if (chord == null) {
+          return loading
+              ? const Center(child: CircularProgressIndicator())
+              : Text(AppStrings.errorGeneric);
+        }
+        final p = sheet.palette;
+        final text = Theme.of(sheet).textTheme;
+        final current = step.voicing.jsonFrets.join(',');
+        return Column(
+          crossAxisAlignment: CrossAxisAlignment.start,
+          children: [
+            if (step.chosen)
+              OutlinedButton.icon(
+                key: const Key('reset-fingering'),
+                onPressed: () {
+                  vm.resetFingering(index);
+                  Navigator.of(sheet).pop();
+                },
+                icon: const Icon(Icons.restart_alt, size: 18),
+                label: Text(AppStrings.progressionResetFingering),
+              ),
+            for (final section in compareSections)
+              if (sectionItems(chord, section).isNotEmpty) ...[
+                const SizedBox(height: 12),
+                Text(sectionTitle(section), style: text.titleSmall?.copyWith(color: p.accent)),
+                const SizedBox(height: 8),
+                Wrap(
+                  spacing: 8,
+                  runSpacing: 8,
+                  children: [
+                    for (final (i, item) in sectionItems(chord, section).indexed)
+                      Card(
+                        key: Key('glossary-$section-$i'),
+                        margin: EdgeInsets.zero,
+                        clipBehavior: Clip.antiAlias,
+                        shape: item.fretPositions.join(',') == current
+                            ? RoundedRectangleBorder(
+                                borderRadius: BorderRadius.circular(12),
+                                side: BorderSide(color: p.accent, width: 2),
+                              )
+                            : null,
+                        child: InkWell(
+                          onTap: () {
+                            vm.chooseFingering(
+                              index,
+                              (frets: item.fretPositions, fingers: item.fingerPositions),
+                            );
+                            Navigator.of(sheet).pop();
+                          },
+                          child: Padding(
+                            padding: const EdgeInsets.all(6),
+                            child: SizedBox(
+                              width: 112,
+                              child: Column(
+                                children: [
+                                  Text(
+                                    fingeringTitle(chord, FingeringRef(section, i)),
+                                    maxLines: 2,
+                                    textAlign: TextAlign.center,
+                                    overflow: TextOverflow.ellipsis,
+                                    style: text.labelSmall,
+                                  ),
+                                  const SizedBox(height: 4),
+                                  ChordDiagramWidget(
+                                    chordName: item.title,
+                                    fretPositions: item.fretPositions,
+                                    fingerPositions: item.fingerPositions,
+                                    root: chord.root,
+                                    baseFret: item.baseFret,
+                                    showChordName: false,
+                                    size: 104,
+                                  ),
+                                ],
+                              ),
+                            ),
+                          ),
+                        ),
+                      ),
+                  ],
+                ),
+              ],
+          ],
+        );
+      },
+    ),
+  );
 }
 
 /// Cómo se llega a este acorde desde el anterior: salto de traste y notas
