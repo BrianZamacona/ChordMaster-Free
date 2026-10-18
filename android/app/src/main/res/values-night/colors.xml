@@ -1,0 +1,5 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <!-- Fondo mientras arranca Flutter en modo oscuro (palisandro). -->
+    <color name="launch_background">#FF1C1613</color>
+</resources>

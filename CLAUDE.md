@@ -122,6 +122,14 @@ cada nota pertenezca a la escala. No bajar la tolerancia de 0.
 - Logros: todos deben poder conseguirse (test en `achievement_service_test.dart`). Comunidad
   se eliminó (no tenía ruta y solo guardaba en el teléfono).
 
+## Ícono y nombre
+- El ícono se genera desde código: `flutter test tool/app_icon/render_app_icon_test.dart`
+  (diagrama de C abierto con la paleta oscura; escribe Android clásico + capa adaptable,
+  iOS sin alfa y `store/play_icon_512.png`). No editar los PNG a mano; idempotente.
+- Nombre bajo el ícono: "ChordMaster" (Android `android:label`, iOS `CFBundleDisplayName`);
+  dentro de la app y en la tienda: `AppStrings.appName` ("ChordMaster Free").
+- Arranque sin destello blanco: `@color/launch_background` (claro #F3EFEA / oscuro #1C1613).
+
 ## Flujo de trabajo (obligatorio)
 1. Antes de cada commit: `flutter analyze` y `flutter test` limpios. Un commit que no
    compila es peor que no commitear (pasó con el borrado de generadores).

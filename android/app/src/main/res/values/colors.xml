@@ -1,0 +1,7 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <!-- Paleta Palisandro (lib/ui/palette.dart). -->
+    <color name="ic_launcher_background">#FF241C18</color>
+    <!-- Fondo mientras arranca Flutter: el de la app en modo claro, sin destello blanco. -->
+    <color name="launch_background">#FFF3EFEA</color>
+</resources>

@@ -3,6 +3,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter_localizations/flutter_localizations.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 
+import 'core/constants/app_strings.dart';
 import 'core/i18n/app_i18n.dart';
 import 'core/i18n/tr.dart';
 import 'features/settings/settings_viewmodel.dart';
@@ -22,7 +23,7 @@ class ChordMasterApp extends ConsumerWidget {
         ref.watch(settingsViewModelProvider.select((s) => s.localeCode));
     CurrentLanguage.value = appLanguageFor(localeCode);
     return MaterialApp.router(
-      title: 'ChordMaster Free',
+      title: AppStrings.appName,
       theme: lightTheme,
       darkTheme: darkTheme,
       themeMode: themeMode,
