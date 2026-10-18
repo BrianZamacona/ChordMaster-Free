@@ -23,6 +23,10 @@ class AudioService {
 
   AudioService._internal();
 
+  /// Para dobles de prueba (se inyectan con [audioServiceProvider]).
+  @visibleForTesting
+  AudioService.forTesting();
+
   static final AudioService instance = AudioService._internal();
 
   /// Acordes, notas e intervalos (uno a la vez: el nuevo corta al anterior).

@@ -2,9 +2,11 @@ import 'dart:math';
 import 'package:flutter/foundation.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 
-import '../../core/constants/music_theory.dart';
+import '../../domain/audio/pluck_synth.dart' show NoteEvent;
+import '../../domain/theory/double_stops.dart' show noteNames;
 import '../../models/interval_model.dart';
 import '../../services/achievement_service.dart';
+import '../../services/audio_service.dart';
 import '../../services/storage_service.dart';
 
 /// The set of intervals used in ear training (semitones 1-12 only).
@@ -12,6 +14,17 @@ final List<IntervalModel> _trainingIntervals = defaultIntervals
     .where((m) => (m['semitones'] as int) >= 1 && (m['semitones'] as int) <= 12)
     .map((m) => IntervalModel.fromJson(Map<String, dynamic>.from(m)))
     .toList();
+
+/// Notas MIDI posibles para la nota grave (C3 a C4): con la octava, la aguda
+/// no pasa de C5.
+const earRootMidiRange = (low: 48, high: 60);
+
+/// Cómo suena el intervalo: melódico (grave y luego aguda, a 0.8 s) o
+/// armónico (las dos a la vez, con un rasgueo mínimo).
+List<NoteEvent> intervalEvents(int rootMidi, int semitones, {bool harmonic = false}) => [
+  (midi: rootMidi, at: 0),
+  (midi: rootMidi + semitones, at: harmonic ? 0.03 : 0.8),
+];
 
 // ── State ────────────────────────────────────────────────────────────────────
 
@@ -26,7 +39,15 @@ class EarTrainingState {
     this.lastAnswerCorrect,
     this.isLoading = true,
     this.totalExercisesDone = 0,
+    this.rootMidi = 60,
+    this.harmonic = false,
   });
+
+  /// Nota grave del intervalo (cambia en cada pregunta).
+  final int rootMidi;
+
+  /// `true` = las dos notas a la vez.
+  final bool harmonic;
 
   /// The interval the user needs to identify.
   final IntervalModel currentInterval;
@@ -58,6 +79,8 @@ class EarTrainingState {
     Object? lastAnswerCorrect = _unset,
     bool? isLoading,
     int? totalExercisesDone,
+    int? rootMidi,
+    bool? harmonic,
   }) =>
       EarTrainingState(
         currentInterval: currentInterval ?? this.currentInterval,
@@ -70,6 +93,8 @@ class EarTrainingState {
             : lastAnswerCorrect as bool?,
         isLoading: isLoading ?? this.isLoading,
         totalExercisesDone: totalExercisesDone ?? this.totalExercisesDone,
+        rootMidi: rootMidi ?? this.rootMidi,
+        harmonic: harmonic ?? this.harmonic,
       );
 
   static const Object _unset = Object();
@@ -96,6 +121,7 @@ class EarTrainingViewModel extends Notifier<EarTrainingState> {
       correctAnswers: 0,
       streak: 0,
       totalExercisesDone: 0,
+      harmonic: false,
     );
     _loadCount(initial);
     return initial;
@@ -119,10 +145,14 @@ class EarTrainingViewModel extends Notifier<EarTrainingState> {
     required int correctAnswers,
     required int streak,
     required int totalExercisesDone,
+    required bool harmonic,
   }) {
     final correct = _trainingIntervals[_rng.nextInt(_trainingIntervals.length)];
     final choices = _generateChoices(correct);
     return EarTrainingState(
+      rootMidi: earRootMidiRange.low +
+          _rng.nextInt(earRootMidiRange.high - earRootMidiRange.low + 1),
+      harmonic: harmonic,
       currentInterval: correct,
       choices: choices,
       totalAnswered: totalAnswered,
@@ -175,20 +205,39 @@ class EarTrainingViewModel extends Notifier<EarTrainingState> {
     }
   }
 
-  /// Advances to the next question.
+  /// Pasa a la siguiente pregunta y la hace sonar.
   void nextQuestion() {
     state = _buildQuestion(
       totalAnswered: state.totalAnswered,
       correctAnswers: state.correctAnswers,
       streak: state.streak,
       totalExercisesDone: state.totalExercisesDone,
+      harmonic: state.harmonic,
     );
+    play();
   }
 
-  /// Returns the root note for the displayed interval (always C for simplicity).
-  String get displayRootNote => 'C';
+  /// Hace sonar el intervalo de la pregunta actual.
+  Future<void> play() => ref.read(audioServiceProvider).playNotes(
+        intervalEvents(
+          state.rootMidi,
+          state.currentInterval.semitones,
+          harmonic: state.harmonic,
+        ),
+      );
 
-  /// Returns the note name of the second note in the displayed interval.
+  /// Melódico o armónico; vuelve a sonar con el modo nuevo.
+  void setHarmonic({required bool harmonic}) {
+    if (harmonic == state.harmonic) return;
+    state = state.copyWith(harmonic: harmonic);
+    play();
+  }
+
+  /// Nota grave de la pregunta (con sostenidos).
+  String get displayRootNote => noteNames[state.rootMidi % 12];
+
+  /// Nota aguda de la pregunta.
   String get displayIntervalNote =>
-      intervalNames[state.currentInterval.semitones] ?? '';
+      noteNames[(state.rootMidi + state.currentInterval.semitones) % 12];
 }
+

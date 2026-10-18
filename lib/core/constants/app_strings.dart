@@ -505,6 +505,9 @@ class AppStrings {
   static String get statAccuracy => tr(es: 'Precisión', en: 'Accuracy');
   static String get statTaps => tr(es: 'Toques', en: 'Taps');
   static String get statBest => tr(es: 'Mejor', en: 'Best');
+  static String get earListen => tr(es: 'Escuchar', en: 'Listen');
+  static String get earMelodic => tr(es: 'Melódico', en: 'Melodic');
+  static String get earHarmonic => tr(es: 'Armónico', en: 'Harmonic');
   static String get chooseInterval =>
       tr(es: 'Elige el intervalo:', en: 'Choose the interval:');
   static String semitonesCount(int n) => n == 1

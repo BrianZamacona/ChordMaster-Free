@@ -60,22 +60,15 @@ class EarTrainingScreen extends ConsumerWidget {
             ),
             const SizedBox(height: 24),
 
-            // Interval display (shows the interval name as a visual cue
-            // since no audio playback is available)
+            // Se escucha; la respuesta (notas y semitonos) solo aparece al
+            // contestar.
             Card(
-              shape: RoundedRectangleBorder(
-                  borderRadius: BorderRadius.circular(20)),
+              shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(20)),
               color: theme.colorScheme.primaryContainer,
               child: Padding(
-                padding:
-                    const EdgeInsets.symmetric(vertical: 32, horizontal: 16),
+                padding: const EdgeInsets.symmetric(vertical: 24, horizontal: 16),
                 child: Column(
                   children: [
-                    const Text(
-                      '🎵',
-                      style: TextStyle(fontSize: 64),
-                    ),
-                    const SizedBox(height: 12),
                     Text(
                       AppStrings.identifyInterval,
                       style: theme.textTheme.titleMedium?.copyWith(
@@ -84,31 +77,35 @@ class EarTrainingScreen extends ConsumerWidget {
                       ),
                       textAlign: TextAlign.center,
                     ),
-                    const SizedBox(height: 8),
-                    Container(
-                      padding: const EdgeInsets.symmetric(
-                          horizontal: 12, vertical: 6),
-                      decoration: BoxDecoration(
-                        color: theme.colorScheme.primary.withAlpha(50),
-                        borderRadius: BorderRadius.circular(8),
-                      ),
-                      child: Text(
-                        'C → ${_noteAtSemitone(state.currentInterval.semitones)}',
-                        style: theme.textTheme.titleLarge?.copyWith(
+                    const SizedBox(height: 16),
+                    FilledButton.icon(
+                      key: const Key('ear-play'),
+                      onPressed: vm.play,
+                      icon: const Icon(Icons.volume_up),
+                      label: Text(AppStrings.earListen),
+                    ),
+                    const SizedBox(height: 12),
+                    SegmentedButton<bool>(
+                      key: const Key('ear-mode'),
+                      segments: [
+                        ButtonSegment(value: false, label: Text(AppStrings.earMelodic)),
+                        ButtonSegment(value: true, label: Text(AppStrings.earHarmonic)),
+                      ],
+                      selected: {state.harmonic},
+                      onSelectionChanged: (s) => vm.setHarmonic(harmonic: s.first),
+                    ),
+                    if (state.lastAnswerCorrect != null) ...[
+                      const SizedBox(height: 12),
+                      Text(
+                        '${vm.displayRootNote} → ${vm.displayIntervalNote} · '
+                        '${AppStrings.semitonesCount(state.currentInterval.semitones)}',
+                        key: const Key('ear-reveal'),
+                        style: theme.textTheme.titleMedium?.copyWith(
                           fontWeight: FontWeight.bold,
                           color: theme.colorScheme.onPrimaryContainer,
-                          letterSpacing: 2,
                         ),
                       ),
-                    ),
-                    const SizedBox(height: 8),
-                    Text(
-                      AppStrings.semitonesCount(state.currentInterval.semitones),
-                      style: theme.textTheme.bodySmall?.copyWith(
-                        color:
-                            theme.colorScheme.onPrimaryContainer.withAlpha(180),
-                      ),
-                    ),
+                    ],
                   ],
                 ),
               ),
@@ -207,25 +204,6 @@ class EarTrainingScreen extends ConsumerWidget {
         ),
       ),
     );
-  }
-
-  String _noteAtSemitone(int semitones) {
-    const notes = [
-      'C',
-      'C#',
-      'D',
-      'D#',
-      'E',
-      'F',
-      'F#',
-      'G',
-      'G#',
-      'A',
-      'A#',
-      'B',
-      'C',
-    ];
-    return notes[semitones.clamp(0, 12)];
   }
 }
 
