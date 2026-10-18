@@ -65,7 +65,9 @@ cada nota pertenezca a la escala. No bajar la tolerancia de 0.
   Estándar sigue usando la cejilla completa.
 - Power chords (power5): R-5-R sin repetir la 5ª, con raíz en la 6ª, 5ª, 4ª y 3ª cuerda (en la
   4ª y 3ª la octava sube un traste por la afinación de la 2ª), en `voicings`. Principal: la
-  abierta (E5, A5, D5) o la más baja con raíz en 6ª/5ª. Los genera `regenerate_chord_data.py`.
+  abierta (E5, A5, D5) o la más baja con raíz en 6ª/5ª. Detrás, las inversiones 5-R-5 (5ª en el
+  bajo, en la 6ª/5ª/4ª/3ª): en la inversión SÍ se repite la 5ª (decisión del usuario: solo la
+  forma natural R-5-R no la repite). Los genera `regenerate_chord_data.py`.
 - Tríadas (mayor, menor, dim, aum) en `triadInversions`: fundamental, 1ª y 2ª inversión en los
   grupos 3-2-1, 4-3-2, 5-4-3 y 6-5-4, cerradas, móviles (sin cuerdas al aire) y en la posición
   más baja. Drop 3 (maj7, 7, m7, m7b5, dim7) en `voicings`: R-7-3-5 con raíz en la 6ª y en la 5ª,

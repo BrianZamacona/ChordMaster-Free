@@ -15,6 +15,8 @@ Corrige, con reglas musicales explícitas (no parches manuales):
      6ª, 5ª, 4ª y 3ª cuerda (en la 4ª y 3ª la octava cae un traste más arriba por la afinación
      de la 2ª cuerda). Al aire si cae en el traste 0. Van a `voicings`; la principal es la
      abierta si hay (E5, A5, D5) o la más baja con raíz en la 6ª o la 5ª cuerda.
+     Detrás van las inversiones 5-R-5 (la 5ª en el bajo; ahí sí se repite la 5ª), con el
+     bajo en la 6ª, 5ª, 4ª y 3ª cuerda.
   8. Tríadas (mayor, menor, disminuida, aumentada): fundamental, 1ª y 2ª inversión en los
      cuatro grupos de cuerdas contiguas (3-2-1, 4-3-2, 5-4-3, 6-5-4), en posición cerrada y
      móviles (sin cuerdas al aire), en la posición más baja. Reemplazan `triadInversions`.
@@ -101,6 +103,24 @@ POWER_SHAPES = [
     (2, 'Root on 4th string', (0, 2, 3)),
     (3, 'Root on 3rd string', (0, 3, 3)),
 ]
+
+# Inversión 5-R-5: cuerda del bajo (la 5ª) -> desplazamientos de 5, R, 5.
+POWER_INVERTED_SHAPES = [
+    (0, 'Inverted (5th on 6th string)', (0, 0, 2)),
+    (1, 'Inverted (5th on 5th string)', (0, 0, 2)),
+    (2, 'Inverted (5th on 4th string)', (0, 0, 3)),
+    (3, 'Inverted (5th on 3rd string)', (0, 1, 3)),
+]
+
+def power_inverted(root, string, offsets):
+    base = (root + 7 - OPEN[string]) % 12
+    frets = [-1] * 6
+    fingers = [0] * 6
+    for k, off in enumerate(offsets):
+        frets[string + k] = base + off
+        # Al aire el bajo suena sin pisar; móvil: índice en los dos primeros (mini cejilla).
+        fingers[string + k] = off + (1 if base > 0 else 0)
+    return frets, fingers
 
 def power_chord(root, string, offsets):
     base = (root - OPEN[string]) % 12
@@ -232,6 +252,15 @@ def main(path):
                     raise RuntimeError(f"power chord inválido: {c['name']} {frets}")
                 shapes.append({'title': title, 'shape': 'Power chord',
                                'description': 'Root, fifth and octave (R-5-R).',
+                               'fretPositions': frets, 'fingerPositions': fingers,
+                               'baseFret': 1 if 0 in frets else min(f for f in frets if f > 0)})
+            for string, title, offsets in POWER_INVERTED_SHAPES:
+                frets, fingers = power_inverted(r, string, offsets)
+                got = [(OPEN[i] + f - r) % 12 for i, f in enumerate(frets) if f >= 0]
+                if got != [7, 0, 7]:
+                    raise RuntimeError(f"power chord invertido inválido: {c['name']} {frets}")
+                shapes.append({'title': title, 'shape': 'Power chord',
+                               'description': 'Inversion: fifth, root and fifth (5-R-5).',
                                'fretPositions': frets, 'fingerPositions': fingers,
                                'baseFret': 1 if 0 in frets else min(f for f in frets if f > 0)})
             # Principal: la abierta (E5, A5, D5) si existe; si no, la más baja con raíz

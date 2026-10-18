@@ -118,8 +118,8 @@ void main() {
       'voicings: $total, con cejilla: ${mini + grande} '
       '(mini $mini, grande $grande), imposibles: ${impossible.length}',
     );
-    expect(total, 1768); // 1144 + 624: tríadas en 4 grupos de cuerdas (24×9 + dim/aum 24×12) + 120 Drop 3
-    expect(mini, 612); // + tríadas y Drop 3 con dos cuerdas en el mismo traste
+    expect(total, 1816); // 1144 + 624 tríadas y Drop 3 + 48 power chords 5-R-5
+    expect(mini, 645); // + tríadas, Drop 3 y power chords 5-R-5 (mini cejilla del índice)
     expect(grande, 229); // los 12 power chords viejos (índice de la 5ª a la 1ª) ya no existen
     // Deuda de datos en chords.json (dedos repetidos con cuerdas muteadas, al aire
     // o más bajas entre medias); el conteo exacto evita que crezca en silencio.

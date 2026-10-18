@@ -18,8 +18,8 @@ void main() {
     for (final c in chords) {
       final root = _notes.indexOf(c['root'] as String);
       final voicings = (c['voicings'] as List<dynamic>).cast<Map<String, dynamic>>();
-      expect(voicings, hasLength(4), reason: c['name'] as String);
-      for (final (i, v) in voicings.indexed) {
+      expect(voicings, hasLength(8), reason: c['name'] as String);
+      for (final (i, v) in voicings.take(4).indexed) {
         final frets = (v['fretPositions'] as List<dynamic>).cast<int>();
         final played = [
           for (var s = 0; s < 6; s++)
@@ -33,10 +33,34 @@ void main() {
     }
   });
 
+  test('inversiones 5-R-5: la 5ª en el bajo en la 6ª, 5ª, 4ª y 3ª cuerda', () {
+    for (final c in chords) {
+      final root = _notes.indexOf(c['root'] as String);
+      final voicings = (c['voicings'] as List<dynamic>).cast<Map<String, dynamic>>();
+      for (final (i, v) in voicings.skip(4).indexed) {
+        final frets = (v['fretPositions'] as List<dynamic>).cast<int>();
+        final played = [
+          for (var s = 0; s < 6; s++)
+            if (frets[s] >= 0) (s, (_open[s] + frets[s]) % 12),
+        ];
+        expect(played.first.$1, i, reason: '${c['name']} $frets');
+        expect([for (final p in played) (p.$2 - root + 12) % 12], [7, 0, 7],
+            reason: '${c['name']} $frets');
+      }
+    }
+    final c5 = chords.firstWhere((c) => c['root'] == 'C');
+    expect([for (final v in (c5['voicings'] as List<dynamic>).skip(4)) v['fretPositions']], [
+      [3, 3, 5, -1, -1, -1],
+      [-1, 10, 10, 12, -1, -1],
+      [-1, -1, 5, 5, 8, -1],
+      [-1, -1, -1, 0, 1, 3],
+    ]);
+  });
+
   test('C5: 8 en la 6ª, 3 en la 5ª, 10 en la 4ª y 5 en la 3ª', () {
     final c5 = chords.firstWhere((c) => c['root'] == 'C');
     expect(c5['fretPositions'], [-1, 3, 5, 5, -1, -1]);
-    expect([for (final v in c5['voicings'] as List<dynamic>) v['fretPositions']], [
+    expect([for (final v in (c5['voicings'] as List<dynamic>).take(4)) v['fretPositions']], [
       [8, 10, 10, -1, -1, -1],
       [-1, 3, 5, 5, -1, -1],
       [-1, -1, 10, 12, 13, -1],
