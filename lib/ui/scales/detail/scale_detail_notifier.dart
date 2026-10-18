@@ -2,6 +2,8 @@ import 'package:flutter_riverpod/flutter_riverpod.dart';
 
 import '../../../data/models/scale_definition.dart';
 import '../../../data/repository/scale_repository.dart';
+import '../../../services/achievement_service.dart';
+import '../../../services/storage_service.dart';
 
 const _noteNames = ['C', 'C#', 'D', 'D#', 'E', 'F', 'F#', 'G', 'G#', 'A', 'A#', 'B'];
 
@@ -70,6 +72,14 @@ class ScaleDetailNotifier extends Notifier<ScaleDetailState> {
       selectedPatternIndex: 0,
     );
     _load(initial);
+    // Logro "Explorador de escalas": 10 escalas distintas abiertas.
+    AchievementService.instance.recordDistinct(
+      storage: ref.read(storageServiceProvider),
+      key: 'viewed_scale_ids',
+      value: _arg.scale.id,
+      goal: 10,
+      achievementId: 'scale_explorer',
+    );
     return initial;
   }
 

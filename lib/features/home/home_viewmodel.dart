@@ -2,6 +2,7 @@ import 'package:flutter/foundation.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 
 import '../../core/i18n/tr.dart';
+import '../../services/achievement_service.dart';
 import '../../services/storage_service.dart';
 
 /// Immutable state for [HomeViewModel].
@@ -115,6 +116,11 @@ class HomeViewModel extends Notifier<HomeState> {
     }
   }
 
+  /// Logro "Racha de 7 días".
+  Future<void> _checkStreakAchievement(int streak) async {
+    if (streak >= 7) await AchievementService.instance.unlock('seven_day_streak');
+  }
+
   /// Increments streak if today is a new practice day.
   Future<int> _updateStreak(int currentStreak) async {
     try {
@@ -124,7 +130,10 @@ class HomeViewModel extends Notifier<HomeState> {
         final storage = ref.read(storageServiceProvider);
         final lastDate = await storage.get<String>(
           StorageService.userProgressBox, _keyLastPracticeDate);
-      if (lastDate == todayStr) return currentStreak;
+      if (lastDate == todayStr) {
+        await _checkStreakAchievement(currentStreak);
+        return currentStreak;
+      }
 
       final yesterday = today.subtract(const Duration(days: 1));
       final yesterdayStr =
@@ -137,6 +146,7 @@ class HomeViewModel extends Notifier<HomeState> {
           StorageService.userProgressBox, _keyLastPracticeDate, todayStr);
         await storage.save(
           StorageService.userProgressBox, _keyStreak, newStreak);
+      await _checkStreakAchievement(newStreak);
       return newStreak;
     } catch (e, st) {
       debugPrint('HomeViewModel._updateStreak error: $e\n$st');

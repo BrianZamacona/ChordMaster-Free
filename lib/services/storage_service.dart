@@ -21,7 +21,7 @@ final storageServiceProvider = Provider<StorageService>((ref) {
 /// Singleton service for all persistent key-value storage in ChordMaster Free.
 ///
 /// Uses [Hive] as the underlying storage engine.  Each logical domain (user
-/// progress, community posts, achievements, settings) has its own named box
+/// progress, achievements, settings) has its own named box
 /// so data stays organised and boxes can be cleared independently.
 ///
 /// All methods throw a [StorageFailure] on error so callers can handle
@@ -36,9 +36,6 @@ final storageServiceProvider = Provider<StorageService>((ref) {
 class StorageService {
   /// Box name for user learning progress data.
   static const String userProgressBox = 'userProgress';
-
-  /// Box name for community post data.
-  static const String communityPostsBox = 'communityPosts';
 
   /// Box name for unlocked achievement IDs.
   static const String achievementsBox = 'achievements';
@@ -65,7 +62,6 @@ class StorageService {
       final enc = await _loadEncryptionContext();
 
       await _openBoxSecure(userProgressBox, enc);
-      await _openBoxSecure(communityPostsBox, enc);
       await _openBoxSecure(achievementsBox, enc);
       await _openBoxSecure(settingsBox, enc);
     } catch (e, st) {

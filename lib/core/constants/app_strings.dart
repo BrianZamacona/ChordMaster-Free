@@ -24,7 +24,6 @@ class AppStrings {
   static String get moduleSongs => tr(es: 'Canciones', en: 'Songs');
   static String get moduleHealth =>
       tr(es: 'Salud de práctica', en: 'Practice Health');
-  static String get moduleCommunity => tr(es: 'Comunidad', en: 'Community');
   static String get moduleAchievements => tr(es: 'Logros', en: 'Achievements');
 
   // ── Acciones ───────────────────────────────────────────────────────────────
@@ -45,7 +44,6 @@ class AppStrings {
   static String get language => tr(es: 'Idioma', en: 'Language');
   static String get supportApp =>
       tr(es: 'Apoya a ChordMaster ♥', en: 'Support ChordMaster ♥');
-  static String get post => tr(es: 'Publicar', en: 'Post');
   static String get start => tr(es: 'Empezar', en: 'Start');
   static String get tap => tr(es: 'Marcar', en: 'Tap');
 
@@ -478,18 +476,6 @@ class AppStrings {
   static String get incorrect => tr(es: 'Incorrecto', en: 'Incorrect');
   static String get score => tr(es: 'Puntos', en: 'Score');
   static String get streak => tr(es: 'Racha', en: 'Streak');
-
-  // ── Comunidad ──────────────────────────────────────────────────────────────
-
-  static String get writePostHint => tr(
-    es: 'Comparte algo con la comunidad…',
-    en: 'Share something with the community…',
-  );
-  static String get author => tr(es: 'Autor', en: 'Author');
-  static String get noPostsYet => tr(
-    es: 'Aún no hay publicaciones. ¡Sé el primero!',
-    en: 'No posts yet. Be the first!',
-  );
 
   // ── Salud ──────────────────────────────────────────────────────────────────
 

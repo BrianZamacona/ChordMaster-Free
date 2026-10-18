@@ -130,15 +130,6 @@ class AchievementService {
       emoji: '🎼',
     ),
     AchievementDefinition(
-      id: 'community_member',
-      title: LocalizedText(es: 'Miembro de la comunidad', en: 'Community Member'),
-      description: LocalizedText(
-        es: 'Publica en la comunidad por primera vez.',
-        en: 'Post in the community for the first time.',
-      ),
-      emoji: '🤝',
-    ),
-    AchievementDefinition(
       id: 'health_conscious',
       title: LocalizedText(es: 'Manos sanas', en: 'Health Conscious'),
       description: LocalizedText(
@@ -159,6 +150,40 @@ class AchievementService {
   ];
 
   // ── Public API ────────────────────────────────────────────────────────────
+
+  /// Anota [value] en la lista de vistos de [key] (sin repetir) y, al llegar a
+  /// [goal] distintos, desbloquea [achievementId]. Devuelve cuántos van.
+  Future<int> recordDistinct({
+    required StorageService storage,
+    required String key,
+    required String value,
+    required int goal,
+    required String achievementId,
+  }) async {
+    final int count;
+    try {
+      final seen = {
+        ...?(await storage.get<List<dynamic>>(StorageService.userProgressBox, key))
+            ?.whereType<String>(),
+      };
+      if (seen.add(value)) {
+        await storage.save(StorageService.userProgressBox, key, seen.toList());
+      }
+      count = seen.length;
+    } catch (e, st) {
+      debugPrint('AchievementService.recordDistinct error ($key): $e\n$st');
+      return 0;
+    }
+    // Un fallo al guardar el logro no debe perder el conteo.
+    if (count >= goal) {
+      try {
+        await unlock(achievementId);
+      } catch (e, st) {
+        debugPrint('AchievementService.recordDistinct unlock error: $e\n$st');
+      }
+    }
+    return count;
+  }
 
   /// Unlocks the achievement with [achievementId] and persists the timestamp.
   ///
