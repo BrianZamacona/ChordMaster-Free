@@ -60,12 +60,8 @@ class _ChordDetailScreenState extends ConsumerState<ChordDetailScreen> {
     if (_isPlaying) return;
     setState(() => _isPlaying = true);
     try {
-      if (chord.audioFile != null) {
-        await AudioService.instance.playNote(chord.audioFile!);
-      } else {
-        final rootFile = 'assets/audio/notes/${chord.root.replaceAll('#', 's')}4.mp3';
-        await AudioService.instance.playNote(rootFile);
-      }
+      // Rasgueo sintetizado de la digitación principal (no hay archivos de audio).
+      await AudioService.instance.playFingering(chord.fretPositions);
     } catch (e) {
       debugPrint('ChordDetailScreen._playChord error: $e');
     } finally {

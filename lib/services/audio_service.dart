@@ -1,140 +1,137 @@
 import 'dart:async';
+import 'dart:io';
 
 import 'package:flutter/foundation.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:just_audio/just_audio.dart';
+import 'package:path_provider/path_provider.dart';
+
+import '../domain/audio/pluck_synth.dart';
+import '../domain/voicing/ergonomics.dart' show standardOpenStringMidi;
+import '../domain/voicing/voicing_adapter.dart';
 
 /// Riverpod provider that exposes the [AudioService] singleton.
 final audioServiceProvider = Provider<AudioService>((ref) => AudioService());
 
-/// Singleton service responsible for all audio playback in ChordMaster Free.
+/// El sonido de la app, sintetizado (`domain/audio/pluck_synth.dart`):
+/// no hay archivos de audio. Cada sonido se genera una vez como WAV en la
+/// carpeta temporal y se reproduce como archivo con `just_audio`.
 ///
-/// Wraps [AudioPlayer] from `just_audio` to play individual notes, chords
-/// (with a 30 ms inter-note stagger), and metronome ticks.  All public
-/// methods swallow exceptions internally and log them with [debugPrint] so
-/// that audio errors never crash the UI.
+/// Los errores se registran con [debugPrint] y nunca llegan a la UI.
 class AudioService {
-
-  /// Factory constructor always returns [instance].
   factory AudioService() => instance;
 
   AudioService._internal();
-  /// The singleton instance.
+
   static final AudioService instance = AudioService._internal();
 
-  AudioPlayer? _player;
+  /// Acordes, notas e intervalos (uno a la vez: el nuevo corta al anterior).
+  AudioPlayer? _voice;
 
-  // ── Lifecycle ─────────────────────────────────────────────────────────────
+  /// Clics del metrónomo, cargados una sola vez para que suenen sin demora.
+  AudioPlayer? _tick;
+  AudioPlayer? _accent;
 
-  /// Initialises the underlying [AudioPlayer].
-  ///
-  /// Must be called once before any playback method is used, typically from
-  /// `main.dart` during app start-up.
+  Directory? _dir;
+  final _files = <String, String>{};
+
   Future<void> initialize() async {
     try {
-      _player ??= AudioPlayer();
+      _voice ??= AudioPlayer();
     } catch (e, st) {
       debugPrint('AudioService.initialize error: $e\n$st');
     }
   }
 
-  /// Disposes the underlying [AudioPlayer] and releases system resources.
   void dispose() {
-    try {
-      _player?.dispose();
-      _player = null;
-    } catch (e, st) {
-      debugPrint('AudioService.dispose error: $e\n$st');
-    }
-  }
-
-  // ── Playback ──────────────────────────────────────────────────────────────
-
-  /// Plays a single note audio asset identified by [noteFile].
-  ///
-  /// [noteFile] must be a valid Flutter asset path, e.g.
-  /// `'assets/audio/notes/A4.mp3'`.
-  Future<void> playNote(String noteFile) async {
-    try {
-      final player = await _ensurePlayer();
-      await player.setAsset(noteFile);
-      await player.seek(Duration.zero);
-      await player.play();
-    } catch (e, st) {
-      debugPrint('AudioService.playNote error (file: $noteFile): $e\n$st');
-    }
-  }
-
-  /// Plays a chord by sounding each note in [noteFiles] with a 30 ms stagger.
-  ///
-  /// A separate [AudioPlayer] instance is created for each note so they can
-  /// overlap naturally.  Players are disposed once playback completes.
-  /// At most 6 simultaneous players are created to prevent resource exhaustion.
-  Future<void> playChord(List<String> noteFiles) async {
-    if (noteFiles.isEmpty) return;
-    try {
-      // OWASP A03 / resource cap: limit to 6 simultaneous players.
-      final limited = noteFiles.take(6).toList();
-      final players = <AudioPlayer>[];
-      for (int i = 0; i < limited.length; i++) {
-        if (i > 0) {
-          await Future<void>.delayed(const Duration(milliseconds: 30));
-        }
-        try {
-          final p = AudioPlayer();
-          players.add(p);
-          await p.setAsset(limited[i]);
-          unawaited(p.play());
-        } catch (e, st) {
-          debugPrint(
-            'AudioService.playChord error for note ${limited[i]}: $e\n$st',
-          );
-        }
+    for (final p in [_voice, _tick, _accent]) {
+      try {
+        p?.dispose();
+      } catch (e, st) {
+        debugPrint('AudioService.dispose error: $e\n$st');
       }
-      // Clean up after the longest realistic note duration (3 s).
-      unawaited(Future<void>.delayed(const Duration(seconds: 3), () {
-        for (final p in players) {
-          p.dispose();
-        }
-      }));
-    } catch (e, st) {
-      debugPrint('AudioService.playChord error: $e\n$st');
     }
+    _voice = _tick = _accent = null;
   }
 
-  /// Plays a metronome tick sound.
-  ///
-  /// When [isAccent] is `true`, the accented (downbeat) tick asset is used;
-  /// otherwise the regular tick asset is played.
+  // ── Reproducción ──────────────────────────────────────────────────────────
+
+  /// Rasguea una digitación de chords.json (6ª → 1ª, `-1` = muteada).
+  Future<void> playFingering(List<int> jsonFrets) {
+    final frets = VoicingAdapter.fromChordJson(jsonFrets);
+    final midi = [
+      for (var s = 0; s < frets.length; s++)
+        if (frets[s] != null) standardOpenStringMidi[s] + frets[s]!,
+    ];
+    return playStrum(midi);
+  }
+
+  /// Rasgueo de grave a aguda de las notas MIDI [midi].
+  Future<void> playStrum(List<int> midi) {
+    if (midi.isEmpty) return Future.value();
+    final sorted = [...midi]..sort();
+    return _playVoice('strum-${sorted.join('-')}', () => renderStrum(sorted));
+  }
+
+  /// Notas que empiezan en instantes distintos (p. ej. un intervalo
+  /// melódico: una nota y luego la otra).
+  Future<void> playNotes(List<NoteEvent> events, {double seconds = 2.5}) {
+    if (events.isEmpty) return Future.value();
+    final key = 'notes-${[for (final e in events) '${e.midi}@${e.at}'].join('-')}-$seconds';
+    return _playVoice(key, () => renderNotes(events, seconds: seconds));
+  }
+
+  /// Clic del metrónomo; [isAccent] para el primer tiempo del compás.
   Future<void> playMetronomeTick({bool isAccent = false}) async {
-    const accentAsset = 'assets/audio/metronome_accent.mp3';
-    const tickAsset = 'assets/audio/metronome_tick.mp3';
     try {
-      final player = await _ensurePlayer();
-      await player.setAsset(isAccent ? accentAsset : tickAsset);
+      final player = isAccent
+          ? _accent ??= await _loaded('click-accent', () => renderClick(accent: true))
+          : _tick ??= await _loaded('click', renderClick);
       await player.seek(Duration.zero);
-      await player.play();
+      unawaited(player.play());
     } catch (e, st) {
       debugPrint('AudioService.playMetronomeTick error: $e\n$st');
     }
   }
 
-  /// Stops all current playback immediately.
   Future<void> stopAll() async {
     try {
-      await _player?.stop();
+      await _voice?.stop();
     } catch (e, st) {
       debugPrint('AudioService.stopAll error: $e\n$st');
     }
   }
 
-  // ── Helpers ───────────────────────────────────────────────────────────────
+  // ── Interno ───────────────────────────────────────────────────────────────
 
-  /// Returns the existing [AudioPlayer], creating it lazily if necessary.
-  Future<AudioPlayer> _ensurePlayer() async {
-    if (_player == null) {
+  Future<void> _playVoice(String key, Float64List Function() render) async {
+    try {
       await initialize();
+      final player = _voice!;
+      await player.stop();
+      await player.setFilePath(await _file(key, render));
+      unawaited(player.play());
+    } catch (e, st) {
+      debugPrint('AudioService._playVoice error ($key): $e\n$st');
     }
-    return _player!;
+  }
+
+  Future<AudioPlayer> _loaded(String key, Float64List Function() render) async {
+    final player = AudioPlayer();
+    await player.setFilePath(await _file(key, render));
+    return player;
+  }
+
+  /// Ruta del WAV de [key]; lo genera la primera vez.
+  Future<String> _file(String key, Float64List Function() render) async {
+    final cached = _files[key];
+    if (cached != null) return cached;
+    _dir ??= await getTemporaryDirectory();
+    final safe = key.replaceAll(RegExp('[^A-Za-z0-9@._-]'), '_');
+    final file = File('${_dir!.path}/synth_$safe.wav');
+    if (!file.existsSync()) {
+      await file.writeAsBytes(encodeWav(render()), flush: true);
+    }
+    return _files[key] = file.path;
   }
 }
