@@ -6,6 +6,10 @@ import '../voicing/voicing_adapter.dart';
 import 'progression_data.dart';
 
 /// Digitaciones de un acorde de chords.json, en el orden del JSON (6ª → 1ª).
+///
+/// Solo acordes completos (principal, CAGED y voicings): las tríadas de
+/// `triadInversions` (3 cuerdas, en los cuatro grupos) son material de
+/// estudio y no entran en las progresiones.
 class ChordFingerings {
   const ChordFingerings({
     required this.name,
@@ -20,11 +24,7 @@ class ChordFingerings {
     List<int> frets(Object? raw) => (raw! as List<dynamic>).cast<int>();
     final fingerings = [frets(json['fretPositions'])];
     final fingers = [frets(json['fingerPositions'])];
-    for (final field in const [
-      'cagedPositions',
-      'voicings',
-      'triadInversions',
-    ]) {
+    for (final field in const ['cagedPositions', 'voicings']) {
       for (final item in (json[field] as List<dynamic>? ?? const [])) {
         final map = item as Map<String, dynamic>;
         fingerings.add(frets(map['fretPositions']));

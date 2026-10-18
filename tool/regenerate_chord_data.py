@@ -15,6 +15,11 @@ Corrige, con reglas musicales explícitas (no parches manuales):
      6ª, 5ª, 4ª y 3ª cuerda (en la 4ª y 3ª la octava cae un traste más arriba por la afinación
      de la 2ª cuerda). Al aire si cae en el traste 0. Van a `voicings`; la principal es la
      abierta si hay (E5, A5, D5) o la más baja con raíz en la 6ª o la 5ª cuerda.
+  8. Tríadas (mayor, menor, disminuida, aumentada): fundamental, 1ª y 2ª inversión en los
+     cuatro grupos de cuerdas contiguas (3-2-1, 4-3-2, 5-4-3, 6-5-4), en posición cerrada y
+     móviles (sin cuerdas al aire), en la posición más baja. Reemplazan `triadInversions`.
+  9. Drop 3 de las cuatríadas (maj7, 7, m7, m7b5, dim7): R-7-3-5 con la raíz en la 6ª
+     (cuerdas 6-4-3-2) y en la 5ª (5-3-2-1), móviles y en la posición más baja. En `voicings`.
 No toca ningún otro campo. Idempotente: correrlo dos veces da el mismo archivo.
 """
 import json, sys
@@ -113,6 +118,72 @@ def power_chord(root, string, offsets):
         fingers[string + k] = finger
     return frets, fingers
 
+# 8. Tríadas en los cuatro grupos de cuerdas.
+MIDI = [40, 45, 50, 55, 59, 64]                  # MIDI al aire, 6a -> 1a
+TRIAD_TYPES = {'major': (4, 7), 'minor': (3, 7), 'diminished': (3, 6), 'augmented': (4, 8)}
+TRIAD_SETS = [(3, '3-2-1'), (2, '4-3-2'), (1, '5-4-3'), (0, '6-5-4')]
+TRIAD_INVERSIONS = ['Root Position', '1st Inversion', '2nd Inversion']
+BASS_TEXT = {0: 'Root in the bass.', 3: 'Minor third in the bass.', 4: 'Major third in the bass.',
+             6: 'Diminished fifth in the bass.', 7: 'Perfect fifth in the bass.',
+             8: 'Augmented fifth in the bass.'}
+
+def close_voicing(root, string, tones, max_span=4):
+    """Notas `tones` (intervalos, la primera en el bajo) en cuerdas contiguas desde `string`,
+    cada una la siguiente nota del acorde por encima de la anterior. La más baja móvil."""
+    for b in range(1, 17):
+        if rel(string, b, root) != tones[0]: continue
+        frets = [-1] * 6
+        frets[string] = b
+        pitch = MIDI[string] + b
+        for k, t in enumerate(tones[1:], start=1):
+            pitch += (root + t - pitch) % 12 or 12
+            frets[string + k] = pitch - MIDI[string + k]
+        played = frets[string:string + len(tones)]
+        if min(played) < 1 or max(played) - min(played) > max_span: continue
+        fingers = assign_fingers(frets)
+        if fingers is None: continue
+        return frets, fingers[0]
+    raise RuntimeError(f"sin tríada: root={root} {tones}")
+
+def triad_inversions(root, third, fifth):
+    tones = [0, third, fifth]
+    out = []
+    for string, label in TRIAD_SETS:
+        for k, title in enumerate(TRIAD_INVERSIONS):
+            order = tones[k:] + tones[:k]
+            frets, fingers = close_voicing(root, string, order)
+            out.append({'title': f'{title} (strings {label})', 'shape': 'Triad',
+                        'description': BASS_TEXT[order[0]],
+                        'fretPositions': frets, 'fingerPositions': fingers,
+                        'baseFret': min(f for f in frets if f > 0)})
+    return out
+
+# 9. Drop 3: cuerda de la raíz -> cuerdas de 7ª, 3ª y 5ª (orden 6a -> 1a).
+DROP3_TYPES = {'major7': (4, 7, 11), 'dominant7': (4, 7, 10), 'minor7': (3, 7, 10),
+               'halfDiminished': (3, 6, 10), 'diminished7': (3, 6, 9)}
+DROP3_SHAPES = [(0, (2, 3, 4), 'Drop 3 (root on 6th string)'),
+                (1, (3, 4, 5), 'Drop 3 (root on 5th string)')]
+DROP3_TEXT = 'Root, seventh, third and fifth (R-7-3-5).'
+
+def drop3(root, string, others, third, fifth, seventh):
+    targets = {others[0]: seventh, others[1]: third, others[2]: fifth}
+    for b in range(1, 17):
+        if rel(string, b, root) != 0: continue
+        frets = [-1] * 6
+        frets[string] = b
+        for st, t in targets.items():
+            frets[st] = next(f for f in range(b - 2, b + 3) if rel(st, f, root) == t)
+        played = [f for f in frets if f >= 0]
+        if min(played) < 1 or max(played) - min(played) > 4: continue
+        # Un dedo por nota (la cuerda muteada impide la cejilla): por traste y, en el
+        # mismo traste, de la cuerda grave a la aguda.
+        fingers = [0] * 6
+        notes = sorted((f, st) for st, f in enumerate(frets) if f > 0)
+        for n, (_, st) in enumerate(notes, start=1):
+            fingers[st] = n
+        return frets, fingers
+    raise RuntimeError(f"sin drop 3: root={root}")
+
 def main(path):
     data = json.load(open(path, encoding='utf-8'))
     changed = {'sus2': 0, 'F': 0, 'Edim': 0, 'TopSet': 0, 'inversiones': 0, 'principiante': 0}
@@ -173,6 +244,33 @@ def main(path):
                 changed['power'] = changed.get('power', 0) + 1
             c['fretPositions'], c['fingerPositions'], c['baseFret'] = list(new_main[0]), list(new_main[1]), new_main[2]
             c['voicings'] = shapes
+        # 8. tríadas en los cuatro grupos de cuerdas
+        if t in TRIAD_TYPES:
+            triads = triad_inversions(r, *TRIAD_TYPES[t])
+            for v in triads:
+                got = {(OPEN[i] + f) % 12 for i, f in enumerate(v['fretPositions']) if f >= 0}
+                if got != allowed:
+                    raise RuntimeError(f"tríada inválida: {c['name']} {v['fretPositions']}")
+            if c.get('triadInversions') != triads:
+                changed['triadas'] = changed.get('triadas', 0) + 1
+            c['triadInversions'] = triads
+        # 9. drop 3
+        if t in DROP3_TYPES:
+            third, fifth, seventh = DROP3_TYPES[t]
+            shapes = []
+            for string, others, title in DROP3_SHAPES:
+                frets, fingers = drop3(r, string, others, third, fifth, seventh)
+                got = {(OPEN[i] + f) % 12 for i, f in enumerate(frets) if f >= 0}
+                if got != {(r + i) % 12 for i in (0, third, fifth, seventh)}:
+                    raise RuntimeError(f"drop 3 inválido: {c['name']} {frets}")
+                shapes.append({'title': title, 'shape': 'Drop 3', 'description': DROP3_TEXT,
+                               'fretPositions': frets, 'fingerPositions': fingers,
+                               'baseFret': min(f for f in frets if f > 0)})
+            voicings = c.setdefault('voicings', [])
+            current = [v for v in voicings if v['shape'] == 'Drop 3']
+            if current != shapes:
+                voicings[:] = [v for v in voicings if v['shape'] != 'Drop 3'] + shapes
+                changed['drop3'] = changed.get('drop3', 0) + 1
         # 6. forma de principiante
         grip = BEGINNER_GRIPS.get((c['root'], t))
         if grip:

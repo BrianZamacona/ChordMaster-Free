@@ -44,12 +44,12 @@ void main() {
         .cast<Map<String, dynamic>>();
     final byTitle = {for (final i in inversions) i['title'] as String: i};
 
-    final first = analyze(cMajor, byTitle['1st Inversion']!);
+    final first = analyze(cMajor, byTitle['1st Inversion (strings 3-2-1)']!);
     expect(first.inversion, '1ª inversión');
     expect(first.bassNote, 'E');
     expect(first.toneLabels.first, '3');
 
-    final second = analyze(cMajor, byTitle['2nd Inversion']!);
+    final second = analyze(cMajor, byTitle['2nd Inversion (strings 3-2-1)']!);
     expect(second.inversion, '2ª inversión');
     expect(second.bassNote, 'G');
   });
@@ -80,7 +80,7 @@ void main() {
         }
       }
     }
-    expect(total, 1144);
+    expect(total, 1768);
     expect(outside, isEmpty, reason: '$outside');
     expect(openStringMidi, hasLength(6));
   });
@@ -141,7 +141,7 @@ void main() {
           checked++;
         }
       }
-      expect(checked, 1144);
+      expect(checked, 1768);
     });
   });
 

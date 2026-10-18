@@ -66,8 +66,13 @@ cada nota pertenezca a la escala. No bajar la tolerancia de 0.
 - Power chords (power5): R-5-R sin repetir la 5ª, con raíz en la 6ª, 5ª, 4ª y 3ª cuerda (en la
   4ª y 3ª la octava sube un traste por la afinación de la 2ª), en `voicings`. Principal: la
   abierta (E5, A5, D5) o la más baja con raíz en 6ª/5ª. Los genera `regenerate_chord_data.py`.
+- Tríadas (mayor, menor, dim, aum) en `triadInversions`: fundamental, 1ª y 2ª inversión en los
+  grupos 3-2-1, 4-3-2, 5-4-3 y 6-5-4, cerradas, móviles (sin cuerdas al aire) y en la posición
+  más baja. Drop 3 (maj7, 7, m7, m7b5, dim7) en `voicings`: R-7-3-5 con raíz en la 6ª y en la 5ª,
+  un dedo por nota. Ambos por regla en `regenerate_chord_data.py`. Las tríadas NO entran en
+  Progresiones (solo acordes completos: principal, CAGED y voicings).
 - Berklee NO está implementado: no hay definición con trastes verificada. No inventarla.
-- Progresiones: candidatos = digitaciones de `chords.json` sin costo ergonómico infinito;
+- Progresiones: candidatos = digitaciones de `chords.json` (principal, CAGED, voicings) sin costo ergonómico infinito;
   **formas abiertas primero** (decisión del usuario): si el acorde tiene alguna forma abierta
   (`isOpenPosition`: una cuerda al aire y nada más allá del traste 4), solo entran esas; si no
   (F, B, Bm, F#m...), entran todas, cejillas incluidas. Vale en ambos modos. Después,
