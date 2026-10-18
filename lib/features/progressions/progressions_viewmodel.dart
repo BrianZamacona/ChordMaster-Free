@@ -11,6 +11,7 @@ import '../../domain/progressions/progression_data.dart';
 import '../../domain/theory/double_stops.dart' show noteNames;
 import '../../domain/voicing/voice_leading.dart';
 import '../../services/achievement_service.dart';
+import '../../services/audio_service.dart';
 import '../../services/storage_service.dart';
 
 /// Immutable state for [ProgressionsViewModel].
@@ -22,7 +23,11 @@ class ProgressionsState {
     this.beginner = false,
     this.custom = const [],
     this.chosen = const {},
+    this.playingIndex,
   });
+
+  /// Acorde que está sonando al escuchar la progresión (`null` = en silencio).
+  final int? playingIndex;
 
   /// Pitch class de la tónica (C = 0).
   final int tonic;
@@ -56,6 +61,7 @@ class ProgressionsState {
     bool? beginner,
     List<String>? custom,
     Map<int, FingeringChoice>? chosen,
+    Object? playingIndex = _keep,
   }) => ProgressionsState(
     tonic: tonic ?? this.tonic,
     progressionId: progressionId ?? this.progressionId,
@@ -63,7 +69,10 @@ class ProgressionsState {
     beginner: beginner ?? this.beginner,
     custom: custom ?? this.custom,
     chosen: chosen ?? this.chosen,
+    playingIndex: identical(playingIndex, _keep) ? this.playingIndex : playingIndex as int?,
   );
+
+  static const Object _keep = Object();
 }
 
 /// Digitación elegida para un acorde (orden de chords.json, 6ª → 1ª).
@@ -286,6 +295,37 @@ class ProgressionsViewModel extends Notifier<ProgressionsState> {
     }
   }
 
+  /// Segundos que suena cada acorde al escuchar la progresión.
+  static const listenStepSeconds = 1.6;
+
+  /// Sube en cada escucha o cambio: una escucha vieja deja de sonar.
+  int _listenToken = 0;
+
+  /// Rasguea los acordes de [plan] uno tras otro, marcando cuál suena.
+  /// Llamarla otra vez mientras suena la detiene.
+  Future<void> listen(ProgressionPlan plan) async {
+    if (state.playingIndex != null) {
+      _stopListening();
+      return;
+    }
+    final token = ++_listenToken;
+    final audio = ref.read(audioServiceProvider);
+    for (final (i, step) in plan.steps.indexed) {
+      if (token != _listenToken) return;
+      state = state.copyWith(playingIndex: i);
+      await audio.playFingering(step.voicing.jsonFrets);
+      await Future<void>.delayed(
+        Duration(milliseconds: (listenStepSeconds * 1000).round()),
+      );
+    }
+    if (token == _listenToken) state = state.copyWith(playingIndex: null);
+  }
+
+  void _stopListening() {
+    _listenToken++;
+    if (state.playingIndex != null) state = state.copyWith(playingIndex: null);
+  }
+
   /// Usa [choice] para el acorde [index] de la progresión (glosario).
   void chooseFingering(int index, FingeringChoice choice) =>
       state = state.copyWith(chosen: {...state.chosen, index: choice});
@@ -297,6 +337,7 @@ class ProgressionsViewModel extends Notifier<ProgressionsState> {
   // Las elegidas a mano se descartan al cambiar tonalidad, progresión o modo:
   // los acordes ya no son los mismos.
   void setTonic(int tonic) {
+    _stopListening();
     state = state.copyWith(tonic: tonic, chosen: const {});
     if (!state.isCustom) {
       _countGeneration('${state.progressionId}@$tonic');
@@ -305,10 +346,13 @@ class ProgressionsViewModel extends Notifier<ProgressionsState> {
     }
   }
 
-  void setBeginner({required bool beginner}) =>
-      state = state.copyWith(beginner: beginner, chosen: const {});
+  void setBeginner({required bool beginner}) {
+    _stopListening();
+    state = state.copyWith(beginner: beginner, chosen: const {});
+  }
 
   void setProgression(String id) {
+    _stopListening();
     state = state.copyWith(progressionId: id, chosen: const {});
     if (id != customProgressionId) _countGeneration('$id@${state.tonic}');
   }
@@ -330,6 +374,7 @@ class ProgressionsViewModel extends Notifier<ProgressionsState> {
   void clearCustom() => _setCustom(const []);
 
   void _setCustom(List<String> custom) {
+    _stopListening();
     state = state.copyWith(
       custom: custom,
       progressionId: customProgressionId,

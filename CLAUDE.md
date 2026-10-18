@@ -96,6 +96,17 @@ cada nota pertenezca a la escala. No bajar la tolerancia de 0.
   verificada contra resultados de referencia del sandbox TypeScript
   (`test/fixtures/golden/`).
 
+## Audio
+- No hay archivos de audio: todo se sintetiza en `lib/domain/audio/pluck_synth.dart` (cuerda
+  pulsada Karplus-Strong afinada con pasa-todo, error < 1 cent; clic de metrónomo). Test de
+  afinación por autocorrelación.
+- `AudioService` escribe cada sonido una vez como WAV en la carpeta temporal y lo reproduce
+  con `just_audio` como archivo (nada de `StreamAudioSource`: usa un proxy HTTP local que en
+  Android exige tráfico sin cifrar). Se inyecta por `audioServiceProvider`; los tests usan
+  `AudioService.forTesting()` para un doble que registra lo que se pidió sonar.
+- Usos: rasgueo del acorde (detalle), escuchar la progresión, intervalos (oído), metrónomo y
+  pulso del juego de ritmo.
+
 ## Flujo de trabajo (obligatorio)
 1. Antes de cada commit: `flutter analyze` y `flutter test` limpios. Un commit que no
    compila es peor que no commitear (pasó con el borrado de generadores).

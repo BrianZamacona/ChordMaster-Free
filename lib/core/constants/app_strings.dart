@@ -291,6 +291,9 @@ class AppStrings {
         'W+H = step and a half (3 frets). Only some scales have step-and-a-half '
         'leaps.',
   );
+  static String get progressionListen =>
+      tr(es: 'Escuchar progresión', en: 'Listen to the progression');
+  static String get progressionStop => tr(es: 'Detener', en: 'Stop');
   static String get progressionTapHint => tr(
     es: 'Toca un acorde para ver todas sus posiciones y cambiarla.',
     en: 'Tap a chord to see all of its positions and change it.',

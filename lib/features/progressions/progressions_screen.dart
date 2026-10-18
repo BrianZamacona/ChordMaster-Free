@@ -94,7 +94,7 @@ class ProgressionsContent extends ConsumerWidget {
         plan.when(
           data: (p) => p.problem != null
               ? _ProblemMessage(message: p.problem!)
-              : _PlanView(plan: p),
+              : _PlanView(plan: p, playingIndex: state.playingIndex),
           loading: () => const Center(child: CircularProgressIndicator()),
           error: (e, _) => _ProblemMessage(
             message: '${AppStrings.progressionLoadError}: $e',
@@ -200,13 +200,14 @@ class _ProblemMessage extends StatelessWidget {
   );
 }
 
-class _PlanView extends StatelessWidget {
-  const _PlanView({required this.plan});
+class _PlanView extends ConsumerWidget {
+  const _PlanView({required this.plan, required this.playingIndex});
 
   final ProgressionPlan plan;
+  final int? playingIndex;
 
   @override
-  Widget build(BuildContext context) => LayoutBuilder(
+  Widget build(BuildContext context, WidgetRef ref) => LayoutBuilder(
     builder: (context, constraints) {
       const gap = 12.0;
       final columns = constraints.maxWidth >= 640 ? 4 : 2;
@@ -214,6 +215,20 @@ class _PlanView extends StatelessWidget {
       return Column(
         crossAxisAlignment: CrossAxisAlignment.start,
         children: [
+          if (plan.steps.isNotEmpty) ...[
+            FilledButton.tonalIcon(
+              key: const Key('progression-listen'),
+              onPressed: () =>
+                  ref.read(progressionsViewModelProvider.notifier).listen(plan),
+              icon: Icon(playingIndex == null ? Icons.play_arrow : Icons.stop),
+              label: Text(
+                playingIndex == null
+                    ? AppStrings.progressionListen
+                    : AppStrings.progressionStop,
+              ),
+            ),
+            const SizedBox(height: 8),
+          ],
           Text(
             AppStrings.progressionTapHint,
             style: Theme.of(context).textTheme.bodySmall?.copyWith(
@@ -226,7 +241,10 @@ class _PlanView extends StatelessWidget {
             runSpacing: gap,
             children: [
               for (final (i, step) in plan.steps.indexed)
-                SizedBox(width: width, child: _StepCard(index: i, step: step)),
+                SizedBox(
+                  width: width,
+                  child: _StepCard(index: i, step: step, playing: playingIndex == i),
+                ),
             ],
           ),
         ],
@@ -236,10 +254,13 @@ class _PlanView extends StatelessWidget {
 }
 
 class _StepCard extends StatelessWidget {
-  const _StepCard({required this.index, required this.step});
+  const _StepCard({required this.index, required this.step, this.playing = false});
 
   final int index;
   final ProgressionStep step;
+
+  /// Es el acorde que suena al escuchar la progresión.
+  final bool playing;
 
   @override
   Widget build(BuildContext context) {
@@ -250,10 +271,11 @@ class _StepCard extends StatelessWidget {
       key: Key('step-$index'),
       margin: EdgeInsets.zero,
       clipBehavior: Clip.antiAlias,
-      shape: step.chosen
+      color: playing ? p.accent.withValues(alpha: 0.16) : null,
+      shape: step.chosen || playing
           ? RoundedRectangleBorder(
               borderRadius: BorderRadius.circular(12),
-              side: BorderSide(color: p.accent, width: 1.5),
+              side: BorderSide(color: p.accent, width: playing ? 2.5 : 1.5),
             )
           : null,
       child: InkWell(
