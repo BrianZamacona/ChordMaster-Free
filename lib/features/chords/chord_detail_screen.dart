@@ -17,6 +17,8 @@ import '../../data/repository/scale_repository.dart';
 import '../../domain/theory/double_stops.dart' show noteNames;
 import '../../domain/theory/scale_insights.dart';
 import '../../domain/voicing/fingering_metrics.dart';
+import '../../domain/voicing/slash_chords.dart';
+import '../../domain/voicing/voicing_adapter.dart';
 import '../../models/chord.dart';
 import '../../services/achievement_service.dart';
 import '../../services/audio_service.dart';
@@ -283,6 +285,17 @@ class _ChordDetailScreenState extends ConsumerState<ChordDetailScreen> {
                 title: AppStrings.fretPositions,
                 child: _FretPositionRow(
                   fretPositions: chord.fretPositions,
+                ),
+              ),
+            ),
+            const SizedBox(height: 12),
+            fadeIn(
+              _SectionCard(
+                title: AppStrings.slashTitle,
+                child: _SlashChords(
+                  key: ValueKey('slash-${chord.name}'),
+                  chord: chord,
+                  displayName: displayName,
                 ),
               ),
             ),
@@ -595,4 +608,102 @@ class _InlineChordChip extends StatelessWidget {
         backgroundColor: context.palette.accent.withAlpha(25),
         side: BorderSide(color: context.palette.accent.withAlpha(70)),
       );
+}
+
+/// Elegir otra nota para el bajo (C/E, D/F#...). Las digitaciones salen de
+/// `domain/voicing/slash_chords.dart` a partir de las del acorde.
+class _SlashChords extends StatefulWidget {
+  const _SlashChords({super.key, required this.chord, required this.displayName});
+
+  final Chord chord;
+  final String displayName;
+
+  @override
+  State<_SlashChords> createState() => _SlashChordsState();
+}
+
+class _SlashChordsState extends State<_SlashChords> {
+  int? _bass;
+
+  List<SlashVoicing> _voicings(int bass) {
+    final c = widget.chord;
+    return slashVoicings(
+      sources: [
+        VoicingAdapter.fromChordJson(c.fretPositions),
+        for (final item in [...c.cagedPositions, ...c.voicings, ...c.triadInversions])
+          VoicingAdapter.fromChordJson(item.fretPositions),
+      ],
+      rootPc: noteNames.indexOf(c.root),
+      intervals: c.intervals,
+      bassPc: bass,
+    );
+  }
+
+  @override
+  Widget build(BuildContext context) {
+    final theme = Theme.of(context);
+    final p = context.palette;
+    final rootPc = noteNames.indexOf(widget.chord.root);
+    final bass = _bass;
+    final voicings = bass == null ? const <SlashVoicing>[] : _voicings(bass);
+    return Column(
+      crossAxisAlignment: CrossAxisAlignment.start,
+      children: [
+        Text(AppStrings.slashHint, style: theme.textTheme.bodySmall?.copyWith(color: p.textSecondary)),
+        const SizedBox(height: 8),
+        Wrap(
+          spacing: 6,
+          runSpacing: 6,
+          children: [
+            for (var pc = 0; pc < 12; pc++)
+              if (pc != rootPc)
+                ChoiceChip(
+                  key: Key('slash-bass-${noteNames[pc]}'),
+                  label: Text(noteNames[pc]),
+                  selected: bass == pc,
+                  onSelected: (on) => setState(() => _bass = on ? pc : null),
+                ),
+          ],
+        ),
+        if (bass != null) ...[
+          const SizedBox(height: 12),
+          Text(
+            '${widget.displayName}/${noteNames[bass]}',
+            key: const Key('slash-name'),
+            style: theme.textTheme.titleMedium,
+          ),
+          const SizedBox(height: 4),
+          Text(
+            AppStrings.slashBassIs(
+              noteNames[bass],
+              intervalLongName((bass - rootPc + 12) % 12),
+              inChord: widget.chord.intervals.contains((bass - rootPc + 12) % 12),
+            ),
+            style: theme.textTheme.bodySmall?.copyWith(color: p.textSecondary),
+          ),
+          const SizedBox(height: 8),
+          if (voicings.isEmpty)
+            Text(AppStrings.slashNone, style: theme.textTheme.bodyMedium)
+          else
+            Wrap(
+              spacing: 10,
+              runSpacing: 10,
+              children: [
+                for (final (i, v) in voicings.indexed)
+                  ChordDiagramWidget(
+                    key: Key('slash-voicing-$i'),
+                    chordName: '${widget.displayName}/${noteNames[bass]}',
+                    fretPositions: VoicingAdapter.toChordJsonOrder([for (final f in v.frets) f ?? -1]),
+                    fingerPositions: VoicingAdapter.toChordJsonOrder(v.fingers),
+                    root: widget.chord.root,
+                    toneRow: DiagramToneRow.intervals,
+                    showChordName: false,
+                    size: 130,
+                  ),
+              ],
+            ),
+        ],
+      ],
+    );
+  }
 }

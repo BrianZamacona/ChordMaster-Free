@@ -291,6 +291,27 @@ class AppStrings {
         'W+H = step and a half (3 frets). Only some scales have step-and-a-half '
         'leaps.',
   );
+  static String get slashTitle =>
+      tr(es: 'Bajo (acorde slash)', en: 'Bass note (slash chord)');
+  static String get slashHint => tr(
+    es: 'Elige otra nota para el bajo: el acorde se mantiene arriba y esa nota '
+        'suena como la más grave (C/E = C con E en el bajo).',
+    en: 'Pick another bass note: the chord stays on top and that note sounds '
+        'lowest (C/E = C with E in the bass).',
+  );
+  static String get slashNone => tr(
+    es: 'No hay una digitación cómoda con ese bajo.',
+    en: 'There is no comfortable fingering with that bass note.',
+  );
+  static String slashBassIs(String note, String interval, {required bool inChord}) => inChord
+      ? tr(
+          es: '$note está en el acorde ($interval sobre la raíz): es una inversión.',
+          en: '$note is in the chord ($interval above the root): it is an inversion.',
+        )
+      : tr(
+          es: '$note no está en el acorde ($interval sobre la raíz): añade color en el bajo.',
+          en: '$note is not in the chord ($interval above the root): it adds color in the bass.',
+        );
   static String get octavesTitle =>
       tr(es: 'Octavas de la tónica', en: 'Octaves of the tonic');
   static String get octavesHint => tr(

@@ -73,6 +73,10 @@ cada nota pertenezca a la escala. No bajar la tolerancia de 0.
   más baja. Drop 3 (maj7, 7, m7, m7b5, dim7) en `voicings`: R-7-3-5 con raíz en la 6ª y en la 5ª,
   un dedo por nota. Ambos por regla en `regenerate_chord_data.py`. Las tríadas NO entran en
   Progresiones (solo acordes completos: principal, CAGED y voicings).
+- Acordes slash (bajo elegido, "Bajo (acorde slash)" en el detalle): se generan en tiempo de
+  ejecución por regla (`lib/domain/voicing/slash_chords.dart`), no van en chords.json: se pone
+  el bajo en la 6ª/5ª/4ª sobre las digitaciones del acorde, que deben conservar raíz y 3ª (o la
+  2ª/4ª de los sus); el bajo es la nota más grave. Orden: abiertas, más cuerdas, más cómodas.
 - Berklee NO está implementado: no hay definición con trastes verificada. No inventarla.
 - Progresiones: candidatos = digitaciones de `chords.json` (principal, CAGED, voicings) sin costo ergonómico infinito;
   **formas abiertas primero** (decisión del usuario): si el acorde tiene alguna forma abierta
