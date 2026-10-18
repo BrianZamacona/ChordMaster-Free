@@ -112,6 +112,16 @@ cada nota pertenezca a la escala. No bajar la tolerancia de 0.
   lectura). Mediana de 5 lecturas; el La de referencia (440/442…) llega al cálculo. Antes era
   una simulación: no volver a eso.
 
+## Módulos de práctica (decisiones)
+- Salud: el aviso de pausa sale SOLO durante la sesión de práctica, al cumplirse cada intervalo
+  (notificación inmediata + tarjeta en pantalla). Nada de notificaciones programadas: Android
+  solo repite cada minuto/hora/día/semana y avisaba toda la noche.
+- Ritmo: precisión = toques a ±75 ms / máx(toques, pulsos); récord y logro desde 16 toques.
+- Canciones: solo acordes (sin letras); notas con sostenidos; cada acorde enlaza a su ficha
+  (slash → acorde de arriba). Test: todos existen en chords.json salvo A7sus4.
+- Logros: todos deben poder conseguirse (test en `achievement_service_test.dart`). Comunidad
+  se eliminó (no tenía ruta y solo guardaba en el teléfono).
+
 ## Flujo de trabajo (obligatorio)
 1. Antes de cada commit: `flutter analyze` y `flutter test` limpios. Un commit que no
    compila es peor que no commitear (pasó con el borrado de generadores).
