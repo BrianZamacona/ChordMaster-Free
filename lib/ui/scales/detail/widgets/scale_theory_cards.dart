@@ -5,11 +5,15 @@ import 'package:go_router/go_router.dart';
 import '../../../../core/constants/app_strings.dart';
 import '../../../../core/constants/chord_metadata.dart';
 import '../../../../core/i18n/tr.dart';
+import '../../../../data/models/note_coordinate.dart';
+import '../../../../data/repository/scale_repository.dart';
 import '../../../../domain/theory/double_stops.dart' show noteNames;
 import '../../../../domain/theory/intervals.dart';
+import '../../../../domain/theory/octaves.dart';
 import '../../../../domain/theory/scale_insights.dart';
 import '../../../../features/chords/chord_viewmodel.dart';
 import '../../../theme.dart';
+import '../../../widgets/fretboard_diagram.dart';
 
 /// "¿Por qué suena así?" de una escala: pasos, qué la distingue y sus
 /// acordes diatónicos. Todo sale de `domain/theory/scale_insights.dart`.
@@ -84,6 +88,87 @@ String describeComparison(ScaleComparison c, List<int> scale) {
     es: 'Comparada con $ref: añade ${added.join(', ')} y quita ${removed.join(', ')}.',
     en: 'Compared with $ref: it adds ${added.join(', ')} and drops ${removed.join(', ')}.',
   );
+}
+
+/// La tónica en todo el diapasón (trastes 0–12) y las formas para saltar a
+/// su octava; la forma elegida se marca con líneas. Reglas en
+/// `domain/theory/octaves.dart`.
+class ScaleOctavesCard extends StatefulWidget {
+  const ScaleOctavesCard({super.key, required this.rootSemitone});
+
+  final int rootSemitone;
+
+  @override
+  State<ScaleOctavesCard> createState() => _ScaleOctavesCardState();
+}
+
+class _ScaleOctavesCardState extends State<ScaleOctavesCard> {
+  final _shapes = octaveShapes();
+  var _selected = 0;
+
+  @override
+  Widget build(BuildContext context) {
+    final p = context.palette;
+    final text = Theme.of(context).textTheme;
+    final root = widget.rootSemitone % 12;
+    final name = noteNames[root];
+    final shape = _shapes[_selected];
+    final pattern = ResolvedPattern(
+      scaleId: 'octaves',
+      scaleName: name,
+      systemId: 'octaves',
+      systemName: '',
+      positionId: 'octaves',
+      positionName: '',
+      startingFret: 0,
+      endFret: 12,
+      coordinates: [
+        for (final n in notePositions(root))
+          NoteCoordinate(string: n.string, fret: n.fret, isRoot: true, note: name, interval: '1'),
+      ],
+    );
+    return _TheoryCard(
+      key: const Key('scale-octaves'),
+      icon: Icons.swap_vert,
+      title: AppStrings.octavesTitle,
+      children: [
+        Text(AppStrings.octavesHint, style: text.bodySmall?.copyWith(color: p.textSecondary)),
+        FretboardDiagram(
+          key: const Key('octaves-board'),
+          pattern: pattern,
+          height: 150,
+          label: FretboardLabel.note,
+          links: octavePairs(root, shape),
+        ),
+        Wrap(
+          spacing: 6,
+          runSpacing: 6,
+          children: [
+            for (final (i, s) in _shapes.indexed)
+              ChoiceChip(
+                key: Key('octave-shape-$i'),
+                label: Text(
+                  AppStrings.octaveShapeLabel(s.lowString, s.highString, s.fretShift),
+                  style: musicMono(fontSize: 13, color: p.textPrimary),
+                ),
+                selected: i == _selected,
+                onSelected: (_) => setState(() => _selected = i),
+              ),
+          ],
+        ),
+        Text(
+          AppStrings.octaveShapeText(
+            shape.lowString,
+            shape.highString,
+            shape.fretShift,
+            shape.octaves,
+          ),
+          key: const Key('octave-shape-text'),
+          style: text.bodyMedium,
+        ),
+      ],
+    );
+  }
 }
 
 /// Acordes que armonizan la escala: por grado, su tríada y su cuatríada

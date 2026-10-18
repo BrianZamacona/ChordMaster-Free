@@ -291,6 +291,43 @@ class AppStrings {
         'W+H = step and a half (3 frets). Only some scales have step-and-a-half '
         'leaps.',
   );
+  static String get octavesTitle =>
+      tr(es: 'Octavas de la tónica', en: 'Octaves of the tonic');
+  static String get octavesHint => tr(
+    es: 'La tónica en todo el diapasón y cómo saltar a su octava sin contar notas. '
+        'Al llegar a la 2ª cuerda (si) la forma se corre un traste: está afinada '
+        'una 3ª mayor sobre la 3ª, no una 4ª.',
+    en: 'The tonic across the whole neck and how to jump to its octave without '
+        'counting notes. Reaching the 2nd (B) string the shape moves one fret: it is '
+        'tuned a major third above the 3rd string, not a fourth.',
+  );
+  static String octaveShapeLabel(int low, int high, int shift) =>
+      tr(es: '$lowª→$highª', en: '${_ordinal(low)}→${_ordinal(high)}') +
+      (shift == 0 ? ' =' : shift > 0 ? ' +$shift' : ' −${-shift}');
+  static String octaveShapeText(int low, int high, int shift, int octaves) {
+    final frets = shift.abs() == 1
+        ? tr(es: '1 traste', en: '1 fret')
+        : tr(es: '${shift.abs()} trastes', en: '${shift.abs()} frets');
+    final where = shift == 0
+        ? tr(es: 'en el mismo traste', en: 'on the same fret')
+        : shift > 0
+            ? tr(es: '$frets hacia el cuerpo', en: '$frets toward the body')
+            : tr(es: '$frets hacia la cejuela', en: '$frets toward the nut');
+    final distance = octaves == 1
+        ? tr(es: 'su octava', en: 'its octave')
+        : tr(es: 'la nota dos octavas más arriba', en: 'the note two octaves up');
+    return tr(
+      es: 'De la $lowª a la $highª cuerda: $distance está $where.',
+      en: 'From the ${_ordinal(low)} to the ${_ordinal(high)} string: $distance is $where.',
+    );
+  }
+
+  static String _ordinal(int n) => switch (n) {
+    1 => '1st',
+    2 => '2nd',
+    3 => '3rd',
+    _ => '${n}th',
+  };
   static String get harmonyTitle => tr(
     es: 'Acordes que armonizan la escala',
     en: 'Chords that harmonize the scale',

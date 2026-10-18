@@ -107,6 +107,10 @@ cada nota pertenezca a la escala. No bajar la tolerancia de 0.
   menor natural, simetría, acordes que caben sobre la tónica, acordes diatónicos con número
   romano, escalas para un acorde (`scalesForChord`) e ideas de improvisación (texto curado por
   escala; las disminuidas se distinguen por intervalos).
+- `lib/domain/theory/octaves.dart` — formas de octava deducidas de la afinación (8: 6→4 +2,
+  5→3 +2, 4→2 +3, 3→1 +3, 6→3 −3, 5→2 −2, 4→1 −2, 6→1 = a dos octavas) y posiciones de una
+  nota; las usa la tarjeta "Octavas de la tónica" del detalle de escala (líneas en el mismo
+  painter del diapasón, parámetro `links`).
 - Todo texto nuevo de teoría: bilingüe y con test que verifique lo que afirma.
 
 ## Mapa del código

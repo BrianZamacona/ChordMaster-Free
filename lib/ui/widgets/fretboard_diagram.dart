@@ -23,11 +23,16 @@ class FretboardDiagram extends StatelessWidget {
     required this.pattern,
     this.height = 180,
     this.label = FretboardLabel.interval,
+    this.links = const [],
   });
 
   final ResolvedPattern pattern;
   final double height;
   final FretboardLabel label;
+
+  /// Líneas entre pares de notas (cuerda 1 = mi aguda, traste), p. ej. una
+  /// nota y su octava. Se dibujan debajo de las notas.
+  final List<FretLink> links;
 
   @override
   Widget build(BuildContext context) => SizedBox(
@@ -53,6 +58,7 @@ class FretboardDiagram extends StatelessWidget {
                 endFret: pattern.endFret,
                 coordinates: pattern.coordinates,
                 label: label,
+                links: links,
                 palette: context.palette,
               ),
             ),
@@ -60,6 +66,9 @@ class FretboardDiagram extends StatelessWidget {
         ),
       );
 }
+
+/// Par de posiciones unidas por una línea en [FretboardDiagram].
+typedef FretLink = (({int string, int fret}), ({int string, int fret}));
 
 class _BoardGeometry {
   const _BoardGeometry({
@@ -98,6 +107,7 @@ class _BoardPainter extends CustomPainter {
     required this.endFret,
     required this.coordinates,
     required this.label,
+    required this.links,
     required this.palette,
   });
 
@@ -105,6 +115,7 @@ class _BoardPainter extends CustomPainter {
   final int endFret;
   final List<NoteCoordinate> coordinates;
   final FretboardLabel label;
+  final List<FretLink> links;
   final AppPalette palette;
 
   static const _dotFrets = [3, 5, 7, 9, 15, 17, 19, 21];
@@ -173,6 +184,14 @@ class _BoardPainter extends CustomPainter {
       color: palette.textSecondary,
     );
 
+    final link = Paint()
+      ..color = palette.accent
+      ..strokeWidth = 3
+      ..strokeCap = StrokeCap.round;
+    for (final (a, b) in links) {
+      canvas.drawLine(g.noteOffset(a.string, a.fret), g.noteOffset(b.string, b.fret), link);
+    }
+
     final r = g.radius;
     for (final c in coordinates) {
       final center = g.noteOffset(c.string, c.fret);
@@ -230,6 +249,7 @@ class _BoardPainter extends CustomPainter {
       old.geometry.startFret != geometry.startFret ||
       old.endFret != endFret ||
       old.label != label ||
+      !identical(old.links, links) ||
       old.palette != palette ||
       !identical(old.coordinates, coordinates);
 }

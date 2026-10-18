@@ -138,6 +138,7 @@ class ScaleDetailScreen extends ConsumerWidget {
             intervals: scale.intervals,
             rootSemitone: _noteNames.indexOf(state.rootName),
           ),
+          ScaleOctavesCard(rootSemitone: _noteNames.indexOf(state.rootName)),
           ScaleImproviseCard(
             scaleId: scale.id,
             intervals: scale.intervals,
