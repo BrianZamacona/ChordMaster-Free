@@ -20,6 +20,8 @@ class _FakePitch extends PitchService {
   _FakePitch({this.deny = false}) : super.forTesting();
 
   final bool deny;
+  // Lo cierra cada test con addTearDown.
+  // ignore: close_sinks
   final controller = StreamController<PitchResult>.broadcast();
 
   @override
