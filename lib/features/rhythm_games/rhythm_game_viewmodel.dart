@@ -4,6 +4,7 @@ import 'package:flutter/foundation.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 
 import '../../services/achievement_service.dart';
+import '../../services/audio_service.dart';
 import '../../services/storage_service.dart';
 
 // ── State ────────────────────────────────────────────────────────────────────
@@ -171,6 +172,8 @@ class RhythmGameViewModel extends Notifier<RhythmGameState> {
     _lastBeatTime = DateTime.now();
     _beatTimer = Timer.periodic(state.beatInterval, (_) {
       _lastBeatTime = DateTime.now();
+      // El pulso también se oye: clic de metrónomo, acento cada 4 tiempos.
+      ref.read(audioServiceProvider).playMetronomeTick(isAccent: state.beatCount % 4 == 0);
       state = state.copyWith(
         beatCount: state.beatCount + 1,
         isBeatActive: true,
