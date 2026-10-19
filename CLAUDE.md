@@ -126,8 +126,10 @@ cada nota pertenezca a la escala. No bajar la tolerancia de 0.
 - El ícono se genera desde código: `flutter test tool/app_icon/render_app_icon_test.dart`
   (diagrama de C abierto con la paleta oscura; escribe Android clásico + capa adaptable,
   iOS sin alfa y `store/play_icon_512.png`). No editar los PNG a mano; idempotente.
-- Nombre bajo el ícono: "ChordMaster" (Android `android:label`, iOS `CFBundleDisplayName`);
-  dentro de la app y en la tienda: `AppStrings.appName` ("ChordMaster Free").
+- Nombre: "Learn & Strum" en todas partes (Android `android:label` y iOS `CFBundleDisplayName`
+  con `&amp;`; dentro de la app `AppStrings.appName`). Id: `com.guitar.learnandstrum` (Android
+  namespace/applicationId, `MainActivity` en ese paquete, iOS bundle id): permanente al publicar.
+  Lo interno sigue llamándose chordmaster_free / ChordMasterApp (no se ve).
 - Arranque sin destello blanco: `@color/launch_background` (claro #F3EFEA / oscuro #1C1613).
 
 ## Flujo de trabajo (obligatorio)

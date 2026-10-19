@@ -1,4 +1,4 @@
-# Ficha de Google Play — ChordMaster Free
+# Ficha de Google Play — Learn & Strum
 
 Textos listos para copiar en Play Console. Límites de Play: título 30 caracteres,
 descripción breve 80, descripción completa 4000 (verificados con
@@ -12,13 +12,13 @@ Política de privacidad: `docs/privacy-policy.md` (publicar con GitHub Pages y p
 ## Español (es-419 / es-ES)
 
 ### Título
-ChordMaster Free: Guitarra
+Learn & Strum: Guitarra
 
 ### Descripción breve
 Acordes, escalas, progresiones, afinador y oído. Sin anuncios y sin conexión.
 
 ### Descripción completa
-ChordMaster Free es una app para aprender guitarra que explica el porqué de cada acorde, escala y progresión. Es gratis, no tiene anuncios ni cuentas y funciona sin conexión.
+Learn & Strum es una app para aprender guitarra que explica el porqué de cada acorde, escala y progresión. Es gratis, no tiene anuncios ni cuentas y funciona sin conexión.
 
 ACORDES
 • 288 acordes: 24 tipos en las 12 tonalidades, de mayores y menores a 7#9, 13 y maj7#11.
@@ -53,13 +53,13 @@ Disponible en español e inglés, con tema claro y oscuro. Tus datos se quedan e
 ## English (en-US)
 
 ### Title
-ChordMaster Free: Guitar
+Learn & Strum: Guitar
 
 ### Short description
 Chords, scales, progressions, tuner and ear training. No ads, works offline.
 
 ### Full description
-ChordMaster Free is a guitar-learning app that explains the why behind every chord, scale and progression. It is free, with no ads and no accounts, and it works offline.
+Learn & Strum is a guitar-learning app that explains the why behind every chord, scale and progression. It is free, with no ads and no accounts, and it works offline.
 
 CHORDS
 • 288 chords: 24 types in all 12 keys, from major and minor to 7#9, 13 and maj7#11.

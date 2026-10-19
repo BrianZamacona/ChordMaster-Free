@@ -1,4 +1,4 @@
-package com.example.chordmaster_free
+package com.guitar.learnandstrum
 
 import io.flutter.embedding.android.FlutterActivity
 

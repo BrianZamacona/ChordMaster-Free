@@ -1,12 +1,12 @@
 ---
-title: ChordMaster Free — Política de privacidad / Privacy Policy
+title: Learn & Strum — Política de privacidad / Privacy Policy
 ---
 
-# ChordMaster Free — Política de privacidad
+# Learn & Strum — Política de privacidad
 
 *Vigente desde el 18 de octubre de 2026.*
 
-ChordMaster Free es una app para aprender guitarra que funciona por completo en tu teléfono. **No recopila, no envía y no vende ningún dato personal.**
+Learn & Strum es una app para aprender guitarra que funciona por completo en tu teléfono. **No recopila, no envía y no vende ningún dato personal.**
 
 ## Qué datos usa la app y dónde quedan
 
@@ -39,15 +39,15 @@ Si esta política cambia, la nueva versión se publicará en esta misma página 
 
 ## Contacto
 
-[correo de contacto]
+learn.strum@gmail.com
 
 ---
 
-# ChordMaster Free — Privacy Policy
+# Learn & Strum — Privacy Policy
 
 *Effective October 18, 2026.*
 
-ChordMaster Free is a guitar-learning app that works entirely on your phone. **It does not collect, send or sell any personal data.**
+Learn & Strum is a guitar-learning app that works entirely on your phone. **It does not collect, send or sell any personal data.**
 
 ## What data the app uses and where it stays
 
@@ -80,4 +80,4 @@ If this policy changes, the new version will be published on this same page with
 
 ## Contact
 
-[contact email]
+learn.strum@gmail.com

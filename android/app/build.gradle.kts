@@ -5,7 +5,7 @@ plugins {
 }
 
 android {
-    namespace = "com.example.chordmaster_free"
+    namespace = "com.guitar.learnandstrum"
     compileSdk = flutter.compileSdkVersion
     ndkVersion = flutter.ndkVersion
 
@@ -16,7 +16,7 @@ android {
     }
 
     defaultConfig {
-        applicationId = "com.example.chordmaster_free"
+        applicationId = "com.guitar.learnandstrum"
         minSdk = flutter.minSdkVersion
         targetSdk = flutter.targetSdkVersion
         versionCode = flutter.versionCode

@@ -9,7 +9,7 @@ class AppStrings {
 
   // ── App ────────────────────────────────────────────────────────────────────
 
-  static const String appName = 'ChordMaster Free';
+  static const String appName = 'Learn & Strum';
 
   // ── Módulos ────────────────────────────────────────────────────────────────
 
@@ -43,7 +43,7 @@ class AppStrings {
   );
   static String get language => tr(es: 'Idioma', en: 'Language');
   static String get supportApp =>
-      tr(es: 'Apoya a ChordMaster ♥', en: 'Support ChordMaster ♥');
+      tr(es: 'Apoya Learn & Strum ♥', en: 'Support Learn & Strum ♥');
   static String get start => tr(es: 'Empezar', en: 'Start');
   static String get tap => tr(es: 'Marcar', en: 'Tap');
 
@@ -576,7 +576,7 @@ class AppStrings {
   static String waitSeconds(int s) =>
       tr(es: 'Espera ${s}s…', en: 'Wait ${s}s…');
   static String get reminderTitle =>
-      tr(es: 'Recordatorio de ChordMaster', en: 'ChordMaster reminder');
+      tr(es: 'Recordatorio de Learn & Strum', en: 'Learn & Strum reminder');
   static String get reminderChannelName =>
       tr(es: 'Recordatorios de pausa', en: 'Break reminders');
   static String get reminderChannelDesc => tr(

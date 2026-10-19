@@ -1,11 +1,11 @@
 {
-    "name": "chordmaster_free",
-    "short_name": "chordmaster_free",
+    "name": "Learn & Strum",
+    "short_name": "Learn & Strum",
     "start_url": ".",
     "display": "standalone",
     "background_color": "#0175C2",
     "theme_color": "#0175C2",
-    "description": "A new Flutter project.",
+    "description": "Aprende guitarra: acordes, escalas, progresiones, afinador y oído.",
     "orientation": "portrait-primary",
     "prefer_related_applications": false,
     "icons": [
