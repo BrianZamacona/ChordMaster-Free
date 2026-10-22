@@ -1,7 +1,6 @@
-import 'dart:convert';
-import 'dart:io';
-
 import 'package:flutter_test/flutter_test.dart';
+
+import '../../support/chord_data.dart';
 
 const _notes = [
   'C', 'C#', 'D', 'D#', 'E', 'F', 'F#', 'G', 'G#', 'A', 'A#', 'B', //
@@ -20,9 +19,7 @@ const _listFields = [
 
 void main() {
   test('chords.json: digitaciones suenan solo notas del acorde', () {
-    final data =
-        jsonDecode(File('assets/data/chords.json').readAsStringSync())
-            as List<dynamic>;
+    final data = loadChordJson();
 
     final defects = <String, List<String>>{};
     final totals = <String, int>{};
@@ -49,7 +46,7 @@ void main() {
     }
 
     for (final raw in data) {
-      final chord = raw as Map<String, dynamic>;
+      final chord = raw;
       final root = chord['root'] as String;
       final rootPc = _notes.indexOf(_flats[root] ?? root);
       expect(rootPc, isNot(-1), reason: 'root desconocida: $root');

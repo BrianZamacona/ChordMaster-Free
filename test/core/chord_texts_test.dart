@@ -1,19 +1,15 @@
-import 'dart:convert';
-import 'dart:io';
-
 import 'package:chordmaster_free/core/constants/app_strings.dart';
 import 'package:chordmaster_free/core/constants/chord_metadata.dart';
 import 'package:chordmaster_free/core/constants/chord_texts.dart';
 import 'package:chordmaster_free/core/i18n/tr.dart';
 import 'package:flutter_test/flutter_test.dart';
 
+import '../support/chord_data.dart';
+
 void main() {
   tearDown(() => CurrentLanguage.value = AppLanguage.es);
 
-  final chords =
-      (jsonDecode(File('assets/data/chords.json').readAsStringSync())
-              as List<dynamic>)
-          .cast<Map<String, dynamic>>();
+  final chords = loadChordJson();
 
   test('cada tipo, estilo y texto del explorador de chords.json tiene traducción', () {
     final missing = <String>{};

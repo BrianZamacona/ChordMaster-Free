@@ -1,6 +1,3 @@
-import 'dart:convert';
-import 'dart:io';
-
 import 'package:chordmaster_free/core/widgets/chord_diagram.dart';
 import 'package:chordmaster_free/domain/progressions/progression_builder.dart';
 import 'package:chordmaster_free/domain/progressions/progression_data.dart';
@@ -13,6 +10,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:flutter_test/flutter_test.dart';
 
+import '../support/chord_data.dart';
 import '../support/in_memory_store.dart';
 
 class _FakeChords extends ChordViewModel {
@@ -28,11 +26,11 @@ class _FakeChords extends ChordViewModel {
 }
 
 void main() {
-  final raw = jsonDecode(File('assets/data/chords.json').readAsStringSync()) as List<dynamic>;
+  final raw = loadChordJson();
   final builder = ProgressionBuilder([
-    for (final c in raw) ChordFingerings.fromJson(c as Map<String, dynamic>),
+    for (final c in raw) ChordFingerings.fromJson(c),
   ]);
-  final chords = [for (final c in raw) Chord.fromJson(c as Map<String, dynamic>)];
+  final chords = [for (final c in raw) Chord.fromJson(c)];
   final progression = progressions.firstWhere((p) => p.id == 'v1-2'); // I-V-vi-IV
 
   List<String> frets(ProgressionPlan plan) => [

@@ -1,12 +1,10 @@
-import 'dart:convert';
-import 'dart:io';
-
 import 'package:chordmaster_free/features/songs/songs_viewmodel.dart';
 import 'package:flutter_test/flutter_test.dart';
 
+import '../support/chord_data.dart';
+
 void main() {
-  final chords = (jsonDecode(File('assets/data/chords.json').readAsStringSync()) as List<dynamic>)
-      .cast<Map<String, dynamic>>();
+  final chords = loadChordJson();
   final names = {for (final c in chords) c['displayName'] as String};
 
   test('cada acorde de cada canción existe en la biblioteca (en los slash, el de arriba)', () {

@@ -1,15 +1,12 @@
-import 'dart:convert';
-import 'dart:io';
-
 import 'package:flutter_test/flutter_test.dart';
+
+import '../support/chord_data.dart';
 
 const _open = [4, 9, 2, 7, 11, 4]; // 6ª -> 1ª
 const _notes = ['C', 'C#', 'D', 'D#', 'E', 'F', 'F#', 'G', 'G#', 'A', 'A#', 'B'];
 
 void main() {
-  final chords = (jsonDecode(File('assets/data/chords.json').readAsStringSync())
-          as List<dynamic>)
-      .cast<Map<String, dynamic>>()
+  final chords = loadChordJson()
       .where((c) => c['type'] == 'power5')
       .toList();
 

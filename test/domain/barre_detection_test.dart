@@ -1,10 +1,9 @@
-import 'dart:convert';
-import 'dart:io';
-
 import 'package:chordmaster_free/domain/voicing/barre_detection.dart';
 import 'package:chordmaster_free/domain/voicing/ergonomics.dart';
 import 'package:chordmaster_free/domain/voicing/voicing_adapter.dart';
 import 'package:flutter_test/flutter_test.dart';
+
+import '../support/chord_data.dart';
 
 Barre? _detect(List<int> jsonFrets, List<int> jsonFingers) => detectBarre(
   VoicingAdapter.fromChordJson(jsonFrets),
@@ -12,10 +11,7 @@ Barre? _detect(List<int> jsonFrets, List<int> jsonFingers) => detectBarre(
 );
 
 void main() {
-  final chords =
-      (jsonDecode(File('assets/data/chords.json').readAsStringSync())
-              as List<dynamic>)
-          .cast<Map<String, dynamic>>();
+  final chords = loadChordJson();
 
   Map<String, dynamic> chord(String name) =>
       chords.firstWhere((c) => c['name'] == name);

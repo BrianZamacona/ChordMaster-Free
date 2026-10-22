@@ -1,6 +1,3 @@
-import 'dart:convert';
-import 'dart:io';
-
 import 'package:chordmaster_free/core/constants/app_strings.dart';
 import 'package:chordmaster_free/core/widgets/chord_diagram.dart';
 import 'package:chordmaster_free/domain/voicing/fingering_metrics.dart';
@@ -14,6 +11,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:flutter_test/flutter_test.dart';
 
+import '../support/chord_data.dart';
 import '../support/in_memory_store.dart';
 
 class _FakeChordViewModel extends ChordViewModel {
@@ -38,9 +36,7 @@ class _FakeChordViewModel extends ChordViewModel {
 }
 
 final _cMajor = Chord.fromJson(
-  (jsonDecode(File('assets/data/chords.json').readAsStringSync())
-          as List<dynamic>)
-      .cast<Map<String, dynamic>>()
+  loadChordJson()
       .firstWhere((c) => c['name'] == 'C Major'),
 );
 

@@ -1,6 +1,3 @@
-import 'dart:convert';
-import 'dart:io';
-
 import 'package:chordmaster_free/core/widgets/chord_diagram.dart';
 import 'package:chordmaster_free/features/chords/chord_detail_screen.dart';
 import 'package:chordmaster_free/features/chords/chord_viewmodel.dart';
@@ -11,6 +8,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:flutter_test/flutter_test.dart';
 
+import '../support/chord_data.dart';
 import '../support/in_memory_store.dart';
 
 class _Fake extends ChordViewModel {
@@ -28,8 +26,8 @@ class _Fake extends ChordViewModel {
 void main() {
   TestWidgetsFlutterBinding.ensureInitialized();
   final chords = [
-    for (final c in jsonDecode(File('assets/data/chords.json').readAsStringSync()) as List<dynamic>)
-      Chord.fromJson(c as Map<String, dynamic>),
+    for (final c in loadChordJson())
+      Chord.fromJson(c),
   ];
 
   testWidgets('detalle de C: elegir E en el bajo muestra C/E con 0-3-2-0-1-0 primero', (tester) async {

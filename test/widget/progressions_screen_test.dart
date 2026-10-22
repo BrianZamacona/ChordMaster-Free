@@ -1,6 +1,3 @@
-import 'dart:convert';
-import 'dart:io';
-
 import 'package:chordmaster_free/core/widgets/chord_diagram.dart';
 import 'package:chordmaster_free/domain/progressions/progression_builder.dart';
 import 'package:chordmaster_free/features/progressions/progressions_screen.dart';
@@ -10,14 +7,13 @@ import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:flutter_test/flutter_test.dart';
 
+import '../support/chord_data.dart';
 import '../support/in_memory_store.dart';
 
 ProgressionBuilder _realBuilder() {
-  final raw =
-      jsonDecode(File('assets/data/chords.json').readAsStringSync())
-          as List<dynamic>;
+  final raw = loadChordJson();
   return ProgressionBuilder([
-    for (final c in raw) ChordFingerings.fromJson(c as Map<String, dynamic>),
+    for (final c in raw) ChordFingerings.fromJson(c),
   ]);
 }
 

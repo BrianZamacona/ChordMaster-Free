@@ -1,15 +1,12 @@
-import 'dart:convert';
-import 'dart:io';
-
 import 'package:chordmaster_free/domain/theory/notes.dart';
 import 'package:chordmaster_free/domain/voicing/slash_chords.dart';
 import 'package:chordmaster_free/domain/voicing/voicing_adapter.dart';
 import 'package:flutter_test/flutter_test.dart';
 
+import '../support/chord_data.dart';
+
 void main() {
-  final chords = (jsonDecode(File('assets/data/chords.json').readAsStringSync())
-          as List<dynamic>)
-      .cast<Map<String, dynamic>>();
+  final chords = loadChordJson();
 
   List<SlashVoicing> slash(String name, String bass) {
     final c = chords.firstWhere((c) => c['name'] == name);

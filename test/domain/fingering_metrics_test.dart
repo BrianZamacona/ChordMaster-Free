@@ -1,17 +1,13 @@
-import 'dart:convert';
-import 'dart:io';
-
 import 'package:chordmaster_free/domain/theory/notes.dart';
 import 'package:chordmaster_free/domain/voicing/fingering_metrics.dart';
 import 'package:flutter_test/flutter_test.dart';
 
+import '../support/chord_data.dart';
+
 List<int> _ints(Object? raw) => (raw! as List<dynamic>).cast<int>();
 
 void main() {
-  final chords =
-      (jsonDecode(File('assets/data/chords.json').readAsStringSync())
-              as List<dynamic>)
-          .cast<Map<String, dynamic>>();
+  final chords = loadChordJson();
   final cMajor = chords.firstWhere((c) => c['name'] == 'C Major');
 
   FingeringMetrics analyze(Map<String, dynamic> chord, Map<String, dynamic> item) =>

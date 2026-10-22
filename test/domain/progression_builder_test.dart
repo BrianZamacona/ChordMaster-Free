@@ -1,6 +1,3 @@
-import 'dart:convert';
-import 'dart:io';
-
 import 'package:chordmaster_free/domain/progressions/progression_builder.dart';
 import 'package:chordmaster_free/domain/progressions/progression_data.dart';
 import 'package:chordmaster_free/domain/theory/notes.dart';
@@ -9,12 +6,12 @@ import 'package:chordmaster_free/domain/voicing/ergonomics.dart';
 import 'package:chordmaster_free/domain/voicing/voicing_adapter.dart';
 import 'package:flutter_test/flutter_test.dart';
 
+import '../support/chord_data.dart';
+
 void main() {
-  final raw =
-      jsonDecode(File('assets/data/chords.json').readAsStringSync())
-          as List<dynamic>;
+  final raw = loadChordJson();
   final chords = [
-    for (final c in raw) ChordFingerings.fromJson(c as Map<String, dynamic>),
+    for (final c in raw) ChordFingerings.fromJson(c),
   ];
   final builder = ProgressionBuilder(chords);
 

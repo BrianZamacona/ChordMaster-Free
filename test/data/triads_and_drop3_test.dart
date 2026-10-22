@@ -1,16 +1,13 @@
-import 'dart:convert';
-import 'dart:io';
-
 import 'package:flutter_test/flutter_test.dart';
+
+import '../support/chord_data.dart';
 
 const _open = [4, 9, 2, 7, 11, 4]; // 6ª -> 1ª
 const _midi = [40, 45, 50, 55, 59, 64];
 const _notes = ['C', 'C#', 'D', 'D#', 'E', 'F', 'F#', 'G', 'G#', 'A', 'A#', 'B'];
 
 void main() {
-  final chords = (jsonDecode(File('assets/data/chords.json').readAsStringSync())
-          as List<dynamic>)
-      .cast<Map<String, dynamic>>();
+  final chords = loadChordJson();
   List<Map<String, dynamic>> section(Map<String, dynamic> c, String key) =>
       (c[key] as List<dynamic>? ?? const []).cast<Map<String, dynamic>>();
   List<int> frets(Map<String, dynamic> v) => (v['fretPositions'] as List<dynamic>).cast<int>();
