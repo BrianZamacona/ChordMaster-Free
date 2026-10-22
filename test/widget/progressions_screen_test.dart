@@ -5,9 +5,12 @@ import 'package:chordmaster_free/core/widgets/chord_diagram.dart';
 import 'package:chordmaster_free/domain/progressions/progression_builder.dart';
 import 'package:chordmaster_free/features/progressions/progressions_screen.dart';
 import 'package:chordmaster_free/features/progressions/progressions_viewmodel.dart';
+import 'package:chordmaster_free/services/key_value_store.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:flutter_test/flutter_test.dart';
+
+import '../support/in_memory_store.dart';
 
 ProgressionBuilder _realBuilder() {
   final raw =
@@ -28,6 +31,7 @@ Future<ProviderContainer> _pump(
 
   final container = ProviderContainer(
     overrides: [
+      keyValueStoreProvider.overrideWithValue(InMemoryStore()),
       progressionBuilderProvider.overrideWith((ref) async => builder),
     ],
   );

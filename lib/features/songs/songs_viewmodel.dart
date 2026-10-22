@@ -4,7 +4,7 @@ import 'package:flutter_riverpod/flutter_riverpod.dart';
 import '../../core/i18n/tr.dart';
 import '../../models/song.dart';
 import '../../services/achievement_service.dart';
-import '../../services/storage_service.dart';
+import '../../services/key_value_store.dart';
 
 /// Hardcoded song catalogue for ChordMaster Free.
 /// Las notas y el rasgueo se leen en el idioma actual (por eso es getter).
@@ -234,9 +234,9 @@ class SongsViewModel extends Notifier<SongsState> {
 
   Future<void> _loadViewedSongs() async {
     try {
-      final storage = ref.read(storageServiceProvider);
+      final storage = ref.read(keyValueStoreProvider);
       final raw = await storage.get<List>(
-            StorageService.userProgressBox, _keyViewedSongIds) ??
+            StorageBoxes.userProgress, _keyViewedSongIds) ??
           [];
       final ids = raw.cast<String>().toSet();
       state = state.copyWith(viewedSongIds: ids, isLoading: false);
@@ -257,19 +257,19 @@ class SongsViewModel extends Notifier<SongsState> {
     state = state.copyWith(viewedSongIds: updated);
 
     try {
-      final storage = ref.read(storageServiceProvider);
+      final storage = ref.read(keyValueStoreProvider);
       await storage.save(
-        StorageService.userProgressBox,
+        StorageBoxes.userProgress,
         _keyViewedSongIds,
         updated.toList(),
       );
       await storage.save(
-        StorageService.userProgressBox,
+        StorageBoxes.userProgress,
         _keyViewedSongs,
         updated.length,
       );
       if (updated.length >= 5) {
-        await AchievementService.instance.unlock('song_learner');
+        await ref.read(achievementServiceProvider).unlock('song_learner');
       }
     } catch (e, st) {
       debugPrint('SongsViewModel.markViewed error: $e\n$st');

@@ -5,7 +5,7 @@ import 'package:flutter_riverpod/flutter_riverpod.dart';
 
 import '../../services/achievement_service.dart';
 import '../../services/audio_service.dart';
-import '../../services/storage_service.dart';
+import '../../services/key_value_store.dart';
 
 // ── State ────────────────────────────────────────────────────────────────────
 
@@ -114,9 +114,9 @@ class RhythmGameViewModel extends Notifier<RhythmGameState> {
 
   Future<void> _loadBestScore() async {
     try {
-      final storage = ref.read(storageServiceProvider);
+      final storage = ref.read(keyValueStoreProvider);
       final best =
-          await storage.get<int>(StorageService.userProgressBox, _keyBestScore) ?? 0;
+          await storage.get<int>(StorageBoxes.userProgress, _keyBestScore) ?? 0;
       state = state.copyWith(bestScore: best);
     } catch (e, st) {
       debugPrint('RhythmGameViewModel._loadBestScore error: $e\n$st');
@@ -154,11 +154,11 @@ class RhythmGameViewModel extends Notifier<RhythmGameState> {
       final newBest = max(score, state.bestScore);
       state = state.copyWith(bestScore: newBest);
       try {
-        final storage = ref.read(storageServiceProvider);
+        final storage = ref.read(keyValueStoreProvider);
         await storage.save(
-            StorageService.userProgressBox, _keyBestScore, newBest);
+            StorageBoxes.userProgress, _keyBestScore, newBest);
         if (newBest >= 90) {
-          await AchievementService.instance.unlock('rhythm_master');
+          await ref.read(achievementServiceProvider).unlock('rhythm_master');
         }
       } catch (e, st) {
         debugPrint('RhythmGameViewModel.stop error: $e\n$st');

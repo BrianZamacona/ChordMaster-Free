@@ -3,21 +3,11 @@ import 'package:flutter_riverpod/flutter_riverpod.dart';
 
 import '../../core/constants/app_strings.dart';
 import '../../services/achievement_service.dart';
-import '../../services/storage_service.dart';
 import '../../ui/palette.dart';
 
-/// Provider that loads all achievement unlock timestamps.
-final _achievementsDataProvider =
-    FutureProvider<Map<String, String?>>((ref) async {
-  final storage = ref.read(storageServiceProvider);
-  final result = <String, String?>{};
-  for (final def in AchievementService.allAchievements) {
-    final ts =
-        await storage.get<String>(StorageService.achievementsBox, def.id);
-    result[def.id] = ts;
-  }
-  return result;
-});
+final _achievementsDataProvider = FutureProvider<Map<String, String>>(
+  (ref) => ref.read(achievementServiceProvider).unlockedTimestamps(),
+);
 
 /// Achievements screen showing all 10 achievements with lock/unlock status.
 class AchievementsScreen extends ConsumerWidget {
@@ -34,7 +24,7 @@ class AchievementsScreen extends ConsumerWidget {
         loading: () => const Center(child: CircularProgressIndicator()),
         error: (e, _) => Center(child: Text(AppStrings.errorStorage)),
         data: (statuses) {
-          final unlocked = statuses.values.where((v) => v != null).length;
+          final unlocked = statuses.length;
           return Column(
             children: [
               _ProgressHeader(

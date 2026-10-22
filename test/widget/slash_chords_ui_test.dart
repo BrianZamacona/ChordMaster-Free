@@ -5,10 +5,13 @@ import 'package:chordmaster_free/core/widgets/chord_diagram.dart';
 import 'package:chordmaster_free/features/chords/chord_detail_screen.dart';
 import 'package:chordmaster_free/features/chords/chord_viewmodel.dart';
 import 'package:chordmaster_free/models/chord.dart';
+import 'package:chordmaster_free/services/key_value_store.dart';
 import 'package:chordmaster_free/ui/theme.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:flutter_test/flutter_test.dart';
+
+import '../support/in_memory_store.dart';
 
 class _Fake extends ChordViewModel {
   _Fake(this.chords);
@@ -32,7 +35,10 @@ void main() {
   testWidgets('detalle de C: elegir E en el bajo muestra C/E con 0-3-2-0-1-0 primero', (tester) async {
     await tester.pumpWidget(
       ProviderScope(
-        overrides: [chordViewModelProvider.overrideWith(() => _Fake(chords))],
+        overrides: [
+          keyValueStoreProvider.overrideWithValue(InMemoryStore()),
+          chordViewModelProvider.overrideWith(() => _Fake(chords)),
+        ],
         child: MaterialApp(
           theme: lightTheme,
           home: ChordDetailScreen(chordId: Uri.encodeComponent('C Major')),

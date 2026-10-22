@@ -1,31 +1,10 @@
 import 'package:chordmaster_free/features/rhythm_games/rhythm_game_viewmodel.dart';
 import 'package:chordmaster_free/services/audio_service.dart';
-import 'package:chordmaster_free/services/storage_service.dart';
+import 'package:chordmaster_free/services/key_value_store.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:flutter_test/flutter_test.dart';
 
-class _MemoryStorage implements StorageService {
-  final data = <String, dynamic>{};
-
-  @override
-  Future<void> openBoxes() async {}
-
-  @override
-  Future<void> save(String box, String key, dynamic value) async => data[key] = value;
-
-  @override
-  Future<T?> get<T>(String box, String key) async {
-    final value = data[key];
-    return value is T ? value : null;
-  }
-
-
-  @override
-  Future<void> delete(String box, String key) async => data.remove(key);
-
-  @override
-  Future<void> clear(String box) async => data.clear();
-}
+import '../support/in_memory_store.dart';
 
 class _FakeAudio extends AudioService {
   _FakeAudio() : super.forTesting();
@@ -41,7 +20,7 @@ void main() {
     final audio = _FakeAudio();
     final container = ProviderContainer(
       overrides: [
-        storageServiceProvider.overrideWithValue(_MemoryStorage()),
+        keyValueStoreProvider.overrideWithValue(InMemoryStore()),
         audioServiceProvider.overrideWithValue(audio),
       ],
     );

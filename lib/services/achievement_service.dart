@@ -3,11 +3,11 @@ import 'package:flutter_riverpod/flutter_riverpod.dart';
 
 import '../core/errors/failures.dart';
 import '../core/i18n/tr.dart';
-import 'storage_service.dart';
+import 'key_value_store.dart';
 
-/// Riverpod provider that exposes the [AchievementService] singleton.
-final achievementServiceProvider =
-    Provider<AchievementService>((ref) => AchievementService.instance);
+final achievementServiceProvider = Provider<AchievementService>(
+  (ref) => AchievementService(ref.watch(keyValueStoreProvider)),
+);
 
 /// Immutable descriptor for a single achievement.
 class AchievementDefinition {
@@ -35,32 +35,12 @@ class AchievementDefinition {
   String toString() => 'AchievementDefinition(id: $id, title: $title)';
 }
 
-/// Singleton service that tracks and persists unlocked achievements.
-///
-/// Achievements are persisted via [StorageService] in
-/// [StorageService.achievementsBox].  Each unlocked achievement stores the
-/// ISO-8601 timestamp of when it was earned under its [AchievementDefinition.id]
-/// key.
-///
-/// ### Usage
-/// ```dart
-/// // Unlock an achievement
-/// await AchievementService.instance.unlock('first_chord');
-///
-/// // Check status
-/// final unlocked = await AchievementService.instance.getUnlocked();
-/// final hasIt   = await AchievementService.instance.isUnlocked('tuned_up');
-/// ```
+/// Lleva y guarda los logros desbloqueados en [StorageBoxes.achievements]
+/// (clave = id del logro, valor = fecha ISO-8601 en que se consiguió).
 class AchievementService {
+  AchievementService(this._storage);
 
-  /// Factory constructor always returns [instance].
-  factory AchievementService() => instance;
-
-  AchievementService._internal();
-  /// The singleton instance.
-  static final AchievementService instance = AchievementService._internal();
-
-  final StorageService _storage = StorageService();
+  final KeyValueStore _storage;
 
   // ── Predefined Achievements ───────────────────────────────────────────────
 
@@ -154,7 +134,6 @@ class AchievementService {
   /// Anota [value] en la lista de vistos de [key] (sin repetir) y, al llegar a
   /// [goal] distintos, desbloquea [achievementId]. Devuelve cuántos van.
   Future<int> recordDistinct({
-    required StorageService storage,
     required String key,
     required String value,
     required int goal,
@@ -163,11 +142,11 @@ class AchievementService {
     final int count;
     try {
       final seen = {
-        ...?(await storage.get<List<dynamic>>(StorageService.userProgressBox, key))
+        ...?(await _storage.get<List<dynamic>>(StorageBoxes.userProgress, key))
             ?.whereType<String>(),
       };
       if (seen.add(value)) {
-        await storage.save(StorageService.userProgressBox, key, seen.toList());
+        await _storage.save(StorageBoxes.userProgress, key, seen.toList());
       }
       count = seen.length;
     } catch (e, st) {
@@ -206,7 +185,7 @@ class AchievementService {
       }
 
       await _storage.save(
-        StorageService.achievementsBox,
+        StorageBoxes.achievements,
         achievementId,
         DateTime.now().toIso8601String(),
       );
@@ -231,7 +210,7 @@ class AchievementService {
       final results = <String>[];
       for (final definition in allAchievements) {
         final value = await _storage.get<String>(
-          StorageService.achievementsBox,
+          StorageBoxes.achievements,
           definition.id,
         );
         if (value != null) results.add(definition.id);
@@ -251,7 +230,7 @@ class AchievementService {
   Future<bool> isUnlocked(String id) async {
     try {
       final value =
-          await _storage.get<String>(StorageService.achievementsBox, id);
+          await _storage.get<String>(StorageBoxes.achievements, id);
       return value != null;
     } on StorageFailure {
       rethrow;
@@ -260,6 +239,14 @@ class AchievementService {
       return false;
     }
   }
+
+  /// Fecha (ISO-8601) de cada logro conseguido, por id.
+  Future<Map<String, String>> unlockedTimestamps() async => {
+        for (final definition in allAchievements)
+          if (await _storage.get<String>(StorageBoxes.achievements, definition.id)
+              case final at?)
+            definition.id: at,
+      };
 
   // ── Internal Helpers ──────────────────────────────────────────────────────
 

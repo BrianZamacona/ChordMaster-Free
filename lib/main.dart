@@ -4,8 +4,9 @@ import 'package:google_fonts/google_fonts.dart';
 import 'package:hive_flutter/hive_flutter.dart';
 
 import 'app.dart';
+import 'services/hive_store.dart';
+import 'services/key_value_store.dart';
 import 'services/notification_service.dart';
-import 'services/storage_service.dart';
 import 'ui/theme.dart';
 
 Future<void> main() async {
@@ -22,8 +23,13 @@ Future<void> main() async {
     musicMono(fontWeight: FontWeight.w600),
   ]);
   await Hive.initFlutter();
-  final storage = StorageService();
-  await storage.openBoxes();
+  final store = HiveStore();
+  await store.open();
   await NotificationService.instance.initialize();
-  runApp(const ProviderScope(child: ChordMasterApp()));
+  runApp(
+    ProviderScope(
+      overrides: [keyValueStoreProvider.overrideWithValue(store)],
+      child: const ChordMasterApp(),
+    ),
+  );
 }

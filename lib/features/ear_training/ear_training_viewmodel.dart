@@ -7,7 +7,7 @@ import '../../domain/theory/notes.dart';
 import '../../models/interval_model.dart';
 import '../../services/achievement_service.dart';
 import '../../services/audio_service.dart';
-import '../../services/storage_service.dart';
+import '../../services/key_value_store.dart';
 
 /// The set of intervals used in ear training (semitones 1-12 only).
 final List<IntervalModel> _trainingIntervals = defaultIntervals
@@ -129,9 +129,9 @@ class EarTrainingViewModel extends Notifier<EarTrainingState> {
 
   Future<void> _loadCount(EarTrainingState initial) async {
     try {
-      final storage = ref.read(storageServiceProvider);
+      final storage = ref.read(keyValueStoreProvider);
       final count = await storage.get<int>(
-            StorageService.userProgressBox, _keyTotalExercises) ??
+            StorageBoxes.userProgress, _keyTotalExercises) ??
           0;
       state = state.copyWith(totalExercisesDone: count, isLoading: false);
     } catch (e, st) {
@@ -191,14 +191,14 @@ class EarTrainingViewModel extends Notifier<EarTrainingState> {
     );
 
     try {
-      final storage = ref.read(storageServiceProvider);
+      final storage = ref.read(keyValueStoreProvider);
       await storage.save(
-        StorageService.userProgressBox,
+        StorageBoxes.userProgress,
         _keyTotalExercises,
         newExercisesDone,
       );
       if (newExercisesDone >= 20) {
-        await AchievementService.instance.unlock('ear_wizard');
+        await ref.read(achievementServiceProvider).unlock('ear_wizard');
       }
     } catch (e, st) {
       debugPrint('EarTrainingViewModel.answer error: $e\n$st');

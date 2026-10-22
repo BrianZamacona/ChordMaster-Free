@@ -3,11 +3,14 @@ import 'dart:io';
 
 import 'package:chordmaster_free/data/models/scale_definition.dart';
 import 'package:chordmaster_free/data/repository/scale_repository.dart';
+import 'package:chordmaster_free/services/key_value_store.dart';
 import 'package:chordmaster_free/ui/scales/detail/scale_detail_screen.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:flutter_test/flutter_test.dart';
+
+import '../support/in_memory_store.dart';
 
 class _FileBundle extends CachingAssetBundle {
   @override
@@ -35,6 +38,7 @@ void main() {
     await tester.pumpWidget(
       ProviderScope(
         overrides: [
+          keyValueStoreProvider.overrideWithValue(InMemoryStore()),
           scaleRepositoryProvider.overrideWithValue(
             ScaleRepository(bundle: _FileBundle()),
           ),

@@ -2,34 +2,13 @@ import 'package:chordmaster_free/domain/audio/pluck_synth.dart';
 import 'package:chordmaster_free/features/ear_training/ear_training_screen.dart';
 import 'package:chordmaster_free/features/ear_training/ear_training_viewmodel.dart';
 import 'package:chordmaster_free/services/audio_service.dart';
-import 'package:chordmaster_free/services/storage_service.dart';
+import 'package:chordmaster_free/services/key_value_store.dart';
 import 'package:chordmaster_free/ui/theme.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:flutter_test/flutter_test.dart';
 
-class _MemoryStorage implements StorageService {
-  final data = <String, dynamic>{};
-
-  @override
-  Future<void> openBoxes() async {}
-
-  @override
-  Future<void> save(String box, String key, dynamic value) async => data[key] = value;
-
-  @override
-  Future<T?> get<T>(String box, String key) async {
-    final value = data[key];
-    return value is T ? value : null;
-  }
-
-
-  @override
-  Future<void> delete(String box, String key) async => data.remove(key);
-
-  @override
-  Future<void> clear(String box) async => data.clear();
-}
+import '../../support/in_memory_store.dart';
 
 /// Registra lo que se pidió sonar, sin reproducir nada.
 class _FakeAudio extends AudioService {
@@ -54,7 +33,7 @@ void main() {
     final audio = _FakeAudio();
     final container = ProviderContainer(
       overrides: [
-        storageServiceProvider.overrideWithValue(_MemoryStorage()),
+        keyValueStoreProvider.overrideWithValue(InMemoryStore()),
         audioServiceProvider.overrideWithValue(audio),
       ],
     );
@@ -77,7 +56,7 @@ void main() {
     await tester.pumpWidget(
       ProviderScope(
         overrides: [
-          storageServiceProvider.overrideWithValue(_MemoryStorage()),
+          keyValueStoreProvider.overrideWithValue(InMemoryStore()),
           audioServiceProvider.overrideWithValue(_FakeAudio()),
         ],
         child: MaterialApp(theme: lightTheme, home: const EarTrainingScreen()),

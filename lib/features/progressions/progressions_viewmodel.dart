@@ -10,7 +10,7 @@ import '../../domain/theory/notes.dart';
 import '../../domain/voicing/voice_leading.dart';
 import '../../services/achievement_service.dart';
 import '../../services/audio_service.dart';
-import '../../services/storage_service.dart';
+import '../../services/key_value_store.dart';
 
 /// Immutable state for [ProgressionsViewModel].
 class ProgressionsState {
@@ -263,17 +263,17 @@ class ProgressionsViewModel extends Notifier<ProgressionsState> {
 
   Future<void> _loadCount() async {
     try {
-      final storage = ref.read(storageServiceProvider);
+      final storage = ref.read(keyValueStoreProvider);
       final count =
-          await storage.get<int>(StorageService.userProgressBox, _keyCount) ?? 0;
+          await storage.get<int>(StorageBoxes.userProgress, _keyCount) ?? 0;
       final seen = await storage.get<List<dynamic>>(
-            StorageService.userProgressBox,
+            StorageBoxes.userProgress,
             _keySeen,
           ) ??
           const [];
       _seen.addAll(seen.whereType<String>());
       final custom = await storage.get<List<dynamic>>(
-            StorageService.userProgressBox,
+            StorageBoxes.userProgress,
             _keyCustom,
           ) ??
           const [];
@@ -385,8 +385,8 @@ class ProgressionsViewModel extends Notifier<ProgressionsState> {
     await _loaded;
     try {
       await ref
-          .read(storageServiceProvider)
-          .save(StorageService.userProgressBox, _keyCustom, custom);
+          .read(keyValueStoreProvider)
+          .save(StorageBoxes.userProgress, _keyCustom, custom);
     } catch (e, st) {
       debugPrint('ProgressionsViewModel._saveCustom error: $e\n$st');
     }
@@ -400,15 +400,15 @@ class ProgressionsViewModel extends Notifier<ProgressionsState> {
     final newCount = state.progressionsGenerated + 1;
     state = state.copyWith(progressionsGenerated: newCount);
     try {
-      final storage = ref.read(storageServiceProvider);
-      await storage.save(StorageService.userProgressBox, _keyCount, newCount);
+      final storage = ref.read(keyValueStoreProvider);
+      await storage.save(StorageBoxes.userProgress, _keyCount, newCount);
       await storage.save(
-        StorageService.userProgressBox,
+        StorageBoxes.userProgress,
         _keySeen,
         _seen.toList(growable: false),
       );
       if (newCount >= 5) {
-        await AchievementService.instance.unlock('composer');
+        await ref.read(achievementServiceProvider).unlock('composer');
       }
     } catch (e, st) {
       debugPrint('ProgressionsViewModel._countGeneration error: $e\n$st');

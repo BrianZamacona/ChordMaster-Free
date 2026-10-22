@@ -8,9 +8,12 @@ import 'package:chordmaster_free/features/chords/chord_viewmodel.dart';
 import 'package:chordmaster_free/features/progressions/progressions_screen.dart';
 import 'package:chordmaster_free/features/progressions/progressions_viewmodel.dart';
 import 'package:chordmaster_free/models/chord.dart';
+import 'package:chordmaster_free/services/key_value_store.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:flutter_test/flutter_test.dart';
+
+import '../support/in_memory_store.dart';
 
 class _FakeChords extends ChordViewModel {
   _FakeChords(this.chords);
@@ -59,6 +62,7 @@ void main() {
     addTearDown(tester.view.reset);
     final container = ProviderContainer(
       overrides: [
+        keyValueStoreProvider.overrideWithValue(InMemoryStore()),
         progressionBuilderProvider.overrideWith((ref) async => builder),
         chordViewModelProvider.overrideWith(() => _FakeChords(chords)),
       ],

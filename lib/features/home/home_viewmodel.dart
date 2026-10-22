@@ -3,7 +3,7 @@ import 'package:flutter_riverpod/flutter_riverpod.dart';
 
 import '../../core/i18n/tr.dart';
 import '../../services/achievement_service.dart';
-import '../../services/storage_service.dart';
+import '../../services/key_value_store.dart';
 
 /// Immutable state for [HomeViewModel].
 class HomeState {
@@ -71,15 +71,15 @@ class HomeViewModel extends Notifier<HomeState> {
   /// Loads persisted data and calculates the daily challenge.
   Future<void> loadData() async {
     try {
-      final storage = ref.read(storageServiceProvider);
+      final storage = ref.read(keyValueStoreProvider);
       final streak = await storage.get<int>(
-            StorageService.userProgressBox, _keyStreak) ??
+            StorageBoxes.userProgress, _keyStreak) ??
           0;
       final lastModule = await storage.get<String>(
-            StorageService.userProgressBox, _keyLastModule) ??
+            StorageBoxes.userProgress, _keyLastModule) ??
           '';
       final raw = await storage.get<List>(
-            StorageService.userProgressBox, _keyRecentAchievements) ??
+            StorageBoxes.userProgress, _keyRecentAchievements) ??
           [];
       final recentAchievements = raw.cast<String>();
 
@@ -107,10 +107,10 @@ class HomeViewModel extends Notifier<HomeState> {
   /// Updates [lastModule] in state and persists the value.
   Future<void> updateLastModule(String route) async {
     try {
-      final storage = ref.read(storageServiceProvider);
+      final storage = ref.read(keyValueStoreProvider);
       state = state.copyWith(lastModule: route);
       await storage.save(
-          StorageService.userProgressBox, _keyLastModule, route);
+          StorageBoxes.userProgress, _keyLastModule, route);
     } catch (e, st) {
       debugPrint('HomeViewModel.updateLastModule error: $e\n$st');
     }
@@ -118,7 +118,7 @@ class HomeViewModel extends Notifier<HomeState> {
 
   /// Logro "Racha de 7 días".
   Future<void> _checkStreakAchievement(int streak) async {
-    if (streak >= 7) await AchievementService.instance.unlock('seven_day_streak');
+    if (streak >= 7) await ref.read(achievementServiceProvider).unlock('seven_day_streak');
   }
 
   /// Increments streak if today is a new practice day.
@@ -127,9 +127,9 @@ class HomeViewModel extends Notifier<HomeState> {
       final today = DateTime.now();
       final todayStr =
           '${today.year}-${today.month.toString().padLeft(2, '0')}-${today.day.toString().padLeft(2, '0')}';
-        final storage = ref.read(storageServiceProvider);
+        final storage = ref.read(keyValueStoreProvider);
         final lastDate = await storage.get<String>(
-          StorageService.userProgressBox, _keyLastPracticeDate);
+          StorageBoxes.userProgress, _keyLastPracticeDate);
       if (lastDate == todayStr) {
         await _checkStreakAchievement(currentStreak);
         return currentStreak;
@@ -143,9 +143,9 @@ class HomeViewModel extends Notifier<HomeState> {
           (lastDate == yesterdayStr) ? currentStreak + 1 : 1;
 
         await storage.save(
-          StorageService.userProgressBox, _keyLastPracticeDate, todayStr);
+          StorageBoxes.userProgress, _keyLastPracticeDate, todayStr);
         await storage.save(
-          StorageService.userProgressBox, _keyStreak, newStreak);
+          StorageBoxes.userProgress, _keyStreak, newStreak);
       await _checkStreakAchievement(newStreak);
       return newStreak;
     } catch (e, st) {

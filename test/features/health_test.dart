@@ -1,31 +1,10 @@
 import 'package:chordmaster_free/features/health/health_viewmodel.dart';
+import 'package:chordmaster_free/services/key_value_store.dart';
 import 'package:chordmaster_free/services/notification_service.dart';
-import 'package:chordmaster_free/services/storage_service.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:flutter_test/flutter_test.dart';
 
-class _MemoryStorage implements StorageService {
-  final data = <String, dynamic>{};
-
-  @override
-  Future<void> openBoxes() async {}
-
-  @override
-  Future<void> save(String box, String key, dynamic value) async => data[key] = value;
-
-  @override
-  Future<T?> get<T>(String box, String key) async {
-    final value = data[key];
-    return value is T ? value : null;
-  }
-
-
-  @override
-  Future<void> delete(String box, String key) async => data.remove(key);
-
-  @override
-  Future<void> clear(String box) async => data.clear();
-}
+import '../support/in_memory_store.dart';
 
 class _FakeNotifications extends NotificationService {
   _FakeNotifications() : super.forTesting();
@@ -48,12 +27,12 @@ void main() {
   ) async {
     final notifications = _FakeNotifications();
     // Ajustes guardados: avisos activados, cada 15 min.
-    final storage = _MemoryStorage()
-      ..data['health_reminders_enabled'] = true
-      ..data['health_reminder_interval'] = 15;
+    final storage = InMemoryStore()
+      ..settings['health_reminders_enabled'] = true
+      ..settings['health_reminder_interval'] = 15;
     final container = ProviderContainer(
       overrides: [
-        storageServiceProvider.overrideWithValue(storage),
+        keyValueStoreProvider.overrideWithValue(storage),
         notificationServiceProvider.overrideWithValue(notifications),
       ],
     );

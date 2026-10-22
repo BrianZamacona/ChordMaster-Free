@@ -3,8 +3,8 @@ import 'package:flutter/foundation.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 
 import '../../services/achievement_service.dart';
+import '../../services/key_value_store.dart';
 import '../../services/notification_service.dart';
-import '../../services/storage_service.dart';
 
 /// Immutable state for [HealthViewModel].
 class HealthState {
@@ -64,12 +64,12 @@ class HealthViewModel extends Notifier<HealthState> {
 
   Future<void> _loadSettings() async {
     try {
-      final storage = ref.read(storageServiceProvider);
+      final storage = ref.read(keyValueStoreProvider);
       final enabled = await storage.get<bool>(
-            StorageService.settingsBox, _keyRemindersEnabled) ??
+            StorageBoxes.settings, _keyRemindersEnabled) ??
           false;
       final interval = await storage.get<int>(
-            StorageService.settingsBox, _keyReminderInterval) ??
+            StorageBoxes.settings, _keyReminderInterval) ??
           30;
       state = state.copyWith(
         remindersEnabled: enabled,
@@ -132,13 +132,13 @@ class HealthViewModel extends Notifier<HealthState> {
   /// Toggles break reminders on/off.
   Future<void> toggleReminders({required bool enabled}) async {
     try {
-      final storage = ref.read(storageServiceProvider);
+      final storage = ref.read(keyValueStoreProvider);
       state = state.copyWith(remindersEnabled: enabled);
-      await storage.save(StorageService.settingsBox, _keyRemindersEnabled, enabled);
+      await storage.save(StorageBoxes.settings, _keyRemindersEnabled, enabled);
       if (enabled) {
         // Sin permiso de notificaciones el aviso igual sale en pantalla.
         await ref.read(notificationServiceProvider).requestPermissions();
-        await AchievementService.instance.unlock('health_conscious');
+        await ref.read(achievementServiceProvider).unlock('health_conscious');
       } else {
         state = state.copyWith(breakDue: false);
         await ref.read(notificationServiceProvider).cancelAllReminders();
@@ -153,8 +153,8 @@ class HealthViewModel extends Notifier<HealthState> {
     try {
       state = state.copyWith(reminderIntervalMinutes: minutes);
       await ref
-          .read(storageServiceProvider)
-          .save(StorageService.settingsBox, _keyReminderInterval, minutes);
+          .read(keyValueStoreProvider)
+          .save(StorageBoxes.settings, _keyReminderInterval, minutes);
     } catch (e, st) {
       debugPrint('HealthViewModel.setReminderInterval error: $e\n$st');
     }

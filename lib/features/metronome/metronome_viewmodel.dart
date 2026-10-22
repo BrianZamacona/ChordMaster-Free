@@ -105,7 +105,7 @@ class MetronomeViewModel extends Notifier<MetronomeState> {
   void _onTick() {
     if (!state.isPlaying) return;
     final isAccent = _beat == 0;
-    AudioService.instance.playMetronomeTick(isAccent: isAccent);
+    ref.read(audioServiceProvider).playMetronomeTick(isAccent: isAccent);
     state = state.copyWith(currentBeat: _beat);
     _beat = (_beat + 1) % state.totalBeats;
     _scheduleNext();

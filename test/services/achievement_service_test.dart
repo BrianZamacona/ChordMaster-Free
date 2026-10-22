@@ -1,29 +1,7 @@
 import 'package:chordmaster_free/services/achievement_service.dart';
-import 'package:chordmaster_free/services/storage_service.dart';
 import 'package:flutter_test/flutter_test.dart';
 
-class _MemoryStorage implements StorageService {
-  final data = <String, dynamic>{};
-
-  @override
-  Future<void> openBoxes() async {}
-
-  @override
-  Future<void> save(String box, String key, dynamic value) async => data[key] = value;
-
-  @override
-  Future<T?> get<T>(String box, String key) async {
-    final value = data[key];
-    return value is T ? value : null;
-  }
-
-
-  @override
-  Future<void> delete(String box, String key) async => data.remove(key);
-
-  @override
-  Future<void> clear(String box) async => data.clear();
-}
+import '../support/in_memory_store.dart';
 
 void main() {
   test('cada logro se puede conseguir: ninguno de un módulo que ya no existe', () {
@@ -44,9 +22,8 @@ void main() {
   });
 
   test('recordDistinct cuenta valores distintos y persiste la lista', () async {
-    final storage = _MemoryStorage();
-    Future<int> view(String id) => AchievementService.instance.recordDistinct(
-          storage: storage,
+    final storage = InMemoryStore();
+    Future<int> view(String id) => AchievementService(storage).recordDistinct(
           key: 'viewed_scale_ids',
           value: id,
           goal: 10,
@@ -55,6 +32,21 @@ void main() {
     expect(await view('major'), 1);
     expect(await view('major'), 1); // repetida no cuenta
     expect(await view('dorian'), 2);
-    expect(storage.data['viewed_scale_ids'], unorderedEquals(['major', 'dorian']));
+    expect(storage.progress['viewed_scale_ids'], unorderedEquals(['major', 'dorian']));
+  });
+
+  test('unlock guarda la fecha en la caja de logros, una sola vez', () async {
+    final storage = InMemoryStore();
+    final service = AchievementService(storage);
+
+    await service.unlock('tuned_up');
+    final first = storage.achievements['tuned_up'];
+    await service.unlock('tuned_up');
+    await service.unlock('no_existe');
+
+    expect(first, isA<String>());
+    expect(storage.achievements['tuned_up'], first);
+    expect(await service.unlockedTimestamps(), {'tuned_up': first});
+    expect(await service.getUnlocked(), ['tuned_up']);
   });
 }

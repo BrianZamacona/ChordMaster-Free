@@ -146,6 +146,25 @@ cada nota pertenezca a la escala. No bajar la tolerancia de 0.
 7. `git status` antes de dar por terminado; no dejar archivos sueltos (`tool/flutter`,
    `test_errors.txt`) ni cambios sin commitear.
 
+## Arquitectura y estándar de código (siempre)
+Objetivo: código legible y mantenible antes que ingenioso. Capas (puertos y adaptadores):
+- `lib/domain/` — Dart puro (sin Flutter ni E/S), con tests: reglas musicales, motores, síntesis.
+- Puertos = interfaces que la app necesita del mundo exterior; adaptadores = la implementación
+  concreta. Almacenamiento: puerto `KeyValueStore` (`lib/services/key_value_store.dart`, cajas en
+  `StorageBoxes`), adaptador `HiveStore`. `main()` es la raíz de composición: abre `HiveStore` y lo
+  inyecta con `keyValueStoreProvider.overrideWithValue`; el provider sin inyectar falla a
+  propósito. Tests: `test/support/in_memory_store.dart` (un solo doble, separado por caja).
+- Servicios con estado (logros, audio, afinación, notificaciones) se piden por su provider
+  (`ref.read(achievementServiceProvider)`), nunca con `.instance` desde pantallas o view-models;
+  las dependencias entran por el constructor.
+- `lib/data/` — repositorios de assets (una lectura, memorizada). `lib/features/` y `lib/ui/` —
+  pantallas + view-models (Riverpod `Notifier`); sin lógica de dominio ni E/S directa.
+- Una sola fuente por dato o tabla (notas, afinación, cajas, textos); antes de escribir una lista o
+  helper, buscar si ya existe. Nada de código muerto: lo que no se usa se borra (y su test).
+- Clases y funciones pequeñas con un propósito; un archivo de pantalla grande se parte en widgets.
+  Estructuras de datos según el acceso (mapas/sets para búsquedas, no `firstWhere` en bucles).
+- Licencia: pendiente de decidir (MIT en evaluación); no agregar ni descartar sin preguntar.
+
 ## Teoría "¿Por qué?" (generada por reglas, con tests)
 - `lib/domain/theory/harmony.dart` — función de cada grado (reposo/preparación/tensión),
   cadencias (auténtica, plagal, rota, semicadencia; también al repetir el bucle) y notas comunes.

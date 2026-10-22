@@ -3,24 +3,13 @@ import 'package:chordmaster_free/core/constants/app_strings.dart';
 import 'package:chordmaster_free/core/i18n/app_i18n.dart';
 import 'package:chordmaster_free/core/i18n/tr.dart';
 import 'package:chordmaster_free/features/settings/settings_viewmodel.dart';
-import 'package:chordmaster_free/services/storage_service.dart';
+import 'package:chordmaster_free/services/key_value_store.dart';
 import 'package:chordmaster_free/ui/navigation.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:flutter_test/flutter_test.dart';
 
-class _FakeStorage implements StorageService {
-  @override
-  Future<void> openBoxes() async {}
-  @override
-  Future<void> save(String box, String key, dynamic value) async {}
-  @override
-  Future<T?> get<T>(String box, String key) async => null;
-  @override
-  Future<void> delete(String box, String key) async {}
-  @override
-  Future<void> clear(String box) async {}
-}
+import '../support/in_memory_store.dart';
 
 void main() {
   tearDown(() => CurrentLanguage.value = AppLanguage.es);
@@ -48,7 +37,7 @@ void main() {
     tester.view.physicalSize = const Size(500, 1000);
     addTearDown(tester.view.reset);
     final container = ProviderContainer(
-      overrides: [storageServiceProvider.overrideWithValue(_FakeStorage())],
+      overrides: [keyValueStoreProvider.overrideWithValue(InMemoryStore())],
     );
     addTearDown(container.dispose);
     await tester.pumpWidget(

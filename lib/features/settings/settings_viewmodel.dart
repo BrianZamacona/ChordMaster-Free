@@ -2,7 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 
 import '../../core/i18n/app_i18n.dart';
-import '../../services/storage_service.dart';
+import '../../services/key_value_store.dart';
 
 /// Immutable state for [SettingsViewModel].
 class SettingsState {
@@ -43,12 +43,12 @@ class SettingsViewModel extends Notifier<SettingsState> {
 
   Future<void> _loadSettings() async {
     try {
-      final storage = ref.read(storageServiceProvider);
+      final storage = ref.read(keyValueStoreProvider);
       final raw = await storage.get<String>(
-            StorageService.settingsBox, _keyThemeMode) ??
+            StorageBoxes.settings, _keyThemeMode) ??
           'system';
       final stored = await storage.get<String>(
-          StorageService.settingsBox, _keyLocaleCode);
+          StorageBoxes.settings, _keyLocaleCode);
       final localeCode =
           stored == null ? state.localeCode : AppI18n.normalize(stored);
       state = state.copyWith(
@@ -63,9 +63,9 @@ class SettingsViewModel extends Notifier<SettingsState> {
   Future<void> setLocaleCode(String localeCode) async {
     try {
       state = state.copyWith(localeCode: localeCode);
-      final storage = ref.read(storageServiceProvider);
+      final storage = ref.read(keyValueStoreProvider);
       await storage.save(
-        StorageService.settingsBox,
+        StorageBoxes.settings,
         _keyLocaleCode,
         localeCode,
       );
@@ -78,9 +78,9 @@ class SettingsViewModel extends Notifier<SettingsState> {
   Future<void> setThemeMode(ThemeMode mode) async {
     try {
       state = state.copyWith(themeMode: mode);
-      final storage = ref.read(storageServiceProvider);
+      final storage = ref.read(keyValueStoreProvider);
       await storage.save(
-          StorageService.settingsBox, _keyThemeMode, _serializeThemeMode(mode));
+          StorageBoxes.settings, _keyThemeMode, _serializeThemeMode(mode));
     } catch (e, st) {
       debugPrint('SettingsViewModel.setThemeMode error: $e\n$st');
     }

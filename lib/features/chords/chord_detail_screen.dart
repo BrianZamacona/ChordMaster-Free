@@ -50,7 +50,7 @@ class _ChordDetailScreenState extends ConsumerState<ChordDetailScreen> {
 
   Future<void> _unlockFirstChordAchievement() async {
     try {
-      await AchievementService.instance.unlock('first_chord');
+      await ref.read(achievementServiceProvider).unlock('first_chord');
     } catch (e) {
       debugPrint('ChordDetailScreen: achievement unlock error: $e');
     }
@@ -61,7 +61,7 @@ class _ChordDetailScreenState extends ConsumerState<ChordDetailScreen> {
     setState(() => _isPlaying = true);
     try {
       // Rasgueo sintetizado de la digitación principal (no hay archivos de audio).
-      await AudioService.instance.playFingering(chord.fretPositions);
+      await ref.read(audioServiceProvider).playFingering(chord.fretPositions);
     } catch (e) {
       debugPrint('ChordDetailScreen._playChord error: $e');
     } finally {

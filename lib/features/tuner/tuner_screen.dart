@@ -56,7 +56,7 @@ class _TunerScreenState extends ConsumerState<TunerScreen> {
   void _maybeUnlockAchievement(bool isInTune) {
     if (_achievementGranted || !isInTune) return;
     _achievementGranted = true;
-    AchievementService.instance.unlock('tuned_up').catchError((e) {
+    ref.read(achievementServiceProvider).unlock('tuned_up').catchError((e) {
       debugPrint('TunerScreen achievement error: $e');
     });
   }

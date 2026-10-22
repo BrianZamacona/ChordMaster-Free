@@ -2,47 +2,18 @@ import 'dart:convert';
 import 'dart:math';
 
 import 'package:flutter/foundation.dart';
-import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:flutter_secure_storage/flutter_secure_storage.dart';
 import 'package:hive_flutter/hive_flutter.dart';
 
 import '../core/errors/failures.dart';
+import 'key_value_store.dart';
 
-/// Riverpod provider that exposes the [StorageService] singleton.
+/// Adaptador de [KeyValueStore] sobre Hive, cifrado con AES; la llave vive en
+/// el almacén seguro del sistema (en web no hay cifrado).
 ///
-/// Marked [keepAlive] so the instance — and the open Hive boxes it wraps — is
-/// never automatically discarded while the app is running, regardless of
-/// whether any widget is currently watching it.
-final storageServiceProvider = Provider<StorageService>((ref) {
-  ref.keepAlive();
-  return StorageService();
-});
-
-/// Singleton service for all persistent key-value storage in ChordMaster Free.
-///
-/// Uses [Hive] as the underlying storage engine.  Each logical domain (user
-/// progress, achievements, settings) has its own named box
-/// so data stays organised and boxes can be cleared independently.
-///
-/// All methods throw a [StorageFailure] on error so callers can handle
-/// storage problems uniformly via the sealed [Failure] hierarchy.
-///
-/// ### Initialisation
-/// Call [openBoxes] once during app start-up (before using any other method):
-/// +
-/// ```dart
-/// await StorageService().openBoxes();
-/// ```
-class StorageService {
-  /// Box name for user learning progress data.
-  static const String userProgressBox = 'userProgress';
-
-  /// Box name for unlocked achievement IDs.
-  static const String achievementsBox = 'achievements';
-
-  /// Box name for application settings.
-  static const String settingsBox = 'settings';
-
+/// Llamar a [open] una vez al arrancar, antes de cualquier otro método.
+/// Todos los métodos lanzan [StorageFailure] si algo falla.
+class HiveStore implements KeyValueStore {
   static const String _encKeyName = 'cmf_hive_encryption_key_v1';
 
   static const FlutterSecureStorage _secureStorage = FlutterSecureStorage(
@@ -53,17 +24,13 @@ class StorageService {
 
   // ── Box Lifecycle ─────────────────────────────────────────────────────────
 
-  ///Opens all four Hive boxes.
-  ///
-  /// Safe to call multiple times; Hive silently returns already-open boxes.
-  /// Throws [StorageFailure] if any box fails to open.
-  Future<void> openBoxes() async {
+  /// Abre todas las [StorageBoxes]. Se puede llamar más de una vez.
+  Future<void> open() async {
     try {
       final enc = await _loadEncryptionContext();
-
-      await _openBoxSecure(userProgressBox, enc);
-      await _openBoxSecure(achievementsBox, enc);
-      await _openBoxSecure(settingsBox, enc);
+      for (final box in StorageBoxes.all) {
+        await _openBoxSecure(box, enc);
+      }
     } catch (e, st) {
       throw StorageFailure(
         message: 'Failed to open Hive boxes: $e',
@@ -74,72 +41,37 @@ class StorageService {
 
   // ── CRUD Operations ───────────────────────────────────────────────────────
 
-  /// Saves [value] under [key] in the named [box].
-  ///
-  /// Creates or overwrites the entry.  Throws [StorageFailure] on error.
-  Future<void> save(String box, String key, dynamic value) async {
-    try {
-      final b = _box(box);
-      await b.put(key, value);
-    } catch (e, st) {
-      throw StorageFailure(
-        message: 'Failed to save key "$key" in box "$box": $e',
-        stackTrace: st,
-      );
-    }
-  }
+  @override
+  Future<void> save(String box, String key, Object? value) =>
+      _guard('save "$key" in "$box"', () => _box(box).put(key, value));
 
-  /// Retrieves the value stored under [key] in the named [box], cast to [T].
-  ///
-  /// Returns `null` when the key does not exist or the stored value is not
-  /// assignable to [T].  Throws [StorageFailure] on unexpected errors.
-  Future<T?> get<T>(String box, String key) async {
-    try {
-      final b = _box(box);
-      final value = b.get(key);
-      if (value is T) return value;
-      return null;
-    } catch (e, st) {
-      throw StorageFailure(
-        message: 'Failed to get key "$key" from box "$box": $e',
-        stackTrace: st,
-      );
-    }
-  }
+  @override
+  Future<T?> get<T>(String box, String key) =>
+      _guard('get "$key" from "$box"', () async {
+        final value = _box(box).get(key);
+        return value is T ? value : null;
+      });
 
+  @override
+  Future<void> delete(String box, String key) =>
+      _guard('delete "$key" from "$box"', () => _box(box).delete(key));
 
-  /// Deletes the entry identified by [key] from the named [box].
-  ///
-  /// Silently succeeds if the key does not exist.  Throws [StorageFailure]
-  /// on error.
-  Future<void> delete(String box, String key) async {
-    try {
-      final b = _box(box);
-      await b.delete(key);
-    } catch (e, st) {
-      throw StorageFailure(
-        message: 'Failed to delete key "$key" from box "$box": $e',
-        stackTrace: st,
-      );
-    }
-  }
-
-  /// Removes all entries from the named [box].
-  ///
-  /// Throws [StorageFailure] on error.
-  Future<void> clear(String box) async {
-    try {
-      final b = _box(box);
-      await b.clear();
-    } catch (e, st) {
-      throw StorageFailure(
-        message: 'Failed to clear box "$box": $e',
-        stackTrace: st,
-      );
-    }
-  }
+  @override
+  Future<void> clear(String box) =>
+      _guard('clear "$box"', () => _box(box).clear());
 
   // ── Internal Helpers ──────────────────────────────────────────────────────
+
+  /// Ejecuta [op] y envuelve cualquier error en un [StorageFailure].
+  Future<T> _guard<T>(String action, Future<T> Function() op) async {
+    try {
+      return await op();
+    } on StorageFailure {
+      rethrow;
+    } catch (e, st) {
+      throw StorageFailure(message: 'Failed to $action: $e', stackTrace: st);
+    }
+  }
 
   /// Returns the open [Box] with the given [name].
   ///
@@ -147,7 +79,7 @@ class StorageService {
   Box<dynamic> _box(String name) {
     if (!Hive.isBoxOpen(name)) {
       throw StorageFailure(
-        message: 'Box "$name" is not open. Call openBoxes() first.',
+        message: 'Box "$name" is not open. Call open() first.',
       );
     }
     return Hive.box<dynamic>(name);

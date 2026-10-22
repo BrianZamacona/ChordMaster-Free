@@ -5,9 +5,12 @@ import 'package:chordmaster_free/features/chords/chord_explorer_screen.dart';
 import 'package:chordmaster_free/features/chords/chord_library_screen.dart';
 import 'package:chordmaster_free/features/chords/chord_viewmodel.dart';
 import 'package:chordmaster_free/models/chord.dart';
+import 'package:chordmaster_free/services/key_value_store.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:flutter_test/flutter_test.dart';
+
+import '../support/in_memory_store.dart';
 
 class _FakeChordViewModel extends ChordViewModel {
   _FakeChordViewModel(this._chords);
@@ -128,6 +131,7 @@ final _testChords = <Chord>[
 
 Widget _wrapWithFakeChords(Widget child) => ProviderScope(
       overrides: [
+        keyValueStoreProvider.overrideWithValue(InMemoryStore()),
         chordViewModelProvider.overrideWith(
           () => _FakeChordViewModel(_testChords),
         ),

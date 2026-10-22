@@ -4,7 +4,6 @@ import '../../../data/models/scale_definition.dart';
 import '../../../data/repository/scale_repository.dart';
 import '../../../domain/theory/notes.dart';
 import '../../../services/achievement_service.dart';
-import '../../../services/storage_service.dart';
 
 class ScaleDetailState {
   const ScaleDetailState({
@@ -72,8 +71,7 @@ class ScaleDetailNotifier extends Notifier<ScaleDetailState> {
     );
     _load(initial);
     // Logro "Explorador de escalas": 10 escalas distintas abiertas.
-    AchievementService.instance.recordDistinct(
-      storage: ref.read(storageServiceProvider),
+    ref.read(achievementServiceProvider).recordDistinct(
       key: 'viewed_scale_ids',
       value: _arg.scale.id,
       goal: 10,
