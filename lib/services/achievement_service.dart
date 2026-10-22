@@ -261,20 +261,6 @@ class AchievementService {
     }
   }
 
-  /// Returns the [AchievementDefinition] for every unlocked achievement,
-  /// in the order they appear in [allAchievements].
-  ///
-  /// Throws [StorageFailure] if the box cannot be read.
-  Future<List<AchievementDefinition>> getUnlockedDefinitions() async {
-    final unlockedIds = await getUnlocked();
-    final idSet = unlockedIds.toSet();
-    return allAchievements.where((a) => idSet.contains(a.id)).toList();
-  }
-
-  /// Looks up an [AchievementDefinition] by its [id], returning `null` if
-  /// the id is not recognised.
-  AchievementDefinition? definitionById(String id) => _definitionById(id);
-
   // ── Internal Helpers ──────────────────────────────────────────────────────
 
   AchievementDefinition? _definitionById(String id) {

@@ -17,8 +17,6 @@ class _FakeStorage implements StorageService {
   @override
   Future<T?> get<T>(String box, String key) async => null;
   @override
-  Future<List<dynamic>> getAll(String box) async => <dynamic>[];
-  @override
   Future<void> delete(String box, String key) async {}
   @override
   Future<void> clear(String box) async {}

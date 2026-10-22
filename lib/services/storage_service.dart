@@ -107,21 +107,6 @@ class StorageService {
     }
   }
 
-  /// Returns all values stored in the named [box] as an untyped list.
-  ///
-  /// Returns an empty list when the box is empty.  Throws [StorageFailure]
-  /// on error.
-  Future<List<dynamic>> getAll(String box) async {
-    try {
-      final b = _box(box);
-      return b.values.toList();
-    } catch (e, st) {
-      throw StorageFailure(
-        message: 'Failed to get all values from box "$box": $e',
-        stackTrace: st,
-      );
-    }
-  }
 
   /// Deletes the entry identified by [key] from the named [box].
   ///

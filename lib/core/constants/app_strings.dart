@@ -573,8 +573,6 @@ class AppStrings {
   static String get remindEvery => tr(es: 'Avisar cada:', en: 'Remind every:');
   static String get warmupExercises =>
       tr(es: '🤸 Ejercicios de calentamiento', en: '🤸 Warm-up exercises');
-  static String waitSeconds(int s) =>
-      tr(es: 'Espera ${s}s…', en: 'Wait ${s}s…');
   static String get reminderTitle =>
       tr(es: 'Recordatorio de Learn & Strum', en: 'Learn & Strum reminder');
   static String get reminderChannelName =>

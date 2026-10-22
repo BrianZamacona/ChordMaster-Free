@@ -24,8 +24,6 @@ class _MemoryStorage implements StorageService {
     return value is T ? value : null;
   }
 
-  @override
-  Future<List<dynamic>> getAll(String box) async => data.values.toList();
 
   @override
   Future<void> delete(String box, String key) async => data.remove(key);

@@ -6,9 +6,6 @@ import '../../ui/theme.dart';
 import '../constants/app_strings.dart';
 import '../i18n/app_i18n.dart';
 
-/// Pestañas de la barra inferior, en orden; el índice es la rama del shell.
-enum AppTab { home, learn, practice, tools, progress }
-
 /// Shell de toda la app: la barra inferior está en todas las pantallas.
 ///
 /// Cada pantalla pone su propio `Scaffold` con `AppBar`; el botón de atrás
