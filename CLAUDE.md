@@ -166,7 +166,9 @@ cada nota pertenezca a la escala. No bajar la tolerancia de 0.
   `fingering_metrics.dart` (`analyzeFingering`, `bestIndices`).
 - `lib/domain/progressions/` — datos y `ProgressionBuilder`.
 - `lib/domain/fingering_systems/` — teoría de sistemas + registro.
-- `lib/data/` — modelos y repositorio de escalas (resolución por raíz).
+- `lib/data/` — modelos y repositorios: `ChordRepository` (única lectura de `chords.json`,
+  decodificado fuera del hilo de la UI; vistas `chords()` y `fingerings()`) y `ScaleRepository`
+  (resolución por raíz). Nadie más llama a `rootBundle` para estos archivos.
 - `lib/features/` — pantallas por módulo (chords, progressions, ...).
   - `features/chords/chord_compare_screen.dart` — ruta `/learn/chords/:id/compare?sel=caged:0,voicings:2`
     (claves `sección:índice`, máx. 3; secciones `main`, `caged`, `voicings`, `triadInversions`,

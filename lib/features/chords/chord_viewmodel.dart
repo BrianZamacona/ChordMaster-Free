@@ -1,11 +1,9 @@
-import 'dart:convert';
-
 import 'package:flutter/foundation.dart';
-import 'package:flutter/services.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 
 import '../../core/constants/app_strings.dart';
 import '../../core/constants/chord_metadata.dart';
+import '../../data/repository/chord_repository.dart';
 import '../../domain/theory/notes.dart';
 import '../../models/chord.dart';
 
@@ -163,12 +161,8 @@ class ChordViewModel extends Notifier<ChordState> {
 
   Future<void> _load() async {
     try {
-      final jsonStr = await rootBundle.loadString('assets/data/chords.json');
-      final list = json.decode(jsonStr) as List<dynamic>;
-      final chords = list
-          .map((entry) => Chord.fromJson(entry as Map<String, dynamic>))
-          .toList();
-      chords.sort(_compareChords);
+      final chords = [...await ref.read(chordRepositoryProvider).chords()]
+        ..sort(_compareChords);
 
       _nameIndex
         ..clear()

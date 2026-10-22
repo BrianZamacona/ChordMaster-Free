@@ -1,11 +1,9 @@
-import 'dart:convert';
-
 import 'package:flutter/foundation.dart';
-import 'package:flutter/services.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 
 import '../../core/constants/chord_metadata.dart';
 import '../../core/i18n/tr.dart';
+import '../../data/repository/chord_repository.dart';
 import '../../domain/progressions/progression_builder.dart';
 import '../../domain/progressions/progression_data.dart';
 import '../../domain/theory/notes.dart';
@@ -208,14 +206,10 @@ ProgressionPlan buildProgressionPlan(
   );
 }
 
-/// Carga chords.json una sola vez.
-final progressionBuilderProvider = FutureProvider<ProgressionBuilder>((ref) async {
-  final raw = await rootBundle.loadString('assets/data/chords.json');
-  final chords = jsonDecode(raw) as List<dynamic>;
-  return ProgressionBuilder([
-    for (final c in chords) ChordFingerings.fromJson(c as Map<String, dynamic>),
-  ]);
-});
+final progressionBuilderProvider = FutureProvider<ProgressionBuilder>(
+  (ref) async =>
+      ProgressionBuilder(await ref.read(chordRepositoryProvider).fingerings()),
+);
 
 /// Provider for [ProgressionsViewModel].
 final progressionsViewModelProvider =
