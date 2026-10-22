@@ -4,7 +4,7 @@ import 'package:url_launcher/url_launcher.dart';
 import '../../ui/palette.dart';
 import '../constants/app_strings.dart';
 
-/// A button that opens the ChordMaster Free Ko-fi donation page.
+/// Botón que abre la página de donaciones de Ko-fi (ko-fi.com/zamadev).
 ///
 /// Renders as an [OutlinedButton] with an heart icon in the accent color so it is visually
 /// distinct from primary-action buttons.
@@ -17,7 +17,7 @@ class DonationButton extends StatelessWidget {
   /// Creates a [DonationButton].
   const DonationButton({super.key});
 
-  static final Uri _kofiUri = Uri.parse('https://ko-fi.com/chordmasterfree');
+  static final Uri _kofiUri = Uri.parse('https://ko-fi.com/zamadev');
 
   Future<void> _launch() async {
     try {

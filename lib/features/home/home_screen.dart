@@ -8,7 +8,7 @@ import '../../ui/animations.dart';
 import '../../ui/palette.dart';
 import 'home_viewmodel.dart';
 
-/// Home screen showing the daily challenge, streak, and 12 module cards.
+/// Inicio: reto del día, racha de días y tarjetas de acceso a los módulos.
 ///
 /// This widget does not include a [Scaffold] — the shell route provides one.
 class HomeScreen extends ConsumerStatefulWidget {
