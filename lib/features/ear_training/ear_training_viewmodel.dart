@@ -3,7 +3,7 @@ import 'package:flutter/foundation.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 
 import '../../domain/audio/pluck_synth.dart' show NoteEvent;
-import '../../domain/theory/double_stops.dart' show noteNames;
+import '../../domain/theory/notes.dart';
 import '../../models/interval_model.dart';
 import '../../services/achievement_service.dart';
 import '../../services/audio_service.dart';
@@ -234,10 +234,10 @@ class EarTrainingViewModel extends Notifier<EarTrainingState> {
   }
 
   /// Nota grave de la pregunta (con sostenidos).
-  String get displayRootNote => noteNames[state.rootMidi % 12];
+  String get displayRootNote => pitchClassName(state.rootMidi);
 
   /// Nota aguda de la pregunta.
   String get displayIntervalNote =>
-      noteNames[(state.rootMidi + state.currentInterval.semitones) % 12];
+      pitchClassName(state.rootMidi + state.currentInterval.semitones);
 }
 

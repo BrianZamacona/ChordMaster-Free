@@ -1,8 +1,8 @@
 import 'dart:math' as math;
 
+import '../theory/notes.dart';
 import 'voicing_adapter.dart';
 
-const standardOpenStringMidi = [64, 59, 55, 50, 45, 40];
 const _maxFret = 24;
 const _mutedIntermediateStringCost = 1.5;
 const _registerBiasCost = 2.0;

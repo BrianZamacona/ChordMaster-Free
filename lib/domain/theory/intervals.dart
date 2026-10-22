@@ -39,6 +39,24 @@ String spellInterval(int semitones, [List<int> scale = const []]) {
   return _defaultNames[s]!;
 }
 
+/// Etiqueta de un tono de acorde (fórmula de `chords.json`): dentro de la
+/// octava, el nombre por defecto (`b5` en la disminuida, `#5` en la
+/// aumentada); por encima, la tensión con su número (`b9`, `9`, `#9`, `11`,
+/// `#11`, `13`).
+String chordToneLabel(int semitones) =>
+    _tensionNames[semitones] ?? _defaultNames[semitones % 12]!;
+
+const _tensionNames = {
+  12: '8',
+  13: 'b9',
+  14: '9',
+  15: '#9',
+  17: '11',
+  18: '#11',
+  20: 'b13',
+  21: '13',
+};
+
 /// Etiquetas de todas las notas de [scale], en orden.
 List<String> scaleDegreeLabels(List<int> scale) =>
     [for (final i in scale) spellInterval(i, scale)];

@@ -1,5 +1,4 @@
 import 'chord_texts.dart';
-import 'music_theory.dart';
 
 /// Central metadata describing supported chord qualities and musical categories.
 class ChordTypeDefinition {
@@ -276,7 +275,6 @@ const List<String> allowedChordTags = [
 String chordTypeLabel(String type) =>
     chordTypeNames[type]?.text ??
     chordTypeMetadata[type]?.displayName ??
-    chordQualityDisplayNames[type] ??
     type;
 
 String chordShortLabel(String type) =>

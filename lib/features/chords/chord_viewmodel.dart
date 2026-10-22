@@ -6,7 +6,7 @@ import 'package:flutter_riverpod/flutter_riverpod.dart';
 
 import '../../core/constants/app_strings.dart';
 import '../../core/constants/chord_metadata.dart';
-import '../../core/constants/music_theory.dart';
+import '../../domain/theory/notes.dart';
 import '../../models/chord.dart';
 
 /// Immutable state for [ChordViewModel].
@@ -136,10 +136,10 @@ bool _matchesChordSearch({
 }
 
 int _compareChords(Chord a, Chord b) {
-  final aRootIndex = chromaticNotes.indexOf(a.root);
-  final bRootIndex = chromaticNotes.indexOf(b.root);
-  final normalizedARootIndex = aRootIndex == -1 ? chromaticNotes.length : aRootIndex;
-  final normalizedBRootIndex = bRootIndex == -1 ? chromaticNotes.length : bRootIndex;
+  final aRootIndex = noteIndex(a.root);
+  final bRootIndex = noteIndex(b.root);
+  final normalizedARootIndex = aRootIndex == -1 ? noteNames.length : aRootIndex;
+  final normalizedBRootIndex = bRootIndex == -1 ? noteNames.length : bRootIndex;
   final rootCompare = normalizedARootIndex.compareTo(normalizedBRootIndex);
   if (rootCompare != 0) return rootCompare;
   final typeCompare =

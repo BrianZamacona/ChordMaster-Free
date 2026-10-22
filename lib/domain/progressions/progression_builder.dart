@@ -1,4 +1,4 @@
-import '../theory/double_stops.dart' show noteNames;
+import '../theory/notes.dart';
 import '../voicing/barre_detection.dart';
 import '../voicing/ergonomics.dart';
 import '../voicing/voice_leading.dart';
@@ -172,7 +172,7 @@ class ProgressionBuilder {
   }) => [
     for (final degree in progression.degrees)
       candidatesFor(
-        noteNames[(tonic + degree.semitones) % 12],
+        pitchClassName(tonic + degree.semitones),
         degree.type,
         beginner: beginner,
       ),

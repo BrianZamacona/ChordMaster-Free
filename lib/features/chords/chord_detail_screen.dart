@@ -7,14 +7,14 @@ import 'package:go_router/go_router.dart';
 import '../../core/constants/app_strings.dart';
 import '../../core/constants/chord_metadata.dart';
 import '../../core/constants/interval_texts.dart';
-import '../../core/constants/music_theory.dart';
 import '../../core/constants/scale_names.dart';
 import '../../core/widgets/chord_diagram.dart';
 import '../../core/widgets/donation_button.dart';
 import '../../core/widgets/interval_legend.dart';
 import '../../data/models/scale_definition.dart';
 import '../../data/repository/scale_repository.dart';
-import '../../domain/theory/double_stops.dart' show noteNames;
+import '../../domain/theory/intervals.dart';
+import '../../domain/theory/notes.dart';
 import '../../domain/theory/scale_insights.dart';
 import '../../domain/voicing/fingering_metrics.dart';
 import '../../domain/voicing/slash_chords.dart';
@@ -370,7 +370,7 @@ class _ChordDetailScreenState extends ConsumerState<ChordDetailScreen> {
 
   String _buildFormulaText(Chord chord) {
     final symbols = chord.intervals
-        .map((interval) => intervalSymbols[interval] ?? '$interval semitones')
+        .map(chordToneLabel)
         .join(' • ');
     final names = chord.intervals
         .map((i) => i == 0 ? AppStrings.legendRoot : intervalLongName(i))
@@ -396,7 +396,7 @@ class _RelatedScales extends ConsumerWidget {
     final ids = scalesForChord(chord.intervals, {
       for (final s in all) s.id: s.intervals,
     });
-    final root = noteNames.indexOf(chord.root);
+    final root = noteIndex(chord.root);
     if (ids.isEmpty) {
       return Text(AppStrings.relatedScalesNone, style: Theme.of(context).textTheme.bodySmall);
     }
@@ -629,7 +629,7 @@ class _SlashChordsState extends State<_SlashChords> {
         for (final item in [...c.cagedPositions, ...c.voicings, ...c.triadInversions])
           VoicingAdapter.fromChordJson(item.fretPositions),
       ],
-      rootPc: noteNames.indexOf(c.root),
+      rootPc: noteIndex(c.root),
       intervals: c.intervals,
       bassPc: bass,
     );
@@ -639,7 +639,7 @@ class _SlashChordsState extends State<_SlashChords> {
   Widget build(BuildContext context) {
     final theme = Theme.of(context);
     final p = context.palette;
-    final rootPc = noteNames.indexOf(widget.chord.root);
+    final rootPc = noteIndex(widget.chord.root);
     final bass = _bass;
     final voicings = bass == null ? const <SlashVoicing>[] : _voicings(bass);
     return Column(

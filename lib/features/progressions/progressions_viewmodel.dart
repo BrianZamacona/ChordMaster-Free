@@ -8,7 +8,7 @@ import '../../core/constants/chord_metadata.dart';
 import '../../core/i18n/tr.dart';
 import '../../domain/progressions/progression_builder.dart';
 import '../../domain/progressions/progression_data.dart';
-import '../../domain/theory/double_stops.dart' show noteNames;
+import '../../domain/theory/notes.dart';
 import '../../domain/voicing/voice_leading.dart';
 import '../../services/achievement_service.dart';
 import '../../services/audio_service.dart';
@@ -132,7 +132,7 @@ class ProgressionPlan {
 }
 
 String _degreeLabel(ProgressionDegree degree, int tonic) {
-  final root = noteNames[(tonic + degree.semitones) % 12];
+  final root = pitchClassName(tonic + degree.semitones);
   return '${degree.numeral} (${chordDisplayName(root: root, type: degree.type)})';
 }
 

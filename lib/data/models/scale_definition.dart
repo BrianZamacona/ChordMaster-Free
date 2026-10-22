@@ -1,20 +1,7 @@
 import '../../domain/theory/intervals.dart';
+import '../../domain/theory/notes.dart';
 import 'note_coordinate.dart';
 
-const _noteNames = [
-  'C',
-  'C#',
-  'D',
-  'D#',
-  'E',
-  'F',
-  'F#',
-  'G',
-  'G#',
-  'A',
-  'A#',
-  'B'
-];
 const _standardTuningHighToLow = [4, 11, 7, 2, 9, 4];
 const maxFret = 24;
 
@@ -141,7 +128,7 @@ class ScalePosition {
           string: c.string,
           fret: fret,
           isRoot: c.isRoot,
-          note: c.note.isNotEmpty ? c.note : _noteNames[noteSemitone],
+          note: c.note.isNotEmpty ? c.note : noteNames[noteSemitone],
           interval: c.interval.isNotEmpty
               ? c.interval
               : spellInterval(intervalSemitone, scaleIntervals),

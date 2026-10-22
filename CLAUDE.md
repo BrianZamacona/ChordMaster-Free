@@ -29,7 +29,9 @@ cada nota pertenezca a la escala. No bajar la tolerancia de 0.
 - En `scales_master.json` las cuerdas se numeran 1 = mi aguda … 6 = mi grave, y `fret_offset`
   está dado para raíz C; la app suma el semitono de la raíz y, si pasa del traste 24 o baja de 0,
   desplaza ±12 (todo o nada, nunca recorta una posición).
-- Notas siempre con sostenidos (`C C# D D# E F F# G G# A A# B`).
+- Notas siempre con sostenidos (`C C# D D# E F F# G G# A A# B`). La ÚNICA tabla es
+  `lib/domain/theory/notes.dart` (`noteNames`, `noteIndex`, `pitchClassName`,
+  `standardOpenStringMidi`): no copiar la lista ni la afinación en otro archivo.
 - Nombre de intervalos en escalas: `spellInterval` (`lib/domain/theory/intervals.dart`). En
   escalas de 7 notas cada grado tiene su número (b6 en la menor, #4 en la lidia), nunca `#5`
   por defecto.

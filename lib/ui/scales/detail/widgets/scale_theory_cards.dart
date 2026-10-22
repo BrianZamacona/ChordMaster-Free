@@ -7,8 +7,8 @@ import '../../../../core/constants/chord_metadata.dart';
 import '../../../../core/i18n/tr.dart';
 import '../../../../data/models/note_coordinate.dart';
 import '../../../../data/repository/scale_repository.dart';
-import '../../../../domain/theory/double_stops.dart' show noteNames;
 import '../../../../domain/theory/intervals.dart';
+import '../../../../domain/theory/notes.dart';
 import '../../../../domain/theory/octaves.dart';
 import '../../../../domain/theory/scale_insights.dart';
 import '../../../../features/chords/chord_viewmodel.dart';
@@ -184,7 +184,7 @@ class ScaleHarmonyCard extends ConsumerWidget {
   final List<int> intervals;
   final int rootSemitone;
 
-  String _note(int semitones) => noteNames[(rootSemitone + semitones) % 12];
+  String _note(int semitones) => pitchClassName(rootSemitone + semitones);
 
   /// Nombre del acorde; los tipos que no están en chords.json se escriben
   /// con su cifrado habitual.

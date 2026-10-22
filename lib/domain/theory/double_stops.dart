@@ -1,8 +1,6 @@
+import 'notes.dart';
+
 // Índice de cuerda 0 = 1ª cuerda (mi aguda).
-const noteNames = [
-  'C', 'C#', 'D', 'D#', 'E', 'F', 'F#', 'G', 'G#', 'A', 'A#', 'B', //
-];
-const openStringMidi = [64, 59, 55, 50, 45, 40];
 
 const _majorScaleSteps = [0, 2, 4, 5, 7, 9, 11];
 const _intervalLabels = [
@@ -152,8 +150,6 @@ const _diatonicIntervals = {
   ],
 };
 
-int noteIndex(String note) => noteNames.indexOf(note);
-
 /// Grado de [note] en la escala mayor de [key]: '1'…'7' si pertenece a la
 /// escala; si no, la etiqueta cromática (`b3`, `#4` se escribe `b5`…).
 String degreeInMajorKey(String note, String key) {
@@ -163,7 +159,7 @@ String degreeInMajorKey(String note, String key) {
 }
 
 String noteAt(int stringIndex, int fret) =>
-    noteNames[(openStringMidi[stringIndex] + fret) % 12];
+    pitchClassName(standardOpenStringMidi[stringIndex] + fret);
 
 String intervalLabel(int interval) =>
     interval >= 0 && interval < 12 ? _intervalLabels[interval] : '';
@@ -204,11 +200,11 @@ List<DoubleStopGroup> _search(
   for (final group in groups) {
     final (companionString, baseString) = group.stringPair;
     for (var fret = range.start; fret <= range.end; fret++) {
-      final rootPitch = openStringMidi[baseString] + fret;
+      final rootPitch = standardOpenStringMidi[baseString] + fret;
       final baseDistance = (rootPitch - rootIndex + 12) % 12;
       if (baseDistance != 0) continue;
       for (var cf = range.start; cf <= range.end; cf++) {
-        final intervalPitch = openStringMidi[companionString] + cf;
+        final intervalPitch = standardOpenStringMidi[companionString] + cf;
         if (intervalPitch - rootPitch != distance) continue;
         if ((cf - fret).abs() > 4 && fret != 0 && cf != 0) continue;
         group.pairs.add(
@@ -255,7 +251,7 @@ List<DoubleStopGroup> findDiatonicDoubleStopPairs(
   final groups = [for (final pair in _stringPairs(resolved)) DoubleStopGroup(pair)];
   final defs = _diatonicIntervals[intervalType]!;
   for (var index = 0; index < defs.length; index++) {
-    final degreeRoot = noteNames[(keyIndex + _majorScaleSteps[index]) % 12];
+    final degreeRoot = pitchClassName(keyIndex + _majorScaleSteps[index]);
     final degreeGroups = _search(
       degreeRoot,
       defs[index].distance,

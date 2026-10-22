@@ -5,8 +5,7 @@
 /// grave.
 library;
 
-/// MIDI de cada cuerda al aire, índice 0 = 1ª cuerda.
-const _openMidi = [64, 59, 55, 50, 45, 40];
+import 'notes.dart';
 
 /// Una forma de octava: desde [lowString] hasta [highString], la misma nota
 /// [octaves] octavas más arriba cae [fretShift] trastes a la derecha (o a la
@@ -50,7 +49,7 @@ List<OctaveShape> octaveShapes() {
   for (var low = 6; low >= 2; low--) {
     for (var high = low - 1; high >= 1; high--) {
       for (final octaves in const [1, 2]) {
-        final shift = _openMidi[low - 1] + 12 * octaves - _openMidi[high - 1];
+        final shift = standardOpenStringMidi[low - 1] + 12 * octaves - standardOpenStringMidi[high - 1];
         if (shift.abs() <= 3) {
           shapes.add(
             OctaveShape(lowString: low, highString: high, fretShift: shift, octaves: octaves),
@@ -71,7 +70,7 @@ List<OctaveShape> octaveShapes() {
 List<({int string, int fret})> notePositions(int pitchClass, {int maxFret = 12}) => [
   for (var string = 6; string >= 1; string--)
     for (var fret = 0; fret <= maxFret; fret++)
-      if ((_openMidi[string - 1] + fret) % 12 == pitchClass) (string: string, fret: fret),
+      if ((standardOpenStringMidi[string - 1] + fret) % 12 == pitchClass) (string: string, fret: fret),
 ];
 
 /// Pares (nota grave, su octava) de [pitchClass] según [shape], dentro de

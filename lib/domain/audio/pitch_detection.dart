@@ -6,7 +6,8 @@ library;
 import 'dart:math' as math;
 import 'dart:typed_data';
 
-import '../theory/double_stops.dart' show noteNames;
+import '../theory/notes.dart';
+
 
 /// Frecuencia fundamental de [samples] (−1..1) en Hz, o `null` si es
 /// silencio, ruido o no hay un periodo claro.
@@ -80,7 +81,7 @@ double? detectPitchHz(
   final exact = 69 + 12 * math.log(hz / a4) / math.ln2;
   final midi = exact.round();
   return (
-    name: '${noteNames[midi % 12]}${midi ~/ 12 - 1}',
+    name: '${pitchClassName(midi)}${midi ~/ 12 - 1}',
     midi: midi,
     cents: (exact - midi) * 100,
   );

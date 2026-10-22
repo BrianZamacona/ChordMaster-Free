@@ -9,14 +9,13 @@ import '../../../core/widgets/selector_pill.dart';
 import '../../../data/models/scale_definition.dart';
 import '../../../domain/fingering_systems/fingering_systems_registry.dart';
 import '../../../domain/theory/intervals.dart';
+import '../../../domain/theory/notes.dart';
 import '../../../ui/widgets/fretboard_diagram.dart';
 import '../../theme.dart';
 import 'scale_detail_notifier.dart';
 import 'widgets/pattern_tab_bar.dart';
 import 'widgets/scale_info_panel.dart';
 import 'widgets/scale_theory_cards.dart';
-
-const _noteNames = ['C', 'C#', 'D', 'D#', 'E', 'F', 'F#', 'G', 'G#', 'A', 'A#', 'B'];
 
 /// Detalle de una escala: tónica y sistema arriba, posiciones completas
 /// (nunca recortadas) y, bajo el diapasón, qué es el sistema y las notas.
@@ -71,7 +70,7 @@ class ScaleDetailScreen extends ConsumerWidget {
                     title: AppStrings.scaleTonic,
                     selected: state.rootName,
                     onPicked: (note) {
-                      if (note != null) notifier.changeRoot(_noteNames.indexOf(note));
+                      if (note != null) notifier.changeRoot(noteIndex(note));
                     },
                   ),
                 ),
@@ -132,13 +131,13 @@ class ScaleDetailScreen extends ConsumerWidget {
           ),
           ScaleWhyCard(
             intervals: scale.intervals,
-            rootSemitone: _noteNames.indexOf(state.rootName),
+            rootSemitone: noteIndex(state.rootName),
           ),
           ScaleHarmonyCard(
             intervals: scale.intervals,
-            rootSemitone: _noteNames.indexOf(state.rootName),
+            rootSemitone: noteIndex(state.rootName),
           ),
-          ScaleOctavesCard(rootSemitone: _noteNames.indexOf(state.rootName)),
+          ScaleOctavesCard(rootSemitone: noteIndex(state.rootName)),
           ScaleImproviseCard(
             scaleId: scale.id,
             intervals: scale.intervals,

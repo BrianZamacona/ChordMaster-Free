@@ -1,5 +1,5 @@
 import '../../core/i18n/tr.dart';
-import '../theory/double_stops.dart' show noteNames;
+import '../theory/notes.dart';
 import 'barre_detection.dart';
 import 'ergonomics.dart';
 import 'voicing_adapter.dart';
@@ -85,7 +85,7 @@ FingeringMetrics analyzeFingering({
     }
   }
 
-  final rootPc = noteNames.indexOf(root);
+  final rootPc = noteIndex(root);
   int pitchClass(int s) => (standardOpenStringMidi[s] + frets[s]!) % 12;
   int midi(int s) => standardOpenStringMidi[s] + frets[s]!;
   final bassString = sounding.reduce((a, b) => midi(b) < midi(a) ? b : a);
@@ -144,7 +144,7 @@ List<StringTone?> stringTonesFromChordJson({
   required String root,
 }) {
   final frets = VoicingAdapter.fromChordJson(jsonFrets);
-  final rootPc = noteNames.indexOf(root);
+  final rootPc = noteIndex(root);
   final engineTones = [
     for (var s = 0; s < frets.length; s++)
       if (frets[s] == null)

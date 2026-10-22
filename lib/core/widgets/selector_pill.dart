@@ -1,8 +1,8 @@
 import 'package:flutter/material.dart';
 
+import '../../domain/theory/notes.dart';
 import '../../ui/theme.dart';
 import '../constants/app_strings.dart';
-import '../constants/music_theory.dart';
 
 /// Botón compacto de selección: "Etiqueta ▾" o, con valor, "Etiqueta: valor".
 ///
@@ -131,7 +131,7 @@ Future<void> showNotePicker(
               crossAxisSpacing: 8,
               childAspectRatio: 1.1,
               children: [
-                for (final note in chromaticNotes)
+                for (final note in noteNames)
                   _NoteKey(
                     note: note,
                     selected: note == selected,

@@ -2,6 +2,7 @@ import 'dart:convert';
 import 'dart:io';
 
 import 'package:chordmaster_free/domain/theory/double_stops.dart';
+import 'package:chordmaster_free/domain/theory/notes.dart';
 import 'package:flutter_test/flutter_test.dart';
 
 List<List<Object?>> _rows(List<DoubleStopGroup> groups) => [

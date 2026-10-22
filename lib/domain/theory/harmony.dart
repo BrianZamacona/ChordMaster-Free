@@ -1,6 +1,6 @@
 import '../../core/i18n/tr.dart';
 import '../progressions/progression_data.dart';
-import 'double_stops.dart' show noteNames;
+import 'notes.dart';
 
 /// Función armónica de un grado de la tonalidad mayor.
 ///

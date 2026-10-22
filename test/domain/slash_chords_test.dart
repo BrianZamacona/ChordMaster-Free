@@ -1,8 +1,7 @@
 import 'dart:convert';
 import 'dart:io';
 
-import 'package:chordmaster_free/domain/theory/double_stops.dart' show noteNames;
-import 'package:chordmaster_free/domain/voicing/ergonomics.dart';
+import 'package:chordmaster_free/domain/theory/notes.dart';
 import 'package:chordmaster_free/domain/voicing/slash_chords.dart';
 import 'package:chordmaster_free/domain/voicing/voicing_adapter.dart';
 import 'package:flutter_test/flutter_test.dart';
@@ -23,9 +22,9 @@ void main() {
     ];
     return slashVoicings(
       sources: sources,
-      rootPc: noteNames.indexOf(c['root'] as String),
+      rootPc: noteIndex(c['root'] as String),
       intervals: frets(c['intervals']),
-      bassPc: noteNames.indexOf(bass),
+      bassPc: noteIndex(bass),
     );
   }
 
@@ -53,7 +52,7 @@ void main() {
 
   test('en todas: el bajo es la nota más grave y el resto conserva raíz y 3ª', () {
     for (final c in chords.where((c) => c['type'] == 'major' || c['type'] == 'minor')) {
-      final root = noteNames.indexOf(c['root'] as String);
+      final root = noteIndex(c['root'] as String);
       final third = (root + (c['type'] == 'major' ? 4 : 3)) % 12;
       for (var bass = 0; bass < 12; bass++) {
         if (bass == root) continue;

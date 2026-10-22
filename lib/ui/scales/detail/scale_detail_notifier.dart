@@ -2,10 +2,9 @@ import 'package:flutter_riverpod/flutter_riverpod.dart';
 
 import '../../../data/models/scale_definition.dart';
 import '../../../data/repository/scale_repository.dart';
+import '../../../domain/theory/notes.dart';
 import '../../../services/achievement_service.dart';
 import '../../../services/storage_service.dart';
-
-const _noteNames = ['C', 'C#', 'D', 'D#', 'E', 'F', 'F#', 'G', 'G#', 'A', 'A#', 'B'];
 
 class ScaleDetailState {
   const ScaleDetailState({
@@ -24,7 +23,7 @@ class ScaleDetailState {
   final int selectedPatternIndex;
   final bool isLoading;
 
-  String get rootName => _noteNames[rootSemitone];
+  String get rootName => noteNames[rootSemitone];
   bool get hasPattern => visiblePatterns.isNotEmpty;
 
   ResolvedPattern? get currentPattern => visiblePatterns.isEmpty
@@ -33,7 +32,7 @@ class ScaleDetailState {
 
   List<String> get scaleNoteNames {
     final rootIdx = rootSemitone;
-    return scale.intervals.map((i) => _noteNames[(rootIdx + i) % 12]).toList();
+    return scale.intervals.map((i) => pitchClassName(rootIdx + i)).toList();
   }
 
   ScaleDetailState copyWith({

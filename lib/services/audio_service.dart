@@ -7,7 +7,7 @@ import 'package:just_audio/just_audio.dart';
 import 'package:path_provider/path_provider.dart';
 
 import '../domain/audio/pluck_synth.dart';
-import '../domain/voicing/ergonomics.dart' show standardOpenStringMidi;
+import '../domain/theory/notes.dart';
 import '../domain/voicing/voicing_adapter.dart';
 
 /// Riverpod provider that exposes the [AudioService] singleton.

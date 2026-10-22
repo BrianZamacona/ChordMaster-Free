@@ -1,8 +1,7 @@
 import 'dart:convert';
 import 'dart:io';
 
-import 'package:chordmaster_free/domain/theory/double_stops.dart'
-    show noteNames, openStringMidi;
+import 'package:chordmaster_free/domain/theory/notes.dart';
 import 'package:chordmaster_free/domain/voicing/fingering_metrics.dart';
 import 'package:flutter_test/flutter_test.dart';
 
@@ -68,13 +67,13 @@ void main() {
         ])
           ...(c[f] as List<dynamic>? ?? const []).cast<Map<String, dynamic>>(),
       ];
-      final rootPc = noteNames.indexOf(c['root'] as String);
+      final rootPc = noteIndex(c['root'] as String);
       final allowed = {for (final i in _ints(c['intervals'])) (rootPc + i) % 12};
       for (final item in items) {
         total++;
         final m = analyze(c, item);
         expect(m.toneLabels, isNotEmpty, reason: '${c['name']} ${item['fretPositions']}');
-        if (!allowed.contains(noteNames.indexOf(m.bassNote)) ||
+        if (!allowed.contains(noteIndex(m.bassNote)) ||
             m.inversion == 'Fuera del acorde') {
           outside.add('${c['name']} ${item['fretPositions']}');
         }
@@ -82,7 +81,7 @@ void main() {
     }
     expect(total, 1816);
     expect(outside, isEmpty, reason: '$outside');
-    expect(openStringMidi, hasLength(6));
+    expect(standardOpenStringMidi, hasLength(6));
   });
 
   group('stringTonesFromChordJson', () {
@@ -112,7 +111,7 @@ void main() {
       var checked = 0;
       for (final c in chords) {
         final root = c['root'] as String;
-        final rootPc = noteNames.indexOf(root);
+        final rootPc = noteIndex(root);
         final allowed = {for (final i in _ints(c['intervals'])) (rootPc + i) % 12};
         final items = [
           c,
@@ -136,7 +135,7 @@ void main() {
             expect(tones[j] == null, frets[j] == -1, reason: where);
           }
           for (final x in sounding) {
-            expect(allowed, contains(noteNames.indexOf(x.note)), reason: where);
+            expect(allowed, contains(noteIndex(x.note)), reason: where);
           }
           checked++;
         }

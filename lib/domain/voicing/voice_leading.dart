@@ -1,3 +1,4 @@
+import '../theory/notes.dart';
 import 'ergonomics.dart';
 import 'voicing_adapter.dart';
 

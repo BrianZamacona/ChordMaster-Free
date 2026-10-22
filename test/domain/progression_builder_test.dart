@@ -3,8 +3,7 @@ import 'dart:io';
 
 import 'package:chordmaster_free/domain/progressions/progression_builder.dart';
 import 'package:chordmaster_free/domain/progressions/progression_data.dart';
-import 'package:chordmaster_free/domain/theory/double_stops.dart'
-    show noteNames, openStringMidi;
+import 'package:chordmaster_free/domain/theory/notes.dart';
 import 'package:chordmaster_free/domain/voicing/barre_detection.dart';
 import 'package:chordmaster_free/domain/voicing/ergonomics.dart';
 import 'package:chordmaster_free/domain/voicing/voicing_adapter.dart';
@@ -20,10 +19,10 @@ void main() {
   final builder = ProgressionBuilder(chords);
 
   String degreeRoot(int tonic, ProgressionDegree d) =>
-      noteNames[(tonic + d.semitones) % 12];
+      pitchClassName(tonic + d.semitones);
 
   Set<int> allowedPitchClasses(ChordFingerings c) {
-    final root = noteNames.indexOf(c.root);
+    final root = noteIndex(c.root);
     return {for (final i in c.intervals) (root + i) % 12};
   }
 
@@ -51,7 +50,7 @@ void main() {
             if (fret == null) continue;
             expect(
               allowed,
-              contains((openStringMidi[s] + fret) % 12),
+              contains((standardOpenStringMidi[s] + fret) % 12),
               reason: '$label ${path[i].fretPositions}',
             );
           }

@@ -5,6 +5,7 @@ import '../../../core/constants/app_strings.dart';
 import '../../../core/widgets/interval_legend.dart';
 import '../../../core/widgets/selector_pill.dart';
 import '../../../domain/theory/double_stops.dart';
+import '../../../domain/theory/notes.dart';
 import 'double_stops_fretboard.dart';
 
 class DoubleStopsControls {
@@ -106,7 +107,7 @@ class DoubleStopsContent extends ConsumerWidget {
                   title: AppStrings.scaleTonic,
                   selected: noteNames[c.tonic],
                   onPicked: (note) {
-                    if (note != null) notifier.setTonic(noteNames.indexOf(note));
+                    if (note != null) notifier.setTonic(noteIndex(note));
                   },
                 ),
               ),

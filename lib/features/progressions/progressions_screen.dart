@@ -7,8 +7,8 @@ import '../../core/widgets/chord_diagram.dart';
 import '../../core/widgets/feature_module_scaffold.dart';
 import '../../core/widgets/selector_pill.dart';
 import '../../domain/progressions/progression_data.dart';
-import '../../domain/theory/double_stops.dart' show noteNames;
 import '../../domain/theory/harmony.dart';
+import '../../domain/theory/notes.dart';
 import '../../domain/voicing/barre_detection.dart';
 import '../../ui/theme.dart';
 import '../chords/chord_viewmodel.dart';
@@ -57,7 +57,7 @@ class ProgressionsContent extends ConsumerWidget {
                 title: AppStrings.progressionKeyTitle,
                 selected: noteNames[state.tonic],
                 onPicked: (note) {
-                  if (note != null) vm.setTonic(noteNames.indexOf(note));
+                  if (note != null) vm.setTonic(noteIndex(note));
                 },
               ),
             ),
@@ -109,7 +109,7 @@ class ProgressionsContent extends ConsumerWidget {
   }
 
   static String _chordIn(ProgressionDegree d, int tonic) => chordDisplayName(
-    root: noteNames[(tonic + d.semitones) % 12],
+    root: pitchClassName(tonic + d.semitones),
     type: d.type,
   );
 
