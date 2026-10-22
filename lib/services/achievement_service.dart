@@ -176,7 +176,7 @@ class AchievementService {
       final alreadyUnlocked = await isUnlocked(achievementId);
       if (alreadyUnlocked) return;
 
-      final definition = _definitionById(achievementId);
+      final definition = _byId[achievementId];
       if (definition == null) {
         debugPrint(
           'AchievementService.unlock: unknown achievement id "$achievementId"',
@@ -250,11 +250,8 @@ class AchievementService {
 
   // ── Internal Helpers ──────────────────────────────────────────────────────
 
-  AchievementDefinition? _definitionById(String id) {
-    try {
-      return allAchievements.firstWhere((a) => a.id == id);
-    } catch (_) {
-      return null;
-    }
-  }
+  /// Logros por id, para buscar sin recorrer la lista.
+  static final Map<String, AchievementDefinition> _byId = {
+    for (final a in allAchievements) a.id: a,
+  };
 }
