@@ -127,6 +127,15 @@ class AchievementService {
       ),
       emoji: '🎤',
     ),
+    AchievementDefinition(
+      id: 'foundations_done',
+      title: LocalizedText(es: 'Fundamentos completos', en: 'Foundations Complete'),
+      description: LocalizedText(
+        es: 'Termina las lecciones de Fundamentos.',
+        en: 'Finish the Foundations lessons.',
+      ),
+      emoji: '🎓',
+    ),
   ];
 
   // ── Public API ────────────────────────────────────────────────────────────

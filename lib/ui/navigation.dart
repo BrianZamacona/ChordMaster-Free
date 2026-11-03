@@ -11,6 +11,8 @@ import '../features/ear_training/ear_training_screen.dart';
 import '../features/health/health_screen.dart';
 import '../features/home/home_screen.dart';
 import '../features/hubs/hubs.dart';
+import '../features/lessons/lesson_detail_screen.dart';
+import '../features/lessons/lessons_screen.dart';
 import '../features/metronome/metronome_screen.dart';
 import '../features/progressions/progressions_screen.dart';
 import '../features/rhythm_games/rhythm_game_screen.dart';
@@ -87,6 +89,18 @@ final GoRouter appRouter = GoRouter(
               path: '/learn',
               builder: (_, __) => const LearnHubScreen(),
               routes: [
+                GoRoute(
+                  path: 'lessons',
+                  builder: (_, __) => const LessonsScreen(),
+                  routes: [
+                    GoRoute(
+                      path: ':id',
+                      builder: (_, state) => LessonDetailScreen(
+                        lessonId: state.pathParameters['id']!,
+                      ),
+                    ),
+                  ],
+                ),
                 GoRoute(
                   path: 'chords',
                   builder: (_, __) => const ChordLibraryScreen(),

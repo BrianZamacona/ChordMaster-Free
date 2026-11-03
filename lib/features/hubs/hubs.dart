@@ -14,6 +14,12 @@ class LearnHubScreen extends StatelessWidget {
         intro: AppStrings.learnIntro,
         entries: [
           HubEntry(
+            icon: Icons.school_outlined,
+            title: AppStrings.hubLessons,
+            subtitle: AppStrings.hubLessonsSub,
+            route: '/learn/lessons',
+          ),
+          HubEntry(
             icon: Icons.library_music_outlined,
             title: AppStrings.hubChords,
             subtitle: AppStrings.hubChordsSub,

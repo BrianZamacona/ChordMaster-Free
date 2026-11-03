@@ -51,6 +51,8 @@ void main() {
   for (final (location, back) in [
     ('/learn', false),
     ('/learn/chords', true),
+    ('/learn/lessons', true),
+    ('/learn/lessons/f1_meet_guitar', true),
     ('/learn/scales/double-stops', true),
     ('/learn/progressions', true),
     ('/practice/ear-training', true),
