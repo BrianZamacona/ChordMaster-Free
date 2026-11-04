@@ -48,33 +48,33 @@ class LessonsScreen extends ConsumerWidget {
                     ),
                   ),
                 ],
-                _Fork(chosen: path.chosen, open: path.foundationsDone),
-                Text(
-                  path.foundationsDone
-                      ? AppStrings.lessonsChoosePath
-                      : AppStrings.lessonsChooseLater,
-                  textAlign: TextAlign.center,
-                  style: Theme.of(context)
-                      .textTheme
-                      .bodySmall
-                      ?.copyWith(color: p.textSecondary),
+                const _StringSegment(active: true),
+                Padding(
+                  padding: const EdgeInsets.symmetric(vertical: 6),
+                  child: Text(
+                    path.foundationsDone
+                        ? AppStrings.lessonsChoosePath
+                        : AppStrings.lessonsChooseLater,
+                    textAlign: TextAlign.center,
+                    style: Theme.of(context)
+                        .textTheme
+                        .bodySmall
+                        ?.copyWith(color: p.textSecondary),
+                  ),
                 ),
-                const SizedBox(height: 8),
-                Row(
-                  crossAxisAlignment: CrossAxisAlignment.start,
-                  children: [
-                    for (final (i, track)
-                        in [LessonTrack.rhythm, LessonTrack.lead].indexed) ...[
-                      if (i > 0) const SizedBox(width: 12),
-                      Expanded(child: _TrackColumn(track: track, path: path)),
-                    ],
-                  ],
+                _Fork(
+                  highlighted: state.highlightedTrack,
+                  open: path.foundationsDone,
                 ),
+                _TrackRows(highlighted: state.highlightedTrack, path: path),
               ],
             ),
     );
   }
 }
+
+/// Separación entre las columnas de los dos caminos.
+const double _columnGap = 12;
 
 class _NextCard extends StatelessWidget {
   const _NextCard({required this.next});
@@ -127,47 +127,54 @@ class _NextCard extends StatelessWidget {
   }
 }
 
-/// Una columna del camino: título (tocarlo lo elige), unidades y reto.
-class _TrackColumn extends ConsumerWidget {
-  const _TrackColumn({required this.track, required this.path});
+/// Los dos caminos, fila por fila: cada fila tiene un nodo de cada camino a la
+/// misma altura. Un test exige que ambos tengan tantas unidades como retos.
+class _TrackRows extends StatelessWidget {
+  const _TrackRows({required this.highlighted, required this.path});
 
-  final LessonTrack track;
+  final LessonTrack? highlighted;
   final LessonPath path;
 
+  /// Una fila con una celda por camino, ambas de la altura de la mayor.
+  Widget _row(Widget Function(LessonTrack track) cell) => IntrinsicHeight(
+        child: Row(
+          crossAxisAlignment: CrossAxisAlignment.stretch,
+          children: [
+            Expanded(child: cell(LessonTrack.rhythm)),
+            const SizedBox(width: _columnGap),
+            Expanded(child: cell(LessonTrack.lead)),
+          ],
+        ),
+      );
+
+  Widget _segments() =>
+      _row((track) => _StringSegment(active: track == highlighted));
+
   @override
-  Widget build(BuildContext context, WidgetRef ref) {
-    final active = path.chosen == track;
-    return Column(
-      children: [
-        Semantics(
-          button: true,
-          selected: active,
-          hint: AppStrings.lessonsTapTrack,
-          child: InkWell(
-            key: Key('lessons-track-${track.name}'),
-            borderRadius: BorderRadius.circular(12),
-            onTap: () => ref.read(lessonsViewModelProvider.notifier).choose(track),
-            child: Padding(
-              padding: const EdgeInsets.symmetric(vertical: 6, horizontal: 4),
-              child: _TrackTitle(track: track, path: path, active: active),
+  Widget build(BuildContext context) => Column(
+        children: [
+          _row(
+            (track) => _TrackHeader(
+              track: track,
+              path: path,
+              active: track == highlighted,
             ),
           ),
-        ),
-        for (final unit in unitsOf(track)) ...[
-          _StringSegment(active: active),
-          _UnitNode(unit: unit, path: path),
+          for (var i = 0; i < unitsOf(LessonTrack.rhythm).length; i++) ...[
+            _segments(),
+            _row((track) => _UnitNode(unit: unitsOf(track)[i], path: path)),
+          ],
+          for (var i = 0; i < challengesOf(LessonTrack.rhythm).length; i++) ...[
+            _segments(),
+            _row((track) => _ChallengeNode(challenge: challengesOf(track)[i])),
+          ],
         ],
-        for (final challenge in challengesOf(track)) ...[
-          _StringSegment(active: active),
-          _ChallengeNode(challenge: challenge),
-        ],
-      ],
-    );
-  }
+      );
 }
 
-class _TrackTitle extends StatelessWidget {
-  const _TrackTitle({
+/// Título de un camino en su columna; tocarlo lo elige.
+class _TrackHeader extends ConsumerWidget {
+  const _TrackHeader({
     required this.track,
     required this.path,
     required this.active,
@@ -178,17 +185,56 @@ class _TrackTitle extends StatelessWidget {
   final bool active;
 
   @override
+  Widget build(BuildContext context, WidgetRef ref) => Semantics(
+        button: true,
+        selected: active,
+        hint: AppStrings.lessonsTapTrack,
+        child: InkWell(
+          key: Key('lessons-track-${track.name}'),
+          borderRadius: BorderRadius.circular(12),
+          onTap: () => ref.read(lessonsViewModelProvider.notifier).choose(track),
+          child: Padding(
+            padding: const EdgeInsets.symmetric(vertical: 6, horizontal: 4),
+            child: _TrackTitle(
+              track: track,
+              path: path,
+              active: active,
+              compact: true,
+            ),
+          ),
+        ),
+      );
+}
+
+class _TrackTitle extends StatelessWidget {
+  const _TrackTitle({
+    required this.track,
+    required this.path,
+    required this.active,
+    this.compact = false,
+  });
+
+  final LessonTrack track;
+  final LessonPath path;
+  final bool active;
+
+  /// Título más pequeño, para que quepa en media pantalla.
+  final bool compact;
+
+  @override
   Widget build(BuildContext context) {
     final p = context.palette;
+    final text = Theme.of(context).textTheme;
     final (done, total) = path.progressOf(track);
     return Column(
+      mainAxisAlignment: MainAxisAlignment.spaceBetween,
       children: [
         Text(
           trackName(track),
           textAlign: TextAlign.center,
-          style: Theme.of(context).textTheme.titleLarge?.copyWith(
-                color: active ? p.accent : p.textSecondary,
-              ),
+          style: (compact ? text.titleMedium : text.titleLarge)?.copyWith(
+            color: active ? p.accent : p.textSecondary,
+          ),
         ),
         Text(
           AppStrings.lessonsProgress(done, total),
@@ -213,7 +259,7 @@ class _StringSegment extends StatelessWidget {
       width: double.infinity,
       child: CustomPaint(
         painter: _StringPainter(
-          string: active ? p.fretString : p.outline,
+          string: active ? p.fretString : p.stringMuted,
           fret: p.fretWire,
         ),
       ),
@@ -232,11 +278,11 @@ class _StringPainter extends CustomPainter {
     final x = size.width / 2;
     canvas
       ..drawLine(
-        Offset(x - 14, size.height / 2),
-        Offset(x + 14, size.height / 2),
+        Offset(x - 40, size.height / 2),
+        Offset(x + 40, size.height / 2),
         Paint()
           ..color = fret
-          ..strokeWidth = 2,
+          ..strokeWidth = 1.5,
       )
       ..drawLine(
         Offset(x, 0),
@@ -252,12 +298,12 @@ class _StringPainter extends CustomPainter {
       old.string != string || old.fret != fret;
 }
 
-/// Donde la cuerda de Fundamentos se abre en dos. La rama elegida va en el
+/// Donde la cuerda de Fundamentos se abre en dos. La rama resaltada va en el
 /// color de cuerda; la otra, apagada.
 class _Fork extends StatelessWidget {
-  const _Fork({required this.chosen, required this.open});
+  const _Fork({required this.highlighted, required this.open});
 
-  final LessonTrack chosen;
+  final LessonTrack? highlighted;
   final bool open;
 
   @override
@@ -269,9 +315,9 @@ class _Fork extends StatelessWidget {
       child: CustomPaint(
         painter: _ForkPainter(
           trunk: p.fretString,
-          left: chosen == LessonTrack.rhythm ? p.fretString : p.outline,
-          right: chosen == LessonTrack.lead ? p.fretString : p.outline,
-          knot: open ? p.accent : p.outline,
+          left: highlighted == LessonTrack.rhythm ? p.fretString : p.stringMuted,
+          right: highlighted == LessonTrack.lead ? p.fretString : p.stringMuted,
+          knot: open ? p.accent : p.stringMuted,
         ),
       ),
     );
@@ -293,10 +339,10 @@ class _ForkPainter extends CustomPainter {
 
   @override
   void paint(Canvas canvas, Size size) {
-    // Las columnas de abajo están separadas 12 px: sus centros quedan en
-    // (ancho − 12) / 4 y en el simétrico.
+    // Los centros de las columnas de abajo quedan en (ancho − separación) / 4
+    // y en el simétrico.
     final mid = size.width / 2;
-    final colCenter = (size.width - 12) / 4;
+    final colCenter = (size.width - _columnGap) / 4;
     final knotY = size.height * 0.3;
     Path branch(double toX) => Path()
       ..moveTo(mid, knotY)
@@ -337,6 +383,8 @@ class _UnitNode extends StatelessWidget {
     final complete = done == lessons.length;
     final isCurrent = lessons.contains(path.next);
     return Card(
+      // Sin margen: la cuerda llega hasta el borde de la tarjeta.
+      margin: EdgeInsets.zero,
       clipBehavior: Clip.antiAlias,
       shape: RoundedRectangleBorder(
         borderRadius: BorderRadius.circular(14),
@@ -350,32 +398,44 @@ class _UnitNode extends StatelessWidget {
         onTap: () => context.go('/learn/lessons/unit/${unit.id}'),
         child: Padding(
           padding: const EdgeInsets.fromLTRB(10, 12, 10, 10),
+          // En una fila más alta, el avance queda abajo, alineado con el vecino.
           child: Column(
+            mainAxisAlignment: MainAxisAlignment.spaceBetween,
             children: [
-              UnitArtView(art: unit.art),
-              const SizedBox(height: 8),
-              Text(
-                unit.title.text,
-                textAlign: TextAlign.center,
-                style: text.titleSmall,
-              ),
-              const SizedBox(height: 6),
-              LinearProgressIndicator(
-                value: done / lessons.length,
-                color: complete ? p.success : p.accent,
-                backgroundColor: p.surfaceHigh,
-              ),
-              const SizedBox(height: 4),
-              Row(
-                mainAxisAlignment: MainAxisAlignment.center,
+              Column(
+                mainAxisSize: MainAxisSize.min,
                 children: [
-                  if (complete) ...[
-                    Icon(Icons.check, size: 14, color: p.success),
-                    const SizedBox(width: 4),
-                  ],
+                  UnitArtView(art: unit.art),
+                  const SizedBox(height: 8),
                   Text(
-                    AppStrings.lessonsProgress(done, lessons.length),
-                    style: musicMono(fontSize: 12, color: p.textSecondary),
+                    unit.title.text,
+                    textAlign: TextAlign.center,
+                    style: text.titleSmall,
+                  ),
+                ],
+              ),
+              Column(
+                mainAxisSize: MainAxisSize.min,
+                children: [
+                  const SizedBox(height: 6),
+                  LinearProgressIndicator(
+                    value: done / lessons.length,
+                    color: complete ? p.success : p.accent,
+                    backgroundColor: p.surfaceHigh,
+                  ),
+                  const SizedBox(height: 4),
+                  Row(
+                    mainAxisAlignment: MainAxisAlignment.center,
+                    children: [
+                      if (complete) ...[
+                        Icon(Icons.check, size: 14, color: p.success),
+                        const SizedBox(width: 4),
+                      ],
+                      Text(
+                        AppStrings.lessonsProgress(done, lessons.length),
+                        style: musicMono(fontSize: 12, color: p.textSecondary),
+                      ),
+                    ],
                   ),
                 ],
               ),
@@ -413,6 +473,7 @@ class _ChallengeNode extends ConsumerWidget {
     final passed = challenge.isPassed(best);
     final inlay = passed ? p.success : p.accent;
     return Card(
+      margin: EdgeInsets.zero,
       clipBehavior: Clip.antiAlias,
       shape: RoundedRectangleBorder(
         borderRadius: BorderRadius.circular(14),
@@ -424,36 +485,42 @@ class _ChallengeNode extends ConsumerWidget {
         child: Padding(
           padding: const EdgeInsets.all(12),
           child: Column(
+            mainAxisAlignment: MainAxisAlignment.spaceBetween,
             children: [
-              Row(
-                mainAxisAlignment: MainAxisAlignment.center,
+              Column(
+                mainAxisSize: MainAxisSize.min,
                 children: [
-                  for (var i = 0; i < 2; i++) ...[
-                    if (i > 0) const SizedBox(width: 10),
-                    Container(
-                      width: 14,
-                      height: 14,
-                      decoration: BoxDecoration(
-                        color: inlay,
-                        shape: BoxShape.circle,
-                      ),
-                    ),
-                  ],
+                  Row(
+                    mainAxisAlignment: MainAxisAlignment.center,
+                    children: [
+                      for (var i = 0; i < 2; i++) ...[
+                        if (i > 0) const SizedBox(width: 10),
+                        Container(
+                          width: 14,
+                          height: 14,
+                          decoration: BoxDecoration(
+                            color: inlay,
+                            shape: BoxShape.circle,
+                          ),
+                        ),
+                      ],
+                    ],
+                  ),
+                  const SizedBox(height: 8),
+                  Text(
+                    challenge.title.text,
+                    textAlign: TextAlign.center,
+                    style: text.titleSmall,
+                  ),
+                  const SizedBox(height: 4),
+                  Text(
+                    challenge.body.text,
+                    textAlign: TextAlign.center,
+                    style: text.bodySmall?.copyWith(color: p.textSecondary),
+                  ),
+                  const SizedBox(height: 6),
                 ],
               ),
-              const SizedBox(height: 8),
-              Text(
-                challenge.title.text,
-                textAlign: TextAlign.center,
-                style: text.titleSmall,
-              ),
-              const SizedBox(height: 4),
-              Text(
-                challenge.body.text,
-                textAlign: TextAlign.center,
-                style: text.bodySmall?.copyWith(color: p.textSecondary),
-              ),
-              const SizedBox(height: 6),
               Text(
                 passed ? AppStrings.challengePassed : label(best, challenge.goal),
                 key: Key('challenge-status-${challenge.id}'),

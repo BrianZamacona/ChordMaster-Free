@@ -284,12 +284,12 @@ class AppStrings {
   );
   static String get challengePassed => tr(es: 'Superado', en: 'Passed');
   static String challengeRhythmBest(int best, int goal) => tr(
-    es: 'Récord: $best % · meta: $goal %',
-    en: 'Best: $best% · goal: $goal%',
+    es: 'Récord: $best %\nMeta: $goal %',
+    en: 'Best: $best%\nGoal: $goal%',
   );
   static String challengeEarBest(int best, int goal) => tr(
-    es: 'Mejor racha: $best · meta: $goal',
-    en: 'Best streak: $best · goal: $goal',
+    es: 'Mejor racha: $best\nMeta: $goal',
+    en: 'Best streak: $best\nGoal: $goal',
   );
   static String get lessonNotFound =>
       tr(es: 'No encontramos esta lección.', en: 'We could not find this lesson.');

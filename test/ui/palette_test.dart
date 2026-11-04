@@ -42,6 +42,10 @@ void main() {
         }
       });
 
+      test('la cuerda inactiva se ve sobre el fondo (≥ 3:1)', () {
+        expect(_contrast(p.stringMuted, p.background), greaterThanOrEqualTo(3.0));
+      });
+
       test('cada etiqueta de intervalo cae en su familia', () {
         expect(p.intervalColor('R'), p.intervalRoot);
         expect(p.intervalColor('1'), p.intervalRoot);

@@ -11,21 +11,32 @@ class LessonsState {
   LessonsState({
     Set<String> completed = const {},
     this.chosen = LessonTrack.rhythm,
+    this.hasChosen = false,
     this.isLoading = true,
   }) : path = LessonPath(completed: completed, chosen: chosen);
 
   final LessonPath path;
   final LessonTrack chosen;
+
+  /// Si el usuario tocó un camino; si no, [chosen] es solo el de por defecto.
+  final bool hasChosen;
   final bool isLoading;
+
+  /// Camino que el mapa resalta: ninguno hasta que toque decidir, es decir,
+  /// hasta terminar Fundamentos o elegir uno antes.
+  LessonTrack? get highlightedTrack =>
+      path.foundationsDone || hasChosen ? chosen : null;
 
   LessonsState copyWith({
     Set<String>? completed,
     LessonTrack? chosen,
+    bool? hasChosen,
     bool? isLoading,
   }) =>
       LessonsState(
         completed: completed ?? path.completed,
         chosen: chosen ?? this.chosen,
+        hasChosen: hasChosen ?? this.hasChosen,
         isLoading: isLoading ?? this.isLoading,
       );
 }
@@ -64,6 +75,7 @@ class LessonsViewModel extends Notifier<LessonsState> {
       state = LessonsState(
         completed: raw.whereType<String>().toSet(),
         chosen: chosen,
+        hasChosen: trackName != null,
         isLoading: false,
       );
     } catch (e, st) {
@@ -93,8 +105,9 @@ class LessonsViewModel extends Notifier<LessonsState> {
 
   /// Elige el camino que sigue a Fundamentos.
   Future<void> choose(LessonTrack track) async {
-    if (track == LessonTrack.foundations || track == state.chosen) return;
-    state = state.copyWith(chosen: track);
+    if (track == LessonTrack.foundations) return;
+    if (state.hasChosen && track == state.chosen) return;
+    state = state.copyWith(chosen: track, hasChosen: true);
     try {
       await _storage.save(StorageBoxes.userProgress, keyTrack, track.name);
     } catch (e, st) {
