@@ -39,15 +39,57 @@ void main() {
       expect(ids.toSet().length, ids.length);
     });
 
-    test('ocho lecciones por camino, sin unidades vacías', () {
-      for (final track in LessonTrack.values) {
-        expect(lessonsOf(track), hasLength(8), reason: '$track');
+    test('Fundamentos con 8 lecciones; rítmica y líder con 10', () {
+      expect(lessonsOf(LessonTrack.foundations), hasLength(8));
+      expect(lessonsOf(LessonTrack.rhythm), hasLength(10));
+      expect(lessonsOf(LessonTrack.lead), hasLength(10));
+    });
+
+    test('unidades: ids únicos, al menos dos lecciones y contiguas en el orden', () {
+      final units = [for (final t in LessonTrack.values) ...unitsOf(t)];
+      expect(units.map((u) => u.id).toSet().length, units.length);
+      expect(unitsById.length, units.length);
+      for (final u in units) {
+        final lessons = lessonsOfUnit(u);
+        expect(lessons.length, greaterThanOrEqualTo(2), reason: u.id);
+        // Las lecciones de una unidad van seguidas en el currículo.
+        final first = curriculum.indexOf(lessons.first);
+        expect(curriculum.sublist(first, first + lessons.length), lessons, reason: u.id);
+      }
+    });
+
+    test('el arte de cada unidad apunta a datos que existen', () {
+      for (final u in unitsById.values) {
+        switch (u.art) {
+          case ChordArt(:final chord):
+            expect(chords.keys, contains(chord), reason: u.id);
+          case ScaleArt(:final scale):
+            expect(scaleIntervals.keys, contains(scale.scaleId), reason: u.id);
+          case StrumArt(:final pattern):
+            expect(pattern, matches(RegExp(r'^[DU ]+$')), reason: u.id);
+          case NotesArt(:final notes):
+            expect(noteNames, containsAll(notes), reason: u.id);
+        }
+      }
+    });
+
+    test('un reto al final de rítmica y otro de líder; Fundamentos no tiene', () {
+      expect(challengesOf(LessonTrack.foundations), isEmpty);
+      expect(challengesOf(LessonTrack.rhythm), hasLength(1));
+      expect(challengesOf(LessonTrack.lead), hasLength(1));
+      final ids = challenges.map((c) => c.id).toSet();
+      expect(ids.length, challenges.length);
+      expect(ids.intersection(lessonsById.keys.toSet()), isEmpty);
+      for (final c in challenges) {
+        expect(c.goal, greaterThan(0), reason: c.id);
+        expect(c.isPassed(c.goal), isTrue);
+        expect(c.isPassed(c.goal - 1), isFalse);
       }
     });
 
     test('cada lección tiene texto en los dos idiomas y al menos dos pasos', () {
       for (final l in curriculum) {
-        for (final t in [l.unit, l.title, l.body, ...l.steps]) {
+        for (final t in [l.unit.title, l.title, l.body, ...l.steps]) {
           expect(t.es.trim(), isNotEmpty, reason: l.id);
           expect(t.en.trim(), isNotEmpty, reason: l.id);
         }
@@ -167,6 +209,61 @@ void main() {
         pitchClassName(standardOpenStringMidi.last + frets('G5').first),
         'G',
       );
+    });
+
+    test('r9: en Am y en C el bajo está en la 5ª cuerda', () {
+      for (final name in ['Am', 'C']) {
+        // Primera cuerda que suena, contando desde la 6ª.
+        expect(6 - frets(name).indexWhere((f) => f >= 0), 5, reason: name);
+      }
+    });
+
+    test('r10: bajo alterno en C (5ª = C, 4ª = E) y en G (6ª = G, 4ª = D)', () {
+      String noteOn(String chord, int string) => pitchClassName(
+            standardOpenStringMidi[string - 1] + frets(chord)[6 - string],
+          );
+      expect(noteOn('C', 5), 'C');
+      expect(noteOn('C', 4), 'E');
+      expect(noteOn('G', 6), 'G');
+      expect(noteOn('G', 4), 'D');
+    });
+
+    test('l9: notas de la 6ª y la 5ª cuerda, y el traste 12 repite la cuerda al aire', () {
+      final low = standardOpenStringMidi[5];
+      final a = standardOpenStringMidi[4];
+      expect(
+        {for (final f in [0, 1, 3, 5, 7, 8, 10]) pitchClassName(low + f)}.toList(),
+        ['E', 'F', 'G', 'A', 'B', 'C', 'D'],
+      );
+      expect(
+        {for (final f in [0, 2, 3, 5, 7, 8, 10]) pitchClassName(a + f)}.toList(),
+        ['A', 'B', 'C', 'D', 'E', 'F', 'G'],
+      );
+      for (final open in standardOpenStringMidi) {
+        expect(pitchClassName(open + 12), pitchClassName(open));
+      }
+    });
+
+    test('l10: la 2ª caja de A pentatónica menor empieza en el traste 8 de la 6ª, sobre C', () {
+      final positions = ((scalesJson['scales'] as List<dynamic>)
+              .cast<Map<String, dynamic>>()
+              .firstWhere((s) => s['id'] == 'pentatonic_minor')['positions']
+          as List<dynamic>)
+          .cast<Map<String, dynamic>>();
+      List<int> lowStringOffsets(String id) => [
+            for (final c in (positions.firstWhere((p) => p['id'] == id)['coordinates']
+                    as List<dynamic>)
+                .cast<Map<String, dynamic>>())
+              if (c['string'] == 6) c['fret_offset'] as int,
+          ];
+      // Los offsets están en C; la caja 1 empieza en su tónica.
+      final box1Root = lowStringOffsets('box_1').reduce((a, b) => a < b ? a : b);
+      final box2Start = lowStringOffsets('box_2').reduce((a, b) => a < b ? a : b);
+      const aRootFret = 5; // A en la 6ª cuerda (test de l1).
+      final fret = aRootFret + box2Start - box1Root;
+      expect(fret, 8);
+      expect(pitchClassName(standardOpenStringMidi.last + fret), 'C');
+      expect(notesOf('pentatonic_minor', noteIndex('A')), contains('C'));
     });
 
     test('l1: A pentatónica menor = A C D E G', () {

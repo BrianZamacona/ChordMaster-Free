@@ -10,6 +10,7 @@ import '../../domain/lessons/lesson.dart';
 import '../../ui/theme.dart';
 import '../chords/chord_viewmodel.dart';
 import '../metronome/metronome_viewmodel.dart';
+import 'lesson_widgets.dart';
 import 'lessons_viewmodel.dart';
 
 /// Una lección: explicación, pasos, acordes, rasgueo y accesos a la escala o
@@ -33,11 +34,6 @@ class LessonDetailScreen extends ConsumerWidget {
     );
     final p = context.palette;
     final text = Theme.of(context).textTheme;
-    final trackName = switch (lesson.track) {
-      LessonTrack.foundations => AppStrings.trackFoundations,
-      LessonTrack.rhythm => AppStrings.trackRhythm,
-      LessonTrack.lead => AppStrings.trackLead,
-    };
 
     return Scaffold(
       appBar: AppBar(title: Text(lesson.title.text)),
@@ -45,7 +41,7 @@ class LessonDetailScreen extends ConsumerWidget {
         padding: const EdgeInsets.fromLTRB(16, 16, 16, 32),
         children: [
           Text(
-            '$trackName · ${lesson.unit.text} · '
+            '${trackName(lesson.track)} · ${lesson.unit.title.text} · '
             '${AppStrings.lessonMinutes(lesson.minutes)}',
             style: text.labelMedium?.copyWith(color: p.textSecondary),
           ),

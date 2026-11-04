@@ -12,6 +12,7 @@ import '../features/health/health_screen.dart';
 import '../features/home/home_screen.dart';
 import '../features/hubs/hubs.dart';
 import '../features/lessons/lesson_detail_screen.dart';
+import '../features/lessons/lesson_unit_screen.dart';
 import '../features/lessons/lessons_screen.dart';
 import '../features/metronome/metronome_screen.dart';
 import '../features/progressions/progressions_screen.dart';
@@ -93,6 +94,13 @@ final GoRouter appRouter = GoRouter(
                   path: 'lessons',
                   builder: (_, __) => const LessonsScreen(),
                   routes: [
+                    // Antes que ':id' para que "unit" no se lea como lección.
+                    GoRoute(
+                      path: 'unit/:unitId',
+                      builder: (_, state) => LessonUnitScreen(
+                        unitId: state.pathParameters['unitId']!,
+                      ),
+                    ),
                     GoRoute(
                       path: ':id',
                       builder: (_, state) => LessonDetailScreen(

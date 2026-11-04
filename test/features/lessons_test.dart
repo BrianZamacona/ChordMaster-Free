@@ -1,4 +1,5 @@
 import 'package:chordmaster_free/app.dart';
+import 'package:chordmaster_free/core/constants/app_strings.dart';
 import 'package:chordmaster_free/domain/lessons/curriculum.dart';
 import 'package:chordmaster_free/domain/lessons/lesson.dart';
 import 'package:chordmaster_free/features/lessons/lessons_viewmodel.dart';
@@ -74,11 +75,15 @@ void main() {
   });
 
   group('pantallas', () {
-    Future<InMemoryStore> open(WidgetTester tester, String location) async {
+    Future<InMemoryStore> open(
+      WidgetTester tester,
+      String location, {
+      Map<String, Object?>? progress,
+    }) async {
       tester.view.devicePixelRatio = 1;
-      tester.view.physicalSize = const Size(500, 1400);
+      tester.view.physicalSize = const Size(500, 3200);
       addTearDown(tester.view.reset);
-      final store = InMemoryStore();
+      final store = InMemoryStore(progress: progress);
       await tester.pumpWidget(
         ProviderScope(
           overrides: [keyValueStoreProvider.overrideWithValue(store)],
@@ -92,29 +97,58 @@ void main() {
       return store;
     }
 
-    testWidgets('la ruta muestra Fundamentos, los dos caminos y la siguiente', (
+    testWidgets('el mapa muestra las unidades, los dos caminos y sus retos', (
       tester,
     ) async {
       await open(tester, '/learn/lessons');
       expect(find.byKey(const Key('lessons-start-next')), findsOneWidget);
-      expect(find.byKey(Key('lesson-${foundations.first}')), findsOneWidget);
+      for (final track in LessonTrack.values) {
+        for (final unit in unitsOf(track)) {
+          expect(find.byKey(Key('unit-${unit.id}'), skipOffstage: false), findsOneWidget);
+        }
+      }
+      for (final c in challenges) {
+        expect(find.byKey(Key('challenge-${c.id}'), skipOffstage: false), findsOneWidget);
+      }
       expect(find.byKey(const Key('lessons-track-rhythm')), findsOneWidget);
       expect(find.byKey(const Key('lessons-track-lead')), findsOneWidget);
     });
 
-    testWidgets('al elegir líder se muestran sus lecciones', (tester) async {
+    testWidgets('tocar el título de líder lo elige', (tester) async {
       final store = await open(tester, '/learn/lessons');
-      final firstLead = lessonsOf(LessonTrack.lead).first.id;
-      final firstRhythm = lessonsOf(LessonTrack.rhythm).first.id;
-      expect(find.byKey(Key('lesson-$firstLead')), findsNothing);
-
       await tester.ensureVisible(find.byKey(const Key('lessons-track-lead')));
       await tester.tap(find.byKey(const Key('lessons-track-lead')));
       await tester.pump(const Duration(milliseconds: 300));
-
       expect(store.progress[LessonsViewModel.keyTrack], 'lead');
-      expect(find.byKey(Key('lesson-$firstLead')), findsOneWidget);
-      expect(find.byKey(Key('lesson-$firstRhythm')), findsNothing);
+    });
+
+    testWidgets('el reto rítmico se supera con el récord del juego de ritmo', (
+      tester,
+    ) async {
+      final rhythm = challengesOf(LessonTrack.rhythm).single;
+      final lead = challengesOf(LessonTrack.lead).single;
+      await open(
+        tester,
+        '/learn/lessons',
+        progress: {'rhythm_game_best_score': rhythm.goal},
+      );
+      final rhythmStatus = tester.widget<Text>(
+        find.byKey(Key('challenge-status-${rhythm.id}'), skipOffstage: false),
+      );
+      final leadStatus = tester.widget<Text>(
+        find.byKey(Key('challenge-status-${lead.id}'), skipOffstage: false),
+      );
+      expect(rhythmStatus.data, AppStrings.challengePassed);
+      expect(leadStatus.data, AppStrings.challengeEarBest(0, lead.goal));
+    });
+
+    testWidgets('la unidad lista sus lecciones', (tester) async {
+      final unit = unitsOf(LessonTrack.foundations).first;
+      await open(tester, '/learn/lessons/unit/${unit.id}');
+      for (final lesson in lessonsOfUnit(unit)) {
+        expect(find.byKey(Key('lesson-${lesson.id}')), findsOneWidget);
+      }
+      expect(find.byType(BackButton), findsOneWidget);
     });
 
     testWidgets('el detalle marca la lección como completada', (tester) async {

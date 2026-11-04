@@ -16,6 +16,83 @@ class LessonScale {
   final int root;
 }
 
+/// Lo que se dibuja en el nodo de una unidad en el mapa. Se genera desde los
+/// datos de la app (diagrama, escala, rasgueo o notas), nunca es una imagen.
+sealed class UnitArt {
+  const UnitArt();
+}
+
+/// Diagrama de un acorde (`displayName` de `chords.json`).
+class ChordArt extends UnitArt {
+  const ChordArt(this.chord);
+  final String chord;
+}
+
+/// Notas de una escala en su tónica.
+class ScaleArt extends UnitArt {
+  const ScaleArt(this.scale);
+  final LessonScale scale;
+}
+
+/// Un compás de rasgueo (mismo formato que [Lesson.strumPattern]).
+class StrumArt extends UnitArt {
+  const StrumArt(this.pattern);
+  final String pattern;
+}
+
+/// Una fila de nombres de nota (con sostenidos).
+class NotesArt extends UnitArt {
+  const NotesArt(this.notes);
+  final List<String> notes;
+}
+
+/// Grupo de lecciones: un nodo del mapa.
+class LessonUnit {
+  const LessonUnit({
+    required this.id,
+    required this.track,
+    required this.title,
+    required this.art,
+  });
+
+  /// Identificador estable (va en la ruta `/learn/lessons/unit/:id`).
+  final String id;
+  final LessonTrack track;
+  final LocalizedText title;
+  final UnitArt art;
+}
+
+/// Qué mide un reto. Cada tipo lee el récord de un módulo de práctica.
+enum ChallengeKind {
+  /// Mejor precisión del juego de ritmo, en %.
+  rhythmAccuracy,
+
+  /// Mejor racha de intervalos acertados seguidos en Oído.
+  earStreak,
+}
+
+/// Reto al final de un camino. Se supera solo, cuando el récord del módulo
+/// de práctica llega a [goal]; no se marca a mano.
+class LessonChallenge {
+  const LessonChallenge({
+    required this.id,
+    required this.track,
+    required this.title,
+    required this.body,
+    required this.kind,
+    required this.goal,
+  });
+
+  final String id;
+  final LessonTrack track;
+  final LocalizedText title;
+  final LocalizedText body;
+  final ChallengeKind kind;
+  final int goal;
+
+  bool isPassed(int best) => best >= goal;
+}
+
 /// Una lección del camino.
 ///
 /// Los acordes se nombran por su `displayName` de `chords.json` y la escala
@@ -24,7 +101,6 @@ class LessonScale {
 class Lesson {
   const Lesson({
     required this.id,
-    required this.track,
     required this.unit,
     required this.title,
     required this.body,
@@ -39,10 +115,10 @@ class Lesson {
 
   /// Identificador estable: es la clave guardada en el progreso.
   final String id;
-  final LessonTrack track;
 
-  /// Unidad dentro del camino (p. ej. "Acordes abiertos").
-  final LocalizedText unit;
+  /// Unidad (nodo del mapa) a la que pertenece.
+  final LessonUnit unit;
+  LessonTrack get track => unit.track;
   final LocalizedText title;
 
   /// Explicación de la lección, en un párrafo.
