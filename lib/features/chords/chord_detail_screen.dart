@@ -305,7 +305,7 @@ class _ChordDetailScreenState extends ConsumerState<ChordDetailScreen> {
                     child: ListView.separated(
                       scrollDirection: Axis.horizontal,
                       itemCount: relatedChords.length,
-                      separatorBuilder: (_, __) => const SizedBox(width: 8),
+                      separatorBuilder: (_, _) => const SizedBox(width: 8),
                       itemBuilder: (context, index) {
                         final related = relatedChords[index];
                         return _RelatedChordChip(

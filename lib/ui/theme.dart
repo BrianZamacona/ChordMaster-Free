@@ -12,11 +12,24 @@ TextTheme _buildTextTheme(TextTheme base, AppPalette p) {
   // Atkinson no trae "→" (lo usa la teoría de progresiones): Plex Mono sí.
   // ♭ y ♯ no están en ninguna de las tres; los pone la fuente del sistema.
   final fallback = [GoogleFonts.ibmPlexMono().fontFamily!];
-  final body = GoogleFonts.atkinsonHyperlegibleTextTheme(base).apply(
-    bodyColor: p.textPrimary,
-    displayColor: p.textPrimary,
-    fontFamilyFallback: fallback,
-  );
+  // Estilo por estilo: el `...TextTheme` de google_fonts usa el tipo de
+  // material_ui, no el de flutter/material. Los títulos se reemplazan abajo.
+  TextStyle? atkinson(TextStyle? s) =>
+      GoogleFonts.atkinsonHyperlegible(textStyle: s);
+  final body = base
+      .copyWith(
+        bodyLarge: atkinson(base.bodyLarge),
+        bodyMedium: atkinson(base.bodyMedium),
+        bodySmall: atkinson(base.bodySmall),
+        labelLarge: atkinson(base.labelLarge),
+        labelMedium: atkinson(base.labelMedium),
+        labelSmall: atkinson(base.labelSmall),
+      )
+      .apply(
+        bodyColor: p.textPrimary,
+        displayColor: p.textPrimary,
+        fontFamilyFallback: fallback,
+      );
   TextStyle? display(TextStyle? s, FontWeight w) =>
       GoogleFonts.bricolageGrotesque(textStyle: s, fontWeight: w);
   return body.copyWith(

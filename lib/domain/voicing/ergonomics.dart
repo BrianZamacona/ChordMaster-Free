@@ -202,8 +202,7 @@ double _optionalFifthPenalty(
 /// del traste 4 (primera posición: C x32010, G 320003, Am x02210...).
 bool isOpenPosition(EngineFrets frets) {
   final sounding = [
-    for (final f in frets)
-      if (f != null) f,
+    for (final f in frets) ?f,
   ];
   return sounding.contains(0) && sounding.every((f) => f <= 4);
 }
