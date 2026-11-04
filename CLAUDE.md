@@ -138,6 +138,9 @@ cada nota pertenezca a la escala. No bajar la tolerancia de 0.
 - Mapa (`lessons_screen.dart`): identidad propia, dibujado como mástil. Fundamentos es una
   cuerda que se abre en dos; cada unidad es un nodo con un dibujo generado desde los datos
   (`UnitArt`: diagrama, escala, rasgueo o notas). Nada de fotos ni imágenes de terceros.
+  Los dos caminos se arman por filas de igual altura, así que deben tener tantas unidades como
+  retos (hay test). Ningún camino se resalta hasta terminar Fundamentos o tocar uno
+  (`highlightedTrack`).
 - Retos (`challenges`): al final de rítmica y de líder, con el doble punto del traste 12. Se
   superan solos con el récord de un módulo de práctica (precisión del juego de ritmo, mejor
   racha de Oído en `ear_training_best_streak`); no se marcan a mano.
@@ -165,6 +168,29 @@ cada nota pertenezca a la escala. No bajar la tolerancia de 0.
    prohibido.
 7. `git status` antes de dar por terminado; no dejar archivos sueltos (`tool/flutter`,
    `test_errors.txt`) ni cambios sin commitear.
+8. Sin interrupciones: una tarea pedida se lleva hasta el PR sin preguntar. Rama desde `main`
+   actualizado, commit y push con analyze y tests limpios, PR hacia `main` y Auto-fix activo.
+   Preguntar solo antes de fusionar, cerrar PRs, borrar datos que no sean de prueba o decidir
+   algo musical, de producto o de licencia. Lo que quede sin comprobar se dice en el PR.
+9. Los PRs se fusionan rápido y por fuera de la sesión: consultar su estado antes de proponer
+   cambios sobre uno. Un PR fusionado no se actualiza; va otro PR.
+10. El CI en verde no prueba cómo se ve. Cambio visual = revisarlo en el emulador y dejar un test
+    que mida el problema, a 360 dp y en español e inglés. En `Pixel_7_Pro`,
+    `adb shell wm density 640` da 360 dp; al terminar, `adb shell wm density reset`. `adb` está en
+    `%LOCALAPPDATA%\Android\Sdk\platform-tools`, y `uiautomator` no ve la app: tocar por
+    coordenadas sobre una captura. El primer arranque en debug tarda: confirmar con otra captura
+    que cada paso ocurrió.
+
+## Dependencias y herramientas
+- `pubspec.yaml` fija versiones exactas. La versión de Flutter va en `ci.yml` y `release.yml`.
+- Un PR de Dependabot en rojo puede venir de una rama vieja: leer su log antes de culpar al
+  paquete. Si son varios, actualizar todo junto en un PR; Dependabot cierra los suyos al fusionar.
+- AGP y Gradle: la versión que Flutter declare soportada, no la última publicada. `compileSdk` va
+  fijo en 37 (lo piden los plugins) y Kotlin es el integrado de AGP.
+- `flutter_secure_storage` guarda la llave que cifra los datos de Hive. Antes de subirlo de versión
+  mayor, instalar encima de la versión anterior sin borrar datos y comprobar que siguen ahí.
+- `google_fonts`: no usar sus `...TextTheme()`, devuelven el tipo de `material_ui` y no compilan
+  con `flutter/material`. Aplicar la fuente estilo por estilo, como `lib/ui/theme.dart`.
 
 ## Arquitectura y estándar de código (siempre)
 Objetivo: código legible y mantenible antes que ingenioso. Capas (puertos y adaptadores):
@@ -224,12 +250,16 @@ Objetivo: código legible y mantenible antes que ingenioso. Capas (puertos y ada
   ocultas siguen montadas: lo que use micrófono/audio debe pausarse con `TickerMode`.
 
 ## Pendiente (en orden)
-1. Revisión visual en el dispositivo (rediseño completo, versión bilingüe, "Mi progresión",
-   tarjetas "¿Por qué?").
-2. Sandbox TS: corregir la 7ª diatónica del grado VII (allí sigue como disminuida; aquí se
+1. Revisión en un dispositivo físico: rediseño completo, versión bilingüe, "Mi progresión",
+   tarjetas "¿Por qué?", notificaciones, audio y afinador con una nota real. Lecciones: reto
+   superado y letra grande.
+2. Inicio: el reto del día se lee mal en tema claro y su tarjeta usa `Colors.white24`.
+   Lecciones: números de dedo casi ilegibles a 64 dp, diagramas unos 2 dp descentrados y el reto
+   en inglés dice "in Ear" en vez de "Ear Training".
+3. Sandbox TS: corregir la 7ª diatónica del grado VII (allí sigue como disminuida; aquí se
    corrigió a 7ª menor y se regeneraron solo esas filas del golden, 2005 → 1983).
-3. Berklee, si se consigue una definición verificable.
-4. iOS (al compilar por primera vez en una Mac): `permission_handler` necesita en el
+4. Berklee, si se consigue una definición verificable.
+5. iOS (al compilar por primera vez en una Mac): `permission_handler` necesita en el
    `post_install` del `ios/Podfile` que genere Flutter
    `config.build_settings['GCC_PREPROCESSOR_DEFINITIONS'] ||= ['$(inherited)', 'PERMISSION_MICROPHONE=1', 'PERMISSION_NOTIFICATIONS=1']`;
    sin eso el micrófono queda siempre denegado. `Info.plist` ya trae
