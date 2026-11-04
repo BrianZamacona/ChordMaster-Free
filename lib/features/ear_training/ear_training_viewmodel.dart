@@ -36,6 +36,7 @@ class EarTrainingState {
     this.totalAnswered = 0,
     this.correctAnswers = 0,
     this.streak = 0,
+    this.bestStreak = 0,
     this.lastAnswerCorrect,
     this.isLoading = true,
     this.totalExercisesDone = 0,
@@ -59,6 +60,10 @@ class EarTrainingState {
   final int correctAnswers;
   final int streak;
 
+  /// Mejor racha de aciertos seguidos de todas las sesiones (la usa el reto
+  /// de oído de las lecciones).
+  final int bestStreak;
+
   /// `null` = question not answered yet; `true`/`false` = last result.
   final bool? lastAnswerCorrect;
 
@@ -76,6 +81,7 @@ class EarTrainingState {
     int? totalAnswered,
     int? correctAnswers,
     int? streak,
+    int? bestStreak,
     Object? lastAnswerCorrect = _unset,
     bool? isLoading,
     int? totalExercisesDone,
@@ -88,6 +94,7 @@ class EarTrainingState {
         totalAnswered: totalAnswered ?? this.totalAnswered,
         correctAnswers: correctAnswers ?? this.correctAnswers,
         streak: streak ?? this.streak,
+        bestStreak: bestStreak ?? this.bestStreak,
         lastAnswerCorrect: identical(lastAnswerCorrect, _unset)
             ? this.lastAnswerCorrect
             : lastAnswerCorrect as bool?,
@@ -112,6 +119,7 @@ final earTrainingViewModelProvider =
 /// Manages ear training quiz state.
 class EarTrainingViewModel extends Notifier<EarTrainingState> {
   static const _keyTotalExercises = 'ear_training_total';
+  static const keyBestStreak = 'ear_training_best_streak';
   final _rng = Random();
 
   @override
@@ -133,7 +141,14 @@ class EarTrainingViewModel extends Notifier<EarTrainingState> {
       final count = await storage.get<int>(
             StorageBoxes.userProgress, _keyTotalExercises) ??
           0;
-      state = state.copyWith(totalExercisesDone: count, isLoading: false);
+      final best = await storage.get<int>(
+            StorageBoxes.userProgress, keyBestStreak) ??
+          0;
+      state = state.copyWith(
+        totalExercisesDone: count,
+        bestStreak: best,
+        isLoading: false,
+      );
     } catch (e, st) {
       debugPrint('EarTrainingViewModel._loadCount error: $e\n$st');
       state = state.copyWith(isLoading: false);
@@ -146,6 +161,7 @@ class EarTrainingViewModel extends Notifier<EarTrainingState> {
     required int streak,
     required int totalExercisesDone,
     required bool harmonic,
+    int bestStreak = 0,
   }) {
     final correct = _trainingIntervals[_rng.nextInt(_trainingIntervals.length)];
     final choices = _generateChoices(correct);
@@ -158,6 +174,7 @@ class EarTrainingViewModel extends Notifier<EarTrainingState> {
       totalAnswered: totalAnswered,
       correctAnswers: correctAnswers,
       streak: streak,
+      bestStreak: bestStreak,
       totalExercisesDone: totalExercisesDone,
       isLoading: false,
     );
@@ -181,8 +198,10 @@ class EarTrainingViewModel extends Notifier<EarTrainingState> {
     final newStreak = isCorrect ? state.streak + 1 : 0;
     final newTotal = state.totalAnswered + 1;
     final newExercisesDone = state.totalExercisesDone + 1;
+    final newBest = newStreak > state.bestStreak ? newStreak : state.bestStreak;
 
     state = state.copyWith(
+      bestStreak: newBest,
       totalAnswered: newTotal,
       correctAnswers: newCorrect,
       streak: newStreak,
@@ -197,6 +216,9 @@ class EarTrainingViewModel extends Notifier<EarTrainingState> {
         _keyTotalExercises,
         newExercisesDone,
       );
+      if (newBest > 0) {
+        await storage.save(StorageBoxes.userProgress, keyBestStreak, newBest);
+      }
       if (newExercisesDone >= 20) {
         await ref.read(achievementServiceProvider).unlock('ear_wizard');
       }
@@ -213,6 +235,7 @@ class EarTrainingViewModel extends Notifier<EarTrainingState> {
       streak: state.streak,
       totalExercisesDone: state.totalExercisesDone,
       harmonic: state.harmonic,
+      bestStreak: state.bestStreak,
     );
     play();
   }
