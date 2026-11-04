@@ -329,19 +329,54 @@ class _ModuleCard extends StatelessWidget {
               ),
               const SizedBox(height: 10),
               Padding(
-                padding: const EdgeInsets.symmetric(horizontal: 8),
-                child: Text(
-                  module.label,
-                  textAlign: TextAlign.center,
-                  style: Theme.of(context).textTheme.titleSmall?.copyWith(
-                        color: context.palette.textPrimary,
-                        height: 1.2,
-                      ),
-                ),
+                padding: const EdgeInsets.symmetric(horizontal: 4),
+                child: _ModuleLabel(label: module.label),
               ),
             ],
           ),
         ),
       ),
     );
+}
+
+/// Nombre de un módulo. Puede ocupar varias líneas, pero nunca parte una
+/// palabra: si la más larga no cabe, reduce la letra lo justo.
+class _ModuleLabel extends StatelessWidget {
+  const _ModuleLabel({required this.label});
+
+  final String label;
+
+  double _widestWord(BuildContext context, TextStyle style) {
+    var widest = 0.0;
+    for (final word in label.split(' ')) {
+      final painter = TextPainter(
+        text: TextSpan(text: word, style: style),
+        textDirection: Directionality.of(context),
+        textScaler: MediaQuery.textScalerOf(context),
+      )..layout();
+      if (painter.width > widest) widest = painter.width;
+      painter.dispose();
+    }
+    return widest;
+  }
+
+  @override
+  Widget build(BuildContext context) => LayoutBuilder(
+        builder: (context, constraints) {
+          final style = Theme.of(context).textTheme.titleSmall!.copyWith(
+                color: context.palette.textPrimary,
+                height: 1.2,
+              );
+          final widest = _widestWord(context, style);
+          // Margen del 2 %: el ancho de un texto no escala de forma exacta.
+          final fit = widest > constraints.maxWidth
+              ? constraints.maxWidth / widest * 0.98
+              : 1.0;
+          return Text(
+            label,
+            textAlign: TextAlign.center,
+            style: style.copyWith(fontSize: style.fontSize! * fit),
+          );
+        },
+      );
 }
