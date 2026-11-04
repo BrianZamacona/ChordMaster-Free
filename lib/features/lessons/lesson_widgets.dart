@@ -120,19 +120,25 @@ class UnitArtView extends ConsumerWidget {
               notes: _scaleNotes(ref, scale),
               root: pitchClassName(scale.root),
             ),
-          StrumArt(:final pattern) => Text(
-              [
-                for (final s in pattern.split(''))
-                  switch (s) {
-                    'D' => '↓',
-                    'U' => '↑',
-                    _ => '·',
-                  },
-              ].join(' '),
-              style: musicMono(
-                fontSize: size * 0.3,
-                fontWeight: FontWeight.w600,
-                color: p.accent,
+          // Un compás se lee en una línea: se reduce antes que partirse.
+          StrumArt(:final pattern) => FittedBox(
+              key: const Key('unit-art-strum'),
+              fit: BoxFit.scaleDown,
+              child: Text(
+                [
+                  for (final s in pattern.split(''))
+                    switch (s) {
+                      'D' => '↓',
+                      'U' => '↑',
+                      _ => '·',
+                    },
+                ].join(' '),
+                maxLines: 1,
+                style: musicMono(
+                  fontSize: size * 0.3,
+                  fontWeight: FontWeight.w600,
+                  color: p.accent,
+                ),
               ),
             ),
           NotesArt(:final notes) => _NoteRow(notes: notes),

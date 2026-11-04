@@ -37,33 +37,31 @@ class LessonUnitScreen extends ConsumerWidget {
           Card(
             child: Padding(
               padding: const EdgeInsets.all(16),
-              child: Row(
+              // El dibujo va encima: un rasgueo o una escala ocupan todo el ancho.
+              child: Column(
+                crossAxisAlignment: CrossAxisAlignment.stretch,
                 children: [
                   UnitArtView(art: unit.art, size: 88),
-                  const SizedBox(width: 16),
-                  Expanded(
-                    child: Column(
-                      crossAxisAlignment: CrossAxisAlignment.start,
-                      children: [
-                        Text(
-                          trackName(unit.track),
-                          style: text.labelMedium
-                              ?.copyWith(color: p.textSecondary),
-                        ),
-                        Text(unit.title.text, style: text.titleLarge),
-                        const SizedBox(height: 8),
-                        LinearProgressIndicator(
-                          value: done / lessons.length,
-                          color: p.accent,
-                          backgroundColor: p.surfaceHigh,
-                        ),
-                        const SizedBox(height: 4),
-                        Text(
-                          AppStrings.lessonsProgress(done, lessons.length),
-                          style: musicMono(fontSize: 12, color: p.textSecondary),
-                        ),
-                      ],
-                    ),
+                  const SizedBox(height: 12),
+                  Text(
+                    trackName(unit.track),
+                    style: text.labelMedium?.copyWith(color: p.textSecondary),
+                  ),
+                  Text(
+                    unit.title.text,
+                    key: const Key('unit-title'),
+                    style: text.titleLarge,
+                  ),
+                  const SizedBox(height: 8),
+                  LinearProgressIndicator(
+                    value: done / lessons.length,
+                    color: p.accent,
+                    backgroundColor: p.surfaceHigh,
+                  ),
+                  const SizedBox(height: 4),
+                  Text(
+                    AppStrings.lessonsProgress(done, lessons.length),
+                    style: musicMono(fontSize: 12, color: p.textSecondary),
                   ),
                 ],
               ),

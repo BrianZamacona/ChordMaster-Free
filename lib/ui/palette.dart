@@ -28,6 +28,7 @@ class AppPalette extends ThemeExtension<AppPalette> {
     required this.intervalTension,
     required this.onInterval,
     required this.fretString,
+    required this.stringMuted,
     required this.fretWire,
     required this.nut,
   });
@@ -60,6 +61,9 @@ class AppPalette extends ThemeExtension<AppPalette> {
   final Color onInterval;
 
   final Color fretString;
+
+  /// Cuerda inactiva: apagada, pero visible sobre el fondo (≥ 3:1).
+  final Color stringMuted;
   final Color fretWire;
   final Color nut;
 
@@ -93,6 +97,7 @@ class AppPalette extends ThemeExtension<AppPalette> {
     intervalTension: Color(0xFFC29BDB),
     onInterval: Color(0xFF1C1613),
     fretString: Color(0xFFCBBBA6),
+    stringMuted: Color(0xFF7A6A5E),
     fretWire: Color(0xFF6E5D51),
     nut: Color(0xFFEADCC8),
   );
@@ -117,6 +122,7 @@ class AppPalette extends ThemeExtension<AppPalette> {
     intervalTension: Color(0xFF85579F),
     onInterval: Color(0xFFFFFFFF),
     fretString: Color(0xFF6B5D52),
+    stringMuted: Color(0xFF94867A),
     fretWire: Color(0xFFCDBFB2),
     nut: Color(0xFF2A201B),
   );
@@ -148,6 +154,7 @@ class AppPalette extends ThemeExtension<AppPalette> {
       intervalTension: l(intervalTension, other.intervalTension),
       onInterval: l(onInterval, other.onInterval),
       fretString: l(fretString, other.fretString),
+      stringMuted: l(stringMuted, other.stringMuted),
       fretWire: l(fretWire, other.fretWire),
       nut: l(nut, other.nut),
     );
