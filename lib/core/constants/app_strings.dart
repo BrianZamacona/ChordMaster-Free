@@ -155,8 +155,10 @@ class AppStrings {
   static String get tabProgress => tr(es: 'Progreso', en: 'Progress');
 
   static String get learnIntro => tr(
-    es: 'Acordes, escalas y progresiones: qué tocar y por qué suena así.',
-    en: 'Chords, scales and progressions: what to play and why it sounds that way.',
+    es: 'Lecciones paso a paso, acordes, escalas y progresiones: qué tocar y '
+        'por qué suena así.',
+    en: 'Step-by-step lessons, chords, scales and progressions: what to play '
+        'and why it sounds that way.',
   );
   static String get practiceIntro => tr(
     es: 'Entrena el oído y el ritmo, y aplica lo aprendido en canciones.',
@@ -209,6 +211,73 @@ class AppStrings {
   );
   static String get toolTuner => tr(es: 'Afinador', en: 'Tuner');
   static String get toolMetronome => tr(es: 'Metrónomo', en: 'Metronome');
+  static String get hubLessons => tr(es: 'Lecciones', en: 'Lessons');
+  static String get hubLessonsSub => tr(
+    es: 'Un camino paso a paso: Fundamentos y después rítmica o líder.',
+    en: 'A step-by-step path: Foundations, then rhythm or lead.',
+  );
+
+  // ── Lecciones ──────────────────────────────────────────────────────────────
+
+  static String get lessonsTitle => tr(es: 'Lecciones', en: 'Lessons');
+  static String get trackFoundations => tr(es: 'Fundamentos', en: 'Foundations');
+  static String get trackFoundationsSub => tr(
+    es: 'Lo básico que todo guitarrista necesita.',
+    en: 'The basics every guitarist needs.',
+  );
+  static String get trackRhythm => tr(es: 'Guitarra rítmica', en: 'Rhythm guitar');
+  static String get trackRhythmSub => tr(
+    es: 'Acompañar canciones: rasgueos, cejillas y power chords.',
+    en: 'Backing songs: strumming, barre chords and power chords.',
+  );
+  static String get trackLead => tr(es: 'Guitarra líder', en: 'Lead guitar');
+  static String get trackLeadSub => tr(
+    es: 'Escalas, técnica y expresión para tu primer solo.',
+    en: 'Scales, technique and expression for your first solo.',
+  );
+  static String get lessonsContinue => tr(es: 'Sigue aquí', en: 'Continue here');
+  static String get lessonsStart => tr(es: 'Empezar', en: 'Start');
+  static String get lessonsAllDone => tr(
+    es: 'Terminaste toda la ruta. Repite cualquier lección cuando quieras.',
+    en: 'You finished the whole path. Repeat any lesson whenever you like.',
+  );
+  static String get lessonsChoosePath => tr(
+    es: 'Elige tu camino. Puedes cambiarlo cuando quieras.',
+    en: 'Choose your path. You can change it anytime.',
+  );
+  static String get lessonsChooseLater => tr(
+    es: 'Al terminar Fundamentos eliges tu camino. Si ya tocas, puedes adelantarte.',
+    en: 'After Foundations you choose your path. If you already play, you can skip ahead.',
+  );
+  static String lessonsProgress(int done, int total) =>
+      tr(es: '$done de $total', en: '$done of $total');
+  static String lessonMinutes(int minutes) =>
+      tr(es: '$minutes min', en: '$minutes min');
+  static String get lessonDone => tr(es: 'Hecha', en: 'Done');
+  static String get lessonNext => tr(es: 'Siguiente', en: 'Next');
+  static String get lessonSteps => tr(es: 'Pasos', en: 'Steps');
+  static String get lessonChords => tr(es: 'Acordes', en: 'Chords');
+  static String get lessonChordsHint =>
+      tr(es: 'Toca un acorde para ver su ficha.', en: 'Tap a chord to open it.');
+  static String get lessonStrum => tr(es: 'Rasgueo', en: 'Strumming');
+  /// Conteo de la corchea entre pulsos: "1 y 2 y…" / "1 & 2 &…".
+  static String get lessonStrumAnd => tr(es: 'y', en: '&');
+  static String get lessonStrumHint => tr(
+    es: '↓ abajo · ↑ arriba · — la mano pasa sin tocar',
+    en: '↓ down · ↑ up · — the hand passes without touching',
+  );
+  static String get lessonOpenScale =>
+      tr(es: 'Ver la escala en el diapasón', en: 'See the scale on the fretboard');
+  static String get lessonOpenTuner => tr(es: 'Abrir el afinador', en: 'Open the tuner');
+  static String lessonOpenMetronome(int? bpm) => bpm == null
+      ? tr(es: 'Abrir el metrónomo', en: 'Open the metronome')
+      : tr(es: 'Practicar a $bpm BPM', en: 'Practice at $bpm BPM');
+  static String get lessonMarkDone =>
+      tr(es: 'Marcar como completada', en: 'Mark as completed');
+  static String get lessonMarkPending =>
+      tr(es: 'Completada · marcar como pendiente', en: 'Completed · mark as pending');
+  static String get lessonNotFound =>
+      tr(es: 'No encontramos esta lección.', en: 'We could not find this lesson.');
 
   // ── Filtros de acordes ─────────────────────────────────────────────────────
 

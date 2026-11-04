@@ -17,6 +17,7 @@ void main() {
         'composer',
         'health_conscious',
         'song_learner',
+        'foundations_done',
       ]),
     );
   });

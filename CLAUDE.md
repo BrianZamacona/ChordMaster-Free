@@ -124,6 +124,18 @@ cada nota pertenezca a la escala. No bajar la tolerancia de 0.
 - Logros: todos deben poder conseguirse (test en `achievement_service_test.dart`). Comunidad
   se eliminó (no tenía ruta y solo guardaba en el teléfono).
 
+## Lecciones
+- Currículo en `lib/domain/lessons/curriculum.dart` (fuente única): Fundamentos (F1–F8) y,
+  al terminarlo, dos caminos de 8: rítmica (R) y líder (L). Los acordes se nombran por su
+  `displayName` de `chords.json` y las escalas por su id de `scales_master.json`.
+- Todo lo que una lección afirma sobre cuerdas, dedos o notas tiene su test en
+  `test/domain/lessons/curriculum_test.dart`, verificado contra los datos. Lección nueva o
+  texto nuevo con una afirmación musical = test nuevo.
+- `LessonPath` decide la siguiente: Fundamentos primero, luego el camino elegido, después el
+  otro. Se puede adelantar cualquier lección. Progreso en `userProgress`
+  (`lessons_completed`, `lessons_track`); los ids son permanentes: no renombrarlos.
+- Rutas: `/learn/lessons` y `/learn/lessons/:id`. Logro `foundations_done`.
+
 ## Ícono y nombre
 - El ícono se genera desde código: `flutter test tool/app_icon/render_app_icon_test.dart`
   (diagrama de C abierto con la paleta oscura; escribe Android clásico + capa adaptable,
