@@ -53,6 +53,7 @@ void main() {
     ('/learn/chords', true),
     ('/learn/lessons', true),
     ('/learn/lessons/f1_meet_guitar', true),
+    ('/learn/lessons/unit/f_first_steps', true),
     ('/learn/scales/double-stops', true),
     ('/learn/progressions', true),
     ('/practice/ear-training', true),

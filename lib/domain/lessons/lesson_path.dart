@@ -48,7 +48,7 @@ class LessonPath {
     return null;
   }
 
-  /// Número que se muestra en la ruta: F1…F8, R1…R8, L1…L8.
+  /// Número que se muestra en la ruta: F1, R3, L10…
   static String labelOf(Lesson lesson) {
     final prefix = switch (lesson.track) {
       LessonTrack.foundations => 'F',

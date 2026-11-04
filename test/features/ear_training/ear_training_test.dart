@@ -73,4 +73,33 @@ void main() {
     expect(find.byKey(const Key('ear-reveal')), findsOneWidget);
     expect(find.textContaining('semitono'), findsOneWidget);
   });
+
+  test('la mejor racha se guarda y no baja al fallar', () async {
+    final store = InMemoryStore();
+    final container = ProviderContainer(
+      overrides: [
+        keyValueStoreProvider.overrideWithValue(store),
+        audioServiceProvider.overrideWithValue(_FakeAudio()),
+      ],
+    );
+    addTearDown(container.dispose);
+    final vm = container.read(earTrainingViewModelProvider.notifier);
+    await Future<void>.delayed(Duration.zero);
+
+    Future<void> answerRight() async {
+      await vm.answer(container.read(earTrainingViewModelProvider).currentInterval);
+      vm.nextQuestion();
+    }
+
+    await answerRight();
+    await answerRight();
+    expect(store.progress[EarTrainingViewModel.keyBestStreak], 2);
+
+    final s = container.read(earTrainingViewModelProvider);
+    await vm.answer(
+      s.choices.firstWhere((c) => c.semitones != s.currentInterval.semitones),
+    );
+    expect(store.progress[EarTrainingViewModel.keyBestStreak], 2);
+    expect(container.read(earTrainingViewModelProvider).bestStreak, 2);
+  });
 }
