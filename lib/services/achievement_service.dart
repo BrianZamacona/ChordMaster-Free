@@ -252,9 +252,8 @@ class AchievementService {
   /// Fecha (ISO-8601) de cada logro conseguido, por id.
   Future<Map<String, String>> unlockedTimestamps() async => {
         for (final definition in allAchievements)
-          if (await _storage.get<String>(StorageBoxes.achievements, definition.id)
-              case final at?)
-            definition.id: at,
+          definition.id:
+              ?await _storage.get<String>(StorageBoxes.achievements, definition.id),
       };
 
   // ── Internal Helpers ──────────────────────────────────────────────────────

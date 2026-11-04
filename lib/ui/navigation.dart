@@ -81,18 +81,18 @@ final GoRouter appRouter = GoRouter(
       branches: [
         StatefulShellBranch(
           routes: [
-            GoRoute(path: '/', builder: (_, __) => const HomeScreen()),
+            GoRoute(path: '/', builder: (_, _) => const HomeScreen()),
           ],
         ),
         StatefulShellBranch(
           routes: [
             GoRoute(
               path: '/learn',
-              builder: (_, __) => const LearnHubScreen(),
+              builder: (_, _) => const LearnHubScreen(),
               routes: [
                 GoRoute(
                   path: 'lessons',
-                  builder: (_, __) => const LessonsScreen(),
+                  builder: (_, _) => const LessonsScreen(),
                   routes: [
                     // Antes que ':id' para que "unit" no se lea como lección.
                     GoRoute(
@@ -111,7 +111,7 @@ final GoRouter appRouter = GoRouter(
                 ),
                 GoRoute(
                   path: 'chords',
-                  builder: (_, __) => const ChordLibraryScreen(),
+                  builder: (_, _) => const ChordLibraryScreen(),
                   routes: [
                     GoRoute(
                       path: ':id',
@@ -138,11 +138,11 @@ final GoRouter appRouter = GoRouter(
                 ),
                 GoRoute(
                   path: 'scales',
-                  builder: (_, __) => const ScalesScreen(),
+                  builder: (_, _) => const ScalesScreen(),
                   routes: [
                     GoRoute(
                       path: 'double-stops',
-                      builder: (_, __) => const DoubleStopsScreen(),
+                      builder: (_, _) => const DoubleStopsScreen(),
                     ),
                     GoRoute(
                       path: ':scaleId',
@@ -158,7 +158,7 @@ final GoRouter appRouter = GoRouter(
                 ),
                 GoRoute(
                   path: 'progressions',
-                  builder: (_, __) => const ProgressionsScreen(),
+                  builder: (_, _) => const ProgressionsScreen(),
                 ),
               ],
             ),
@@ -168,19 +168,19 @@ final GoRouter appRouter = GoRouter(
           routes: [
             GoRoute(
               path: '/practice',
-              builder: (_, __) => const PracticeHubScreen(),
+              builder: (_, _) => const PracticeHubScreen(),
               routes: [
                 GoRoute(
                   path: 'ear-training',
-                  builder: (_, __) => const EarTrainingScreen(),
+                  builder: (_, _) => const EarTrainingScreen(),
                 ),
                 GoRoute(
                   path: 'rhythm',
-                  builder: (_, __) => const RhythmGameScreen(),
+                  builder: (_, _) => const RhythmGameScreen(),
                 ),
                 GoRoute(
                   path: 'songs',
-                  builder: (_, __) => const SongsScreen(),
+                  builder: (_, _) => const SongsScreen(),
                   routes: [
                     GoRoute(
                       path: ':id',
@@ -197,7 +197,7 @@ final GoRouter appRouter = GoRouter(
         StatefulShellBranch(
           initialLocation: '/tools/tuner',
           routes: [
-            GoRoute(path: '/tools', redirect: (_, __) => '/tools/tuner'),
+            GoRoute(path: '/tools', redirect: (_, _) => '/tools/tuner'),
             GoRoute(
               path: '/tools/tuner',
               pageBuilder: (_, state) => NoTransitionPage(
@@ -218,15 +218,15 @@ final GoRouter appRouter = GoRouter(
           routes: [
             GoRoute(
               path: '/progress',
-              builder: (_, __) => const ProgressHubScreen(),
+              builder: (_, _) => const ProgressHubScreen(),
               routes: [
                 GoRoute(
                   path: 'achievements',
-                  builder: (_, __) => const AchievementsScreen(),
+                  builder: (_, _) => const AchievementsScreen(),
                 ),
                 GoRoute(
                   path: 'health',
-                  builder: (_, __) => const HealthScreen(),
+                  builder: (_, _) => const HealthScreen(),
                 ),
               ],
             ),
