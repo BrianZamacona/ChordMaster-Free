@@ -36,7 +36,15 @@ cada nota pertenezca a la escala. No bajar la tolerancia de 0.
   escalas de 7 notas cada grado tiene su número (b6 en la menor, #4 en la lidia), nunca `#5`
   por defecto.
 - Dibujo de diapasón con líneas/notas: UNA función de coordenadas (`noteOffset`) y un solo
-  `CustomPainter`; nada de medir widgets por separado.
+  `CustomPainter`; nada de medir widgets por separado. Escalas y double stops comparten
+  `FretGridGeometry` (`lib/ui/widgets/fret_grid_geometry.dart`).
+- La cuerda al aire NO es un traste: es una columna de afinación (`e B G D A E`, siempre visible)
+  a la izquierda de la cejuela, y sus notas llevan anillo. El traste N es la celda entre los
+  alambres N-1 y N. La cejuela solo se dibuja junto al traste 1; desde otro traste, alambre normal
+  y el número del traste debajo.
+- Las posiciones de `scales_master.json` solo suben desde su `fret_offset` en C: fuera de C casi
+  nunca traen notas al aire (E menor pentatónica empieza en el traste 4, no en el 0). Las cuerdas
+  al aire de otra tónica se ven en el mástil completo.
 - Colores: SOLO desde `context.palette` (`lib/ui/palette.dart`, paleta Palisandro con versión
   clara y oscura) o `Theme.of(context).colorScheme`. Nada de `Colors.red`/hex sueltos ni
   colores por módulo. El color codifica intervalos (`palette.intervalColor('b3')`) y siempre
@@ -256,6 +264,14 @@ Objetivo: código legible y mantenible antes que ingenioso. Capas (puertos y ada
     `advancedInversions`). Parseo y títulos en `fingering_selection.dart`; el explorador marca
     con checkbox "Comparar".
 - `lib/ui/scales/` — escalas, detalle y `double_stops/`.
+  - Detalle: botones Tónica, Sistema y Digitación (`widgets/pattern_selector.dart`, posiciones
+    agrupadas por sistema). `selectedPatternIndex == null` = sin digitación, y el diapasón fijo
+    muestra la primera como vista previa. Cambiar tónica o sistema limpia la selección.
+  - Vista ampliada (`detail/scale_fretboard_fullscreen.dart`): se abre en el navegador raíz, sin
+    pestañas, y comparte `scaleDetailProvider` con el detalle. `FretboardNeck` da la columna de
+    aire fija y los trastes 1–24 con scroll; las notas salen de `scaleNotesOnNeck`
+    (`lib/domain/theory/neck_notes.dart`). Solo Android e iOS piden horizontal, y al salir se
+    devuelve con la lista vacía: la app no fija orientación y así respeta el bloqueo de rotación.
 - `lib/ui/navigation.dart` — UN solo `StatefulShellRoute` con 5 pestañas (`AppScaffold`):
   Inicio `/`, Aprender `/learn/...`, Practicar `/practice/...`, Afinar `/tools/tuner|metronome`,
   Progreso `/progress/...` (incluye ajustes). Componer vive dentro de Progresiones ("Mi

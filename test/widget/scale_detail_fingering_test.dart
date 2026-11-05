@@ -203,6 +203,16 @@ void main() {
     );
   });
 
+  testWidgets('en pantalla ancha el diapasón no pasa de 900 y queda centrado', (
+    tester,
+  ) async {
+    await pump(tester, size: const Size(1400, 900));
+    final rect = tester.getRect(find.byType(FretboardDiagram).first);
+    expect(rect.width, lessThanOrEqualTo(900));
+    expect(rect.center.dx, closeTo(700, 1));
+    expect(tester.takeException(), isNull);
+  });
+
   for (final language in AppLanguage.values) {
     testWidgets('a 360 dp (${language.name}) los tres botones y el contexto '
         'caben, con cualquier posición elegida', (tester) async {

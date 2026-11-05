@@ -23,6 +23,27 @@ void main() {
       );
     });
 
+    test('una línea que cruza la cejuela no deja la etiqueta encima de ella', () {
+      expect(
+        segmentLabelOffset(
+          const Offset(21, 36),
+          const Offset(43, 56),
+          20,
+          nutX: 32,
+        ),
+        const Offset(41, 26),
+      );
+      expect(
+        segmentLabelOffset(
+          const Offset(50, 36),
+          const Offset(90, 56),
+          20,
+          nutX: 32,
+        ),
+        const Offset(70, 26),
+      );
+    });
+
     test('pareja en la 1ª cuerda: bajo la cuerda inferior', () {
       expect(
         segmentLabelOffset(const Offset(50, 16), const Offset(50, 36), 20),

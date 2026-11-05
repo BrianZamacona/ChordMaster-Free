@@ -34,9 +34,20 @@ Offset noteOffset(
 /// notas, así que va en el hueco libre entre la cuerda superior de la pareja y
 /// la de encima, alineada con el centro de la línea; si la pareja empieza en la
 /// 1ª cuerda (sin hueco encima), va bajo la cuerda inferior. Nunca encima de
-/// una nota: con 13 trastes una nota casi llena el ancho de un traste.
-Offset segmentLabelOffset(Offset from, Offset to, double stringSpacing) {
-  final x = (from.dx + to.dx) / 2;
+/// una nota: con 13 trastes una nota casi llena el ancho de un traste. Con
+/// [nutX], si la línea cruza la cejuela la etiqueta se corre a su derecha para
+/// que la línea gruesa no la tape.
+Offset segmentLabelOffset(
+  Offset from,
+  Offset to,
+  double stringSpacing, {
+  double? nutX,
+}) {
+  const nutClearance = 9.0;
+  final middle = (from.dx + to.dx) / 2;
+  final x = nutX != null && (middle - nutX).abs() < nutClearance
+      ? nutX + nutClearance
+      : middle;
   final upper = from.dy < to.dy ? from.dy : to.dy;
   final lower = from.dy < to.dy ? to.dy : from.dy;
   return upper - stringSpacing / 2 < FretGridGeometry.top

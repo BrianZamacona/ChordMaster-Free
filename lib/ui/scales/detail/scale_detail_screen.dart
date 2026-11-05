@@ -53,7 +53,10 @@ class ScaleDetailScreen extends ConsumerWidget {
 
     return Scaffold(
       appBar: AppBar(title: Text('${state.rootName} $_scaleName')),
-      body: ListView(
+      body: Center(
+        child: ConstrainedBox(
+          constraints: const BoxConstraints(maxWidth: 900),
+          child: ListView(
         padding: const EdgeInsets.only(bottom: 24),
         children: [
           Padding(
@@ -151,6 +154,8 @@ class ScaleDetailScreen extends ConsumerWidget {
             rootName: state.rootName,
           ),
         ],
+          ),
+        ),
       ),
     );
   }

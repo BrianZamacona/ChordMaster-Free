@@ -394,6 +394,8 @@ class _BoardPainter extends CustomPainter {
       Rect.fromCircle(center: center, radius: r),
       Radius.circular(c.isRoot ? r * 0.3 : r),
     );
+    // Fondo opaco: que la cuerda no cruce el texto de una nota atenuada.
+    if (dimmed) canvas.drawRRect(shape, Paint()..color = palette.background);
     canvas.drawRRect(
       shape,
       Paint()..color = dimmed ? color.withValues(alpha: 0.22) : color,
