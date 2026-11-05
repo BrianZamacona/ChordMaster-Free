@@ -26,13 +26,13 @@ class SystemSelectorPill extends StatelessWidget {
     required this.systems,
     required this.selectedId,
     required this.onChanged,
-    this.maxLines,
+    this.compact = false,
   });
 
   final List<FingeringSystem> systems;
   final String? selectedId;
   final ValueChanged<String?> onChanged;
-  final int? maxLines;
+  final bool compact;
 
   String _name(FingeringSystem system) =>
       FingeringSystemsRegistry.theoryFor(system.id)?.name.text ?? system.name;
@@ -52,7 +52,7 @@ class SystemSelectorPill extends StatelessWidget {
             ),
       onOpen: () => _showSheet(context),
       onClear: () => onChanged(null),
-      maxLines: maxLines,
+      compact: compact,
     );
   }
 
@@ -109,13 +109,13 @@ class PatternSelectorPill extends StatelessWidget {
     required this.patterns,
     required this.selectedIndex,
     required this.onSelected,
-    this.maxLines,
+    this.compact = false,
   });
 
   final List<ResolvedPattern> patterns;
   final int? selectedIndex;
   final ValueChanged<int?> onSelected;
-  final int? maxLines;
+  final bool compact;
 
   @override
   Widget build(BuildContext context) {
@@ -127,7 +127,7 @@ class PatternSelectorPill extends StatelessWidget {
           : positionDisplayName(patterns[index].positionName),
       onOpen: () => _showSheet(context),
       onClear: () => onSelected(null),
-      maxLines: maxLines,
+      compact: compact,
     );
   }
 

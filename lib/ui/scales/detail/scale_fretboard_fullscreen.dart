@@ -90,7 +90,7 @@ class _ScaleFretboardFullscreenState
       systems: scale.systems,
       selectedId: state.selectedSystemId,
       onChanged: notifier.changeSystem,
-      maxLines: 1,
+      compact: true,
     );
     final patternPill = PatternSelectorPill(
       key: const Key('neck-pattern'),
@@ -99,7 +99,7 @@ class _ScaleFretboardFullscreenState
           ? state.selectedPatternIndex
           : null,
       onSelected: notifier.selectPattern,
-      maxLines: 1,
+      compact: true,
     );
     final labelToggle = SegmentedButton<FretboardLabel>(
       key: const Key('neck-label'),

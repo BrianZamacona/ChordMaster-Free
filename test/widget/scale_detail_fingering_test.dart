@@ -197,7 +197,7 @@ void main() {
       final chosen = stateOf(tester).visiblePatterns[3];
       expect(stateOf(tester).selectedPatternIndex, 3);
       expect(
-        find.text('${AppStrings.scaleFingering}: ${chosen.positionName}'),
+        find.text(chosen.positionName),
         findsOneWidget,
       );
       await tester.tap(find.byType(CloseButton));
