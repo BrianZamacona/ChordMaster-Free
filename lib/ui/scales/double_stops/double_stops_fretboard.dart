@@ -130,7 +130,7 @@ class DoubleStopPainter extends CustomPainter {
       _text(
         canvas,
         '$f',
-        Offset(x, bottom + 16),
+        Offset(x, grid.fretNumberY),
         TextStyle(fontSize: 8, color: palette.textSecondary),
       );
     }

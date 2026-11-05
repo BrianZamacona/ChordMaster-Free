@@ -424,6 +424,10 @@ class AppStrings {
       tr(es: 'Digitación anterior', en: 'Previous fingering');
   static String get scaleNextPattern =>
       tr(es: 'Digitación siguiente', en: 'Next fingering');
+  static String get scaleExpandBoard =>
+      tr(es: 'Ampliar diapasón', en: 'Expand fretboard');
+  static String get neckIntervals => tr(es: 'Intervalos', en: 'Intervals');
+  static String get neckNotes => tr(es: 'Notas', en: 'Notes');
   static String get scaleShapeOrder => tr(es: 'Orden', en: 'Order');
   static String get cagedPositions =>
       tr(es: 'Posiciones CAGED', en: 'CAGED positions');

@@ -36,7 +36,7 @@ class FretGridGeometry {
   static const stringStartX = 12.0;
   static const openNoteMaxRadius = 9.0;
   static const top = 16.0;
-  static const bottom = 20.0;
+  static const bottom = 26.0;
 
   final double width;
   final double height;
@@ -65,11 +65,24 @@ class FretGridGeometry {
   /// Radio en la columna de afinación, donde también va el nombre de la cuerda.
   double get openRadius => math.min(radius, openNoteMaxRadius);
 
+  /// Altura de los números de traste: bajo las notas de la 6ª cuerda, sin
+  /// tocarlas.
+  double get fretNumberY => boardBottom + radius + 7;
+
   /// Ancho total: columna de afinación más todas las celdas.
   double get boardWidth => nutX + cellCount * fretWidth;
 
   /// Alambre derecho del traste [wire]; el alambre 0 es la cejuela.
   double fretLineX(int wire) => nutX + (wire - firstFret + 1) * fretWidth;
+
+  /// Desplazamiento de scroll que centra los trastes [start]–[end] en la parte
+  /// de un visor de ancho [viewport] que no tapa la columna de afinación.
+  double scrollToCenter(int start, int end, double viewport) {
+    final left = fretLineX(math.max(start, firstFret) - 1);
+    final middle = (left + fretLineX(math.min(end, lastFret))) / 2;
+    final maxScroll = math.max<double>(0, boardWidth - viewport);
+    return (middle - (viewport + nutX) / 2).clamp(0, maxScroll).toDouble();
+  }
 
   /// Altura de la cuerda [string] (1 = mi aguda).
   double stringY(int string) => top + (string - 1) * stringSpacing;

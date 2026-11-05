@@ -13,6 +13,7 @@ import '../../../domain/theory/notes.dart';
 import '../../../ui/widgets/fretboard_diagram.dart';
 import '../../theme.dart';
 import 'scale_detail_notifier.dart';
+import 'scale_fretboard_fullscreen.dart';
 import 'widgets/pattern_selector.dart';
 import 'widgets/scale_info_panel.dart';
 import 'widgets/scale_theory_cards.dart';
@@ -100,7 +101,11 @@ class ScaleDetailScreen extends ConsumerWidget {
               padding: const EdgeInsets.symmetric(horizontal: 16),
               child: FretboardDiagram(pattern: pattern),
             ),
-            _PatternContext(state: state, notifier: notifier),
+            _PatternContext(
+              state: state,
+              notifier: notifier,
+              onExpand: () => openScaleFretboardFullscreen(context, args),
+            ),
             IntervalLegend(
               labels: [
                 for (final c in pattern.coordinates)
@@ -195,12 +200,18 @@ class ScaleDetailScreen extends ConsumerWidget {
       );
 }
 
-/// Qué posición muestra el diapasón y, con una elegida, ‹ › para cambiarla.
+/// Bajo el diapasón: qué posición muestra, ‹ › si hay una elegida y, en la
+/// esquina derecha, el botón de ampliar (fuera del lienzo, para no tapar notas).
 class _PatternContext extends StatelessWidget {
-  const _PatternContext({required this.state, required this.notifier});
+  const _PatternContext({
+    required this.state,
+    required this.notifier,
+    required this.onExpand,
+  });
 
   final ScaleDetailState state;
   final ScaleDetailNotifier notifier;
+  final VoidCallback onExpand;
 
   @override
   Widget build(BuildContext context) {
@@ -209,19 +220,32 @@ class _PatternContext extends StatelessWidget {
     final style = Theme.of(
       context,
     ).textTheme.labelSmall?.copyWith(color: context.palette.textSecondary);
+    final expand = IconButton(
+      key: const Key('scale-expand'),
+      icon: const Icon(Icons.fullscreen),
+      tooltip: AppStrings.scaleExpandBoard,
+      onPressed: onExpand,
+    );
     if (!state.hasSelectedPattern) {
       return Padding(
-        padding: const EdgeInsets.fromLTRB(16, 4, 16, 8),
-        child: Text(
-          AppStrings.scalePreviewHint(name),
-          key: const Key('scale-pattern-context'),
-          style: style,
+        padding: const EdgeInsets.fromLTRB(16, 0, 8, 0),
+        child: Row(
+          children: [
+            Expanded(
+              child: Text(
+                AppStrings.scalePreviewHint(name),
+                key: const Key('scale-pattern-context'),
+                style: style,
+              ),
+            ),
+            expand,
+          ],
         ),
       );
     }
     final index = state.selectedPatternIndex!;
     return Padding(
-      padding: const EdgeInsets.symmetric(horizontal: 4),
+      padding: const EdgeInsets.fromLTRB(4, 0, 8, 0),
       child: Row(
         children: [
           IconButton(
@@ -253,6 +277,7 @@ class _PatternContext extends StatelessWidget {
                 ? () => notifier.selectPattern(index + 1)
                 : null,
           ),
+          expand,
         ],
       ),
     );

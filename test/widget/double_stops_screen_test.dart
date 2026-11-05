@@ -33,7 +33,7 @@ void main() {
   group('noteOffset', () {
     // Columna de afinación de 32 y 12 celdas de 20: el traste N va entre los
     // alambres N-1 y N.
-    const size = Size(272, 136);
+    const size = Size(272, 142);
 
     test('0–12: el aire en su columna y el traste N en la celda N', () {
       expect(noteOffset(0, 0, size), const Offset(21, 16));

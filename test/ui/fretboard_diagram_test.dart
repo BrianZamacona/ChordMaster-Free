@@ -84,6 +84,21 @@ void main() {
       }
     });
 
+    test('el número de traste no toca las notas de la 6ª cuerda', () {
+      const neck = FretGridGeometry(
+        width: 744,
+        height: 200,
+        startFret: 1,
+        endFret: 24,
+        fixedFretWidth: FretboardNeck.minFretWidth,
+        maxNoteRadius: 14,
+      );
+      for (final g in [grid(0, 4), grid(5, 9), neck]) {
+        // El número mide unos 13 de alto: 6.5 sobre su centro.
+        expect(g.fretNumberY - 6.5, greaterThanOrEqualTo(g.boardBottom + g.radius));
+      }
+    });
+
     test('la cejuela solo está junto al traste 1', () {
       expect(grid(0, 4).hasNut, isTrue);
       expect(grid(1, 4).hasNut, isTrue);
