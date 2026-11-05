@@ -234,10 +234,29 @@ class AppStrings {
       tr(es: '¿Cómo se arma?', en: 'How is it built?');
   static String circleBuildProgress(int step, int total) =>
       tr(es: 'Paso $step de $total', en: 'Step $step of $total');
-  static String get circleBuildNeck =>
-      tr(es: 'Esta quinta en el mástil', en: 'This fifth on the neck');
+  static String circleBuildNeck(String from, String to) => tr(
+    es: 'En la guitarra: de $from a $to',
+    en: 'On the guitar: from $from to $to',
+  );
   static String circleBuildNeckStart(String name) =>
-      tr(es: '$name en el mástil', en: '$name on the neck');
+      tr(es: 'En la guitarra: $name', en: 'On the guitar: $name');
+  static String circleBuildFindFifth(String name) => tr(
+    es: '1. Busca la quinta de $name',
+    en: '1. Find the fifth of $name',
+  );
+  static String get circleBuildChangeOne =>
+      tr(es: '2. Cambia una sola nota', en: '2. Change a single note');
+  static String circleBuildNotesOf(String name) =>
+      tr(es: 'Las notas de $name', en: 'The notes of $name');
+  static String get circleBuildClosingTitle =>
+      tr(es: 'Para qué sirve', en: 'What it is for');
+  static String get circleBuildToWheel =>
+      tr(es: 'Ir a la rueda', en: 'Go to the wheel');
+  static String circleBuildRingLabel(int reached, String key, String signature) =>
+      tr(
+        es: 'Círculo con $reached de 12 tonalidades. Actual: $key, armadura $signature.',
+        en: 'Circle with $reached of 12 keys. Current: $key, key signature $signature.',
+      );
   static String get circleBuildPrevious => tr(es: 'Anterior', en: 'Previous');
   static String get circleBuildNext => tr(es: 'Siguiente', en: 'Next');
   static String get hubEar => tr(es: 'Oído', en: 'Ear');

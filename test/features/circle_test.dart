@@ -8,6 +8,8 @@ import 'package:chordmaster_free/domain/theory/circle_of_fifths.dart';
 import 'package:chordmaster_free/domain/theory/notes.dart';
 import 'package:chordmaster_free/features/chords/chord_detail_screen.dart';
 import 'package:chordmaster_free/features/chords/chord_viewmodel.dart';
+import 'package:chordmaster_free/features/circle/circle_build_ring.dart';
+import 'package:chordmaster_free/features/circle/circle_build_screen.dart';
 import 'package:chordmaster_free/features/circle/circle_viewmodel.dart';
 import 'package:chordmaster_free/features/circle/circle_wheel.dart';
 import 'package:chordmaster_free/features/progressions/progressions_viewmodel.dart';
@@ -380,29 +382,50 @@ void main() {
       );
     });
 
-    testWidgets('"¿Cómo se arma?" avanza y retrocede', (tester) async {
+    testWidgets('"¿Cómo se arma?" avanza, retrocede y termina en la rueda', (
+      tester,
+    ) async {
       await open(tester, '/learn/circle/build');
       expect(find.byType(BackButton), findsOneWidget);
       expect(find.byType(NavigationBar), findsOneWidget);
       final previous = find.byKey(const Key('circle-build-previous'));
       final next = find.byKey(const Key('circle-build-next'));
       expect(tester.widget<OutlinedButton>(previous).onPressed, isNull);
+      expect(find.text(circleBuildRule.text), findsOneWidget);
       final steps = circleConstruction();
-      expect(textOf(tester, 'circle-build-text'), steps[0].explanation.text);
+      expect(textOf(tester, 'circle-build-change'), steps[0].changeText.text);
+      expect(find.byKey(const Key('circle-build-fifth')), findsNothing);
       await tester.ensureVisible(next);
       await tester.tap(next);
       await tester.pump();
-      expect(textOf(tester, 'circle-build-text'), steps[1].explanation.text);
+      expect(textOf(tester, 'circle-build-change'), steps[1].changeText.text);
+      expect(textOf(tester, 'circle-build-fifth'), steps[1].fifthText!.text);
       expect(textOf(tester, 'circle-build-progress'), 'Paso 2 de 13');
       await tester.tap(previous);
       await tester.pump();
-      expect(textOf(tester, 'circle-build-text'), steps[0].explanation.text);
+      expect(textOf(tester, 'circle-build-change'), steps[0].changeText.text);
       for (var i = 0; i < 12; i++) {
         await tester.tap(next);
         await tester.pump();
       }
-      expect(textOf(tester, 'circle-build-text'), steps[12].explanation.text);
-      expect(tester.widget<FilledButton>(next).onPressed, isNull);
+      expect(textOf(tester, 'circle-build-change'), steps[12].changeText.text);
+      expect(textOf(tester, 'circle-build-closing'), circleBuildClosing.text);
+      expect(find.text(AppStrings.circleBuildToWheel), findsOneWidget);
+      await tester.tap(next);
+      await settle(tester);
+      expect(find.byType(CircleBuildScreen), findsNothing);
+    });
+
+    test('el anillo pone C arriba y sube en el sentido del reloj', () {
+      const center = Offset(100, 100);
+      final top = ringNodeOffset(0, center, 80);
+      expect(top.dx, closeTo(100, 1e-9));
+      expect(top.dy, closeTo(20, 1e-9));
+      final right = ringNodeOffset(3, center, 80);
+      expect(right.dx, closeTo(180, 1e-9));
+      expect(right.dy, closeTo(100, 1e-9));
+      final bottom = ringNodeOffset(6, center, 80);
+      expect(bottom.dy, closeTo(180, 1e-9));
     });
 
     for (final code in ['es', 'en']) {
