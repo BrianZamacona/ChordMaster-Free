@@ -49,9 +49,11 @@ void main() {
     await tester.pumpAndSettle();
   }
 
-  // Los sistemas se eligen en la hoja del botón Sistema.
+  // Los sistemas se eligen en la vista ampliada, en la hoja del botón Sistema.
   Future<void> openSystems(WidgetTester tester) async {
-    await tester.tap(find.byKey(const Key('scale-system')));
+    await tester.tap(find.byKey(const Key('scale-expand')));
+    await tester.pumpAndSettle();
+    await tester.tap(find.byKey(const Key('neck-system')));
     await tester.pumpAndSettle();
   }
 

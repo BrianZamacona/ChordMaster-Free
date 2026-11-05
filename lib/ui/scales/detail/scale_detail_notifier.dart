@@ -2,6 +2,7 @@ import 'package:flutter_riverpod/flutter_riverpod.dart';
 
 import '../../../data/models/scale_definition.dart';
 import '../../../data/repository/scale_repository.dart';
+import '../../../domain/fingering_systems/fingering_systems_registry.dart';
 import '../../../domain/theory/notes.dart';
 import '../../../services/achievement_service.dart';
 
@@ -29,11 +30,32 @@ class ScaleDetailState {
   bool get hasSelectedPattern =>
       selectedPatternIndex != null && visiblePatterns.isNotEmpty;
 
-  /// La digitación elegida o, sin elegir, la primera: el diapasón fijo de la
-  /// pantalla nunca queda vacío.
+  /// Posición predeterminada entre las visibles: la primera declarada del
+  /// primer sistema de [FingeringSystemsRegistry.previewOrder], p. ej. la
+  /// Posición 1 de 3NPS en C mayor.
+  int get defaultPatternIndex {
+    int rank(ResolvedPattern p) {
+      final i = FingeringSystemsRegistry.previewOrder.indexOf(p.systemId);
+      return i < 0 ? FingeringSystemsRegistry.previewOrder.length : i;
+    }
+
+    var best = 0;
+    for (var i = 1; i < visiblePatterns.length; i++) {
+      final a = visiblePatterns[i];
+      final b = visiblePatterns[best];
+      final byRank = rank(a).compareTo(rank(b));
+      if (byRank < 0 || (byRank == 0 && a.declaredOrder < b.declaredOrder)) {
+        best = i;
+      }
+    }
+    return best;
+  }
+
+  /// La digitación elegida o, sin elegir, la predeterminada: el diapasón fijo
+  /// de la pantalla nunca queda vacío.
   ResolvedPattern? get currentPattern => visiblePatterns.isEmpty
       ? null
-      : visiblePatterns[(selectedPatternIndex ?? 0).clamp(
+      : visiblePatterns[(selectedPatternIndex ?? defaultPatternIndex).clamp(
           0,
           visiblePatterns.length - 1,
         )];

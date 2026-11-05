@@ -414,16 +414,12 @@ class AppStrings {
     int start,
     int end,
   ) => '$position · $system · ${scaleFretRange(start, end)}';
-  static String scalePreviewHint(String position) => tr(
-    es: 'Vista previa: $position. Elige una digitación o amplía para ver '
-        'todo el mástil.',
-    en: 'Preview: $position. Choose a fingering or expand to see the whole '
-        'neck.',
+  static String scalePreviewHint(String position, String system) => tr(
+    es: 'Vista previa: $position · $system. Amplía para ver todo el mástil y '
+        'elegir sistema o digitación.',
+    en: 'Preview: $position · $system. Expand to see the whole neck and choose '
+        'a system or fingering.',
   );
-  static String get scalePreviousPattern =>
-      tr(es: 'Digitación anterior', en: 'Previous fingering');
-  static String get scaleNextPattern =>
-      tr(es: 'Digitación siguiente', en: 'Next fingering');
   static String get scaleExpandBoard =>
       tr(es: 'Ampliar diapasón', en: 'Expand fretboard');
   static String get neckIntervals => tr(es: 'Intervalos', en: 'Intervals');

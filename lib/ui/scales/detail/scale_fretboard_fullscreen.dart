@@ -43,6 +43,9 @@ class _ScaleFretboardFullscreenState
   /// Ancho desde el que los controles caben en la barra superior.
   static const _toolbarInlineWidth = 600.0;
 
+  /// Parte de la barra superior que pueden ocupar los controles.
+  static const _toolbarWidthShare = 0.72;
+
   var _label = FretboardLabel.interval;
   var _landscapeRequested = false;
 
@@ -82,6 +85,13 @@ class _ScaleFretboardFullscreenState
     final title =
         '${state.rootName} ${scaleDisplayName(scale.id, scale.intervals, fallback: scale.name)}';
 
+    final systemPill = SystemSelectorPill(
+      key: const Key('neck-system'),
+      systems: scale.systems,
+      selectedId: state.selectedSystemId,
+      onChanged: notifier.changeSystem,
+      maxLines: 1,
+    );
     final patternPill = PatternSelectorPill(
       key: const Key('neck-pattern'),
       patterns: state.visiblePatterns,
@@ -89,6 +99,7 @@ class _ScaleFretboardFullscreenState
           ? state.selectedPatternIndex
           : null,
       onSelected: notifier.selectPattern,
+      maxLines: 1,
     );
     final labelToggle = SegmentedButton<FretboardLabel>(
       key: const Key('neck-label'),
@@ -107,8 +118,8 @@ class _ScaleFretboardFullscreenState
       selected: {_label},
       onSelectionChanged: (v) => setState(() => _label = v.first),
     );
-    final inline =
-        MediaQuery.sizeOf(context).width >= _toolbarInlineWidth;
+    final screenWidth = MediaQuery.sizeOf(context).width;
+    final inline = screenWidth >= _toolbarInlineWidth;
 
     return PopScope(
       onPopInvokedWithResult: (didPop, _) {
@@ -126,9 +137,22 @@ class _ScaleFretboardFullscreenState
               title: Text(title, maxLines: 1, overflow: TextOverflow.ellipsis),
               actions: inline
                   ? [
-                      Flexible(child: patternPill),
-                      const SizedBox(width: 8),
-                      labelToggle,
+                      // Deja sitio al título: los botones se cortan con "…".
+                      ConstrainedBox(
+                        constraints: BoxConstraints(
+                          maxWidth: screenWidth * _toolbarWidthShare,
+                        ),
+                        child: Row(
+                          mainAxisSize: MainAxisSize.min,
+                          children: [
+                            Flexible(child: systemPill),
+                            const SizedBox(width: 8),
+                            Flexible(child: patternPill),
+                            const SizedBox(width: 8),
+                            labelToggle,
+                          ],
+                        ),
+                      ),
                       const SizedBox(width: 12),
                     ]
                   : null,
@@ -141,7 +165,13 @@ class _ScaleFretboardFullscreenState
                         child: Column(
                           crossAxisAlignment: CrossAxisAlignment.start,
                           children: [
-                            patternPill,
+                            Row(
+                              children: [
+                                Flexible(child: systemPill),
+                                const SizedBox(width: 8),
+                                Flexible(child: patternPill),
+                              ],
+                            ),
                             const SizedBox(height: 8),
                             labelToggle,
                           ],

@@ -32,16 +32,27 @@ void main() {
   final data =
       jsonDecode(File('assets/data/scales_master.json').readAsStringSync())
           as Map<String, dynamic>;
-  final major = ScaleDefinition.fromJson(
-    (data['scales'] as List<dynamic>).cast<Map<String, dynamic>>().firstWhere(
-      (s) => s['id'] == 'major',
-    ),
-  );
-  final args = (scale: major, root: 0);
+  final scales = [
+    for (final g in ['scales', 'modes'])
+      for (final s in (data[g] as List<dynamic>))
+        ScaleDefinition.fromJson(s as Map<String, dynamic>),
+  ];
+  final major = scales.firstWhere((s) => s.id == 'major');
 
   tearDown(() => CurrentLanguage.value = AppLanguage.es);
 
-  Future<void> pump(WidgetTester tester, {Size size = const Size(360, 800)}) async {
+  Future<void> settle(WidgetTester tester) async {
+    await tester.runAsync(
+      () => Future<void>.delayed(const Duration(milliseconds: 50)),
+    );
+    await tester.pumpAndSettle();
+  }
+
+  Future<void> pump(
+    WidgetTester tester, {
+    ScaleDefinition? scale,
+    Size size = const Size(360, 800),
+  }) async {
     tester.view.devicePixelRatio = 1;
     tester.view.physicalSize = size;
     addTearDown(tester.view.reset);
@@ -55,25 +66,29 @@ void main() {
         ],
         child: MaterialApp(
           theme: lightTheme,
-          home: ScaleDetailScreen(scale: major),
+          home: ScaleDetailScreen(scale: scale ?? major),
         ),
       ),
     );
-    await tester.runAsync(() => Future<void>.delayed(const Duration(milliseconds: 50)));
-    await tester.pumpAndSettle();
+    await settle(tester);
   }
 
-  ScaleDetailState stateOf(WidgetTester tester) => ProviderScope.containerOf(
-    tester.element(find.byType(ScaleDetailScreen)),
-  ).read(scaleDetailProvider(args));
+  ScaleDetailState stateOf(WidgetTester tester, [ScaleDefinition? scale]) =>
+      ProviderScope.containerOf(
+        tester.element(find.byType(ScaleDetailScreen, skipOffstage: false)),
+      ).read(scaleDetailProvider((scale: scale ?? major, root: 0)));
 
-  Future<void> openSheet(WidgetTester tester) async {
-    await tester.tap(find.byKey(const Key('scale-pattern')));
+  FretboardDiagram board(WidgetTester tester) =>
+      tester.widget<FretboardDiagram>(find.byType(FretboardDiagram).first);
+
+  Future<void> expand(WidgetTester tester) async {
+    await tester.tap(find.byKey(const Key('scale-expand')));
     await tester.pumpAndSettle();
   }
 
   Future<void> choose(WidgetTester tester, int index) async {
-    await openSheet(tester);
+    await tester.tap(find.byKey(const Key('neck-pattern')));
+    await tester.pumpAndSettle();
     final row = find.byKey(Key('pattern-$index'));
     await tester.ensureVisible(row);
     await tester.pumpAndSettle();
@@ -81,151 +96,201 @@ void main() {
     await tester.pumpAndSettle();
   }
 
-  ResolvedPattern board(WidgetTester tester) =>
-      tester.widget<FretboardDiagram>(find.byType(FretboardDiagram).first).pattern;
-
-  testWidgets('sin digitación elegida: vista previa de la primera posición', (
-    tester,
-  ) async {
-    await pump(tester);
-    final state = stateOf(tester);
-    expect(state.selectedPatternIndex, isNull);
-    expect(state.hasSelectedPattern, isFalse);
-    expect(board(tester), same(state.visiblePatterns.first));
-    expect(find.textContaining('Vista previa'), findsOneWidget);
-  });
-
-  testWidgets('la hoja agrupa por sistema y da el rango de trastes', (
-    tester,
-  ) async {
-    await pump(tester);
-    await openSheet(tester);
-    expect(find.text(AppStrings.scaleWholeNeck), findsOneWidget);
-    final state = stateOf(tester);
-    expect(
-      find.byKey(Key('pattern-${state.visiblePatterns.length - 1}'), skipOffstage: false),
-      findsOneWidget,
-    );
-    expect(find.text('CAGED'), findsWidgets);
-    final first = state.visiblePatterns.first;
-    expect(
-      find.descendant(
-        of: find.byKey(const Key('pattern-0')),
-        matching: find.text(
-          AppStrings.scaleFretRange(first.startingFret, first.endFret),
-        ),
-      ),
-      findsOneWidget,
-    );
-  });
-
-  testWidgets('elegir una posición actualiza el botón y el diapasón', (
-    tester,
-  ) async {
-    await pump(tester);
-    await choose(tester, 3);
-    final state = stateOf(tester);
-    final chosen = state.visiblePatterns[3];
-    expect(state.selectedPatternIndex, 3);
-    expect(board(tester), same(chosen));
-    expect(
-      find.text('${AppStrings.scaleFingering}: ${chosen.positionName}'),
-      findsOneWidget,
-    );
-    expect(
-      tester.widget<Text>(find.byKey(const Key('scale-pattern-context'))).data,
-      contains(AppStrings.scaleFretRange(chosen.startingFret, chosen.endFret)),
-    );
-  });
-
-  testWidgets('"Todo el mástil" limpia la selección', (tester) async {
-    await pump(tester);
-    await choose(tester, 2);
-    await openSheet(tester);
-    await tester.tap(find.byKey(const Key('pattern-whole-neck')));
-    await tester.pumpAndSettle();
-    expect(stateOf(tester).selectedPatternIndex, isNull);
-    expect(find.text(AppStrings.scaleFingering), findsOneWidget);
-  });
-
-  testWidgets('la ✕ limpia la selección', (tester) async {
-    await pump(tester);
-    await choose(tester, 2);
-    await tester.tap(
-      find.descendant(
-        of: find.byKey(const Key('scale-pattern')),
-        matching: find.byIcon(Icons.close),
-      ),
-    );
-    await tester.pumpAndSettle();
-    expect(stateOf(tester).selectedPatternIndex, isNull);
-  });
-
-  testWidgets('‹ › pasan de posición y se detienen en los extremos', (
-    tester,
-  ) async {
-    await pump(tester);
-    await choose(tester, 0);
-    final previous = find.byKey(const Key('scale-pattern-previous'));
-    expect(tester.widget<IconButton>(previous).onPressed, isNull);
-    await tester.tap(find.byKey(const Key('scale-pattern-next')));
-    await tester.pumpAndSettle();
-    expect(stateOf(tester).selectedPatternIndex, 1);
-    await tester.tap(previous);
-    await tester.pumpAndSettle();
-    expect(stateOf(tester).selectedPatternIndex, 0);
-  });
-
-  testWidgets('cambiar la tónica limpia la selección', (tester) async {
-    await pump(tester);
-    await choose(tester, 2);
-    await tester.tap(find.byKey(const Key('scale-root')));
-    await tester.pumpAndSettle();
-    await tester.tap(find.byKey(const Key('root-E')));
-    await tester.runAsync(() => Future<void>.delayed(const Duration(milliseconds: 50)));
-    await tester.pumpAndSettle();
-    expect(stateOf(tester).selectedPatternIndex, isNull);
-    expect(stateOf(tester).rootName, 'E');
-  });
-
-  testWidgets('cambiar el sistema limpia la selección', (tester) async {
-    await pump(tester);
-    await choose(tester, 2);
-    await tester.tap(find.byKey(const Key('scale-system')));
-    await tester.pumpAndSettle();
-    await tester.tap(find.widgetWithText(ListTile, 'CAGED').first);
-    await tester.runAsync(() => Future<void>.delayed(const Duration(milliseconds: 50)));
-    await tester.pumpAndSettle();
-    expect(stateOf(tester).selectedPatternIndex, isNull);
-    expect(
-      stateOf(tester).visiblePatterns.map((p) => p.systemId).toSet(),
-      {stateOf(tester).selectedSystemId},
-    );
-  });
-
-  testWidgets('en pantalla ancha el diapasón no pasa de 900 y queda centrado', (
-    tester,
-  ) async {
-    await pump(tester, size: const Size(1400, 900));
-    final rect = tester.getRect(find.byType(FretboardDiagram).first);
-    expect(rect.width, lessThanOrEqualTo(900));
-    expect(rect.center.dx, closeTo(700, 1));
-    expect(tester.takeException(), isNull);
-  });
-
-  for (final language in AppLanguage.values) {
-    testWidgets('a 360 dp (${language.name}) los tres botones y el contexto '
-        'caben, con cualquier posición elegida', (tester) async {
-      CurrentLanguage.value = language;
+  group('detalle', () {
+    testWidgets('arriba solo queda la tónica', (tester) async {
       await pump(tester);
-      final count = stateOf(tester).visiblePatterns.length;
-      for (var i = 0; i < count; i++) {
-        await choose(tester, i);
-        expect(tester.takeException(), isNull, reason: 'posición $i');
-        final pill = tester.getRect(find.byKey(const Key('scale-pattern')));
-        expect(pill.left, greaterThanOrEqualTo(0));
-        expect(pill.right, lessThanOrEqualTo(360));
-      }
+      expect(find.byKey(const Key('scale-root')), findsOneWidget);
+      expect(find.text(AppStrings.scaleSystem), findsNothing);
+      expect(find.text(AppStrings.scaleFingering), findsNothing);
     });
-  }
+
+    testWidgets('C mayor abre en la Posición 1 de 3NPS', (tester) async {
+      await pump(tester);
+      final state = stateOf(tester);
+      expect(state.selectedPatternIndex, isNull);
+      expect(state.hasSelectedPattern, isFalse);
+      final preview = board(tester).pattern;
+      expect(preview.systemId, 'three_nps');
+      expect(preview.positionName, 'Posición 1');
+      expect(preview.startingFret, 8);
+      expect(
+        tester.widget<Text>(find.byKey(const Key('scale-pattern-context'))).data,
+        contains('Posición 1 · 3NPS'),
+      );
+    });
+
+    testWidgets('la vista previa sigue en Posición 1 al cambiar de tónica', (
+      tester,
+    ) async {
+      await pump(tester);
+      await tester.tap(find.byKey(const Key('scale-root')));
+      await tester.pumpAndSettle();
+      await tester.tap(find.byKey(const Key('root-A')));
+      await settle(tester);
+      final preview = board(tester).pattern;
+      expect(preview.positionName, 'Posición 1');
+      expect(preview.systemId, 'three_nps');
+    });
+
+    // 3NPS en las de 7 notas, la caja en pentatónicas y blues, CAGED en las
+    // simétricas; siempre la primera posición que declara ese sistema.
+    String expectedSystem(ScaleDefinition scale) => switch (scale.id) {
+      'pentatonic_minor' ||
+      'pentatonic_major' ||
+      'blues_minor' => 'pentatonic_two_notes',
+      _ => scale.intervals.length == 7 ? 'three_nps' : 'caged',
+    };
+
+    for (final scale in scales) {
+      testWidgets('${scale.id}: vista previa de su sistema predeterminado', (
+        tester,
+      ) async {
+        await pump(tester, scale: scale);
+        final preview = board(tester).pattern;
+        expect(preview.systemId, expectedSystem(scale));
+        expect(
+          preview.positionId,
+          scale.positions.firstWhere((p) => p.systemId == preview.systemId).id,
+        );
+      });
+    }
+
+    testWidgets('en pantalla ancha el diapasón no pasa de 900 y queda centrado', (
+      tester,
+    ) async {
+      await pump(tester, size: const Size(1400, 900));
+      final rect = tester.getRect(find.byType(FretboardDiagram).first);
+      expect(rect.width, lessThanOrEqualTo(900));
+      expect(rect.center.dx, closeTo(700, 1));
+      expect(tester.takeException(), isNull);
+    });
+  });
+
+  group('filtros en la vista ampliada', () {
+    testWidgets('la hoja agrupa por sistema y da el rango de trastes', (
+      tester,
+    ) async {
+      await pump(tester);
+      await expand(tester);
+      await tester.tap(find.byKey(const Key('neck-pattern')));
+      await tester.pumpAndSettle();
+      expect(find.text(AppStrings.scaleWholeNeck), findsOneWidget);
+      expect(find.text('CAGED'), findsWidgets);
+      final first = stateOf(tester).visiblePatterns.first;
+      expect(
+        find.descendant(
+          of: find.byKey(const Key('pattern-0')),
+          matching: find.text(
+            AppStrings.scaleFretRange(first.startingFret, first.endFret),
+          ),
+        ),
+        findsOneWidget,
+      );
+    });
+
+    testWidgets('elegir una posición se conserva y se ve al volver al detalle', (
+      tester,
+    ) async {
+      await pump(tester);
+      await expand(tester);
+      await choose(tester, 3);
+      final chosen = stateOf(tester).visiblePatterns[3];
+      expect(stateOf(tester).selectedPatternIndex, 3);
+      expect(
+        find.text('${AppStrings.scaleFingering}: ${chosen.positionName}'),
+        findsOneWidget,
+      );
+      await tester.tap(find.byType(CloseButton));
+      await tester.pumpAndSettle();
+      expect(board(tester).pattern, same(chosen));
+      expect(
+        tester.widget<Text>(find.byKey(const Key('scale-pattern-context'))).data,
+        contains(AppStrings.scaleFretRange(chosen.startingFret, chosen.endFret)),
+      );
+    });
+
+    testWidgets('"Todo el mástil" limpia la selección', (tester) async {
+      await pump(tester);
+      await expand(tester);
+      await choose(tester, 2);
+      await tester.tap(find.byKey(const Key('neck-pattern')));
+      await tester.pumpAndSettle();
+      await tester.tap(find.byKey(const Key('pattern-whole-neck')));
+      await tester.pumpAndSettle();
+      expect(stateOf(tester).selectedPatternIndex, isNull);
+    });
+
+    testWidgets('la ✕ limpia la selección', (tester) async {
+      await pump(tester);
+      await expand(tester);
+      await choose(tester, 2);
+      await tester.tap(
+        find.descendant(
+          of: find.byKey(const Key('neck-pattern')),
+          matching: find.byIcon(Icons.close),
+        ),
+      );
+      await tester.pumpAndSettle();
+      expect(stateOf(tester).selectedPatternIndex, isNull);
+    });
+
+    testWidgets('cambiar la tónica limpia la selección', (tester) async {
+      await pump(tester);
+      await expand(tester);
+      await choose(tester, 2);
+      await tester.tap(find.byType(CloseButton));
+      await tester.pumpAndSettle();
+      await tester.tap(find.byKey(const Key('scale-root')));
+      await tester.pumpAndSettle();
+      await tester.tap(find.byKey(const Key('root-E')));
+      await settle(tester);
+      expect(stateOf(tester).selectedPatternIndex, isNull);
+      expect(stateOf(tester).rootName, 'E');
+    });
+
+    testWidgets('elegir un sistema filtra, limpia la selección y cambia la '
+        'vista previa', (tester) async {
+      await pump(tester);
+      await expand(tester);
+      await choose(tester, 2);
+      await tester.tap(find.byKey(const Key('neck-system')));
+      await tester.pumpAndSettle();
+      await tester.tap(find.widgetWithText(ListTile, 'CAGED').first);
+      await settle(tester);
+      final state = stateOf(tester);
+      expect(state.selectedPatternIndex, isNull);
+      expect(state.visiblePatterns.map((p) => p.systemId).toSet(), {'caged'});
+      expect(state.currentPattern!.positionName, 'Forma C');
+    });
+
+    for (final language in AppLanguage.values) {
+      for (final size in const [Size(744, 308), Size(360, 800)]) {
+        testWidgets('${size.width.toInt()}×${size.height.toInt()} '
+            '(${language.name}): caben los nombres más largos', (tester) async {
+          CurrentLanguage.value = language;
+          await pump(
+            tester,
+            scale: scales.firstWhere((s) => s.id == 'pentatonic_minor'),
+          );
+          await expand(tester);
+          tester.view.physicalSize = size;
+          await tester.pumpAndSettle();
+          await tester.tap(find.byKey(const Key('neck-system')));
+          await tester.pumpAndSettle();
+          await tester.tap(find.byType(ListTile).last);
+          await settle(tester);
+          await tester.tap(find.byKey(const Key('neck-pattern')));
+          await tester.pumpAndSettle();
+          await tester.tap(find.byKey(const Key('pattern-0')));
+          await tester.pumpAndSettle();
+          expect(tester.takeException(), isNull);
+          for (final key in const ['neck-system', 'neck-pattern', 'neck-label']) {
+            final rect = tester.getRect(find.byKey(Key(key)));
+            expect(rect.left, greaterThanOrEqualTo(0), reason: key);
+            expect(rect.right, lessThanOrEqualTo(size.width), reason: key);
+          }
+        });
+      }
+    }
+  });
 }

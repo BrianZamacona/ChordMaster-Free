@@ -15,12 +15,17 @@ class SelectorPill extends StatelessWidget {
     required this.value,
     required this.onOpen,
     this.onClear,
+    this.maxLines,
   });
 
   final String label;
   final String? value;
   final VoidCallback onOpen;
   final VoidCallback? onClear;
+
+  /// Con valor, el texto se corta con "…" en vez de crecer (barras de altura
+  /// fija); sin él, parte en varias líneas.
+  final int? maxLines;
 
   @override
   Widget build(BuildContext context) {
@@ -41,6 +46,8 @@ class SelectorPill extends StatelessWidget {
               Flexible(
                 child: Text(
                   active ? '$label: $value' : label,
+                  maxLines: maxLines,
+                  overflow: maxLines == null ? null : TextOverflow.ellipsis,
                   style: Theme.of(context).textTheme.labelLarge?.copyWith(
                         fontWeight: active ? FontWeight.w700 : FontWeight.w400,
                       ),
