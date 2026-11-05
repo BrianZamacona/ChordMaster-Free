@@ -7,6 +7,8 @@ import '../features/chords/chord_compare_screen.dart';
 import '../features/chords/chord_detail_screen.dart';
 import '../features/chords/chord_explorer_screen.dart';
 import '../features/chords/chord_library_screen.dart';
+import '../features/circle/circle_build_screen.dart';
+import '../features/circle/circle_screen.dart';
 import '../features/ear_training/ear_training_screen.dart';
 import '../features/health/health_screen.dart';
 import '../features/home/home_screen.dart';
@@ -106,6 +108,16 @@ final GoRouter appRouter = GoRouter(
                       builder: (_, state) => LessonDetailScreen(
                         lessonId: state.pathParameters['id']!,
                       ),
+                    ),
+                  ],
+                ),
+                GoRoute(
+                  path: 'circle',
+                  builder: (_, _) => const CircleScreen(),
+                  routes: [
+                    GoRoute(
+                      path: 'build',
+                      builder: (_, _) => const CircleBuildScreen(),
                     ),
                   ],
                 ),
