@@ -89,6 +89,13 @@ class DoubleStopPainter extends CustomPainter {
     final top = at(0, startFret).dy;
     final bottom = at(5, startFret).dy;
 
+    // Las notas llevan su nombre: en una cuerda al aire ya dice la afinación, y
+    // escribirla otra vez al lado la duplicaría.
+    final named = {
+      for (final pair in pairs)
+        for (final mark in [pair.root, pair.interval])
+          if (mark.fret == 0) mark.stringIndex,
+    };
     final stringPaint = Paint()..color = palette.fretString;
     for (var s = 0; s < 6; s++) {
       final y = at(s, startFret).dy;
@@ -97,6 +104,7 @@ class DoubleStopPainter extends CustomPainter {
         Offset(size.width, y),
         stringPaint..strokeWidth = 0.8 + 1.6 * s / 5,
       );
+      if (named.contains(s)) continue;
       _text(
         canvas,
         tuningLabels[s],

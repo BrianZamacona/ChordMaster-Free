@@ -2,8 +2,10 @@ import 'dart:convert';
 import 'dart:io';
 
 import 'package:chordmaster_free/core/i18n/tr.dart';
+import 'package:chordmaster_free/data/models/note_coordinate.dart';
 import 'package:chordmaster_free/data/models/scale_definition.dart';
 import 'package:chordmaster_free/data/repository/scale_repository.dart';
+import 'package:chordmaster_free/domain/theory/neck_notes.dart';
 import 'package:chordmaster_free/services/key_value_store.dart';
 import 'package:chordmaster_free/ui/scales/detail/scale_detail_notifier.dart';
 import 'package:chordmaster_free/ui/scales/detail/scale_detail_screen.dart';
@@ -220,11 +222,36 @@ void main() {
       final state = stateOf(tester);
       final chosen = state.visiblePatterns[4];
       final widget = neck(tester);
-      expect(widget.highlighted, chosen.coordinates.toSet());
+      expect(widget.highlighted, patternAcrossNeck(chosen.coordinates).toSet());
+      expect(widget.highlighted!.containsAll(chosen.coordinates), isTrue);
       expect(widget.focus, (start: chosen.startingFret, end: chosen.endFret));
       // La digitación es parte de la escala, y el resto queda atenuado.
       expect(widget.coordinates.toSet().containsAll(widget.highlighted!), isTrue);
       expect(widget.coordinates.length, greaterThan(widget.highlighted!.length));
+    });
+
+    testWidgets('C mayor, Posición 3 de 3NPS: también se marca en el traste 12', (
+      tester,
+    ) async {
+      await pump(tester);
+      await expand(tester);
+      final positions = stateOf(tester).visiblePatterns;
+      final index = positions.indexWhere(
+        (p) => p.positionId == 'nps_3',
+      );
+      expect(positions[index].startingFret, 0);
+      await chooseInNeck(tester, index);
+      final highlighted = neck(tester).highlighted!;
+      for (final c in positions[index].coordinates) {
+        final copy = highlighted.lookup(
+          NoteCoordinate(string: c.string, fret: c.fret + 12, isRoot: c.isRoot),
+        );
+        expect(copy, isNotNull, reason: 'cuerda ${c.string}, traste ${c.fret}');
+        expect(copy!.note, c.note);
+        expect(copy.interval, c.interval);
+      }
+      expect(highlighted, hasLength(positions[index].coordinates.length * 2));
+      expect(neck(tester).coordinates.toSet().containsAll(highlighted), isTrue);
     });
 
     testWidgets('limpiar vuelve a todo el mástil', (tester) async {

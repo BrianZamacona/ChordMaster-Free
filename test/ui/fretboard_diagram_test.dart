@@ -182,6 +182,59 @@ void main() {
       expect(openRingCount(render), 0);
     });
 
+    group('la nota al aire no se duplica con la afinación', () {
+      const open = NoteCoordinate(
+        string: 1,
+        fret: 0,
+        isRoot: false,
+        note: 'E',
+        interval: '3',
+      );
+
+      Future<RenderObject> labelled(
+        WidgetTester tester,
+        FretboardLabel label,
+      ) async {
+        await tester.pumpWidget(
+          MaterialApp(
+            theme: lightTheme,
+            home: Scaffold(
+              body: SizedBox(
+                width: 328,
+                child: FretboardDiagram(
+                  pattern: _pattern(0, 4, const [open]),
+                  label: label,
+                ),
+              ),
+            ),
+          ),
+        );
+        return tester.renderObject(
+          find.descendant(
+            of: find.byType(FretboardDiagram),
+            matching: find.byType(CustomPaint),
+          ),
+        );
+      }
+
+      testWidgets('con notas, esa cuerda ya no repite su nombre', (tester) async {
+        // Cinco nombres de cuerda, el número de traste y la nota.
+        expect(
+          await labelled(tester, FretboardLabel.note),
+          paintsExactlyCountTimes(#drawParagraph, 5 + 1 + 1),
+        );
+      });
+
+      testWidgets('con intervalos, la nota no dice la afinación: se conserva', (
+        tester,
+      ) async {
+        expect(
+          await labelled(tester, FretboardLabel.interval),
+          paintsExactlyCountTimes(#drawParagraph, 6 + 1 + 1),
+        );
+      });
+    });
+
     testWidgets('una posición desde el traste 5 no dibuja cejuela', (
       tester,
     ) async {

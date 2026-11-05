@@ -104,6 +104,53 @@ void main() {
       );
     });
 
+    testWidgets('una pareja al aire no repite el nombre de su cuerda', (
+      tester,
+    ) async {
+      final group = findDiatonicDoubleStopPairs(
+        'C',
+        DiatonicDoubleStopInterval.third,
+        const FretRange(0, 12),
+      ).firstWhere(
+        (g) => g.pairs.any((p) => p.root.fret == 0 || p.interval.fret == 0),
+      );
+      final openStrings = {
+        for (final p in group.pairs)
+          for (final m in [p.root, p.interval])
+            if (m.fret == 0) m.stringIndex,
+      };
+      final notes = {
+        for (final p in group.pairs)
+          for (final m in [p.root, p.interval]) (m.stringIndex, m.fret),
+      };
+      await tester.pumpWidget(
+        MaterialApp(
+          theme: lightTheme,
+          home: Scaffold(
+            body: DoubleStopFretboard(
+              pairs: group.pairs,
+              range: const FretRange(0, 12),
+              tonic: 'C',
+            ),
+          ),
+        ),
+      );
+      // Afinación sin las cuerdas al aire, 12 números, un grado por pareja y
+      // una etiqueta por nota.
+      expect(
+        tester.renderObject(
+          find.descendant(
+            of: find.byType(DoubleStopFretboard),
+            matching: find.byType(CustomPaint),
+          ),
+        ),
+        paintsExactlyCountTimes(
+          #drawParagraph,
+          6 - openStrings.length + 12 + group.pairs.length + notes.length,
+        ),
+      );
+    });
+
     testWidgets('13–24 no la dibuja', (tester) async {
       expect(
         await board(tester, const FretRange(13, 24)),

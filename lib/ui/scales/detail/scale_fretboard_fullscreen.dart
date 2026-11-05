@@ -187,7 +187,9 @@ class _ScaleFretboardFullscreenState
                   rootSemitone: state.rootSemitone,
                   intervals: scale.intervals,
                 ),
-                highlighted: selected?.coordinates.toSet(),
+                highlighted: selected == null
+                    ? null
+                    : patternAcrossNeck(selected.coordinates).toSet(),
                 focus: selected == null
                     ? null
                     : (start: selected.startingFret, end: selected.endFret),

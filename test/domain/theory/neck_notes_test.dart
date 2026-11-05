@@ -1,3 +1,4 @@
+import 'package:chordmaster_free/data/models/note_coordinate.dart';
 import 'package:chordmaster_free/domain/theory/neck_notes.dart';
 import 'package:chordmaster_free/domain/theory/notes.dart';
 import 'package:flutter_test/flutter_test.dart';
@@ -53,6 +54,54 @@ void main() {
     final notes = scaleNotesOnNeck(rootSemitone: 9, intervals: naturalMinor);
     expect(notes.firstWhere((n) => n.note == 'F').interval, 'b6');
     expect(notes.any((n) => n.interval == '#5'), isFalse);
+  });
+
+  group('una posición en todas sus octavas', () {
+    const open = NoteCoordinate(string: 1, fret: 0, isRoot: false, note: 'E');
+    const high = NoteCoordinate(string: 1, fret: 5, isRoot: true, note: 'A');
+
+    test('desde el aire se repite completa en el traste 12', () {
+      final all = patternAcrossNeck(const [open, high]);
+      expect(all.map((c) => c.fret).toList()..sort(), [0, 5, 12, 17]);
+      expect(all.where((c) => c.fret == 17).single.isRoot, isTrue);
+      expect(all.where((c) => c.fret == 12).single.note, 'E');
+    });
+
+    test('también baja: desde el traste 12 se repite desde el aire', () {
+      final frets = patternAcrossNeck(const [
+        NoteCoordinate(string: 1, fret: 12, isRoot: false),
+        NoteCoordinate(string: 1, fret: 17, isRoot: false),
+      ]).map((c) => c.fret).toList()..sort();
+      expect(frets, [0, 5, 12, 17]);
+    });
+
+    test('una posición que no cabe completa no se recorta', () {
+      // De 10 a 14: arriba llegaría al 26 y abajo al -2.
+      final frets = patternAcrossNeck(const [
+        NoteCoordinate(string: 1, fret: 10, isRoot: false),
+        NoteCoordinate(string: 1, fret: 14, isRoot: false),
+      ]).map((c) => c.fret).toList()..sort();
+      expect(frets, [10, 14]);
+    });
+
+    test('cabe tres veces si es corta y empieza en el aire', () {
+      final frets = patternAcrossNeck(const [
+        NoteCoordinate(string: 2, fret: 0, isRoot: false),
+      ]).map((c) => c.fret).toList()..sort();
+      expect(frets, [0, 12, 24]);
+    });
+
+    test('la copia suena en la misma nota: sigue en la escala', () {
+      final scale = scaleNotesOnNeck(rootSemitone: 0, intervals: major).toSet();
+      final position = scale.where((n) => n.fret <= 5).toList();
+      final copies = patternAcrossNeck(position);
+      expect(copies.any((c) => c.fret >= 12), isTrue);
+      expect(scale.containsAll(copies), isTrue);
+    });
+
+    test('sin notas no hay copias', () {
+      expect(patternAcrossNeck(const []), isEmpty);
+    });
   });
 
   test('maxFret limita el mástil', () {

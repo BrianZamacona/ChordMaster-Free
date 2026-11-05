@@ -353,10 +353,19 @@ class _BoardPainter extends CustomPainter {
             ..strokeWidth = 1,
         );
     }
+    // Con nombres de nota, la nota al aire ya dice la afinación de su cuerda:
+    // escribirla otra vez al lado la duplicaría.
+    final named = label == FretboardLabel.note
+        ? {
+            for (final c in coordinates)
+              if (c.fret == 0) c.string,
+          }
+        : const <int>{};
     for (var string = 1; string <= 6; string++) {
       if (pinned) {
         _string(canvas, string, FretGridGeometry.stringStartX, size.width);
       }
+      if (named.contains(string)) continue;
       _text(
         canvas,
         tuningLabels[string - 1],
