@@ -37,6 +37,12 @@ class LearnHubScreen extends StatelessWidget {
             subtitle: AppStrings.hubProgressionsSub,
             route: '/learn/progressions',
           ),
+          HubEntry(
+            icon: Icons.donut_large,
+            title: AppStrings.circleTitle,
+            subtitle: AppStrings.hubCircleSub,
+            route: '/learn/circle',
+          ),
         ],
       );
 }

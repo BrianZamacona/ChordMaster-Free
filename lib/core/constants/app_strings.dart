@@ -189,6 +189,57 @@ class AppStrings {
     es: 'Progresiones comunes con las digitaciones más cómodas, y las tuyas.',
     en: 'Common progressions with the most comfortable fingerings, and your own.',
   );
+  static String get hubCircleSub => tr(
+    es: 'Gira la rueda: armaduras, acordes de cada tonalidad y su cadencia.',
+    en: 'Spin the wheel: key signatures, the chords of each key and its cadence.',
+  );
+  static String get circleTitle =>
+      tr(es: 'Círculo de quintas', en: 'Circle of fifths');
+  static String get circleWheelHint => tr(
+    es: 'Gira con el dedo o usa los botones para cambiar de tonalidad.',
+    en: 'Spin with your finger or use the buttons to change key.',
+  );
+  static String get circleStepLeft =>
+      tr(es: 'Una quinta abajo', en: 'One fifth down');
+  static String get circleStepRight =>
+      tr(es: 'Una quinta arriba', en: 'One fifth up');
+  static String get circleTickOn =>
+      tr(es: 'Activar el tic de la rueda', en: 'Turn on the wheel tick');
+  static String get circleTickOff =>
+      tr(es: 'Apagar el tic de la rueda', en: 'Turn off the wheel tick');
+  static String circleKeySemantics(String name, String signature) => tr(
+    es: '$name mayor, $signature',
+    en: '$name major, $signature',
+  );
+  static String circleKeyTitle(String name, String relative) => tr(
+    es: '$name mayor · relativa ${relative}m',
+    en: '$name major · relative ${relative}m',
+  );
+  static String circleListenCadence(String cadence) => tr(
+    es: 'Escuchar cadencia $cadence',
+    en: 'Hear the cadence $cadence',
+  );
+  static String circlePlayingCadence(String numeral, int step, int total) => tr(
+    es: 'Suena $numeral ($step de $total). Detener',
+    en: 'Playing $numeral ($step of $total). Stop',
+  );
+  static String circleCadenceNote(String cadence) => 'V → I: $cadence.';
+  static String circleToProgressions(String name) => tr(
+    es: 'Usar $name en Progresiones',
+    en: 'Use $name in Progressions',
+  );
+  static String circleOpenChord(String name) =>
+      tr(es: 'Abrir la ficha de $name', en: 'Open the $name chord page');
+  static String get circleBuildTitle =>
+      tr(es: '¿Cómo se arma?', en: 'How is it built?');
+  static String circleBuildProgress(int step, int total) =>
+      tr(es: 'Paso $step de $total', en: 'Step $step of $total');
+  static String get circleBuildNeck =>
+      tr(es: 'Esta quinta en el mástil', en: 'This fifth on the neck');
+  static String circleBuildNeckStart(String name) =>
+      tr(es: '$name en el mástil', en: '$name on the neck');
+  static String get circleBuildPrevious => tr(es: 'Anterior', en: 'Previous');
+  static String get circleBuildNext => tr(es: 'Siguiente', en: 'Next');
   static String get hubEar => tr(es: 'Oído', en: 'Ear');
   static String get hubEarSub => tr(
     es: 'Reconoce intervalos y acordes de oído.',
