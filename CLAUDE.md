@@ -50,7 +50,8 @@ cada nota pertenezca a la escala. No bajar la tolerancia de 0.
   `scale_names.dart`; intervalos en `interval_texts.dart`.
 - Tipografía: Bricolage Grotesque (títulos), Atkinson Hyperlegible (texto, con Plex Mono de
   respaldo para "→"), IBM Plex Mono
-  (`musicMono()`, notas/intervalos). Empaquetadas en `assets/google_fonts/` (OFL); los tests
+  (`musicMono()`, notas/intervalos; solo trae pesos 400 y 600: otro peso falla al cargar).
+  Empaquetadas en `assets/google_fonts/` (OFL); los tests
   que tocan `lightTheme`/`darkTheme` deben llamar `TestWidgetsFlutterBinding.ensureInitialized()`.
 
 ## Decisiones musicales vigentes
@@ -179,7 +180,9 @@ cada nota pertenezca a la escala. No bajar la tolerancia de 0.
     `adb shell wm density 640` da 360 dp; al terminar, `adb shell wm density reset`. `adb` está en
     `%LOCALAPPDATA%\Android\Sdk\platform-tools`, y `uiautomator` no ve la app: tocar por
     coordenadas sobre una captura. El primer arranque en debug tarda: confirmar con otra captura
-    que cada paso ocurrió.
+    que cada paso ocurrió. Si el APK debug no cabe, `flutter build apk --release --target-platform
+    android-x64`. "Reducir movimiento" en Android: `settings put global transition_animation_scale 0`
+    (no `animator_duration_scale`); al terminar, volver a 1.
 
 ## Dependencias y herramientas
 - `pubspec.yaml` fija versiones exactas. La versión de Flutter va en `ci.yml` y `release.yml`.
@@ -224,6 +227,19 @@ Objetivo: código legible y mantenible antes que ingenioso. Capas (puertos y ada
   painter del diapasón, parámetro `links`).
 - Todo texto nuevo de teoría: bilingüe y con test que verifique lo que afirma.
 
+## Círculo de quintas
+- `lib/domain/theory/circle_of_fifths.dart`: todo por regla, sin tablas. Orden sumando 7 semitonos
+  desde C, armadura por posición, ventana diatónica, distancia, formas en el mástil y la matemática
+  de la rueda (ángulo, acomodo, camino corto, clics). Rutas `/learn/circle` y `/learn/circle/build`.
+- Notación (decisión del usuario): la app usa solo sostenidos, también aquí. Las tonalidades se
+  nombran A#, D#…; la armadura se da como cantidad ("2 ♯", "3 ♭") y ninguna nota se nombra con
+  bemol. F# es "6 ♯, enarmónica de 6 ♭". Su 6º sostenido cae en F, que el texto aclara como E#.
+- Notas en común entre dos mayores: se calculan de las escalas. `7 − distancia` vale de 0 a 5; a
+  distancia 6 son 2, no 1 (C y F# comparten B y F).
+- La rueda (`circle_wheel.dart`) está fuera del scroll para que un arrastre siempre la gire. La
+  rotación vive en un `AnimationController` que repinta solo su `CustomPainter`; el panel se
+  reconstruye únicamente al cambiar de tonalidad, y los textos del painter van ya medidos.
+
 ## Mapa del código
 - `lib/domain/theory/double_stops.dart` — double stops diatónicos y fijos.
 - `lib/domain/voicing/` — `ergonomics.dart` (incl. modo principiante), `voice_leading.dart`,
@@ -264,3 +280,18 @@ Objetivo: código legible y mantenible antes que ingenioso. Capas (puertos y ada
    `config.build_settings['GCC_PREPROCESSOR_DEFINITIONS'] ||= ['$(inherited)', 'PERMISSION_MICROPHONE=1', 'PERMISSION_NOTIFICATIONS=1']`;
    sin eso el micrófono queda siempre denegado. `Info.plist` ya trae
    `NSMicrophoneUsageDescription`.
+6. Círculo de quintas, fase 2:
+   - Dominantes secundarias: V7 de cada diatónico (el vecino de la derecha), cadena
+     III7–VI7–II7–V7–I y ii–V–I como 3 pasos contra reloj, con audio.
+   - Modulación: elegir tonalidad origen y destino → distancia, notas en común y acordes pivote
+     (tríadas diatónicas compartidas).
+   - Intercambio modal: menor paralela (3 pasos contra reloj) y sus prestados iv, bVI y bVII,
+     nombrados con sostenidos según la regla.
+   - Modos ordenados por brillo (lidio → locrio) como recorrido del círculo.
+7. Círculo de quintas, fase 3:
+   - Capo y transposición: girar una progresión a otra tonalidad y "¿qué capo uso?": para una
+     tonalidad, el traste de capo y la forma abierta (C, A, G, E o D) que la dan.
+   - Juego/quiz: "¿cuál es el V de E?", "¿cuántos ♯ tiene A?", "¿qué acorde falta en la ventana?",
+     con récord en `userProgress` y un logro nuevo que se pueda conseguir.
+   - Unidad "Círculo de quintas" en Lecciones (según las reglas de esa sección), con un reto que
+     se supere con el récord del quiz.
