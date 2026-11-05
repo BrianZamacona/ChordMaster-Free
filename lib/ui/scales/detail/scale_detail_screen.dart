@@ -13,7 +13,7 @@ import '../../../domain/theory/notes.dart';
 import '../../../ui/widgets/fretboard_diagram.dart';
 import '../../theme.dart';
 import 'scale_detail_notifier.dart';
-import 'widgets/pattern_tab_bar.dart';
+import 'widgets/pattern_selector.dart';
 import 'widgets/scale_info_panel.dart';
 import 'widgets/scale_theory_cards.dart';
 
@@ -83,22 +83,24 @@ class ScaleDetailScreen extends ConsumerWidget {
                   onOpen: () => _showSystemSheet(context, state.selectedSystemId, notifier.changeSystem),
                   onClear: () => notifier.changeSystem(null),
                 ),
+                PatternSelectorPill(
+                  key: const Key('scale-pattern'),
+                  patterns: state.visiblePatterns,
+                  selectedIndex: state.hasSelectedPattern
+                      ? state.selectedPatternIndex
+                      : null,
+                  onSelected: notifier.selectPattern,
+                ),
               ],
             ),
           ),
-          PatternTabBar(
-            patterns: state.visiblePatterns,
-            selectedIndex: state.selectedPatternIndex,
-            onSelected: notifier.selectPattern,
-            isLoading: state.isLoading,
-          ),
-          const SizedBox(height: 12),
+          const SizedBox(height: 4),
           if (pattern != null) ...[
             Padding(
               padding: const EdgeInsets.symmetric(horizontal: 16),
               child: FretboardDiagram(pattern: pattern),
             ),
-            const SizedBox(height: 8),
+            _PatternContext(state: state, notifier: notifier),
             IntervalLegend(
               labels: [
                 for (final c in pattern.coordinates)
@@ -191,6 +193,70 @@ class ScaleDetailScreen extends ConsumerWidget {
           );
         },
       );
+}
+
+/// Qué posición muestra el diapasón y, con una elegida, ‹ › para cambiarla.
+class _PatternContext extends StatelessWidget {
+  const _PatternContext({required this.state, required this.notifier});
+
+  final ScaleDetailState state;
+  final ScaleDetailNotifier notifier;
+
+  @override
+  Widget build(BuildContext context) {
+    final pattern = state.currentPattern!;
+    final name = positionDisplayName(pattern.positionName);
+    final style = Theme.of(
+      context,
+    ).textTheme.labelSmall?.copyWith(color: context.palette.textSecondary);
+    if (!state.hasSelectedPattern) {
+      return Padding(
+        padding: const EdgeInsets.fromLTRB(16, 4, 16, 8),
+        child: Text(
+          AppStrings.scalePreviewHint(name),
+          key: const Key('scale-pattern-context'),
+          style: style,
+        ),
+      );
+    }
+    final index = state.selectedPatternIndex!;
+    return Padding(
+      padding: const EdgeInsets.symmetric(horizontal: 4),
+      child: Row(
+        children: [
+          IconButton(
+            key: const Key('scale-pattern-previous'),
+            icon: const Icon(Icons.chevron_left),
+            tooltip: AppStrings.scalePreviousPattern,
+            onPressed: index > 0
+                ? () => notifier.selectPattern(index - 1)
+                : null,
+          ),
+          Expanded(
+            child: Text(
+              AppStrings.scalePatternContext(
+                name,
+                patternSystemName(pattern),
+                pattern.startingFret,
+                pattern.endFret,
+              ),
+              key: const Key('scale-pattern-context'),
+              textAlign: TextAlign.center,
+              style: style,
+            ),
+          ),
+          IconButton(
+            key: const Key('scale-pattern-next'),
+            icon: const Icon(Icons.chevron_right),
+            tooltip: AppStrings.scaleNextPattern,
+            onPressed: index < state.visiblePatterns.length - 1
+                ? () => notifier.selectPattern(index + 1)
+                : null,
+          ),
+        ],
+      ),
+    );
+  }
 }
 
 class _DiagramPlaceholder extends StatelessWidget {

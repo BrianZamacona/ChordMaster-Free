@@ -38,11 +38,13 @@ class SelectorPill extends StatelessWidget {
           child: Row(
             mainAxisSize: MainAxisSize.min,
             children: [
-              Text(
-                active ? '$label: $value' : label,
-                style: Theme.of(context).textTheme.labelLarge?.copyWith(
-                      fontWeight: active ? FontWeight.w700 : FontWeight.w400,
-                    ),
+              Flexible(
+                child: Text(
+                  active ? '$label: $value' : label,
+                  style: Theme.of(context).textTheme.labelLarge?.copyWith(
+                        fontWeight: active ? FontWeight.w700 : FontWeight.w400,
+                      ),
+                ),
               ),
               const SizedBox(width: 2),
               if (clearable)

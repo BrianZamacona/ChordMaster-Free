@@ -401,6 +401,29 @@ class AppStrings {
     es: 'Sin posiciones para este sistema',
     en: 'No positions for this system',
   );
+  static String get scaleFingering => tr(es: 'Digitación', en: 'Fingering');
+  static String get scaleFingeringTitle =>
+      tr(es: 'Elige una digitación', en: 'Choose a fingering');
+  static String get scaleWholeNeck =>
+      tr(es: 'Todo el mástil', en: 'Whole neck');
+  static String scaleFretRange(int start, int end) =>
+      tr(es: 'trastes $start–$end', en: 'frets $start–$end');
+  static String scalePatternContext(
+    String position,
+    String system,
+    int start,
+    int end,
+  ) => '$position · $system · ${scaleFretRange(start, end)}';
+  static String scalePreviewHint(String position) => tr(
+    es: 'Vista previa: $position. Elige una digitación o amplía para ver '
+        'todo el mástil.',
+    en: 'Preview: $position. Choose a fingering or expand to see the whole '
+        'neck.',
+  );
+  static String get scalePreviousPattern =>
+      tr(es: 'Digitación anterior', en: 'Previous fingering');
+  static String get scaleNextPattern =>
+      tr(es: 'Digitación siguiente', en: 'Next fingering');
   static String get scaleShapeOrder => tr(es: 'Orden', en: 'Order');
   static String get cagedPositions =>
       tr(es: 'Posiciones CAGED', en: 'CAGED positions');

@@ -11,7 +11,7 @@ class ScaleDetailState {
     required this.rootSemitone,
     required this.selectedSystemId,
     required this.visiblePatterns,
-    required this.selectedPatternIndex,
+    this.selectedPatternIndex,
     this.isLoading = false,
   });
 
@@ -19,15 +19,24 @@ class ScaleDetailState {
   final int rootSemitone;
   final String? selectedSystemId;
   final List<ResolvedPattern> visiblePatterns;
-  final int selectedPatternIndex;
+
+  /// Digitación elegida; `null` = ninguna, es decir, todo el mástil.
+  final int? selectedPatternIndex;
   final bool isLoading;
 
   String get rootName => noteNames[rootSemitone];
-  bool get hasPattern => visiblePatterns.isNotEmpty;
 
+  bool get hasSelectedPattern =>
+      selectedPatternIndex != null && visiblePatterns.isNotEmpty;
+
+  /// La digitación elegida o, sin elegir, la primera: el diapasón fijo de la
+  /// pantalla nunca queda vacío.
   ResolvedPattern? get currentPattern => visiblePatterns.isEmpty
       ? null
-      : visiblePatterns[selectedPatternIndex.clamp(0, visiblePatterns.length - 1)];
+      : visiblePatterns[(selectedPatternIndex ?? 0).clamp(
+          0,
+          visiblePatterns.length - 1,
+        )];
 
   List<String> get scaleNoteNames {
     final rootIdx = rootSemitone;
@@ -41,13 +50,16 @@ class ScaleDetailState {
     int? selectedPatternIndex,
     bool? isLoading,
     bool clearSystem = false,
+    bool clearPattern = false,
   }) =>
       ScaleDetailState(
         scale: scale,
         rootSemitone: rootSemitone ?? this.rootSemitone,
         selectedSystemId: clearSystem ? null : selectedSystemId ?? this.selectedSystemId,
         visiblePatterns: visiblePatterns ?? this.visiblePatterns,
-        selectedPatternIndex: selectedPatternIndex ?? this.selectedPatternIndex,
+        selectedPatternIndex: clearPattern
+            ? null
+            : selectedPatternIndex ?? this.selectedPatternIndex,
         isLoading: isLoading ?? this.isLoading,
       );
 }
@@ -67,7 +79,6 @@ class ScaleDetailNotifier extends Notifier<ScaleDetailState> {
       rootSemitone: _arg.root % 12,
       selectedSystemId: null,
       visiblePatterns: const [],
-      selectedPatternIndex: 0,
     );
     _load(initial);
     // Logro "Explorador de escalas": 10 escalas distintas abiertas.
@@ -81,12 +92,16 @@ class ScaleDetailNotifier extends Notifier<ScaleDetailState> {
   }
 
   void changeRoot(int semitone) =>
-      _load(state.copyWith(rootSemitone: semitone, selectedPatternIndex: 0));
+      _load(state.copyWith(rootSemitone: semitone, clearPattern: true));
   void changeSystem(String? systemId) => _load(systemId == null
-      ? state.copyWith(clearSystem: true, selectedPatternIndex: 0)
-      : state.copyWith(selectedSystemId: systemId, selectedPatternIndex: 0));
-  void selectPattern(int index) {
-    if (index < state.visiblePatterns.length) {
+      ? state.copyWith(clearSystem: true, clearPattern: true)
+      : state.copyWith(selectedSystemId: systemId, clearPattern: true));
+
+  /// Elige una digitación de las visibles; `null` vuelve a todo el mástil.
+  void selectPattern(int? index) {
+    if (index == null) {
+      state = state.copyWith(clearPattern: true);
+    } else if (index >= 0 && index < state.visiblePatterns.length) {
       state = state.copyWith(selectedPatternIndex: index);
     }
   }
@@ -101,7 +116,6 @@ class ScaleDetailNotifier extends Notifier<ScaleDetailState> {
     state = pending.copyWith(
       visiblePatterns: patterns,
       isLoading: false,
-      selectedPatternIndex: patterns.isEmpty ? 0 : pending.selectedPatternIndex.clamp(0, patterns.length - 1),
     );
   }
 }
