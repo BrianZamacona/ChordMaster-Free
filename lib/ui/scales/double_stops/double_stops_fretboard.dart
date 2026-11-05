@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 
 import '../../../domain/theory/double_stops.dart';
 import '../../theme.dart';
+import '../../widgets/fret_grid_geometry.dart';
 import 'double_stops_layout.dart';
 
 const _romanNumerals = ['I', 'II', 'III', 'IV', 'V', 'VI', 'VII'];
@@ -31,8 +32,6 @@ class DoubleStopFretboard extends StatelessWidget {
   final String tonic;
   final double height;
 
-  int get fretCount => range.end - range.start + 1;
-
   @override
   Widget build(BuildContext context) => SizedBox(
     height: height,
@@ -42,7 +41,7 @@ class DoubleStopFretboard extends StatelessWidget {
         painter: DoubleStopPainter(
           pairs: pairs,
           startFret: range.start,
-          fretCount: fretCount,
+          endFret: range.end,
           tonic: tonic,
           palette: context.palette,
         ),
@@ -55,18 +54,16 @@ class DoubleStopPainter extends CustomPainter {
   const DoubleStopPainter({
     required this.pairs,
     required this.startFret,
-    required this.fretCount,
+    required this.endFret,
     required this.tonic,
     required this.palette,
   });
 
   final List<DoubleStopPair> pairs;
   final int startFret;
-  final int fretCount;
+  final int endFret;
   final String tonic;
   final AppPalette palette;
-
-  static const _dotFrets = [3, 5, 7, 9, 15, 17, 19, 21];
 
   void _text(Canvas canvas, String text, Offset center, TextStyle style) {
     final tp = TextPainter(
@@ -85,11 +82,10 @@ class DoubleStopPainter extends CustomPainter {
 
   @override
   void paint(Canvas canvas, Size size) {
-    const stringNames = ['e', 'B', 'G', 'D', 'A', 'E'];
+    final grid = doubleStopGrid(size, startFret: startFret, endFret: endFret);
     Offset at(int s, int f) =>
-        noteOffset(s, f, size, startFret: startFret, fretCount: fretCount);
+        noteOffset(s, f, size, startFret: startFret, endFret: endFret);
 
-    final fretWidth = (size.width - fretboardLeftPad) / fretCount;
     final top = at(0, startFret).dy;
     final bottom = at(5, startFret).dy;
 
@@ -97,31 +93,39 @@ class DoubleStopPainter extends CustomPainter {
     for (var s = 0; s < 6; s++) {
       final y = at(s, startFret).dy;
       canvas.drawLine(
-        Offset(fretboardLeftPad, y),
+        Offset(FretGridGeometry.stringStartX, y),
         Offset(size.width, y),
         stringPaint..strokeWidth = 0.8 + 1.6 * s / 5,
       );
       _text(
         canvas,
-        stringNames[s],
-        Offset(8, y),
+        tuningLabels[s],
+        Offset(FretGridGeometry.tuningLabelX, y),
         TextStyle(fontSize: 10, color: palette.textSecondary),
       );
     }
 
-    final fretPaint = Paint()..color = palette.fretWire;
-    for (var i = 0; i <= fretCount; i++) {
-      final x = fretboardLeftPad + i * fretWidth;
-      canvas.drawLine(Offset(x, top - 8), Offset(x, bottom + 8), fretPaint);
+    // El primer alambre es la cejuela solo si la celda de al lado es el traste 1.
+    for (var wire = grid.firstFret - 1; wire <= grid.lastFret; wire++) {
+      final x = grid.fretLineX(wire);
+      final isNut = wire == 0;
+      canvas.drawLine(
+        Offset(x, top - 8),
+        Offset(x, bottom + 8),
+        Paint()
+          ..color = isNut ? palette.nut : palette.fretWire
+          ..strokeWidth = isNut ? 3 : 1,
+      );
     }
-    for (var f = startFret; f < startFret + fretCount; f++) {
+    final inlay = Paint()..color = palette.outline;
+    for (var f = grid.firstFret; f <= grid.lastFret; f++) {
       final x = at(0, f).dx;
-      if (_dotFrets.contains(f) || f == 12 || f == 24) {
-        canvas.drawCircle(
-          Offset(x, (top + bottom) / 2),
-          3,
-          Paint()..color = palette.outline,
-        );
+      if (inlayFrets.contains(f)) {
+        canvas.drawCircle(Offset(x, (top + bottom) / 2), 3, inlay);
+      } else if (doubleInlayFrets.contains(f)) {
+        canvas
+          ..drawCircle(Offset(x, top + 1.5 * grid.stringSpacing), 3, inlay)
+          ..drawCircle(Offset(x, top + 3.5 * grid.stringSpacing), 3, inlay);
       }
       _text(
         canvas,
@@ -138,7 +142,7 @@ class DoubleStopPainter extends CustomPainter {
       pairs,
       size,
       startFret: startFret,
-      fretCount: fretCount,
+      endFret: endFret,
     );
     for (final seg in segments) {
       canvas.drawLine(seg.from, seg.to, linePaint);
@@ -160,17 +164,22 @@ class DoubleStopPainter extends CustomPainter {
         if (!drawn.add((mark.stringIndex, mark.fret))) continue;
         final center = at(mark.stringIndex, mark.fret);
         final degree = degreeInMajorKey(mark.note, tonic);
-        final fill = Paint()..color = palette.intervalColor(degree);
-        if (degree == '1') {
+        final isOpen = mark.fret == 0;
+        final r = isOpen ? grid.openRadius : 10.0;
+        final shape = RRect.fromRectAndRadius(
+          Rect.fromCircle(center: center, radius: r),
+          Radius.circular(degree == '1' ? r * 0.3 : r),
+        );
+        canvas.drawRRect(shape, Paint()..color = palette.intervalColor(degree));
+        if (isOpen) {
+          // La cuerda al aire lleva anillo: se distingue también sin el color.
           canvas.drawRRect(
-            RRect.fromRectAndRadius(
-              Rect.fromCircle(center: center, radius: 10),
-              const Radius.circular(3),
-            ),
-            fill,
+            shape,
+            Paint()
+              ..style = PaintingStyle.stroke
+              ..strokeWidth = 1.5
+              ..color = palette.textPrimary,
           );
-        } else {
-          canvas.drawCircle(center, 10, fill);
         }
         _text(
           canvas,
@@ -190,7 +199,7 @@ class DoubleStopPainter extends CustomPainter {
   bool shouldRepaint(covariant DoubleStopPainter old) =>
       old.pairs != pairs ||
       old.startFret != startFret ||
-      old.fretCount != fretCount ||
+      old.endFret != endFret ||
       old.tonic != tonic ||
       old.palette != palette;
 }

@@ -5,11 +5,16 @@ import 'package:chordmaster_free/domain/theory/double_stops.dart';
 import 'package:chordmaster_free/ui/scales/double_stops/double_stops_fretboard.dart';
 import 'package:chordmaster_free/ui/scales/double_stops/double_stops_layout.dart';
 import 'package:chordmaster_free/ui/scales/double_stops/double_stops_screen.dart';
+import 'package:chordmaster_free/ui/theme.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:flutter_test/flutter_test.dart';
 
+import '../support/paint_matchers.dart';
+
 void main() {
+  TestWidgetsFlutterBinding.ensureInitialized();
+
   group('segmentLabelOffset', () {
     test('en el hueco sobre la cuerda superior, al centro de la línea', () {
       expect(
@@ -26,23 +31,62 @@ void main() {
     });
   });
   group('noteOffset', () {
-    const size = Size(280, 136);
+    // Columna de afinación de 32 y 12 celdas de 20: el traste N va entre los
+    // alambres N-1 y N.
+    const size = Size(272, 136);
 
-    test('valores fijos (0–12: 13 trastes, ancho de traste 20, separación 20)', () {
-      expect(noteOffset(0, 0, size), const Offset(30, 16));
-      expect(noteOffset(5, 12, size), const Offset(270, 116));
-      expect(noteOffset(2, 5, size), const Offset(130, 56));
+    test('0–12: el aire en su columna y el traste N en la celda N', () {
+      expect(noteOffset(0, 0, size), const Offset(21, 16));
+      expect(noteOffset(0, 1, size), const Offset(42, 16));
+      expect(noteOffset(5, 12, size), const Offset(262, 116));
+      expect(noteOffset(2, 5, size), const Offset(122, 56));
     });
 
-    test('respeta startFret y fretCount (13–24)', () {
-      const upper = Size(260, 136);
+    test('respeta startFret y endFret (13–24)', () {
       expect(
-        noteOffset(1, 13, upper, startFret: 13, fretCount: 12),
-        const Offset(30, 36),
+        noteOffset(1, 13, size, startFret: 13, endFret: 24),
+        const Offset(42, 36),
       );
       expect(
-        noteOffset(3, 24, upper, startFret: 13, fretCount: 12),
-        const Offset(250, 76),
+        noteOffset(3, 24, size, startFret: 13, endFret: 24),
+        const Offset(262, 76),
+      );
+    });
+  });
+
+  group('cejuela de double stops', () {
+    Future<RenderObject> board(WidgetTester tester, FretRange range) async {
+      await tester.pumpWidget(
+        MaterialApp(
+          theme: lightTheme,
+          home: Scaffold(
+            body: DoubleStopFretboard(
+              pairs: const [],
+              range: range,
+              tonic: 'C',
+            ),
+          ),
+        ),
+      );
+      return tester.renderObject(
+        find.descendant(
+          of: find.byType(DoubleStopFretboard),
+          matching: find.byType(CustomPaint),
+        ),
+      );
+    }
+
+    testWidgets('0–12 la dibuja', (tester) async {
+      expect(
+        await board(tester, const FretRange(0, 12)),
+        paintsNut,
+      );
+    });
+
+    testWidgets('13–24 no la dibuja', (tester) async {
+      expect(
+        await board(tester, const FretRange(13, 24)),
+        isNot(paintsNut),
       );
     });
   });

@@ -1,27 +1,34 @@
 import 'dart:ui' show Offset, Size;
 
 import '../../../domain/theory/double_stops.dart';
+import '../../widgets/fret_grid_geometry.dart';
 
-const fretboardLeftPad = 20.0;
-const fretboardTop = 16.0;
-const fretboardBottom = 20.0;
+/// Geometría de un diapasón de double stops, la misma de `FretboardDiagram`.
+FretGridGeometry doubleStopGrid(
+  Size size, {
+  int startFret = 0,
+  int endFret = 12,
+}) => FretGridGeometry(
+  width: size.width,
+  height: size.height,
+  startFret: startFret,
+  endFret: endFret,
+);
 
 /// Posición del centro de una nota en el lienzo. Única fuente de coordenadas
-/// para notas y líneas. Cuerda 0 = 1ª cuerda (arriba), igual que `FretboardDiagram`.
+/// para notas y líneas. Cuerda 0 = 1ª cuerda (arriba), como en el dominio; el
+/// traste 0 cae en la columna de afinación y el traste N en su celda.
 Offset noteOffset(
   int string,
   int fret,
   Size size, {
   int startFret = 0,
-  int fretCount = 13,
-}) {
-  final fretWidth = (size.width - fretboardLeftPad) / fretCount;
-  final stringSpacing = (size.height - fretboardTop - fretboardBottom) / 5;
-  return Offset(
-    fretboardLeftPad + (fret - startFret + 0.5) * fretWidth,
-    fretboardTop + string * stringSpacing,
-  );
-}
+  int endFret = 12,
+}) => doubleStopGrid(
+  size,
+  startFret: startFret,
+  endFret: endFret,
+).noteOffset(string + 1, fret);
 
 /// Centro de la etiqueta de grado. Solo las dos cuerdas de la pareja llevan
 /// notas, así que va en el hueco libre entre la cuerda superior de la pareja y
@@ -32,7 +39,7 @@ Offset segmentLabelOffset(Offset from, Offset to, double stringSpacing) {
   final x = (from.dx + to.dx) / 2;
   final upper = from.dy < to.dy ? from.dy : to.dy;
   final lower = from.dy < to.dy ? to.dy : from.dy;
-  return upper - stringSpacing / 2 < fretboardTop
+  return upper - stringSpacing / 2 < FretGridGeometry.top
       ? Offset(x, lower + stringSpacing / 2)
       : Offset(x, upper - stringSpacing / 2);
 }
@@ -50,7 +57,7 @@ List<DoubleStopSegment> doubleStopSegments(
   List<DoubleStopPair> pairs,
   Size size, {
   int startFret = 0,
-  int fretCount = 13,
+  int endFret = 12,
 }) => [
   for (final p in pairs)
     DoubleStopSegment(
@@ -59,14 +66,14 @@ List<DoubleStopSegment> doubleStopSegments(
         p.root.fret,
         size,
         startFret: startFret,
-        fretCount: fretCount,
+        endFret: endFret,
       ),
       noteOffset(
         p.interval.stringIndex,
         p.interval.fret,
         size,
         startFret: startFret,
-        fretCount: fretCount,
+        endFret: endFret,
       ),
       p,
     ),
