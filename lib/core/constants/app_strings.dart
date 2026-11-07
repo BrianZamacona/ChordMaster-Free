@@ -352,6 +352,32 @@ class AppStrings {
       tr(es: 'Agregar la bajada', en: 'Add the way down');
   static String get workoutsOnlyUp =>
       tr(es: 'Solo la subida', en: 'Only the way up');
+  static String get hubTechnique =>
+      tr(es: 'Técnica', en: 'Technique');
+  static String get hubTechniqueSub => tr(
+    es: 'Cromático, araña, diagonal y salto de cuerda, con tu récord de tempo.',
+    en: 'Chromatic, spider, diagonal and string skipping, with your tempo record.',
+  );
+  static String get techniqueIntro => tr(
+    es: 'Un dedo por traste en una ventana de cuatro trastes. Escucha, tócalo '
+        'al tempo y, cuando salga limpio, guarda el récord y sube 5 BPM.',
+    en: 'One finger per fret in a four-fret window. Listen, play it at the '
+        'tempo and, when it comes out clean, save the record and go up 5 BPM.',
+  );
+  static String get techniqueStartFret =>
+      tr(es: 'Empieza en el traste', en: 'Start at fret');
+  static String get techniqueTempo => tr(es: 'Tempo', en: 'Tempo');
+  static String get techniqueSlower => tr(es: 'Más lento', en: 'Slower');
+  static String get techniqueFaster => tr(es: 'Más rápido', en: 'Faster');
+  static String techniqueBpm(int bpm) => '$bpm BPM';
+  static String techniqueRecord(int bpm) =>
+      tr(es: 'Récord: $bpm BPM', en: 'Record: $bpm BPM');
+  static String get techniqueNoRecord =>
+      tr(es: 'Sin récord todavía', en: 'No record yet');
+  static String techniqueTryNext(int bpm) =>
+      tr(es: 'Prueba a $bpm BPM', en: 'Try $bpm BPM');
+  static String techniqueSaveClean(int bpm) =>
+      tr(es: 'Me salió limpio a $bpm BPM', en: 'Clean at $bpm BPM');
   static String workoutsNoteCount(int count) =>
       tr(es: '$count notas', en: '$count notes');
   static String get tabListen => tr(es: 'Escuchar', en: 'Listen');

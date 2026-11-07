@@ -193,6 +193,10 @@ cada nota pertenezca a la escala. No bajar la tolerancia de 0.
   avanzado (grupos de 4 y terceras, 90). Sistema: 3NPS en las de 7 notas, cajas en pentatónicas
   y blues, CAGED en el resto (`workoutSystemFor`). Un test exige que cada nota de cada rutina de
   cada posición pertenezca a su escala.
+- Técnica (`lib/domain/practice/technique_exercises.dart`, ruta `/practice/technique`): cromático
+  1-2-3-4 y araña 1-3-2-4 (6ª→1ª y de vuelta), diagonal (cada cuerda un traste más arriba) y
+  salto de cuerda (6 4 5 3 4 2 3 1), un dedo por traste desde el traste 1, 5 o 9. Tempo de 5 en
+  5 BPM; "Me salió limpio" guarda el récord por ejercicio en `technique_best_bpm` y propone 5 más.
 - Audio de una tablatura (`lib/domain/practice/tab_playback.dart`): corcheas al tempo dado, y la
   pantalla marca la nota con los mismos instantes (`tabIndexAt`). Se sintetiza la frase entera
   en un WAV (`playNotes` con `ring`: cada nota suena 1.2 s, así el costo no crece con el
