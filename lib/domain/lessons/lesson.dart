@@ -4,8 +4,17 @@ import '../../core/i18n/tr.dart';
 /// la ruta se divide en rítmica y líder.
 enum LessonTrack { foundations, rhythm, lead }
 
-/// Herramienta de la app que una lección pide abrir.
-enum LessonTool { tuner, metronome }
+/// Herramienta o módulo de la app que una lección pide abrir.
+enum LessonTool { tuner, metronome, progressions, doubleStops, circle }
+
+/// Una nota de tablatura: cuerda (1 = mi aguda, como en `scales_master.json`)
+/// y traste (0 = al aire).
+class TabNote {
+  const TabNote(this.string, this.fret);
+
+  final int string;
+  final int fret;
+}
 
 /// Escala que una lección enseña: id de `scales_master.json` y tónica
 /// (semitono, 0 = C, como `noteIndex`).
@@ -52,14 +61,22 @@ class LessonUnit {
     required this.id,
     required this.track,
     required this.title,
+    required this.summary,
     required this.art,
+    this.level = 1,
   });
 
   /// Identificador estable (va en la ruta `/learn/lessons/unit/:id`).
   final String id;
   final LessonTrack track;
   final LocalizedText title;
+
+  /// Qué se aprende en la unidad, en una o dos frases (vista previa).
+  final LocalizedText summary;
   final UnitArt art;
+
+  /// Nivel del camino (1 o 2). Fundamentos solo tiene nivel 1.
+  final int level;
 }
 
 /// Qué mide un reto. Cada tipo lee el récord de un módulo de práctica.
@@ -71,7 +88,7 @@ enum ChallengeKind {
   earStreak,
 }
 
-/// Reto al final de un camino. Se supera solo, cuando el récord del módulo
+/// Reto al final de un nivel de un camino. Se supera solo, cuando el récord del módulo
 /// de práctica llega a [goal]; no se marca a mano.
 class LessonChallenge {
   const LessonChallenge({
@@ -81,6 +98,7 @@ class LessonChallenge {
     required this.body,
     required this.kind,
     required this.goal,
+    this.level = 1,
   });
 
   final String id;
@@ -89,6 +107,9 @@ class LessonChallenge {
   final LocalizedText body;
   final ChallengeKind kind;
   final int goal;
+
+  /// El reto cierra este nivel del camino.
+  final int level;
 
   bool isPassed(int best) => best >= goal;
 }
@@ -111,6 +132,7 @@ class Lesson {
     this.strumPattern,
     this.tool,
     this.bpm,
+    this.tab = const [],
   });
 
   /// Identificador estable: es la clave guardada en el progreso.
@@ -141,4 +163,8 @@ class Lesson {
 
   /// Tempo sugerido para practicar.
   final int? bpm;
+
+  /// Melodía, riff o lick en tablatura, en orden. Un test verifica que cada
+  /// nota pertenezca a [scale].
+  final List<TabNote> tab;
 }

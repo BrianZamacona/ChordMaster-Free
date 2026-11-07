@@ -342,6 +342,37 @@ class AppStrings {
     es: 'Mejor racha: $best\nMeta: $goal',
     en: 'Best streak: $best\nGoal: $goal',
   );
+  static String lessonsLevel(int level) =>
+      tr(es: 'Nivel $level', en: 'Level $level');
+  static String get lessonsLevelHint => tr(
+    es: 'Para cuando termines el nivel anterior',
+    en: 'For when you finish the level before',
+  );
+  static String trackLevel(String track, int level) =>
+      '$track · ${lessonsLevel(level)}';
+  static String get lessonsResume => tr(es: 'Continuar', en: 'Continue');
+  static String get lessonsReview => tr(es: 'Repasar', en: 'Review');
+  static String lessonsUnitCount(int lessons, int minutes) => tr(
+    es: '$lessons lecciones · unos $minutes min',
+    en: '$lessons lessons · about $minutes min',
+  );
+  static String get lessonTab => tr(es: 'Tablatura', en: 'Tablature');
+  static String get lessonTabHint => tr(
+    es: 'Arriba la 1ª cuerda (mi aguda). El número es el traste; 0 = al aire.',
+    en: 'The 1st string (high E) is on top. The number is the fret; 0 = open.',
+  );
+  static String lessonTabLabel(String notes) =>
+      tr(es: 'Tablatura: $notes', en: 'Tablature: $notes');
+  static String lessonTabNote(int string, int fret) => tr(
+    es: 'cuerda $string, traste $fret',
+    en: 'string $string, fret $fret',
+  );
+  static String get lessonOpenProgressions =>
+      tr(es: 'Abrir Progresiones', en: 'Open Progressions');
+  static String get lessonOpenDoubleStops =>
+      tr(es: 'Abrir los double stops', en: 'Open double stops');
+  static String get lessonOpenCircle =>
+      tr(es: 'Abrir el círculo de quintas', en: 'Open the circle of fifths');
   static String get lessonNotFound =>
       tr(es: 'No encontramos esta lección.', en: 'We could not find this lesson.');
 

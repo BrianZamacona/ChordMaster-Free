@@ -124,6 +124,62 @@ const List<Lesson> curriculum = [
     chords: ['Em', 'Am'],
   ),
   Lesson(
+    id: 'f_tab_reading',
+    unit: _firstMelodies,
+    title: LocalizedText(es: 'Leer tablatura', en: 'Reading tablature'),
+    body: LocalizedText(
+      es: 'La tablatura dibuja las seis cuerdas como líneas: la de arriba es la 1ª (mi aguda), igual que en los diagramas de escala. Cada número es el traste que pisas y el 0 es la cuerda al aire. Se lee de izquierda a derecha.',
+      en: 'Tablature draws the six strings as lines: the top one is the 1st (high E), just like the scale diagrams. Each number is the fret you press and 0 is the open string. You read it from left to right.',
+    ),
+    steps: [
+      LocalizedText(
+        es: 'Toca la 1ª cuerda al aire y luego los trastes 1 y 3: E, F y G.',
+        en: 'Play the open 1st string, then frets 1 and 3: E, F and G.',
+      ),
+      LocalizedText(
+        es: 'Haz lo mismo en la 2ª cuerda: B, C y D.',
+        en: 'Do the same on the 2nd string: B, C and D.',
+      ),
+      LocalizedText(
+        es: 'Una nota por clic, sin apurarte.',
+        en: 'One note per click, no rush.',
+      ),
+    ],
+    minutes: 6,
+    scale: LessonScale(scaleId: 'major', root: 0),
+    tool: LessonTool.metronome,
+    bpm: 60,
+    tab: [TabNote(1, 0), TabNote(1, 1), TabNote(1, 3), TabNote(2, 0), TabNote(2, 1), TabNote(2, 3)],
+  ),
+  Lesson(
+    id: 'f_first_melody',
+    unit: _firstMelodies,
+    title: LocalizedText(es: 'Tu primera melodía', en: 'Your first melody'),
+    body: LocalizedText(
+      es: 'El Himno de la alegría de Beethoven (de dominio público) usa solo cinco notas en la 1ª y la 2ª cuerda: C, D, E, F y G. Si conoces la melodía, el oído te avisa cuando te equivocas.',
+      en: 'Beethoven’s Ode to Joy (in the public domain) uses only five notes on the 1st and 2nd strings: C, D, E, F and G. If you know the tune, your ear tells you when you slip.',
+    ),
+    steps: [
+      LocalizedText(
+        es: 'Lee la tablatura nota por nota antes de tocarla seguida.',
+        en: 'Read the tab note by note before playing it straight through.',
+      ),
+      LocalizedText(
+        es: 'Dedo 1 en el traste 1 y dedo 3 en el traste 3.',
+        en: 'Finger 1 on fret 1 and finger 3 on fret 3.',
+      ),
+      LocalizedText(
+        es: 'Cuando salga entera, súbele al metrónomo de 5 en 5.',
+        en: 'Once it comes out whole, raise the metronome by 5 at a time.',
+      ),
+    ],
+    minutes: 8,
+    scale: LessonScale(scaleId: 'major', root: 0),
+    tool: LessonTool.metronome,
+    bpm: 70,
+    tab: [TabNote(1, 0), TabNote(1, 0), TabNote(1, 1), TabNote(1, 3), TabNote(1, 3), TabNote(1, 1), TabNote(1, 0), TabNote(2, 3), TabNote(2, 1), TabNote(2, 1), TabNote(2, 3), TabNote(1, 0), TabNote(1, 0), TabNote(2, 3), TabNote(2, 3)],
+  ),
+  Lesson(
     id: 'f5_d_a_e',
     unit: _openChords,
     title: LocalizedText(es: 'D, A y E', en: 'D, A and E'),
@@ -524,6 +580,201 @@ const List<Lesson> curriculum = [
     bpm: 60,
   ),
 
+  // ── Guitarra rítmica, nivel 2 ──────────────────────────────────────────
+  Lesson(
+    id: 'r11_d_dm',
+    unit: _openChords2,
+    title: LocalizedText(es: 'D y Dm: mayor contra menor', en: 'D and Dm: major vs minor'),
+    body: LocalizedText(
+      es: 'Mayor y menor cambian en una sola nota, la 3ª. De D a Dm la 2ª y la 3ª cuerda no cambian: solo la 1ª pasa del traste 2 (F#) al traste 1 (F).',
+      en: 'Major and minor differ by a single note, the 3rd. From D to Dm the 2nd and 3rd strings stay put: only the 1st moves from fret 2 (F#) to fret 1 (F).',
+    ),
+    steps: [
+      LocalizedText(
+        es: 'Toca D y luego Dm, escuchando el cambio de color.',
+        en: 'Play D, then Dm, listening to the change in color.',
+      ),
+      LocalizedText(
+        es: 'Mueve solo la 1ª cuerda; lo demás se queda.',
+        en: 'Move only the 1st string; everything else stays.',
+      ),
+      LocalizedText(
+        es: 'Alterna D y Dm con cuatro rasgueos cada uno.',
+        en: 'Alternate D and Dm with four strums each.',
+      ),
+    ],
+    minutes: 8,
+    chords: ['D', 'Dm'],
+    tool: LessonTool.metronome,
+    bpm: 70,
+  ),
+  Lesson(
+    id: 'r12_sevenths',
+    unit: _openChords2,
+    title: LocalizedText(es: 'Séptimas: E7, A7 y B7', en: 'Sevenths: E7, A7 and B7'),
+    body: LocalizedText(
+      es: 'Un acorde de séptima suma una nota que pide resolver. En E7 y A7 basta levantar un dedo: en E7 la 4ª cuerda queda al aire (D) y en A7, la 3ª (G). B7 es el acorde que lleva de vuelta a Em.',
+      en: 'A seventh chord adds a note that wants to resolve. For E7 and A7 you just lift one finger: in E7 the 4th string rings open (D) and in A7, the 3rd (G). B7 is the chord that leads back to Em.',
+    ),
+    steps: [
+      LocalizedText(
+        es: 'Arma E y levanta el dedo de la 4ª cuerda: eso es E7.',
+        en: 'Form E and lift the finger on the 4th string: that is E7.',
+      ),
+      LocalizedText(
+        es: 'Arma A y levanta el dedo de la 3ª cuerda: eso es A7.',
+        en: 'Form A and lift the finger on the 3rd string: that is A7.',
+      ),
+      LocalizedText(
+        es: 'Toca Em – B7 – Em y escucha cómo B7 pide volver.',
+        en: 'Play Em – B7 – Em and hear how B7 asks to return.',
+      ),
+    ],
+    minutes: 10,
+    chords: ['E7', 'A7', 'B7', 'Em'],
+    tool: LessonTool.metronome,
+    bpm: 70,
+  ),
+  Lesson(
+    id: 'r13_color_chords',
+    unit: _openChords2,
+    title: LocalizedText(es: 'Acordes con color: Cmaj7, Am7 y Fmaj7', en: 'Color chords: Cmaj7, Am7 and Fmaj7'),
+    body: LocalizedText(
+      es: 'Levantar un dedo cambia el color del acorde. Cmaj7 es C sin el dedo 1: la 2ª cuerda suena al aire (B). Am7 es Am con la 3ª cuerda al aire (G). Y Fmaj7 se toca sin cejilla, solo en las cuatro cuerdas agudas.',
+      en: 'Lifting one finger changes the chord’s color. Cmaj7 is C without finger 1: the 2nd string rings open (B). Am7 is Am with the 3rd string open (G). And Fmaj7 needs no barre, only the four high strings.',
+    ),
+    steps: [
+      LocalizedText(
+        es: 'Arma C y levanta el dedo 1: eso es Cmaj7.',
+        en: 'Form C and lift finger 1: that is Cmaj7.',
+      ),
+      LocalizedText(
+        es: 'Toca Cmaj7 – Am7 – Fmaj7 despacio, cuatro rasgueos cada uno.',
+        en: 'Play Cmaj7 – Am7 – Fmaj7 slowly, four strums each.',
+      ),
+      LocalizedText(
+        es: 'Arma tu propia vuelta con estos acordes en Mi progresión.',
+        en: 'Build your own loop with these chords in My progression.',
+      ),
+    ],
+    minutes: 10,
+    chords: ['Cmaj7', 'Am7', 'Fmaj7'],
+    tool: LessonTool.progressions,
+  ),
+  Lesson(
+    id: 'r14_six_eight',
+    unit: _strumming2,
+    title: LocalizedText(es: 'Rasgueo en 6/8', en: '6/8 strumming'),
+    body: LocalizedText(
+      es: 'Seis corcheas por compás, en dos grupos de tres. El acento cae en la 1 y en la 4, y por eso suena como un vaivén.',
+      en: 'Six eighth notes per bar, in two groups of three. The accent falls on 1 and 4, which is why it sways.',
+    ),
+    steps: [
+      LocalizedText(
+        es: 'Cuenta 1 2 3 4 5 6 y marca más fuerte la 1 y la 4.',
+        en: 'Count 1 2 3 4 5 6 and play 1 and 4 harder.',
+      ),
+      LocalizedText(
+        es: 'Tócalo en Em sin cambiar de acorde.',
+        en: 'Play it on Em without changing chords.',
+      ),
+      LocalizedText(
+        es: 'Pasa a G – Em – C – D, un compás cada uno.',
+        en: 'Move on to G – Em – C – D, one bar each.',
+      ),
+    ],
+    minutes: 8,
+    chords: ['G', 'Em', 'C', 'D'],
+    strumPattern: 'DUUDUU',
+    tool: LessonTool.metronome,
+    bpm: 60,
+  ),
+  Lesson(
+    id: 'r15_backbeat',
+    unit: _strumming2,
+    title: LocalizedText(es: 'Acento en 2 y 4', en: 'Backbeat: accent on 2 and 4'),
+    body: LocalizedText(
+      es: 'En el rock y el pop la batería golpea la caja en los tiempos 2 y 4. Si rasgueas esos tiempos más fuerte, la guitarra empuja junto con la banda.',
+      en: 'In rock and pop the drummer hits the snare on beats 2 and 4. If you strum those beats harder, the guitar pushes along with the band.',
+    ),
+    steps: [
+      LocalizedText(
+        es: 'Rasguea corcheas abajo y arriba sin parar.',
+        en: 'Strum eighth notes down and up without stopping.',
+      ),
+      LocalizedText(
+        es: 'Golpea más fuerte el abajo de la 2 y de la 4.',
+        en: 'Hit the downstroke on 2 and 4 harder.',
+      ),
+      LocalizedText(
+        es: 'Toca Am – Fmaj7 – C – G con ese acento.',
+        en: 'Play Am – Fmaj7 – C – G with that accent.',
+      ),
+    ],
+    minutes: 8,
+    chords: ['Am', 'Fmaj7', 'C', 'G'],
+    strumPattern: 'DUDUDUDU',
+    tool: LessonTool.metronome,
+    bpm: 80,
+  ),
+  Lesson(
+    id: 'r16_power_riff',
+    unit: _riffs,
+    title: LocalizedText(es: 'Riff con power chords', en: 'Power chord riff'),
+    body: LocalizedText(
+      es: 'Un riff es una frase corta que se repite. Este usa E5, G5 y A5: sus tónicas son E (6ª cuerda al aire), G (6ª cuerda, traste 3) y A (5ª cuerda al aire), todas de la pentatónica menor de E.',
+      en: 'A riff is a short phrase that repeats. This one uses E5, G5 and A5: their roots are E (open 6th string), G (6th string, fret 3) and A (open 5th string), all from the E minor pentatonic.',
+    ),
+    steps: [
+      LocalizedText(
+        es: 'Toca solo las tónicas siguiendo la tablatura.',
+        en: 'Play just the roots following the tab.',
+      ),
+      LocalizedText(
+        es: 'Ahora arma cada power chord sobre su tónica.',
+        en: 'Now build each power chord on its root.',
+      ),
+      LocalizedText(
+        es: 'Apaga con la palma entre un acorde y otro.',
+        en: 'Palm-mute between one chord and the next.',
+      ),
+    ],
+    minutes: 8,
+    chords: ['E5', 'G5', 'A5'],
+    scale: LessonScale(scaleId: 'pentatonic_minor', root: 4),
+    tool: LessonTool.metronome,
+    bpm: 80,
+    tab: [TabNote(6, 0), TabNote(6, 3), TabNote(5, 0), TabNote(6, 0)],
+  ),
+  Lesson(
+    id: 'r17_boogie',
+    unit: _riffs,
+    title: LocalizedText(es: 'Boogie de blues en A', en: 'Blues boogie in A'),
+    body: LocalizedText(
+      es: 'El boogie alterna la 5ª y la 6ª de A sobre la 5ª cuerda al aire: en la 4ª cuerda, traste 2 (E) y traste 4 (F#). Es el acompañamiento clásico del blues de 12 compases.',
+      en: 'The boogie alternates the 5th and 6th of A over the open 5th string: on the 4th string, fret 2 (E) and fret 4 (F#). It is the classic backing for the 12-bar blues.',
+    ),
+    steps: [
+      LocalizedText(
+        es: 'Toca juntas la 5ª cuerda al aire y la 4ª, como un power chord.',
+        en: 'Play the open 5th string together with the 4th, like a power chord.',
+      ),
+      LocalizedText(
+        es: 'Dos veces con el traste 2 y dos con el traste 4.',
+        en: 'Twice with fret 2 and twice with fret 4.',
+      ),
+      LocalizedText(
+        es: 'Llévalo a D (4ª al aire y 3ª cuerda) y a E (6ª al aire y 5ª cuerda) para tocar el blues completo.',
+        en: 'Move it to D (open 4th and the 3rd string) and to E (open 6th and the 5th string) to play the whole blues.',
+      ),
+    ],
+    minutes: 10,
+    scale: LessonScale(scaleId: 'pentatonic_major', root: 9),
+    tool: LessonTool.metronome,
+    bpm: 90,
+    tab: [TabNote(5, 0), TabNote(4, 2), TabNote(5, 0), TabNote(4, 2), TabNote(5, 0), TabNote(4, 4), TabNote(5, 0), TabNote(4, 4)],
+  ),
+
   // ── Guitarra líder ───────────────────────────────────────────────────────
   Lesson(
     id: 'l1_minor_pentatonic',
@@ -811,59 +1062,380 @@ const List<Lesson> curriculum = [
     minutes: 10,
     scale: LessonScale(scaleId: 'pentatonic_minor', root: 9),
   ),
+
+  // ── Guitarra líder, nivel 2 ────────────────────────────────────────────
+  Lesson(
+    id: 'l11_bend_lick',
+    unit: _licks,
+    title: LocalizedText(es: 'Lick con bend', en: 'Bend lick'),
+    body: LocalizedText(
+      es: 'Un lick es una frase corta para usar en un solo. Este baja por la primera caja de A pentatónica menor y termina con un bend de un tono en la 3ª cuerda: del traste 7 (D) hasta que suene como E.',
+      en: 'A lick is a short phrase to use in a solo. This one walks down the first box of A minor pentatonic and ends with a whole-step bend on the 3rd string: from fret 7 (D) until it sounds like E.',
+    ),
+    steps: [
+      LocalizedText(
+        es: 'Toca las cuatro notas sin el bend.',
+        en: 'Play the four notes without the bend.',
+      ),
+      LocalizedText(
+        es: 'Agrega el bend en la última y compárala con el traste 9.',
+        en: 'Add the bend on the last one and compare it with fret 9.',
+      ),
+      LocalizedText(
+        es: 'Repite el lick sobre el blues en A.',
+        en: 'Repeat the lick over the blues in A.',
+      ),
+    ],
+    minutes: 8,
+    scale: LessonScale(scaleId: 'pentatonic_minor', root: 9),
+    tool: LessonTool.metronome,
+    bpm: 70,
+    tab: [TabNote(1, 5), TabNote(2, 8), TabNote(2, 5), TabNote(3, 7)],
+  ),
+  Lesson(
+    id: 'l12_legato_lick',
+    unit: _licks,
+    title: LocalizedText(es: 'Lick con ligados', en: 'Legato lick'),
+    body: LocalizedText(
+      es: 'Ligados en la 3ª y la 4ª cuerda: martilla del traste 5 al 7 (de C a D en la 3ª, de G a A en la 4ª). La púa toca solo la primera nota de cada par.',
+      en: 'Legato on the 3rd and 4th strings: hammer from fret 5 to 7 (C to D on the 3rd, G to A on the 4th). The pick plays only the first note of each pair.',
+    ),
+    steps: [
+      LocalizedText(
+        es: 'Toca con la púa el traste 5 y martilla el 7.',
+        en: 'Pick fret 5 and hammer onto fret 7.',
+      ),
+      LocalizedText(
+        es: 'Repite en la 4ª cuerda.',
+        en: 'Repeat on the 4th string.',
+      ),
+      LocalizedText(
+        es: 'Encadena los dos pares sin parar.',
+        en: 'Chain both pairs without stopping.',
+      ),
+    ],
+    minutes: 8,
+    scale: LessonScale(scaleId: 'pentatonic_minor', root: 9),
+    tool: LessonTool.metronome,
+    bpm: 70,
+    tab: [TabNote(3, 5), TabNote(3, 7), TabNote(4, 5), TabNote(4, 7)],
+  ),
+  Lesson(
+    id: 'l13_call_response',
+    unit: _licks,
+    title: LocalizedText(es: 'Pregunta y respuesta', en: 'Call and response'),
+    body: LocalizedText(
+      es: 'Una frase que termina lejos de la tónica suena a pregunta; una que termina en la tónica, a respuesta. Aquí la pregunta acaba en G y la respuesta vuelve a A.',
+      en: 'A phrase that ends away from the root sounds like a question; one that ends on the root sounds like an answer. Here the question ends on G and the answer returns to A.',
+    ),
+    steps: [
+      LocalizedText(
+        es: 'Toca las dos primeras notas: son la pregunta.',
+        en: 'Play the first two notes: they are the question.',
+      ),
+      LocalizedText(
+        es: 'Responde con las otras cuatro, que terminan en A.',
+        en: 'Answer with the other four, which end on A.',
+      ),
+      LocalizedText(
+        es: 'Inventa tu propia respuesta que acabe en A.',
+        en: 'Make up your own answer that ends on A.',
+      ),
+    ],
+    minutes: 10,
+    scale: LessonScale(scaleId: 'pentatonic_minor', root: 9),
+    tab: [TabNote(2, 5), TabNote(2, 8), TabNote(2, 5), TabNote(3, 7), TabNote(3, 5), TabNote(4, 7)],
+  ),
+  Lesson(
+    id: 'l14_major_scale',
+    unit: _majorMinor,
+    title: LocalizedText(es: 'La escala mayor en G', en: 'The G major scale'),
+    body: LocalizedText(
+      es: 'Siete notas con la fórmula T T S T T T S (tono = 2 trastes, semitono = 1). En G son G A B C D E F#. Empieza en el traste 3 de la 6ª cuerda.',
+      en: 'Seven notes with the formula W W H W W W H (whole step = 2 frets, half step = 1). In G they are G A B C D E F#. It starts at fret 3 on the 6th string.',
+    ),
+    steps: [
+      LocalizedText(
+        es: 'Toca la escala subiendo y bajando, una nota por clic.',
+        en: 'Play the scale up and down, one note per click.',
+      ),
+      LocalizedText(
+        es: 'Canta cada nota mientras la tocas.',
+        en: 'Sing each note as you play it.',
+      ),
+      LocalizedText(
+        es: 'Termina siempre en G: así suena a casa.',
+        en: 'Always end on G: that is what home sounds like.',
+      ),
+    ],
+    minutes: 10,
+    scale: LessonScale(scaleId: 'major', root: 7),
+    tool: LessonTool.metronome,
+    bpm: 60,
+  ),
+  Lesson(
+    id: 'l15_relative_minor',
+    unit: _majorMinor,
+    title: LocalizedText(es: 'La menor relativa', en: 'The relative minor'),
+    body: LocalizedText(
+      es: 'E menor natural tiene las mismas siete notas que G mayor; solo cambia cuál es la casa. La relativa menor está 3 semitonos (3 trastes) debajo de la mayor.',
+      en: 'E natural minor has the same seven notes as G major; only the home note changes. The relative minor sits 3 half steps (3 frets) below the major.',
+    ),
+    steps: [
+      LocalizedText(
+        es: 'Toca la escala de G mayor y termina en E.',
+        en: 'Play the G major scale and end on E.',
+      ),
+      LocalizedText(
+        es: 'Compara: mismas notas, distinto reposo.',
+        en: 'Compare: same notes, a different resting point.',
+      ),
+      LocalizedText(
+        es: 'Improvisa sobre Em y termina tus frases en E.',
+        en: 'Improvise over Em and end your phrases on E.',
+      ),
+    ],
+    minutes: 8,
+    chords: ['Em'],
+    scale: LessonScale(scaleId: 'natural_minor', root: 4),
+  ),
+  Lesson(
+    id: 'l16_neighbor_keys',
+    unit: _majorMinor,
+    title: LocalizedText(es: 'Tonalidades vecinas', en: 'Neighboring keys'),
+    body: LocalizedText(
+      es: 'En el círculo de quintas, G está justo a la derecha de C: una quinta arriba y con un solo ♯ (F#). Dos tonalidades vecinas comparten 6 de sus 7 notas, por eso pasar de una a otra suena natural.',
+      en: 'On the circle of fifths, G sits right next to C on the right: a fifth up and with a single ♯ (F#). Two neighboring keys share 6 of their 7 notes, which is why moving between them sounds natural.',
+    ),
+    steps: [
+      LocalizedText(
+        es: 'Abre el círculo y gira de C a G.',
+        en: 'Open the circle and turn from C to G.',
+      ),
+      LocalizedText(
+        es: 'Compara sus escalas: solo cambia F por F#.',
+        en: 'Compare their scales: only F changes to F#.',
+      ),
+      LocalizedText(
+        es: 'Sigue girando y busca qué nota cambia en cada paso.',
+        en: 'Keep turning and find which note changes at each step.',
+      ),
+    ],
+    minutes: 8,
+    tool: LessonTool.circle,
+  ),
+  Lesson(
+    id: 'l17_thirds',
+    unit: _doubleStops,
+    title: LocalizedText(es: 'Terceras en dos cuerdas', en: 'Thirds on two strings'),
+    body: LocalizedText(
+      es: 'Dos notas a la vez, a una tercera de distancia. En C mayor las terceras de los grados I, IV y V son mayores (4 semitonos) y las de II, III, VI y VII, menores (3).',
+      en: 'Two notes at once, a third apart. In C major the thirds on degrees I, IV and V are major (4 half steps) and those on II, III, VI and VII are minor (3).',
+    ),
+    steps: [
+      LocalizedText(
+        es: 'Abre los double stops en C con terceras.',
+        en: 'Open double stops in C with thirds.',
+      ),
+      LocalizedText(
+        es: 'Toca cada pareja subiendo por el mástil en las cuerdas 1 y 2.',
+        en: 'Play each pair moving up the neck on strings 1 and 2.',
+      ),
+      LocalizedText(
+        es: 'Escucha la diferencia entre una tercera mayor y una menor.',
+        en: 'Listen to the difference between a major and a minor third.',
+      ),
+    ],
+    minutes: 10,
+    tool: LessonTool.doubleStops,
+  ),
+  Lesson(
+    id: 'l18_sixths',
+    unit: _doubleStops,
+    title: LocalizedText(es: 'Sextas saltando una cuerda', en: 'Sixths skipping a string'),
+    body: LocalizedText(
+      es: 'Las sextas se tocan con una cuerda en medio, por ejemplo la 1ª y la 3ª. En C mayor son mayores (9 semitonos) en los grados I, II, IV y V, y menores (8) en III, VI y VII.',
+      en: 'Sixths are played with a string in between, for example the 1st and 3rd. In C major they are major (9 half steps) on degrees I, II, IV and V, and minor (8) on III, VI and VII.',
+    ),
+    steps: [
+      LocalizedText(
+        es: 'Abre los double stops en C con sextas.',
+        en: 'Open double stops in C with sixths.',
+      ),
+      LocalizedText(
+        es: 'Apaga la cuerda del medio con un dedo.',
+        en: 'Mute the middle string with a finger.',
+      ),
+      LocalizedText(
+        es: 'Sube por la escala tocando una sexta por grado.',
+        en: 'Climb the scale playing one sixth per degree.',
+      ),
+    ],
+    minutes: 10,
+    tool: LessonTool.doubleStops,
+  ),
 ];
 
 const _firstSteps = LessonUnit(
   id: 'f_first_steps',
   track: LessonTrack.foundations,
   title: LocalizedText(es: 'Primeros pasos', en: 'First steps'),
+  summary: LocalizedText(
+    es: 'Conoce la guitarra, afínala y toca tus primeros acordes.',
+    en: 'Meet the guitar, tune it and play your first chords.',
+  ),
   art: ChordArt('Em'),
 );
 const _openChords = LessonUnit(
   id: 'f_open_chords',
   track: LessonTrack.foundations,
   title: LocalizedText(es: 'Acordes abiertos', en: 'Open chords'),
+  summary: LocalizedText(
+    es: 'Los acordes abiertos de miles de canciones y tu primera progresión.',
+    en: 'The open chords behind thousands of songs, and your first progression.',
+  ),
   art: ChordArt('G'),
 );
 const _strumming = LessonUnit(
   id: 'r_strumming',
   track: LessonTrack.rhythm,
   title: LocalizedText(es: 'Rasgueo', en: 'Strumming'),
+  summary: LocalizedText(
+    es: 'Corcheas, el rasgueo pop y el compás de 3/4.',
+    en: 'Eighth notes, the pop strum and 3/4 time.',
+  ),
   art: StrumArt('D DU UDU'),
 );
 const _beyondOpen = LessonUnit(
   id: 'r_beyond_open',
   track: LessonTrack.rhythm,
   title: LocalizedText(es: 'Más allá de los abiertos', en: 'Beyond open chords'),
+  summary: LocalizedText(
+    es: 'Cejillas, power chords, apagado con la palma y el blues de 12 compases.',
+    en: 'Barre chords, power chords, palm muting and the 12-bar blues.',
+  ),
   art: ChordArt('F'),
 );
 const _fingerstyle = LessonUnit(
   id: 'r_fingerstyle',
   track: LessonTrack.rhythm,
   title: LocalizedText(es: 'Con los dedos', en: 'Fingerstyle'),
+  summary: LocalizedText(
+    es: 'Arpegios y bajo alterno con los dedos.',
+    en: 'Arpeggios and alternating bass with your fingers.',
+  ),
   art: ChordArt('C'),
 );
 const _scalesAndTechnique = LessonUnit(
   id: 'l_scales_technique',
   track: LessonTrack.lead,
   title: LocalizedText(es: 'Escalas y técnica', en: 'Scales and technique'),
+  summary: LocalizedText(
+    es: 'La pentatónica menor, calentamiento, ligados y bends.',
+    en: 'The minor pentatonic, warm-ups, legato and bends.',
+  ),
   art: ScaleArt(LessonScale(scaleId: 'pentatonic_minor', root: 9)),
 );
 const _expression = LessonUnit(
   id: 'l_expression',
   track: LessonTrack.lead,
   title: LocalizedText(es: 'Expresión y solos', en: 'Expression and solos'),
+  summary: LocalizedText(
+    es: 'Vibrato, la escala de blues, la pentatónica mayor y tu primer solo.',
+    en: 'Vibrato, the blues scale, the major pentatonic and your first solo.',
+  ),
   art: ScaleArt(LessonScale(scaleId: 'blues_minor', root: 9)),
 );
 const _theNeck = LessonUnit(
   id: 'l_the_neck',
   track: LessonTrack.lead,
   title: LocalizedText(es: 'El mástil', en: 'The neck'),
+  summary: LocalizedText(
+    es: 'Los nombres de las notas en las cuerdas graves y la segunda caja.',
+    en: 'Note names on the low strings and the second box.',
+  ),
   art: NotesArt(['E', 'F', 'G', 'A', 'B', 'C', 'D']),
 );
 
-/// Retos al final de cada camino; se superan con el récord de un módulo de
-/// práctica.
+const _firstMelodies = LessonUnit(
+  id: 'f_first_melodies',
+  track: LessonTrack.foundations,
+  title: LocalizedText(es: 'Primeras melodías', en: 'First melodies'),
+  summary: LocalizedText(
+    es: 'Lee tablatura y toca notas sueltas antes de los acordes.',
+    en: 'Read tablature and play single notes before chords.',
+  ),
+  art: NotesArt(['E', 'F', 'G']),
+);
+const _openChords2 = LessonUnit(
+  id: 'r_open_chords_2',
+  track: LessonTrack.rhythm,
+  level: 2,
+  title: LocalizedText(es: 'Acordes abiertos 2', en: 'Open chords 2'),
+  summary: LocalizedText(
+    es: 'Menores, séptimas y maj7: más color con las formas que ya conoces.',
+    en: 'Minors, sevenths and maj7: more color from shapes you already know.',
+  ),
+  art: ChordArt('Dm'),
+);
+const _strumming2 = LessonUnit(
+  id: 'r_strumming_2',
+  track: LessonTrack.rhythm,
+  level: 2,
+  title: LocalizedText(es: 'Rasgueo 2', en: 'Strumming 2'),
+  summary: LocalizedText(
+    es: 'El compás de 6/8 y el acento que hace sonar la guitarra con la banda.',
+    en: '6/8 time and the accent that locks the guitar in with the band.',
+  ),
+  art: StrumArt('DUUDUU'),
+);
+const _riffs = LessonUnit(
+  id: 'r_riffs',
+  track: LessonTrack.rhythm,
+  level: 2,
+  title: LocalizedText(es: 'Riffs', en: 'Riffs'),
+  summary: LocalizedText(
+    es: 'Frases cortas que se repiten: power chords y el boogie del blues.',
+    en: 'Short repeating phrases: power chords and the blues boogie.',
+  ),
+  art: ChordArt('E5'),
+);
+const _licks = LessonUnit(
+  id: 'l_licks',
+  track: LessonTrack.lead,
+  level: 2,
+  title: LocalizedText(es: 'Licks', en: 'Licks'),
+  summary: LocalizedText(
+    es: 'Frases cortas para tus solos: bends, ligados y frases que dialogan.',
+    en: 'Short phrases for your solos: bends, legato and phrases that talk back.',
+  ),
+  art: NotesArt(['A', 'G', 'E', 'D']),
+);
+const _majorMinor = LessonUnit(
+  id: 'l_major_minor',
+  track: LessonTrack.lead,
+  level: 2,
+  title: LocalizedText(es: 'Mayor y menor', en: 'Major and minor'),
+  summary: LocalizedText(
+    es: 'La escala mayor, su relativa menor y cómo se ordenan las tonalidades.',
+    en: 'The major scale, its relative minor and how keys are ordered.',
+  ),
+  art: ScaleArt(LessonScale(scaleId: 'major', root: 7)),
+);
+const _doubleStops = LessonUnit(
+  id: 'l_double_stops',
+  track: LessonTrack.lead,
+  level: 2,
+  title: LocalizedText(es: 'Double stops', en: 'Double stops'),
+  summary: LocalizedText(
+    es: 'Dos notas a la vez: terceras y sextas por la escala.',
+    en: 'Two notes at once: thirds and sixths through the scale.',
+  ),
+  art: NotesArt(['C', 'E']),
+);
+
+/// Retos al final de cada nivel de cada camino; se superan con el récord de
+/// un módulo de práctica.
 const List<LessonChallenge> challenges = [
   LessonChallenge(
     id: 'rc1_steady_beat',
@@ -887,28 +1459,60 @@ const List<LessonChallenge> challenges = [
     kind: ChallengeKind.earStreak,
     goal: 5,
   ),
+  LessonChallenge(
+    id: 'rc2_groove',
+    track: LessonTrack.rhythm,
+    level: 2,
+    title: LocalizedText(es: 'Reto: groove fino', en: 'Challenge: tight groove'),
+    body: LocalizedText(
+      es: 'Logra 95 % o más de precisión en el juego de ritmo.',
+      en: 'Reach 95% accuracy or more in the rhythm game.',
+    ),
+    kind: ChallengeKind.rhythmAccuracy,
+    goal: 95,
+  ),
+  LessonChallenge(
+    id: 'lc2_ear',
+    track: LessonTrack.lead,
+    level: 2,
+    title: LocalizedText(es: 'Reto: oído de solista', en: 'Challenge: soloist ear'),
+    body: LocalizedText(
+      es: 'Reconoce 10 intervalos seguidos sin fallar en Oído.',
+      en: 'Recognize 10 intervals in a row without a miss in Ear.',
+    ),
+    kind: ChallengeKind.earStreak,
+    goal: 10,
+  ),
 ];
 
 /// Lecciones de [track], en orden.
 List<Lesson> lessonsOf(LessonTrack track) =>
     [for (final l in curriculum) if (l.track == track) l];
 
-/// Unidades de [track] en el orden del camino.
-List<LessonUnit> unitsOf(LessonTrack track) {
+/// Unidades de [track] en el orden del camino; con [level], solo las de ese
+/// nivel.
+List<LessonUnit> unitsOf(LessonTrack track, {int? level}) {
   final units = <LessonUnit>[];
   for (final l in lessonsOf(track)) {
+    if (level != null && l.unit.level != level) continue;
     if (!units.contains(l.unit)) units.add(l.unit);
   }
   return units;
 }
 
+/// Niveles de [track], de menor a mayor.
+List<int> levelsOf(LessonTrack track) =>
+    {for (final u in unitsOf(track)) u.level}.toList()..sort();
+
 /// Lecciones de [unit], en orden.
 List<Lesson> lessonsOfUnit(LessonUnit unit) =>
     [for (final l in curriculum) if (l.unit == unit) l];
 
-/// Retos de [track] (los muestra el mapa al final del camino).
-List<LessonChallenge> challengesOf(LessonTrack track) =>
-    [for (final c in challenges) if (c.track == track) c];
+/// Retos de [track]; con [level], solo el que cierra ese nivel en el mapa.
+List<LessonChallenge> challengesOf(LessonTrack track, {int? level}) => [
+  for (final c in challenges)
+    if (c.track == track && (level == null || c.level == level)) c,
+];
 
 /// Lecciones por id.
 final Map<String, Lesson> lessonsById = {for (final l in curriculum) l.id: l};

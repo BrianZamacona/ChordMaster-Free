@@ -10,7 +10,10 @@ void main() {
     final path = LessonPath(completed: {}, chosen: LessonTrack.rhythm);
     expect(path.next, curriculum.first);
     expect(path.foundationsDone, isFalse);
-    expect(path.progressOf(LessonTrack.foundations), (0, 8));
+    expect(
+      path.progressOf(LessonTrack.foundations),
+      (0, lessonsOf(LessonTrack.foundations).length),
+    );
   });
 
   test('Fundamentos va primero aunque ya se haya avanzado en un camino', () {
@@ -20,7 +23,7 @@ void main() {
       chosen: LessonTrack.lead,
     );
     expect(path.next, lessonsOf(LessonTrack.foundations).first);
-    expect(path.progressOf(LessonTrack.lead), (2, 10));
+    expect(path.progressOf(LessonTrack.lead), (2, lessonsOf(LessonTrack.lead).length));
   });
 
   test('con Fundamentos terminado, sigue el camino elegido', () {
@@ -56,9 +59,11 @@ void main() {
     expect(path.completed, {curriculum.first.id});
   });
 
-  test('etiquetas F1…F8, R1…R10, L1…L10', () {
+  test('etiquetas F1…F10, R1…R17, L1…L18', () {
     expect(LessonPath.labelOf(lessonsOf(LessonTrack.foundations).first), 'F1');
-    expect(LessonPath.labelOf(lessonsOf(LessonTrack.rhythm).last), 'R10');
+    expect(LessonPath.labelOf(lessonsOf(LessonTrack.foundations).last), 'F10');
+    expect(LessonPath.labelOf(lessonsOf(LessonTrack.rhythm).last), 'R17');
+    expect(LessonPath.labelOf(lessonsOf(LessonTrack.lead).last), 'L18');
     expect(LessonPath.labelOf(lessonsOf(LessonTrack.lead)[2]), 'L3');
   });
 }

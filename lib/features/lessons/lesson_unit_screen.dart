@@ -1,13 +1,16 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
+import 'package:go_router/go_router.dart';
 
 import '../../core/constants/app_strings.dart';
 import '../../domain/lessons/curriculum.dart';
+import '../../domain/lessons/lesson.dart';
 import '../../ui/theme.dart';
 import 'lesson_widgets.dart';
 import 'lessons_viewmodel.dart';
 
-/// Una unidad del mapa: su dibujo, el avance y sus lecciones.
+/// Una unidad del mapa: su dibujo, qué se aprende, el avance, un botón para
+/// empezar o seguir y sus lecciones.
 class LessonUnitScreen extends ConsumerWidget {
   const LessonUnitScreen({super.key, required this.unitId});
 
@@ -26,6 +29,8 @@ class LessonUnitScreen extends ConsumerWidget {
     final lessons = lessonsOfUnit(unit);
     final done = lessons.where(path.isDone).length;
     final next = path.next;
+    final pending = lessons.where((l) => !path.isDone(l)).firstOrNull;
+    final minutes = lessons.fold<int>(0, (sum, l) => sum + l.minutes);
     final p = context.palette;
     final text = Theme.of(context).textTheme;
 
@@ -44,13 +49,26 @@ class LessonUnitScreen extends ConsumerWidget {
                   UnitArtView(art: unit.art, size: 88),
                   const SizedBox(height: 12),
                   Text(
-                    trackName(unit.track),
+                    unit.track == LessonTrack.foundations
+                        ? trackName(unit.track)
+                        : AppStrings.trackLevel(trackName(unit.track), unit.level),
                     style: text.labelMedium?.copyWith(color: p.textSecondary),
                   ),
                   Text(
                     unit.title.text,
                     key: const Key('unit-title'),
                     style: text.titleLarge,
+                  ),
+                  const SizedBox(height: 4),
+                  Text(
+                    unit.summary.text,
+                    key: const Key('unit-summary'),
+                    style: text.bodyMedium,
+                  ),
+                  const SizedBox(height: 4),
+                  Text(
+                    AppStrings.lessonsUnitCount(lessons.length, minutes),
+                    style: text.bodySmall?.copyWith(color: p.textSecondary),
                   ),
                   const SizedBox(height: 8),
                   LinearProgressIndicator(
@@ -62,6 +80,20 @@ class LessonUnitScreen extends ConsumerWidget {
                   Text(
                     AppStrings.lessonsProgress(done, lessons.length),
                     style: musicMono(fontSize: 12, color: p.textSecondary),
+                  ),
+                  const SizedBox(height: 12),
+                  FilledButton(
+                    key: const Key('unit-start'),
+                    onPressed: () => context.push(
+                      '/learn/lessons/${(pending ?? lessons.first).id}',
+                    ),
+                    child: Text(
+                      pending == null
+                          ? AppStrings.lessonsReview
+                          : done == 0
+                              ? AppStrings.lessonsStart
+                              : AppStrings.lessonsResume,
+                    ),
                   ),
                 ],
               ),

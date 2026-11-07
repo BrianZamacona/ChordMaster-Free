@@ -14,15 +14,49 @@ import 'lessons_viewmodel.dart';
 
 /// Mapa de lecciones dibujado como un mástil: Fundamentos es una sola
 /// cuerda con sus unidades; al terminarla se abre en dos (rítmica y líder),
-/// cada una con sus unidades y, al final, su reto (un marcador de traste).
-class LessonsScreen extends ConsumerWidget {
+/// cada una con sus unidades por nivel y, al cerrar cada nivel, su reto (un
+/// marcador de traste). Al abrir, las cuerdas se dibujan de arriba abajo; con
+/// "reducir movimiento" aparecen ya completas.
+class LessonsScreen extends ConsumerStatefulWidget {
   const LessonsScreen({super.key});
 
   @override
-  Widget build(BuildContext context, WidgetRef ref) {
+  ConsumerState<LessonsScreen> createState() => _LessonsScreenState();
+}
+
+class _LessonsScreenState extends ConsumerState<LessonsScreen>
+    with SingleTickerProviderStateMixin {
+  static const _revealDuration = Duration(milliseconds: 1400);
+
+  late final _reveal = AnimationController(
+    vsync: this,
+    duration: _revealDuration,
+  );
+
+  @override
+  void didChangeDependencies() {
+    super.didChangeDependencies();
+    if (MediaQuery.disableAnimationsOf(context)) {
+      _reveal.value = 1;
+    } else if (_reveal.isDismissed) {
+      _reveal.forward();
+    }
+  }
+
+  @override
+  void dispose() {
+    _reveal.dispose();
+    super.dispose();
+  }
+
+  @override
+  Widget build(BuildContext context) {
     final state = ref.watch(lessonsViewModelProvider);
     final path = state.path;
     final p = context.palette;
+    var order = 0;
+    Widget segment() =>
+        _StringSegment(active: true, reveal: _revealAt(_reveal, order++));
     return Scaffold(
       appBar: AppBar(title: Text(AppStrings.lessonsTitle)),
       body: state.isLoading
@@ -40,7 +74,7 @@ class LessonsScreen extends ConsumerWidget {
                   ),
                 ),
                 for (final unit in unitsOf(LessonTrack.foundations)) ...[
-                  const _StringSegment(active: true),
+                  segment(),
                   Center(
                     child: ConstrainedBox(
                       constraints: const BoxConstraints(maxWidth: 220),
@@ -48,7 +82,7 @@ class LessonsScreen extends ConsumerWidget {
                     ),
                   ),
                 ],
-                const _StringSegment(active: true),
+                segment(),
                 Padding(
                   padding: const EdgeInsets.symmetric(vertical: 6),
                   child: Text(
@@ -66,7 +100,12 @@ class LessonsScreen extends ConsumerWidget {
                   highlighted: state.highlightedTrack,
                   open: path.foundationsDone,
                 ),
-                _TrackRows(highlighted: state.highlightedTrack, path: path),
+                _TrackRows(
+                  highlighted: state.highlightedTrack,
+                  path: path,
+                  reveal: _reveal,
+                  firstOrder: order,
+                ),
               ],
             ),
     );
@@ -75,6 +114,15 @@ class LessonsScreen extends ConsumerWidget {
 
 /// Separación entre las columnas de los dos caminos.
 const double _columnGap = 12;
+
+/// Tramo [order] de la cuerda: cada uno empieza un poco después del anterior.
+Animation<double> _revealAt(Animation<double> parent, int order) {
+  final start = (order * 0.06).clamp(0.0, 0.8);
+  return CurvedAnimation(
+    parent: parent,
+    curve: Interval(start, start + 0.2, curve: Curves.easeOut),
+  );
+}
 
 class _NextCard extends StatelessWidget {
   const _NextCard({required this.next});
@@ -127,13 +175,23 @@ class _NextCard extends StatelessWidget {
   }
 }
 
-/// Los dos caminos, fila por fila: cada fila tiene un nodo de cada camino a la
-/// misma altura. Un test exige que ambos tengan tantas unidades como retos.
+/// Los dos caminos, fila por fila y nivel por nivel: cada fila tiene un nodo
+/// de cada camino a la misma altura, y cada nivel cierra con un reto. Un test
+/// exige que, en cada nivel, ambos tengan tantas unidades como retos.
 class _TrackRows extends StatelessWidget {
-  const _TrackRows({required this.highlighted, required this.path});
+  const _TrackRows({
+    required this.highlighted,
+    required this.path,
+    required this.reveal,
+    required this.firstOrder,
+  });
 
   final LessonTrack? highlighted;
   final LessonPath path;
+  final Animation<double> reveal;
+
+  /// Orden de dibujo del primer tramo de estas filas.
+  final int firstOrder;
 
   /// Una fila con una celda por camino, ambas de la altura de la mayor.
   Widget _row(Widget Function(LessonTrack track) cell) => IntrinsicHeight(
@@ -147,29 +205,97 @@ class _TrackRows extends StatelessWidget {
         ),
       );
 
-  Widget _segments() =>
-      _row((track) => _StringSegment(active: track == highlighted));
-
   @override
-  Widget build(BuildContext context) => Column(
-        children: [
-          _row(
-            (track) => _TrackHeader(
-              track: track,
-              path: path,
-              active: track == highlighted,
-            ),
+  Widget build(BuildContext context) {
+    var order = firstOrder;
+    Widget segments() {
+      final animation = _revealAt(reveal, order++);
+      return _row(
+        (track) => _StringSegment(
+          active: track == highlighted,
+          reveal: animation,
+        ),
+      );
+    }
+
+    return Column(
+      children: [
+        _row(
+          (track) => _TrackHeader(
+            track: track,
+            path: path,
+            active: track == highlighted,
           ),
-          for (var i = 0; i < unitsOf(LessonTrack.rhythm).length; i++) ...[
-            _segments(),
-            _row((track) => _UnitNode(unit: unitsOf(track)[i], path: path)),
+        ),
+        for (final level in levelsOf(LessonTrack.rhythm)) ...[
+          if (level > 1) ...[segments(), _LevelHeader(level: level)],
+          for (var i = 0;
+              i < unitsOf(LessonTrack.rhythm, level: level).length;
+              i++) ...[
+            segments(),
+            _row(
+              (track) => _UnitNode(
+                unit: unitsOf(track, level: level)[i],
+                path: path,
+              ),
+            ),
           ],
-          for (var i = 0; i < challengesOf(LessonTrack.rhythm).length; i++) ...[
-            _segments(),
-            _row((track) => _ChallengeNode(challenge: challengesOf(track)[i])),
+          for (var i = 0;
+              i < challengesOf(LessonTrack.rhythm, level: level).length;
+              i++) ...[
+            segments(),
+            _row(
+              (track) => _ChallengeNode(
+                challenge: challengesOf(track, level: level)[i],
+              ),
+            ),
           ],
         ],
-      );
+      ],
+    );
+  }
+}
+
+/// Separa los niveles de los dos caminos, a todo lo ancho.
+class _LevelHeader extends StatelessWidget {
+  const _LevelHeader({required this.level});
+
+  final int level;
+
+  @override
+  Widget build(BuildContext context) {
+    final p = context.palette;
+    final text = Theme.of(context).textTheme;
+    return Padding(
+      key: Key('lessons-level-$level'),
+      padding: const EdgeInsets.symmetric(vertical: 8),
+      child: Row(
+        children: [
+          Expanded(child: Divider(color: p.outline)),
+          Flexible(
+            flex: 4,
+            child: Padding(
+              padding: const EdgeInsets.symmetric(horizontal: 12),
+              child: Column(
+                children: [
+                  Text(
+                    AppStrings.lessonsLevel(level),
+                    style: text.titleMedium?.copyWith(color: p.accent),
+                  ),
+                  Text(
+                    AppStrings.lessonsLevelHint,
+                    textAlign: TextAlign.center,
+                    style: text.bodySmall?.copyWith(color: p.textSecondary),
+                  ),
+                ],
+              ),
+            ),
+          ),
+          Expanded(child: Divider(color: p.outline)),
+        ],
+      ),
+    );
+  }
 }
 
 /// Título de un camino en su columna; tocarlo lo elige.
@@ -245,11 +371,13 @@ class _TrackTitle extends StatelessWidget {
   }
 }
 
-/// Tramo de cuerda entre dos nodos, cruzado por un traste.
+/// Tramo de cuerda entre dos nodos, cruzado por un traste. [reveal] va de 0
+/// a 1 mientras la cuerda se dibuja hacia abajo.
 class _StringSegment extends StatelessWidget {
-  const _StringSegment({required this.active});
+  const _StringSegment({required this.active, required this.reveal});
 
   final bool active;
+  final Animation<double> reveal;
 
   @override
   Widget build(BuildContext context) {
@@ -261,6 +389,7 @@ class _StringSegment extends StatelessWidget {
         painter: _StringPainter(
           string: active ? p.fretString : p.stringMuted,
           fret: p.fretWire,
+          reveal: reveal,
         ),
       ),
     );
@@ -268,25 +397,32 @@ class _StringSegment extends StatelessWidget {
 }
 
 class _StringPainter extends CustomPainter {
-  const _StringPainter({required this.string, required this.fret});
+  _StringPainter({
+    required this.string,
+    required this.fret,
+    required this.reveal,
+  }) : super(repaint: reveal);
 
   final Color string;
   final Color fret;
+  final Animation<double> reveal;
 
   @override
   void paint(Canvas canvas, Size size) {
     final x = size.width / 2;
+    final t = reveal.value;
+    if (t <= 0) return;
     canvas
       ..drawLine(
-        Offset(x - 40, size.height / 2),
-        Offset(x + 40, size.height / 2),
+        Offset(x - 40 * t, size.height / 2),
+        Offset(x + 40 * t, size.height / 2),
         Paint()
           ..color = fret
           ..strokeWidth = 1.5,
       )
       ..drawLine(
         Offset(x, 0),
-        Offset(x, size.height),
+        Offset(x, size.height * t),
         Paint()
           ..color = string
           ..strokeWidth = 3,
@@ -295,7 +431,7 @@ class _StringPainter extends CustomPainter {
 
   @override
   bool shouldRepaint(_StringPainter old) =>
-      old.string != string || old.fret != fret;
+      old.string != string || old.fret != fret || old.reveal != reveal;
 }
 
 /// Donde la cuerda de Fundamentos se abre en dos. La rama resaltada va en el
