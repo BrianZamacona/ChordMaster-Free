@@ -7,6 +7,7 @@ import 'package:just_audio/just_audio.dart';
 import 'package:path_provider/path_provider.dart';
 
 import '../domain/audio/pluck_synth.dart';
+import '../domain/practice/tab_playback.dart';
 import '../domain/theory/notes.dart';
 import '../domain/voicing/voicing_adapter.dart';
 
@@ -78,11 +79,22 @@ class AudioService {
   }
 
   /// Notas que empiezan en instantes distintos (p. ej. un intervalo
-  /// melódico: una nota y luego la otra).
-  Future<void> playNotes(List<NoteEvent> events, {double seconds = 2.5}) {
+  /// melódico: una nota y luego la otra, o una tablatura entera). Con [ring],
+  /// cada nota suena solo esos segundos.
+  Future<void> playNotes(
+    List<NoteEvent> events, {
+    double seconds = 2.5,
+    double? ring,
+  }) {
     if (events.isEmpty) return Future.value();
-    final key = 'notes-${[for (final e in events) '${e.midi}@${e.at}'].join('-')}-$seconds';
-    return _playVoice(key, () => renderNotes(events, seconds: seconds));
+    final full =
+        'notes-${[for (final e in events) '${e.midi}@${e.at}'].join('-')}-$seconds-$ring';
+    // Una frase larga daría un nombre de archivo demasiado largo.
+    final key = full.length > 120 ? 'phrase-${stableKey(full)}' : full;
+    return _playVoice(
+      key,
+      () => renderNotes(events, seconds: seconds, ring: ring),
+    );
   }
 
   /// Clic del metrónomo; [isAccent] para el primer tiempo del compás.

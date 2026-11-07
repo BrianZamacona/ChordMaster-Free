@@ -7,8 +7,7 @@ import '../../domain/lessons/curriculum.dart';
 import '../../domain/lessons/lesson.dart';
 import '../../domain/lessons/lesson_path.dart';
 import '../../ui/theme.dart';
-import '../ear_training/ear_training_viewmodel.dart';
-import '../rhythm_games/rhythm_game_viewmodel.dart';
+import 'challenge_progress.dart';
 import 'lesson_widgets.dart';
 import 'lessons_viewmodel.dart';
 
@@ -594,19 +593,7 @@ class _ChallengeNode extends ConsumerWidget {
   Widget build(BuildContext context, WidgetRef ref) {
     final p = context.palette;
     final text = Theme.of(context).textTheme;
-    final (best, route, label) = switch (challenge.kind) {
-      ChallengeKind.rhythmAccuracy => (
-          ref.watch(rhythmGameViewModelProvider.select((s) => s.bestScore)),
-          '/practice/rhythm',
-          AppStrings.challengeRhythmBest,
-        ),
-      ChallengeKind.earStreak => (
-          ref.watch(earTrainingViewModelProvider.select((s) => s.bestStreak)),
-          '/practice/ear-training',
-          AppStrings.challengeEarBest,
-        ),
-    };
-    final passed = challenge.isPassed(best);
+    final (:route, :status, :passed, best: _) = challengeProgress(ref, challenge);
     final inlay = passed ? p.success : p.accent;
     return Card(
       margin: EdgeInsets.zero,
@@ -658,7 +645,7 @@ class _ChallengeNode extends ConsumerWidget {
                 ],
               ),
               Text(
-                passed ? AppStrings.challengePassed : label(best, challenge.goal),
+                status,
                 key: Key('challenge-status-${challenge.id}'),
                 textAlign: TextAlign.center,
                 style: musicMono(

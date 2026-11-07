@@ -17,7 +17,11 @@ class _FakeAudio extends AudioService {
   final played = <List<NoteEvent>>[];
 
   @override
-  Future<void> playNotes(List<NoteEvent> events, {double seconds = 2.5}) async =>
+  Future<void> playNotes(
+    List<NoteEvent> events, {
+    double seconds = 2.5,
+    double? ring,
+  }) async =>
       played.add(events);
 }
 
