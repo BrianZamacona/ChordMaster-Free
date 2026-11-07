@@ -6,8 +6,10 @@ import '../../core/constants/scale_names.dart';
 import '../../core/widgets/selector_pill.dart';
 import '../../domain/fingering_systems/fingering_systems_registry.dart';
 import '../../domain/lessons/lesson.dart';
+import '../../domain/practice/multi_day_challenges.dart';
 import '../../domain/practice/scale_workouts.dart';
 import '../../domain/theory/notes.dart';
+import '../../services/activity_log.dart';
 import '../../ui/theme.dart';
 import '../lessons/tab_player.dart';
 import 'workouts_viewmodel.dart';
@@ -188,7 +190,7 @@ class WorkoutsScreen extends ConsumerWidget {
 
 /// Un patrón de la rutina. Muestra solo la subida, para que la tablatura no
 /// se haga larguísima; "Agregar la bajada" suma el mismo dibujo al revés.
-class _WorkoutCard extends StatefulWidget {
+class _WorkoutCard extends ConsumerStatefulWidget {
   const _WorkoutCard({
     super.key,
     required this.pattern,
@@ -201,10 +203,10 @@ class _WorkoutCard extends StatefulWidget {
   final int bpm;
 
   @override
-  State<_WorkoutCard> createState() => _WorkoutCardState();
+  ConsumerState<_WorkoutCard> createState() => _WorkoutCardState();
 }
 
-class _WorkoutCardState extends State<_WorkoutCard> {
+class _WorkoutCardState extends ConsumerState<_WorkoutCard> {
   var _withDown = false;
 
   @override
@@ -236,7 +238,13 @@ class _WorkoutCardState extends State<_WorkoutCard> {
               style: musicMono(fontSize: 12, color: p.textSecondary),
             ),
             const SizedBox(height: 10),
-            TabPlayer(notes: notes, bpm: widget.bpm),
+            TabPlayer(
+              notes: notes,
+              bpm: widget.bpm,
+              onPlay: () => ref
+                  .read(activityLogProvider.notifier)
+                  .record(PracticeActivity.workouts),
+            ),
             const SizedBox(height: 4),
             Align(
               alignment: Alignment.centerLeft,

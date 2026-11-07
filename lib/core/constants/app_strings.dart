@@ -381,6 +381,22 @@ class AppStrings {
       tr(es: 'Agregar la bajada', en: 'Add the way down');
   static String get workoutsOnlyUp =>
       tr(es: 'Solo la subida', en: 'Only the way up');
+  static String get hubMultiDay =>
+      tr(es: 'Retos de la semana', en: 'Weekly challenges');
+  static String get hubMultiDaySub => tr(
+    es: 'Practica varios días: racha, Técnica, rutinas, lecciones, Oído y Ritmo.',
+    en: 'Practice on several days: streak, Technique, workouts, lessons, Ear and Rhythm.',
+  );
+  static String get multiDayIntro => tr(
+    es: 'Se superan solos: cada día que practicas un módulo cuenta. Los '
+        'círculos son los últimos 7 días, el de la derecha es hoy.',
+    en: 'They complete themselves: every day you practice a module counts. '
+        'The circles are the last 7 days; the one on the right is today.',
+  );
+  static String multiDayPassed(int passed, int total) => tr(
+    es: '$passed de $total superados',
+    en: '$passed of $total completed',
+  );
   static String get hubTechnique =>
       tr(es: 'Técnica', en: 'Technique');
   static String get hubTechniqueSub => tr(

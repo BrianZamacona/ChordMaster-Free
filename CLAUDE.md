@@ -130,6 +130,12 @@ cada nota pertenezca a la escala. No bajar la tolerancia de 0.
 - Ritmo: precisión = toques a ±75 ms / máx(toques, pulsos); récord y logro desde 16 toques.
 - Canciones: solo acordes (sin letras); notas con sostenidos; cada acorde enlaza a su ficha
   (slash → acorde de arriba). Test: todos existen en chords.json salvo A7sus4.
+- Retos de la semana (`lib/domain/practice/multi_day_challenges.dart`, ruta `/practice/challenges`):
+  se superan practicando en días distintos, sin marcar nada. `ActivityLog`
+  (`lib/services/activity_log.dart`, `activity_days`, últimos 30 días) anota el día al terminar
+  una lección, escuchar una rutina, guardar un tempo limpio en Técnica, responder en Oído o
+  terminar una ronda de Ritmo con puntaje. "Semana constante" pide 7 días seguidos de cualquier
+  práctica; los demás, N días de los últimos 7. Hay test de que todos se pueden superar.
 - Logros: todos deben poder conseguirse (test en `achievement_service_test.dart`). Comunidad
   se eliminó (no tenía ruta y solo guardaba en el teléfono).
 

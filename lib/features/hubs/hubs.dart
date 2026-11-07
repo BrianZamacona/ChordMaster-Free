@@ -86,6 +86,12 @@ class PracticeHubScreen extends StatelessWidget {
             route: '/practice/technique',
           ),
           HubEntry(
+            icon: Icons.event_available,
+            title: AppStrings.hubMultiDay,
+            subtitle: AppStrings.hubMultiDaySub,
+            route: '/practice/challenges',
+          ),
+          HubEntry(
             icon: Icons.av_timer,
             title: AppStrings.hubRhythm,
             subtitle: AppStrings.hubRhythmSub,
