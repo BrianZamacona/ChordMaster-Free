@@ -1,5 +1,4 @@
 import 'package:chordmaster_free/app.dart';
-import 'package:chordmaster_free/core/constants/app_strings.dart';
 import 'package:chordmaster_free/core/i18n/tr.dart';
 import 'package:chordmaster_free/domain/audio/pluck_synth.dart';
 import 'package:chordmaster_free/domain/courses/course.dart';
@@ -8,7 +7,6 @@ import 'package:chordmaster_free/domain/strumming/strumming_course.dart';
 import 'package:chordmaster_free/features/courses/course_progress.dart';
 import 'package:chordmaster_free/features/lessons/lesson_widgets.dart';
 import 'package:chordmaster_free/features/strumming/strumming_course_provider.dart';
-import 'package:chordmaster_free/features/strumming/strumming_screen.dart';
 import 'package:chordmaster_free/services/audio_service.dart';
 import 'package:chordmaster_free/services/key_value_store.dart';
 import 'package:chordmaster_free/ui/navigation.dart';
@@ -76,15 +74,18 @@ void main() {
     return (store, audio, container);
   }
 
-  testWidgets('Aprender enlaza el curso con todos sus niveles y pasos', (tester) async {
-    final (_, _, container) = await open(tester, '/learn', size: const Size(500, 20000));
-    await tester.tap(find.text(AppStrings.hubStrumming));
+  testWidgets('el mapa de Lecciones enlaza el curso con todos sus niveles y pasos', (tester) async {
+    final (_, _, container) = await open(tester, '/learn/lessons', size: const Size(500, 20000));
+    final node = find.byKey(const Key('unit-r_strumming_patterns_1'));
+    await tester.ensureVisible(node);
+    await tester.pump();
+    await tester.tap(node);
     await settle(tester);
     for (var i = 0; i < 5 && container.read(strummingCourseProvider) == null; i++) {
       await tester.runAsync(() => Future<void>.delayed(const Duration(seconds: 1)));
       await settle(tester);
     }
-    expect(find.byType(StrummingScreen), findsOneWidget);
+    expect(find.byKey(const Key('unit-title')), findsOneWidget);
     final levels = container.read(strummingCourseProvider)!;
     expect(levels, hasLength(12));
     for (var i = 0; i < levels.length; i++) {
@@ -96,7 +97,7 @@ void main() {
   });
 
   testWidgets('la teoría dibuja su patrón', (tester) async {
-    await open(tester, '/learn/strumming/sp4_learn');
+    await open(tester, '/learn/lessons/course/strumming/sp4_learn');
     final view = tester.widget<StrumPatternView>(find.byType(StrumPatternView));
     expect(view.pattern, strummingPatterns[3]);
     expect(find.byKey(const Key('course-read')), findsOneWidget);
@@ -105,7 +106,7 @@ void main() {
   testWidgets('practicar suena con el patrón de cada compás y guarda el tempo', (
     tester,
   ) async {
-    final (store, audio, container) = await open(tester, '/learn/strumming/sp4_one');
+    final (store, audio, container) = await open(tester, '/learn/lessons/course/strumming/sp4_one');
     expect(find.byKey(const Key('strum-pattern')), findsOneWidget);
     final play = find.byKey(const Key('tab-play'));
     await tester.ensureVisible(play);
@@ -133,13 +134,13 @@ void main() {
     testWidgets('a 360 dp ($code) el curso y cada paso sin desbordes', (tester) async {
       final (_, _, container) = await open(
         tester,
-        '/learn/strumming',
+        '/learn/lessons/unit/r_strumming_patterns_1',
         code: code,
         size: const Size(360, 6000),
       );
       expect(tester.takeException(), isNull);
       for (final s in courseSteps(container.read(strummingCourseProvider)!)) {
-        appRouter.go('/learn/strumming/${s.id}');
+        appRouter.go('/learn/lessons/course/strumming/${s.id}');
         await settle(tester);
         expect(tester.takeException(), isNull, reason: s.id);
       }

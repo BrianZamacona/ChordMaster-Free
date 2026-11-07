@@ -170,8 +170,9 @@ cada nota pertenezca a la escala. No bajar la tolerancia de 0.
 - Mapa (`lessons_screen.dart`): identidad propia, dibujado como mástil. Fundamentos es una
   cuerda que se abre en dos; cada unidad es un nodo con un dibujo generado desde los datos
   (`UnitArt`: diagrama, escala, rasgueo o notas). Nada de fotos ni imágenes de terceros.
-  Los dos caminos se arman por filas de igual altura, nivel por nivel, así que en cada nivel
-  deben tener tantas unidades como retos (hay test); un separador marca el nivel 2. Ningún
+  Los dos caminos se arman por filas de igual altura, nivel por nivel: si un camino tiene más
+  unidades en un nivel, el otro deja la celda vacía; ambos tienen los mismos niveles y un reto
+  por nivel (hay test); un separador marca el nivel 2. Ningún
   camino se resalta hasta terminar Fundamentos o tocar uno (`highlightedTrack`). Al abrir, las
   cuerdas se dibujan escalonadas; con "reducir movimiento" aparecen completas.
 - Retos (`challenges`): uno al cerrar cada nivel de rítmica y de líder, con el doble punto del
@@ -185,9 +186,18 @@ cada nota pertenezca a la escala. No bajar la tolerancia de 0.
   cursos tipo "Level 1 · Learn to Fret", pero en vertical (decisión del usuario).
 - Rutas: `/learn/lessons`, `/learn/lessons/unit/:unitId` y `/learn/lessons/:id`. Logro
   `foundations_done`.
+- Cursos en el mapa (decisión del usuario: los cursos amplían el mapa, no son módulos sueltos
+  en Aprender): una unidad con `course` (`LessonCourse`) no tiene lecciones; su nodo muestra los
+  pasos hechos y su página (`/learn/lessons/unit/:id` o `/learn/lessons/course/<slug>`) es el
+  curso con el encabezado de la unidad, el reto si cierra el nivel y la unidad que sigue. Los
+  pasos van en `/learn/lessons/course/<slug>/<paso>` (atrás vuelve al curso). El orden del mapa
+  es `lessonUnits` (curriculum.dart); `course_registry.dart` da de cada curso su progreso,
+  niveles y rutas. Rítmica nivel 1 empieza por Acordes abiertos – Parte 1 y luego Patrones de
+  rasgueo – Parte 1; Melodías va en Fundamentos. Las rutas viejas `/learn/melodies`,
+  `/learn/open-chords` y `/learn/strumming` redirigen.
 
 ## Curso de melodías
-- `lib/domain/melodies/melody_course.dart`, rutas `/learn/melodies` y `/learn/melodies/:id`.
+- `lib/domain/melodies/melody_course.dart`, unidad `f_melodies` del mapa (Fundamentos).
   Niveles (cuerdas agudas, saltos, posición V, melodías conocidas) con pasos de teoría, ejercicio
   y canción. Inspirado en cursos tipo "Melodies · Level 1…", en vertical (decisión del usuario).
 - Las melodías se escriben como alturas ("C4") y `tabForPitches` las pone en la cuerda donde
@@ -209,7 +219,7 @@ cada nota pertenezca a la escala. No bajar la tolerancia de 0.
   copiar pantallas.
 
 ## Curso de acordes abiertos (Parte 1)
-- `lib/domain/open_chords/`, rutas `/learn/open-chords` y `/learn/open-chords/:id`. Em, G, D y C
+- `lib/domain/open_chords/`, unidad `r_open_chords_1` del mapa (primera de rítmica). Em, G, D y C
   (`openChordsCourseChords`); detrás de cada acorde nuevo, sus cambios con los anteriores
   (Em–G, D–G, D–Em, C–Em, C–G, C–D) y un final. Inspirado en cursos tipo "Open Chords – Part 1",
   en vertical (decisión del usuario).
@@ -225,7 +235,7 @@ cada nota pertenezca a la escala. No bajar la tolerancia de 0.
   todos los cursos).
 
 ## Curso de patrones de rasgueo (Parte 1)
-- `lib/domain/strumming/`, rutas `/learn/strumming` y `/learn/strumming/:id`. Cinco patrones de
+- `lib/domain/strumming/`, unidad `r_strumming_patterns_1` del mapa (segunda de rítmica). Cinco patrones de
   4/4 (`strummingPatterns`, una letra por corchea: `D`, `U` o espacio, el mismo formato que
   `Lesson.strumPattern`) con Em, G, D y C. Cada patrón: aprenderlo, con uno, dos y cuatro
   acordes, consejos; luego "el patrón en canciones"; antes del 5, combinar 3 y 4; al final,

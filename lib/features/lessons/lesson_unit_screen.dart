@@ -4,15 +4,20 @@ import 'package:go_router/go_router.dart';
 
 import '../../core/constants/app_strings.dart';
 import '../../core/constants/scale_names.dart';
+import '../../domain/courses/course.dart';
 import '../../domain/lessons/curriculum.dart';
 import '../../domain/lessons/lesson.dart';
 import '../../domain/lessons/lesson_path.dart';
 import '../../domain/lessons/unit_summary.dart';
 import '../../domain/theory/notes.dart';
 import '../../ui/theme.dart';
+import '../courses/course_progress.dart';
+import '../courses/course_registry.dart';
+import '../courses/course_widgets.dart';
 import 'challenge_progress.dart';
 import 'lesson_widgets.dart';
 import 'lessons_viewmodel.dart';
+import 'unit_progress.dart';
 
 /// Una unidad del mapa, de arriba abajo: qué se aprende y cuánto llevas; sus
 /// lecciones en una línea vertical, cada una con lo que practica; el reto que
@@ -30,6 +35,9 @@ class LessonUnitScreen extends ConsumerWidget {
         appBar: AppBar(title: Text(AppStrings.lessonsTitle)),
         body: Center(child: Text(AppStrings.unitNotFound)),
       );
+    }
+    if (unit.course case final course?) {
+      return _CourseUnitScreen(unit: unit, course: course);
     }
     final path = ref.watch(lessonsViewModelProvider.select((s) => s.path));
     final summary = UnitSummary(unit, completed: path.completed);
@@ -546,17 +554,18 @@ class _ResultRow extends StatelessWidget {
 
 /// La unidad que sigue en el camino: reemplaza a esta, así atrás vuelve al
 /// mapa y no se apilan unidades.
-class _NextUnit extends StatelessWidget {
+class _NextUnit extends ConsumerWidget {
   const _NextUnit({required this.unit, required this.completed});
 
   final LessonUnit unit;
   final Set<String> completed;
 
   @override
-  Widget build(BuildContext context) {
+  Widget build(BuildContext context, WidgetRef ref) {
     final p = context.palette;
     final text = Theme.of(context).textTheme;
     final summary = UnitSummary(unit, completed: completed);
+    final (done, total) = watchUnitProgress(ref, unit);
     return Card(
       margin: EdgeInsets.zero,
       clipBehavior: Clip.antiAlias,
@@ -583,8 +592,10 @@ class _NextUnit extends StatelessWidget {
                     ),
                     const SizedBox(height: 4),
                     Text(
-                      '${AppStrings.lessonsUnitCount(summary.lessons.length, summary.minutes)}'
-                      ' · ${AppStrings.lessonsProgress(summary.done, summary.lessons.length)}',
+                      unit.course == null
+                          ? '${AppStrings.lessonsUnitCount(summary.lessons.length, summary.minutes)}'
+                              ' · ${AppStrings.lessonsProgress(done, total)}'
+                          : AppStrings.unitCourseSteps(done, total),
                       style: musicMono(fontSize: 11, color: p.textSecondary),
                     ),
                   ],
@@ -593,6 +604,158 @@ class _NextUnit extends StatelessWidget {
               Icon(Icons.chevron_right, color: p.textSecondary),
             ],
           ),
+        ),
+      ),
+    );
+  }
+}
+
+/// Una unidad que es un curso: el encabezado de la unidad (camino, posición,
+/// avance y "Empezar"), el curso con sus niveles y resultados, el reto si
+/// cierra el nivel y la unidad que sigue.
+class _CourseUnitScreen extends ConsumerWidget {
+  const _CourseUnitScreen({required this.unit, required this.course});
+
+  final LessonUnit unit;
+  final LessonCourse course;
+
+  @override
+  Widget build(BuildContext context, WidgetRef ref) {
+    final levels = watchCourseLevels(ref, course);
+    final path = ref.watch(lessonsViewModelProvider.select((s) => s.path));
+    final summary = UnitSummary(unit, completed: path.completed);
+    final (done, total) = watchUnitProgress(ref, unit);
+    final progress = ref.watch(courseProgressProvider(course.progressId));
+    final challenge = summary.closingChallenge;
+    final nextUnit = summary.nextUnit;
+    final text = Theme.of(context).textTheme;
+    return Scaffold(
+      appBar: AppBar(title: Text(unit.title.text)),
+      body: levels == null
+          ? const Center(child: CircularProgressIndicator())
+          : CourseOverview(
+              course: course.progressId,
+              intro: course.intro,
+              levels: levels,
+              routeOf: course.stepRoute,
+              header: [
+                _CourseUnitHeader(
+                  unit: unit,
+                  summary: summary,
+                  done: done,
+                  total: total,
+                  pending: courseSteps(levels)
+                      .where((s) => !progress.isDone(s))
+                      .firstOrNull
+                      ?.id,
+                  firstStep: courseSteps(levels).first.id,
+                  course: course,
+                ),
+                const SizedBox(height: 20),
+              ],
+              footer: [
+                if (challenge != null) ...[
+                  const SizedBox(height: 20),
+                  _SectionTitle(AppStrings.unitChallenge),
+                  _ChallengeStep(challenge: challenge, reachable: total > 0 && done == total),
+                ],
+                const SizedBox(height: 20),
+                _SectionTitle(AppStrings.unitNext),
+                if (nextUnit != null)
+                  _NextUnit(unit: nextUnit, completed: path.completed)
+                else
+                  Text(
+                    AppStrings.unitEndOfPath,
+                    key: const Key('unit-end'),
+                    style: text.bodyMedium?.copyWith(color: context.palette.textSecondary),
+                  ),
+              ],
+            ),
+    );
+  }
+}
+
+class _CourseUnitHeader extends StatelessWidget {
+  const _CourseUnitHeader({
+    required this.unit,
+    required this.summary,
+    required this.done,
+    required this.total,
+    required this.pending,
+    required this.firstStep,
+    required this.course,
+  });
+
+  final LessonUnit unit;
+  final UnitSummary summary;
+  final int done;
+  final int total;
+
+  /// El primer paso sin hacer (`null` si está todo hecho).
+  final String? pending;
+  final String firstStep;
+  final LessonCourse course;
+
+  @override
+  Widget build(BuildContext context) {
+    final p = context.palette;
+    final text = Theme.of(context).textTheme;
+    final (index, units) = summary.position;
+    final finished = pending == null;
+    final track = unit.track == LessonTrack.foundations
+        ? trackName(unit.track)
+        : AppStrings.trackLevel(trackName(unit.track), unit.level);
+    return Card(
+      margin: EdgeInsets.zero,
+      child: Padding(
+        padding: const EdgeInsets.all(16),
+        child: Column(
+          crossAxisAlignment: CrossAxisAlignment.stretch,
+          children: [
+            UnitArtView(art: unit.art, size: 88),
+            const SizedBox(height: 12),
+            Text(
+              '$track · ${AppStrings.unitPosition(index, units)}',
+              key: const Key('unit-eyebrow'),
+              style: text.labelLarge?.copyWith(color: p.accent),
+            ),
+            const SizedBox(height: 2),
+            Text(unit.title.text, key: const Key('unit-title'), style: text.headlineSmall),
+            const SizedBox(height: 6),
+            Text(unit.summary.text, key: const Key('unit-summary'), style: text.bodyMedium),
+            const SizedBox(height: 12),
+            Text(
+              AppStrings.unitCourseSteps(done, total),
+              key: const Key('unit-progress'),
+              style: musicMono(
+                fontSize: 12,
+                fontWeight: FontWeight.w600,
+                color: finished ? p.success : p.textSecondary,
+              ),
+            ),
+            const SizedBox(height: 6),
+            ClipRRect(
+              borderRadius: BorderRadius.circular(4),
+              child: LinearProgressIndicator(
+                value: total == 0 ? 0 : done / total,
+                minHeight: 6,
+                color: finished ? p.success : p.accent,
+                backgroundColor: p.surfaceHigh,
+              ),
+            ),
+            const SizedBox(height: 14),
+            FilledButton(
+              key: const Key('unit-start'),
+              onPressed: () => context.push(course.stepRoute(pending ?? firstStep)),
+              child: Text(
+                finished
+                    ? AppStrings.lessonsReview
+                    : done == 0
+                        ? AppStrings.lessonsStart
+                        : AppStrings.lessonsResume,
+              ),
+            ),
+          ],
         ),
       ),
     );

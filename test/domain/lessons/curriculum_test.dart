@@ -86,13 +86,8 @@ void main() {
       }
     });
 
-    test('el mapa va por filas: los dos caminos, nivel por nivel, se emparejan', () {
+    test('el mapa va por filas: los dos caminos tienen los mismos niveles y retos', () {
       for (final level in levelsOf(LessonTrack.rhythm)) {
-        expect(
-          unitsOf(LessonTrack.rhythm, level: level).length,
-          unitsOf(LessonTrack.lead, level: level).length,
-          reason: 'nivel $level',
-        );
         expect(
           challengesOf(LessonTrack.rhythm, level: level).length,
           challengesOf(LessonTrack.lead, level: level).length,
@@ -100,6 +95,17 @@ void main() {
         );
       }
       expect(levelsOf(LessonTrack.rhythm), levelsOf(LessonTrack.lead));
+    });
+
+    test('cursos en el mapa: cada uno una vez; rítmica empieza por Acordes abiertos y Rasgueo', () {
+      for (final c in LessonCourse.values) {
+        expect(lessonUnits.where((u) => u.course == c), hasLength(1), reason: c.name);
+      }
+      expect(
+        [for (final u in unitsOf(LessonTrack.rhythm, level: 1).take(2)) u.course],
+        [LessonCourse.openChords, LessonCourse.strumming],
+      );
+      expect(unitOfCourse(LessonCourse.melodies).track, LessonTrack.foundations);
     });
 
     test('en el nivel 2 los retos piden más que en el 1', () {
@@ -141,8 +147,17 @@ void main() {
       final units = [for (final t in LessonTrack.values) ...unitsOf(t)];
       expect(units.map((u) => u.id).toSet().length, units.length);
       expect(unitsById.length, units.length);
+      // Toda lección pertenece a una unidad del mapa.
+      for (final l in curriculum) {
+        expect(lessonUnits, contains(l.unit), reason: l.id);
+      }
       for (final u in units) {
         final lessons = lessonsOfUnit(u);
+        if (u.course != null) {
+          // Un curso ocupa el nodo entero: no tiene lecciones.
+          expect(lessons, isEmpty, reason: u.id);
+          continue;
+        }
         expect(lessons.length, greaterThanOrEqualTo(2), reason: u.id);
         // Las lecciones de una unidad van seguidas en el currículo.
         final first = curriculum.indexOf(lessons.first);

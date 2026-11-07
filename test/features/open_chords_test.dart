@@ -1,12 +1,10 @@
 import 'package:chordmaster_free/app.dart';
-import 'package:chordmaster_free/core/constants/app_strings.dart';
 import 'package:chordmaster_free/core/i18n/tr.dart';
 import 'package:chordmaster_free/domain/audio/pluck_synth.dart';
 import 'package:chordmaster_free/domain/courses/course.dart';
 import 'package:chordmaster_free/features/courses/course_progress.dart';
 import 'package:chordmaster_free/features/courses/course_widgets.dart';
 import 'package:chordmaster_free/features/open_chords/open_chords_course_provider.dart';
-import 'package:chordmaster_free/features/open_chords/open_chords_screen.dart';
 import 'package:chordmaster_free/services/audio_service.dart';
 import 'package:chordmaster_free/services/key_value_store.dart';
 import 'package:chordmaster_free/ui/navigation.dart';
@@ -73,16 +71,19 @@ void main() {
     return (store, audio, container);
   }
 
-  testWidgets('Aprender enlaza el curso con todos sus niveles y pasos', (tester) async {
-    final (_, _, container) = await open(tester, '/learn', size: const Size(500, 20000));
-    await tester.tap(find.text(AppStrings.hubOpenChords));
+  testWidgets('el mapa de Lecciones enlaza el curso con todos sus niveles y pasos', (tester) async {
+    final (_, _, container) = await open(tester, '/learn/lessons', size: const Size(500, 20000));
+    final node = find.byKey(const Key('unit-r_open_chords_1'));
+    await tester.ensureVisible(node);
+    await tester.pump();
+    await tester.tap(node);
     await settle(tester);
     // chords.json se decodifica en otro isolate: hace falta tiempo real.
     for (var i = 0; i < 5 && container.read(openChordsCourseProvider) == null; i++) {
       await tester.runAsync(() => Future<void>.delayed(const Duration(seconds: 1)));
       await settle(tester);
     }
-    expect(find.byType(OpenChordsScreen), findsOneWidget);
+    expect(find.byKey(const Key('unit-title')), findsOneWidget);
     final levels = container.read(openChordsCourseProvider)!;
     expect(levels, hasLength(11));
     for (var i = 0; i < levels.length; i++) {
@@ -95,7 +96,7 @@ void main() {
   });
 
   testWidgets('las estrellas guardadas se ven en el curso', (tester) async {
-    await open(tester, '/learn/open-chords', progress: {
+    await open(tester, '/learn/lessons/unit/r_open_chords_1', progress: {
       CourseId.openChords.keyBest: {'oc_em_full': 100},
     });
     final stars = tester.widget<CourseStars>(find.byKey(const Key('course-stars-oc_em_full')));
@@ -105,7 +106,7 @@ void main() {
   testWidgets('"Solo el dedo medio": diagrama a medio armar y un golpe por pulso', (
     tester,
   ) async {
-    final (store, audio, container) = await open(tester, '/learn/open-chords/oc_em_f1');
+    final (store, audio, container) = await open(tester, '/learn/lessons/course/open-chords/oc_em_f1');
     expect(find.byKey(const Key('course-diagram-0')), findsOneWidget);
     final play = find.byKey(const Key('tab-play'));
     await tester.ensureVisible(play);
@@ -131,7 +132,7 @@ void main() {
   ) async {
     await open(
       tester,
-      '/learn/open-chords/oc_song_skip_to_my_lou',
+      '/learn/lessons/course/open-chords/oc_song_skip_to_my_lou',
       size: const Size(360, 3000),
     );
     expect(find.byKey(const Key('strum-chart')), findsOneWidget);
@@ -143,7 +144,7 @@ void main() {
   });
 
   testWidgets('la teoría se marca como leída y "Siguiente paso" avanza', (tester) async {
-    final (store, _, _) = await open(tester, '/learn/open-chords/oc_em_howto');
+    final (store, _, _) = await open(tester, '/learn/lessons/course/open-chords/oc_em_howto');
     await tester.tap(find.byKey(const Key('course-read')));
     await tester.pump();
     expect(store.progress[CourseId.openChords.keyRead], ['oc_em_howto']);
@@ -162,13 +163,13 @@ void main() {
     testWidgets('a 360 dp ($code) el curso y cada paso sin desbordes', (tester) async {
       final (_, _, container) = await open(
         tester,
-        '/learn/open-chords',
+        '/learn/lessons/unit/r_open_chords_1',
         code: code,
         size: const Size(360, 6000),
       );
       expect(tester.takeException(), isNull);
       for (final s in courseSteps(container.read(openChordsCourseProvider)!)) {
-        appRouter.go('/learn/open-chords/${s.id}');
+        appRouter.go('/learn/lessons/course/open-chords/${s.id}');
         await settle(tester);
         expect(tester.takeException(), isNull, reason: s.id);
       }

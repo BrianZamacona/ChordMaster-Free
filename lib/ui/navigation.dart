@@ -2,6 +2,7 @@ import 'package:go_router/go_router.dart';
 
 import '../core/widgets/app_scaffold.dart';
 import '../data/models/scale_definition.dart';
+import '../domain/lessons/curriculum.dart';
 import '../features/achievements/achievements_screen.dart';
 import '../features/capo/capo_screen.dart';
 import '../features/challenges/multi_day_screen.dart';
@@ -11,6 +12,8 @@ import '../features/chords/chord_explorer_screen.dart';
 import '../features/chords/chord_library_screen.dart';
 import '../features/circle/circle_build_screen.dart';
 import '../features/circle/circle_screen.dart';
+import '../features/courses/course_registry.dart';
+import '../features/courses/course_step_route.dart';
 import '../features/ear_training/ear_training_screen.dart';
 import '../features/guides/guide_detail_screen.dart';
 import '../features/guides/guides_screen.dart';
@@ -20,17 +23,11 @@ import '../features/hubs/hubs.dart';
 import '../features/lessons/lesson_detail_screen.dart';
 import '../features/lessons/lesson_unit_screen.dart';
 import '../features/lessons/lessons_screen.dart';
-import '../features/melodies/melodies_screen.dart';
-import '../features/melodies/melody_step_screen.dart';
 import '../features/metronome/metronome_screen.dart';
-import '../features/open_chords/open_chord_step_screen.dart';
-import '../features/open_chords/open_chords_screen.dart';
 import '../features/progressions/progressions_screen.dart';
 import '../features/rhythm_games/rhythm_game_screen.dart';
 import '../features/songs/song_detail_screen.dart';
 import '../features/songs/songs_screen.dart';
-import '../features/strumming/strum_step_screen.dart';
-import '../features/strumming/strumming_screen.dart';
 import '../features/technique/technique_screen.dart';
 import '../features/tuner/tuner_screen.dart';
 import '../features/workouts/workouts_screen.dart';
@@ -60,6 +57,10 @@ const legacyRoutePrefixes = {
   '/achievements': '/progress/achievements',
   '/health': '/progress/health',
   '/community': '/progress',
+  // Los cursos pasaron al mapa de Lecciones.
+  '/learn/melodies': '/learn/lessons/course/melodies',
+  '/learn/open-chords': '/learn/lessons/course/open-chords',
+  '/learn/strumming': '/learn/lessons/course/strumming',
 };
 
 /// Ruta actual para [location], o `null` si no es una ruta vieja.
@@ -108,6 +109,26 @@ final GoRouter appRouter = GoRouter(
                   path: 'lessons',
                   builder: (_, _) => const LessonsScreen(),
                   routes: [
+                    // Los cursos del mapa: su página es la de su unidad.
+                    GoRoute(
+                      path: 'course/:slug',
+                      builder: (_, state) {
+                        final course =
+                            LessonCourseInfo.fromSlug(state.pathParameters['slug']!);
+                        return LessonUnitScreen(
+                          unitId: course == null ? '' : unitOfCourse(course).id,
+                        );
+                      },
+                      routes: [
+                        GoRoute(
+                          path: ':stepId',
+                          builder: (_, state) => CourseStepRouteScreen(
+                            slug: state.pathParameters['slug']!,
+                            stepId: state.pathParameters['stepId']!,
+                          ),
+                        ),
+                      ],
+                    ),
                     // Antes que ':id' para que "unit" no se lea como lección.
                     GoRoute(
                       path: 'unit/:unitId',
@@ -138,39 +159,6 @@ final GoRouter appRouter = GoRouter(
                 GoRoute(
                   path: 'capo',
                   builder: (_, _) => const CapoScreen(),
-                ),
-                GoRoute(
-                  path: 'strumming',
-                  builder: (_, _) => const StrummingScreen(),
-                  routes: [
-                    GoRoute(
-                      path: ':id',
-                      builder: (_, state) =>
-                          StrumStepScreen(stepId: state.pathParameters['id']!),
-                    ),
-                  ],
-                ),
-                GoRoute(
-                  path: 'open-chords',
-                  builder: (_, _) => const OpenChordsScreen(),
-                  routes: [
-                    GoRoute(
-                      path: ':id',
-                      builder: (_, state) =>
-                          OpenChordStepScreen(stepId: state.pathParameters['id']!),
-                    ),
-                  ],
-                ),
-                GoRoute(
-                  path: 'melodies',
-                  builder: (_, _) => const MelodiesScreen(),
-                  routes: [
-                    GoRoute(
-                      path: ':id',
-                      builder: (_, state) =>
-                          MelodyStepScreen(stepId: state.pathParameters['id']!),
-                    ),
-                  ],
                 ),
                 GoRoute(
                   path: 'circle',
