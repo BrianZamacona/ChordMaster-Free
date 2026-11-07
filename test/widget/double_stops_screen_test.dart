@@ -5,15 +5,41 @@ import 'package:chordmaster_free/domain/theory/double_stops.dart';
 import 'package:chordmaster_free/ui/scales/double_stops/double_stops_fretboard.dart';
 import 'package:chordmaster_free/ui/scales/double_stops/double_stops_layout.dart';
 import 'package:chordmaster_free/ui/scales/double_stops/double_stops_screen.dart';
+import 'package:chordmaster_free/ui/theme.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:flutter_test/flutter_test.dart';
 
+import '../support/paint_matchers.dart';
+
 void main() {
+  TestWidgetsFlutterBinding.ensureInitialized();
+
   group('segmentLabelOffset', () {
     test('en el hueco sobre la cuerda superior, al centro de la línea', () {
       expect(
         segmentLabelOffset(const Offset(50, 36), const Offset(90, 56), 20),
+        const Offset(70, 26),
+      );
+    });
+
+    test('una línea que cruza la cejuela no deja la etiqueta encima de ella', () {
+      expect(
+        segmentLabelOffset(
+          const Offset(21, 36),
+          const Offset(43, 56),
+          20,
+          nutX: 32,
+        ),
+        const Offset(41, 26),
+      );
+      expect(
+        segmentLabelOffset(
+          const Offset(50, 36),
+          const Offset(90, 56),
+          20,
+          nutX: 32,
+        ),
         const Offset(70, 26),
       );
     });
@@ -26,23 +52,109 @@ void main() {
     });
   });
   group('noteOffset', () {
-    const size = Size(280, 136);
+    // Columna de afinación de 32 y 12 celdas de 20: el traste N va entre los
+    // alambres N-1 y N.
+    const size = Size(272, 142);
 
-    test('valores fijos (0–12: 13 trastes, ancho de traste 20, separación 20)', () {
-      expect(noteOffset(0, 0, size), const Offset(30, 16));
-      expect(noteOffset(5, 12, size), const Offset(270, 116));
-      expect(noteOffset(2, 5, size), const Offset(130, 56));
+    test('0–12: el aire en su columna y el traste N en la celda N', () {
+      expect(noteOffset(0, 0, size), const Offset(21, 16));
+      expect(noteOffset(0, 1, size), const Offset(42, 16));
+      expect(noteOffset(5, 12, size), const Offset(262, 116));
+      expect(noteOffset(2, 5, size), const Offset(122, 56));
     });
 
-    test('respeta startFret y fretCount (13–24)', () {
-      const upper = Size(260, 136);
+    test('respeta startFret y endFret (13–24)', () {
       expect(
-        noteOffset(1, 13, upper, startFret: 13, fretCount: 12),
-        const Offset(30, 36),
+        noteOffset(1, 13, size, startFret: 13, endFret: 24),
+        const Offset(42, 36),
       );
       expect(
-        noteOffset(3, 24, upper, startFret: 13, fretCount: 12),
-        const Offset(250, 76),
+        noteOffset(3, 24, size, startFret: 13, endFret: 24),
+        const Offset(262, 76),
+      );
+    });
+  });
+
+  group('cejuela de double stops', () {
+    Future<RenderObject> board(WidgetTester tester, FretRange range) async {
+      await tester.pumpWidget(
+        MaterialApp(
+          theme: lightTheme,
+          home: Scaffold(
+            body: DoubleStopFretboard(
+              pairs: const [],
+              range: range,
+              tonic: 'C',
+            ),
+          ),
+        ),
+      );
+      return tester.renderObject(
+        find.descendant(
+          of: find.byType(DoubleStopFretboard),
+          matching: find.byType(CustomPaint),
+        ),
+      );
+    }
+
+    testWidgets('0–12 la dibuja', (tester) async {
+      expect(
+        await board(tester, const FretRange(0, 12)),
+        paintsNut,
+      );
+    });
+
+    testWidgets('una pareja al aire no repite el nombre de su cuerda', (
+      tester,
+    ) async {
+      final group = findDiatonicDoubleStopPairs(
+        'C',
+        DiatonicDoubleStopInterval.third,
+        const FretRange(0, 12),
+      ).firstWhere(
+        (g) => g.pairs.any((p) => p.root.fret == 0 || p.interval.fret == 0),
+      );
+      final openStrings = {
+        for (final p in group.pairs)
+          for (final m in [p.root, p.interval])
+            if (m.fret == 0) m.stringIndex,
+      };
+      final notes = {
+        for (final p in group.pairs)
+          for (final m in [p.root, p.interval]) (m.stringIndex, m.fret),
+      };
+      await tester.pumpWidget(
+        MaterialApp(
+          theme: lightTheme,
+          home: Scaffold(
+            body: DoubleStopFretboard(
+              pairs: group.pairs,
+              range: const FretRange(0, 12),
+              tonic: 'C',
+            ),
+          ),
+        ),
+      );
+      // Afinación sin las cuerdas al aire, 12 números, un grado por pareja y
+      // una etiqueta por nota.
+      expect(
+        tester.renderObject(
+          find.descendant(
+            of: find.byType(DoubleStopFretboard),
+            matching: find.byType(CustomPaint),
+          ),
+        ),
+        paintsExactlyCountTimes(
+          #drawParagraph,
+          6 - openStrings.length + 12 + group.pairs.length + notes.length,
+        ),
+      );
+    });
+
+    testWidgets('13–24 no la dibuja', (tester) async {
+      expect(
+        await board(tester, const FretRange(13, 24)),
+        isNot(paintsNut),
       );
     });
   });

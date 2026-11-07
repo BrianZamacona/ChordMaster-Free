@@ -34,4 +34,13 @@ class FingeringSystemsRegistry {
     'pentatonic_two_notes',
     'linear_four_notes',
   ];
+
+  /// De qué sistema sale la posición predeterminada de una escala: 3NPS en las
+  /// de 7 notas, la caja en pentatónicas y blues, CAGED en las simétricas.
+  static const List<String> previewOrder = [
+    'three_nps',
+    'pentatonic_two_notes',
+    'caged',
+    'linear_four_notes',
+  ];
 }

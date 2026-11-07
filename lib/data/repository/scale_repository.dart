@@ -28,6 +28,7 @@ class ResolvedPattern {
     required this.startingFret,
     required this.endFret,
     required this.coordinates,
+    this.declaredOrder = 0,
   });
 
   final String scaleId;
@@ -39,6 +40,10 @@ class ResolvedPattern {
   final int startingFret;
   final int endFret;
   final List<NoteCoordinate> coordinates;
+
+  /// Lugar de la posición en `scales_master.json` ("Posición 1" va antes que
+  /// "Posición 2"); la lista resuelta se ordena por traste, no por esto.
+  final int declaredOrder;
 
   int get fretSpan => (endFret - startingFret) + 1;
 }
@@ -85,7 +90,7 @@ class ScaleRepository {
 
     final systemsById = {for (final s in scale.systems) s.id: s};
     final result = <ResolvedPattern>[];
-    for (final p in scale.positions) {
+    for (final (order, p) in scale.positions.indexed) {
       if (systemFilter != null && p.systemId != systemFilter) continue;
       final coords = p.resolveCoordinates(
         rootSemitone,
@@ -104,6 +109,7 @@ class ScaleRepository {
           startingFret: frets.reduce((a, b) => a < b ? a : b),
           endFret: frets.reduce((a, b) => a > b ? a : b),
           coordinates: coords,
+          declaredOrder: order,
         ),
       );
     }

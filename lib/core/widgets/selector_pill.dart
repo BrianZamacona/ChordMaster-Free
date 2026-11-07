@@ -15,12 +15,17 @@ class SelectorPill extends StatelessWidget {
     required this.value,
     required this.onOpen,
     this.onClear,
+    this.compact = false,
   });
 
   final String label;
   final String? value;
   final VoidCallback onOpen;
   final VoidCallback? onClear;
+
+  /// Para barras de altura fija: con valor muestra solo el valor (el lector de
+  /// pantalla sigue oyendo la etiqueta) y una línea, cortada con "…" si no cabe.
+  final bool compact;
 
   @override
   Widget build(BuildContext context) {
@@ -38,11 +43,16 @@ class SelectorPill extends StatelessWidget {
           child: Row(
             mainAxisSize: MainAxisSize.min,
             children: [
-              Text(
-                active ? '$label: $value' : label,
-                style: Theme.of(context).textTheme.labelLarge?.copyWith(
-                      fontWeight: active ? FontWeight.w700 : FontWeight.w400,
-                    ),
+              Flexible(
+                child: Text(
+                  active && compact ? value! : (active ? '$label: $value' : label),
+                  semanticsLabel: active ? '$label: $value' : label,
+                  maxLines: compact ? 1 : null,
+                  overflow: compact ? TextOverflow.ellipsis : null,
+                  style: Theme.of(context).textTheme.labelLarge?.copyWith(
+                        fontWeight: active ? FontWeight.w700 : FontWeight.w400,
+                      ),
+                ),
               ),
               const SizedBox(width: 2),
               if (clearable)

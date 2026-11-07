@@ -36,7 +36,15 @@ cada nota pertenezca a la escala. No bajar la tolerancia de 0.
   escalas de 7 notas cada grado tiene su número (b6 en la menor, #4 en la lidia), nunca `#5`
   por defecto.
 - Dibujo de diapasón con líneas/notas: UNA función de coordenadas (`noteOffset`) y un solo
-  `CustomPainter`; nada de medir widgets por separado.
+  `CustomPainter`; nada de medir widgets por separado. Escalas y double stops comparten
+  `FretGridGeometry` (`lib/ui/widgets/fret_grid_geometry.dart`).
+- La cuerda al aire NO es un traste: es una columna de afinación (`e B G D A E`, siempre visible)
+  a la izquierda de la cejuela, y sus notas llevan anillo. El traste N es la celda entre los
+  alambres N-1 y N. La cejuela solo se dibuja junto al traste 1; desde otro traste, alambre normal
+  y el número del traste debajo.
+- Las posiciones de `scales_master.json` solo suben desde su `fret_offset` en C: fuera de C casi
+  nunca traen notas al aire (E menor pentatónica empieza en el traste 4, no en el 0). Las cuerdas
+  al aire de otra tónica se ven en el mástil completo.
 - Colores: SOLO desde `context.palette` (`lib/ui/palette.dart`, paleta Palisandro con versión
   clara y oscura) o `Theme.of(context).colorScheme`. Nada de `Colors.red`/hex sueltos ni
   colores por módulo. El color codifica intervalos (`palette.intervalColor('b3')`) y siempre
@@ -236,6 +244,9 @@ Objetivo: código legible y mantenible antes que ingenioso. Capas (puertos y ada
   bemol. F# es "6 ♯, enarmónica de 6 ♭". Su 6º sostenido cae en F, que el texto aclara como E#.
 - Notas en común entre dos mayores: se calculan de las escalas. `7 − distancia` vale de 0 a 5; a
   distancia 6 son 2, no 1 (C y F# comparten B y F).
+- "¿Cómo se arma?" responde por qué ese orden: cada paso busca la quinta y cambia una sola nota
+  (la 4ª de la anterior sube un semitono y es la 7ª de la nueva; vale en los 12 pasos) mientras el
+  círculo se llena (`circle_build_ring.dart`). Del lado de los ♭, ese mismo paso quita un ♭.
 - La rueda (`circle_wheel.dart`) está fuera del scroll para que un arrastre siempre la gire. La
   rotación vive en un `AnimationController` que repinta solo su `CustomPainter`; el panel se
   reconstruye únicamente al cambiar de tonalidad, y los textos del painter van ya medidos.
@@ -256,6 +267,20 @@ Objetivo: código legible y mantenible antes que ingenioso. Capas (puertos y ada
     `advancedInversions`). Parseo y títulos en `fingering_selection.dart`; el explorador marca
     con checkbox "Comparar".
 - `lib/ui/scales/` — escalas, detalle y `double_stops/`.
+  - Detalle: arriba solo la tónica (decisión del usuario: sistema y digitación se eligen viendo
+    el mástil). `selectedPatternIndex == null` = sin digitación, y el diapasón fijo muestra la
+    posición predeterminada: la primera declarada del primer sistema de
+    `FingeringSystemsRegistry.previewOrder` (Posición 1 de 3NPS en las de 7 notas, la caja en
+    pentatónicas y blues, CAGED en las simétricas). Cambiar tónica o sistema limpia la selección.
+  - Vista ampliada (`detail/scale_fretboard_fullscreen.dart`): botones Sistema y Digitación
+    (`widgets/pattern_selector.dart`). Se abre en el navegador raíz, sin pestañas, y comparte
+    `scaleDetailProvider` con el detalle. `FretboardNeck` da la columna de aire fija y los trastes
+    1–24 con scroll; las notas salen de `scaleNotesOnNeck` y una digitación se resalta en todas las
+    octavas donde cabe completa (`patternAcrossNeck`), ambas en `lib/domain/theory/neck_notes.dart`.
+    Solo Android e iOS piden horizontal, y al salir se devuelve con la lista vacía: la app no fija
+    orientación y así respeta el bloqueo de rotación.
+  - Con nombres de nota, una nota al aire reemplaza el nombre de su cuerda para no decirlo dos
+    veces; con intervalos, la afinación sigue al lado.
 - `lib/ui/navigation.dart` — UN solo `StatefulShellRoute` con 5 pestañas (`AppScaffold`):
   Inicio `/`, Aprender `/learn/...`, Practicar `/practice/...`, Afinar `/tools/tuner|metronome`,
   Progreso `/progress/...` (incluye ajustes). Componer vive dentro de Progresiones ("Mi

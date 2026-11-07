@@ -378,53 +378,102 @@ void main() {
       }
     });
 
-    test('el texto nombra la suma, la alteración y su grado', () {
-      expect(steps[0].explanation.es, 'Empezamos en C: sin alteraciones.');
+    test('cada paso cambia una sola nota, que sube un semitono', () {
+      for (final s in steps.skip(1)) {
+        final before = s.previousScale!.toSet();
+        final after = s.scale.toSet();
+        expect(before.difference(after), {s.raisedFrom}, reason: '${s.number}');
+        expect(after.difference(before), {s.raisedTo}, reason: '${s.number}');
+        expect((s.raisedTo! - s.raisedFrom!) % 12, 1, reason: '${s.number}');
+      }
+    });
+
+    test('la nota que cambia: la 4ª de la anterior pasa a 7ª de la nueva', () {
+      for (final s in steps.skip(1)) {
+        expect(s.raisedFrom, s.previousScale![3], reason: '${s.number}');
+        expect(s.raisedTo, s.scale[6], reason: '${s.number}');
+      }
+    });
+
+    test('la tónica nueva es la 5ª nota de la escala anterior', () {
+      for (final s in steps.skip(1)) {
+        expect(s.previousScale![4], s.tonic, reason: '${s.number}');
+        expect(
+          s.fifthText!.es,
+          'La 5ª nota de la escala de ${pitchClassName(s.previousTonic!)} es '
+          '${pitchClassName(s.tonic)}.',
+        );
+      }
+    });
+
+    test('la escala sale de la tónica y tiene 7 notas', () {
+      for (final s in steps) {
+        expect(s.scale, hasLength(7));
+        expect(s.scale.first, s.tonic);
+      }
+    });
+
+    test('el texto nombra la nota que cambia y la armadura', () {
       expect(
-        steps[1].explanation.es,
-        'C + 7 semitonos = G. Agrega un ♯ en F#, la 7ª de G. Armadura: 1 sostenido.',
+        steps[0].changeText.es,
+        'Empezamos en C: sin alteraciones. Sus 7 notas son el punto de partida.',
       );
       expect(
-        steps[1].explanation.en,
-        'C + 7 semitones = G. It adds a ♯ on F#, the 7th of G. Key signature: 1 sharp.',
+        steps[1].changeText.es,
+        'G usa las mismas notas que C salvo una: F sube a F#. Armadura: 1 sostenido.',
       );
-      expect(steps[2].explanation.es, contains('♯ en C#, la 7ª de D'));
+      expect(
+        steps[1].changeText.en,
+        'G uses the same notes as C except one: F rises to F#. Key signature: 1 sharp.',
+      );
+      expect(steps[2].changeText.es, contains('C sube a C#'));
     });
 
     test('el 6º sostenido cae en F, escrito E#, y F# es enarmónica', () {
-      expect(steps[6].explanation.es, contains('♯ en F (se escribe E#)'));
-      expect(steps[6].explanation.en, contains('♯ on F (written E#)'));
-      expect(steps[6].explanation.es, contains('enarmónica de 6 bemoles'));
-      expect((noteIndex('F') - noteIndex('F#')) % 12, 11);
+      expect(steps[6].changeText.es, contains('E sube a F (se escribe E#)'));
+      expect(steps[6].changeText.en, contains('E rises to F (written E#)'));
+      expect(steps[6].changeText.es, contains('enarmónica de 6 bemoles'));
+      expect(steps[6].raisedTo, noteIndex('F'));
     });
 
-    test('del lado de los ♭ explica el paso a la izquierda', () {
-      expect(
-        steps[7].explanation.es,
-        contains(
-          'desde G#, un paso a la izquierda agrega un ♭ en F#, la 4ª de C#',
-        ),
-      );
-      expect(
-        steps[11].explanation.es,
-        contains(
-          'desde C, un paso a la izquierda agrega un ♭ en A#, la 4ª de F',
-        ),
-      );
-      expect(steps[11].explanation.es, contains('1 bemol'));
+    test('del lado de los ♭, cada paso quita uno', () {
+      for (var n = 7; n < 12; n++) {
+        expect(steps[n].signature.accidental, Accidental.flat);
+        expect(steps[n].signature.count, 12 - n);
+        expect(steps[n].changeText.es, contains('cada paso quita uno'));
+      }
+      expect(steps[7].changeText.es, contains('5 bemoles'));
+      expect(steps[11].changeText.es, contains('1 bemol'));
     });
 
-    test('el último paso cierra el círculo tras 12 quintas', () {
-      expect(steps[12].explanation.es, startsWith('F + 7 semitonos = C'));
-      expect(steps[12].explanation.es, contains('12 quintas'));
+    test('el último paso quita el último ♭ y vuelve a C', () {
+      expect(steps[12].tonic, 0);
+      expect(steps[12].signature.count, 0);
+      expect(steps[12].changeText.es, contains('A# sube a B'));
+      expect(steps[12].changeText.es, contains('Se va el último ♭'));
       expect((12 * perfectFifth) % 12, 0);
+    });
+
+    test('el cierre dice la verdad en las 12 tonalidades', () {
+      expect(circleBuildClosing.es, contains('6 de sus 7 notas'));
+      expect(circleBuildClosing.es, contains('su IV y su V'));
+      for (final (i, tonic) in circleOrder.indexed) {
+        final right = circleOrder[(i + 1) % 12];
+        final left = circleOrder[(i + 11) % 12];
+        expect(commonNoteCount(tonic, right), 6);
+        expect(commonNoteCount(tonic, left), 6);
+        expect(right, (tonic + majorScale[4]) % 12, reason: 'V');
+        expect(left, (tonic + majorScale[3]) % 12, reason: 'IV');
+      }
     });
 
     test('ningún texto nombra una nota con bemol', () {
       final flatNote = RegExp(r'\b[A-G]b\b');
       for (final s in steps) {
-        expect(flatNote.hasMatch(s.explanation.es), isFalse);
-        expect(flatNote.hasMatch(s.explanation.en), isFalse);
+        for (final text in [s.changeText, ?s.fifthText]) {
+          expect(flatNote.hasMatch(text.es), isFalse);
+          expect(flatNote.hasMatch(text.en), isFalse);
+        }
       }
     });
   });

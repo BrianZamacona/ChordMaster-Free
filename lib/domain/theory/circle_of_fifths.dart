@@ -317,6 +317,28 @@ double angularVelocity(double dx, double dy, double vx, double vy) {
 
 // ── Construcción paso a paso ────────────────────────────────────────────────
 
+/// Para qué sirve "¿Cómo se arma?", en una frase.
+const circleBuildRule = LocalizedText(
+  es:
+      'Cada tonalidad nace de la anterior: sube una quinta y cambia una sola '
+      'nota. Así se ordenan las 12.',
+  en:
+      'Each key grows out of the one before: go up a fifth and change a single '
+      'note. That is how the 12 fall into order.',
+);
+
+/// El cierre, con lo que deja saber el círculo ya armado.
+const circleBuildClosing = LocalizedText(
+  es:
+      'Tras 12 quintas vuelves a C: el círculo está completo. Por eso sirve: '
+      'dos vecinas comparten 6 de sus 7 notas y, a los lados de cualquier '
+      'tonalidad, están su IV y su V.',
+  en:
+      'After 12 fifths you are back on C: the circle is complete. That is why '
+      'it helps: two neighbors share 6 of their 7 notes and, on either side of '
+      'any key, sit its IV and its V.',
+);
+
 /// Un paso de "¿Cómo se arma?". Son 13: C, las 11 quintas siguientes y la
 /// quinta que cierra el círculo otra vez en C.
 class CircleStep {
@@ -324,69 +346,132 @@ class CircleStep {
     required this.number,
     required this.tonic,
     required this.previousTonic,
-    required this.explanation,
+    required this.signature,
+    required this.scale,
+    required this.previousScale,
+    required this.raisedFrom,
+    required this.raisedTo,
+    required this.fifthText,
+    required this.changeText,
   });
 
   /// De 0 a 12.
   final int number;
   final int tonic;
 
-  /// `null` en el primer paso.
+  /// `null` en el primer paso, igual que los demás campos de la quinta.
   final int? previousTonic;
-  final LocalizedText explanation;
+  final KeySignature signature;
+
+  /// Las 7 notas de la tonalidad, desde su tónica.
+  final List<int> scale;
+  final List<int>? previousScale;
+
+  /// La única nota que cambia: la 4ª de la tonalidad anterior...
+  final int? raisedFrom;
+
+  /// ...sube un semitono y es la 7ª de la nueva.
+  final int? raisedTo;
+
+  /// Dónde está la quinta en la escala anterior.
+  final LocalizedText? fifthText;
+
+  /// Qué cambia en este paso y cómo queda la armadura.
+  final LocalizedText changeText;
 }
+
+List<int> _majorScaleOf(int tonic) => [
+  for (final i in majorScale) (tonic + i) % 12,
+];
 
 /// Pasos de la construcción desde C, sumando 7 semitonos.
 List<CircleStep> circleConstruction() => [
-  for (var n = 0; n <= circleLength; n++)
-    CircleStep(
-      number: n,
-      tonic: circleOrder[n % circleLength],
-      previousTonic: n == 0 ? null : circleOrder[n - 1],
-      explanation: _stepExplanation(n),
-    ),
+  for (var n = 0; n <= circleLength; n++) _step(n),
 ];
 
-LocalizedText _stepExplanation(int n) {
-  final tonic = pitchClassName(circleOrder[n % circleLength]);
+CircleStep _step(int n) {
+  final tonic = circleOrder[n % circleLength];
+  final signature = keySignatureAt(n);
+  final scale = _majorScaleOf(tonic);
+  final name = pitchClassName(tonic);
   if (n == 0) {
-    return LocalizedText(
-      es: 'Empezamos en $tonic: ${keySignatureAt(0).name.es}.',
-      en: 'We start on $tonic: ${keySignatureAt(0).name.en}.',
+    return CircleStep(
+      number: n,
+      tonic: tonic,
+      previousTonic: null,
+      signature: signature,
+      scale: scale,
+      previousScale: null,
+      raisedFrom: null,
+      raisedTo: null,
+      fifthText: null,
+      changeText: LocalizedText(
+        es: 'Empezamos en $name: ${signature.name.es}. Sus 7 notas son el punto '
+            'de partida.',
+        en: 'We start on $name: ${signature.name.en}. Its 7 notes are the '
+            'starting point.',
+      ),
     );
   }
-  final previous = pitchClassName(circleOrder[n - 1]);
-  final sumEs = '$previous + $perfectFifth semitonos = $tonic';
-  final sumEn = '$previous + $perfectFifth semitones = $tonic';
+  final previous = circleOrder[n - 1];
+  final previousName = pitchClassName(previous);
+  final from = (previous + majorScale[3]) % 12;
+  final to = (tonic + majorScale[6]) % 12;
+  return CircleStep(
+    number: n,
+    tonic: tonic,
+    previousTonic: previous,
+    signature: signature,
+    scale: scale,
+    previousScale: _majorScaleOf(previous),
+    raisedFrom: from,
+    raisedTo: to,
+    fifthText: LocalizedText(
+      es: 'La 5ª nota de la escala de $previousName es $name.',
+      en: 'The 5th note of the $previousName scale is $name.',
+    ),
+    changeText: _changeText(n, previousName, name, from, to, signature),
+  );
+}
+
+LocalizedText _changeText(
+  int n,
+  String previous,
+  String tonic,
+  int from,
+  int to,
+  KeySignature signature,
+) {
+  final fromName = pitchClassName(from);
+  final toName = pitchClassName(to);
+  // El 6º sostenido cae en F, que en la armadura se escribe E#.
+  final spelled = n == circleLength ~/ 2;
+  final same = LocalizedText(
+    es:
+        '$tonic usa las mismas notas que $previous salvo una: $fromName sube a '
+        '$toName${spelled ? ' (se escribe E#)' : ''}.',
+    en:
+        '$tonic uses the same notes as $previous except one: $fromName rises to '
+        '$toName${spelled ? ' (written E#)' : ''}.',
+  );
   if (n == circleLength) {
     return LocalizedText(
-      es: '$sumEs: tras 12 quintas, el círculo se cierra donde empezó.',
-      en: '$sumEn: after 12 fifths, the circle closes where it began.',
+      es: '${same.es} Se va el último ♭: ${signature.name.es}.',
+      en: '${same.en} The last ♭ goes: ${signature.name.en}.',
     );
   }
-  final signature = keySignatureAt(n);
-  final added = addedAccidentalAt(n)!;
-  final note = pitchClassName(added.pitchClass);
-  if (added.accidental == Accidental.sharp) {
-    // El 6º sostenido cae en F, que en la armadura se escribe E#.
-    final spelled = noteNames[added.pitchClass].length == 1;
+  if (signature.accidental == Accidental.flat) {
     return LocalizedText(
       es:
-          '$sumEs. Agrega un ♯ en $note${spelled ? ' (se escribe E#)' : ''}, '
-          'la 7ª de $tonic. Armadura: ${signature.name.es}.',
+          '${same.es} Desde aquí se cuentan ♭, y cada paso quita uno. Armadura: '
+          '${signature.name.es}.',
       en:
-          '$sumEn. It adds a ♯ on $note${spelled ? ' (written E#)' : ''}, the '
-          '7th of $tonic. Key signature: ${signature.name.en}.',
+          '${same.en} From here we count ♭, and each step removes one. Key '
+          'signature: ${signature.name.en}.',
     );
   }
-  final fromLeft = pitchClassName(circleOrder[(n + 1) % circleLength]);
   return LocalizedText(
-    es:
-        '$sumEs. Armadura: ${signature.name.es}. De este lado se lee al revés: '
-        'desde $fromLeft, un paso a la izquierda agrega un ♭ en $note, la 4ª '
-        'de $tonic.',
-    en:
-        '$sumEn. Key signature: ${signature.name.en}. This side reads backward: '
-        'from $fromLeft, one step left adds a ♭ on $note, the 4th of $tonic.',
+    es: '${same.es} Armadura: ${signature.name.es}.',
+    en: '${same.en} Key signature: ${signature.name.en}.',
   );
 }

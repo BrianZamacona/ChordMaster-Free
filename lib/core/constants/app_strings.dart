@@ -234,10 +234,29 @@ class AppStrings {
       tr(es: '¿Cómo se arma?', en: 'How is it built?');
   static String circleBuildProgress(int step, int total) =>
       tr(es: 'Paso $step de $total', en: 'Step $step of $total');
-  static String get circleBuildNeck =>
-      tr(es: 'Esta quinta en el mástil', en: 'This fifth on the neck');
+  static String circleBuildNeck(String from, String to) => tr(
+    es: 'En la guitarra: de $from a $to',
+    en: 'On the guitar: from $from to $to',
+  );
   static String circleBuildNeckStart(String name) =>
-      tr(es: '$name en el mástil', en: '$name on the neck');
+      tr(es: 'En la guitarra: $name', en: 'On the guitar: $name');
+  static String circleBuildFindFifth(String name) => tr(
+    es: '1. Busca la quinta de $name',
+    en: '1. Find the fifth of $name',
+  );
+  static String get circleBuildChangeOne =>
+      tr(es: '2. Cambia una sola nota', en: '2. Change a single note');
+  static String circleBuildNotesOf(String name) =>
+      tr(es: 'Las notas de $name', en: 'The notes of $name');
+  static String get circleBuildClosingTitle =>
+      tr(es: 'Para qué sirve', en: 'What it is for');
+  static String get circleBuildToWheel =>
+      tr(es: 'Ir a la rueda', en: 'Go to the wheel');
+  static String circleBuildRingLabel(int reached, String key, String signature) =>
+      tr(
+        es: 'Círculo con $reached de 12 tonalidades. Actual: $key, armadura $signature.',
+        en: 'Circle with $reached of 12 keys. Current: $key, key signature $signature.',
+      );
   static String get circleBuildPrevious => tr(es: 'Anterior', en: 'Previous');
   static String get circleBuildNext => tr(es: 'Siguiente', en: 'Next');
   static String get hubEar => tr(es: 'Oído', en: 'Ear');
@@ -401,6 +420,29 @@ class AppStrings {
     es: 'Sin posiciones para este sistema',
     en: 'No positions for this system',
   );
+  static String get scaleFingering => tr(es: 'Digitación', en: 'Fingering');
+  static String get scaleFingeringTitle =>
+      tr(es: 'Elige una digitación', en: 'Choose a fingering');
+  static String get scaleWholeNeck =>
+      tr(es: 'Todo el mástil', en: 'Whole neck');
+  static String scaleFretRange(int start, int end) =>
+      tr(es: 'trastes $start–$end', en: 'frets $start–$end');
+  static String scalePatternContext(
+    String position,
+    String system,
+    int start,
+    int end,
+  ) => '$position · $system · ${scaleFretRange(start, end)}';
+  static String scalePreviewHint(String position, String system) => tr(
+    es: 'Vista previa: $position · $system. Amplía para ver todo el mástil y '
+        'elegir sistema o digitación.',
+    en: 'Preview: $position · $system. Expand to see the whole neck and choose '
+        'a system or fingering.',
+  );
+  static String get scaleExpandBoard =>
+      tr(es: 'Ampliar diapasón', en: 'Expand fretboard');
+  static String get neckIntervals => tr(es: 'Intervalos', en: 'Intervals');
+  static String get neckNotes => tr(es: 'Notas', en: 'Notes');
   static String get scaleShapeOrder => tr(es: 'Orden', en: 'Order');
   static String get cagedPositions =>
       tr(es: 'Posiciones CAGED', en: 'CAGED positions');
