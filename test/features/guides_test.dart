@@ -1,10 +1,13 @@
 import 'package:chordmaster_free/app.dart';
 import 'package:chordmaster_free/core/constants/app_strings.dart';
 import 'package:chordmaster_free/core/i18n/tr.dart';
+import 'package:chordmaster_free/domain/guides/guide_progress.dart';
 import 'package:chordmaster_free/domain/guides/guides.dart';
 import 'package:chordmaster_free/features/capo/capo_screen.dart';
 import 'package:chordmaster_free/features/guides/guide_detail_screen.dart';
+import 'package:chordmaster_free/features/guides/guides_viewmodel.dart';
 import 'package:chordmaster_free/features/lessons/lesson_detail_screen.dart';
+import 'package:chordmaster_free/features/lessons/lessons_viewmodel.dart';
 import 'package:chordmaster_free/features/workouts/workouts_screen.dart';
 import 'package:chordmaster_free/services/key_value_store.dart';
 import 'package:chordmaster_free/ui/navigation.dart';
@@ -23,16 +26,20 @@ void main() {
     }
   }
 
-  Future<void> open(
+  Future<InMemoryStore> open(
     WidgetTester tester,
     String location, {
     String code = 'es',
     Size size = const Size(500, 2400),
+    Map<String, Object?>? progress,
   }) async {
     tester.view.devicePixelRatio = 1;
     tester.view.physicalSize = size;
     addTearDown(tester.view.reset);
-    final store = InMemoryStore(settings: {'localeCode': code});
+    final store = InMemoryStore(
+      settings: {'localeCode': code},
+      progress: progress,
+    );
     await tester.pumpWidget(
       ProviderScope(
         overrides: [keyValueStoreProvider.overrideWithValue(store)],
@@ -43,6 +50,7 @@ void main() {
     await tester.runAsync(() => Future<void>.delayed(const Duration(seconds: 2)));
     appRouter.go(location);
     await settle(tester);
+    return store;
   }
 
   group('catálogo', () {
@@ -144,6 +152,142 @@ void main() {
     });
   });
 
+  group('progreso', () {
+    final guide = guidesById['chord_variations']!;
+    final lessonIndex = guide.chapters.indexWhere((c) => c.target is LessonLink);
+    final otherIndex = guide.chapters.indexWhere((c) => c.target is! LessonLink);
+    final lessonId = (guide.chapters[lessonIndex].target as LessonLink).lessonId;
+
+    testWidgets('muestra capítulos, minutos y cuánto llevas', (tester) async {
+      await open(tester, '/learn/guides/chord_variations');
+      expect(
+        find.text(
+          '${AppStrings.guideChapters(guide.chapters.length)} · '
+          '${AppStrings.guideMinutes(guideMinutes(guide))}',
+        ),
+        findsOneWidget,
+      );
+      expect(
+        find.text(AppStrings.guideDoneCount(0, guide.chapters.length)),
+        findsOneWidget,
+      );
+      // Sin empezar no se señala ningún capítulo.
+      expect(find.text(AppStrings.guideContinueHere), findsNothing);
+    });
+
+    testWidgets('marcar un capítulo se guarda y señala el siguiente', (tester) async {
+      final store = await open(tester, '/learn/guides/chord_variations');
+      final check = find.byKey(Key('guide-check-$otherIndex'));
+      await tester.ensureVisible(check);
+      await tester.pump();
+      await tester.tap(check);
+      await tester.pump();
+      expect(
+        find.text(AppStrings.guideDoneCount(1, guide.chapters.length)),
+        findsOneWidget,
+      );
+      expect(
+        store.progress[GuideChecksViewModel.keyChecked],
+        [chapterKey(guide, otherIndex)],
+      );
+      final next = otherIndex == 0 ? 1 : 0;
+      expect(find.byKey(Key('guide-next-chapter-$next')), findsOneWidget);
+      await tester.tap(check);
+      await tester.pump();
+      expect(
+        find.text(AppStrings.guideDoneCount(0, guide.chapters.length)),
+        findsOneWidget,
+      );
+    });
+
+    testWidgets('el capítulo de una lección marca la lección', (tester) async {
+      final store = await open(tester, '/learn/guides/chord_variations');
+      final check = find.byKey(Key('guide-check-$lessonIndex'));
+      await tester.ensureVisible(check);
+      await tester.pump();
+      await tester.tap(check);
+      await tester.pump();
+      expect(store.progress[LessonsViewModel.keyCompleted], [lessonId]);
+      expect(store.progress[GuideChecksViewModel.keyChecked], isNull);
+    });
+
+    testWidgets('una lección terminada cuenta en la guía', (tester) async {
+      await open(
+        tester,
+        '/learn/guides/chord_variations',
+        progress: {
+          LessonsViewModel.keyCompleted: [lessonId],
+        },
+      );
+      expect(
+        find.text(AppStrings.guideDoneCount(1, guide.chapters.length)),
+        findsOneWidget,
+      );
+    });
+
+    testWidgets('todo hecho: guía terminada', (tester) async {
+      await open(
+        tester,
+        '/learn/guides/chord_variations',
+        progress: {
+          LessonsViewModel.keyCompleted: [
+            for (final c in guide.chapters)
+              if (c.target case LessonLink(:final lessonId)) lessonId,
+          ],
+          GuideChecksViewModel.keyChecked: [
+            for (var i = 0; i < guide.chapters.length; i++) chapterKey(guide, i),
+          ],
+        },
+      );
+      expect(find.byKey(const Key('guide-finished')), findsOneWidget);
+    });
+
+    testWidgets('"Siguiente guía" reemplaza a esta y atrás vuelve al catálogo', (
+      tester,
+    ) async {
+      await open(tester, '/learn/guides');
+      await tester.tap(find.byKey(const Key('guide-chord_variations')));
+      await settle(tester);
+      final next = const GuideProgress().nextGuide(guide)!;
+      final card = find.byKey(const Key('guide-next'));
+      await tester.ensureVisible(card);
+      await tester.pump();
+      await tester.tap(card);
+      await settle(tester);
+      expect(
+        tester.widget<Text>(find.byKey(const Key('guide-title'))).data,
+        next.title.text,
+      );
+      appRouter.pop();
+      await settle(tester);
+      expect(find.byKey(const Key('guides-search')), findsOneWidget);
+    });
+
+    testWidgets('el catálogo pone arriba las guías empezadas', (tester) async {
+      await open(
+        tester,
+        '/learn/guides',
+        progress: {
+          GuideChecksViewModel.keyChecked: [chapterKey(guide, otherIndex)],
+        },
+      );
+      final row = find.byKey(const Key('guides-row-in-progress'));
+      expect(row, findsOneWidget);
+      expect(
+        find.descendant(of: row, matching: find.byKey(Key('guide-${guide.id}'))),
+        findsOneWidget,
+      );
+      expect(
+        find.byKey(Key('guide-card-progress-${guide.id}')),
+        findsNWidgets(2),
+      );
+      // Al buscar, la fila desaparece.
+      await tester.enterText(find.byKey(const Key('guides-search')), 'blues');
+      await tester.pump();
+      expect(row, findsNothing);
+    });
+  });
+
   group('capo', () {
     testWidgets('A mayor: A sin capo, G en el 2, E en el 5 y D en el 7', (tester) async {
       await open(tester, '/learn/capo');
@@ -178,7 +322,20 @@ void main() {
   for (final code in ['es', 'en']) {
     group('a 360 dp ($code)', () {
       testWidgets('catálogo y cada guía sin desbordes', (tester) async {
-        await open(tester, '/learn/guides', code: code, size: const Size(360, 3200));
+        // Con una guía empezada: aparece su fila y la barra en la tarjeta.
+        final first = guides.first;
+        await open(
+          tester,
+          '/learn/guides',
+          code: code,
+          size: const Size(360, 3200),
+          progress: {
+            GuideChecksViewModel.keyChecked: [
+              for (var i = 0; i < first.chapters.length; i++)
+                if (first.chapters[i].target is! LessonLink) chapterKey(first, i),
+            ],
+          },
+        );
         expect(tester.takeException(), isNull);
         // Dos tarjetas enteras y un trozo de la tercera a la vista.
         final row = guidesIn(GuideCategory.acoustic);
