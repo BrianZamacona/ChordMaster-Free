@@ -146,14 +146,14 @@ cada nota pertenezca a la escala. No bajar la tolerancia de 0.
 ## Lecciones
 - Currículo en `lib/domain/lessons/curriculum.dart` (fuente única): Fundamentos (dos cursos:
   Primeros pasos y Melodías, sin lecciones sueltas) y, al terminarlo, dos caminos: rítmica
-  (R1–R20, empieza por los cursos de Acordes abiertos y Rasgueo) y líder (L1–L18), cada uno en
+  (R1–R17, empieza por los cursos de Acordes abiertos y Rasgueo; su rasgueo de corcheas, pop y G–D–Em–C vive en el curso, no en lecciones) y líder (L1–L18), cada uno en
   dos niveles
   (`LessonUnit.level`; Fundamentos solo tiene el 1). Las lecciones se agrupan en unidades
   (`LessonUnit`, nodos del mapa, con un `summary` que la pantalla de la unidad muestra como
   vista previa). Acordes por `displayName` de `chords.json` y escalas por id de
   `scales_master.json`.
 - Nivel 2 (decisión del usuario, inspirado en roadmaps tipo "Part 1/2"): rítmica = Acordes
-  abiertos 2 (D/Dm, séptimas, maj7/m7), Rasgueo 2 (6/8 y acento en 2 y 4) y Riffs (power
+  abiertos 2 (D/Dm, séptimas, maj7/m7), Rasgueo 2 (3/4, 6/8 y acento en 2 y 4) y Riffs (power
   chords y boogie); líder = Licks, Mayor y menor (escala mayor, relativa menor, círculo) y
   Double stops (terceras y sextas). Nada de riffs ni melodías con derechos de autor.
 - Fundamentos (decisión del usuario, inspirado en "Basic Skills" y "Melodies"): conocer el

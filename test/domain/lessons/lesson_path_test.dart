@@ -99,9 +99,9 @@ void main() {
     expect(path.completed, {curriculum.first.id});
   });
 
-  test('etiquetas R1…R20 y L1…L18', () {
+  test('etiquetas R1…R17 y L1…L18', () {
     expect(LessonPath.labelOf(lessonsOf(LessonTrack.rhythm).first), 'R1');
-    expect(LessonPath.labelOf(lessonsOf(LessonTrack.rhythm).last), 'R20');
+    expect(LessonPath.labelOf(lessonsOf(LessonTrack.rhythm).last), 'R17');
     expect(LessonPath.labelOf(lessonsOf(LessonTrack.lead).last), 'L18');
     expect(LessonPath.labelOf(lessonsOf(LessonTrack.lead)[2]), 'L3');
   });

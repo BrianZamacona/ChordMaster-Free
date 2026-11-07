@@ -52,13 +52,13 @@ void main() {
       expect(ids.toSet().length, ids.length);
     });
 
-    test('Fundamentos son dos cursos; rítmica con 20 lecciones y líder con 18', () {
+    test('Fundamentos son dos cursos; rítmica con 17 lecciones y líder con 18', () {
       expect(lessonsOf(LessonTrack.foundations), isEmpty);
       expect(
         [for (final u in unitsOf(LessonTrack.foundations)) u.course],
         [LessonCourse.basics, LessonCourse.melodies],
       );
-      expect(lessonsOf(LessonTrack.rhythm), hasLength(20));
+      expect(lessonsOf(LessonTrack.rhythm), hasLength(17));
       expect(lessonsOf(LessonTrack.lead), hasLength(18));
     });
 
