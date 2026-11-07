@@ -29,6 +29,8 @@ import '../features/progressions/progressions_screen.dart';
 import '../features/rhythm_games/rhythm_game_screen.dart';
 import '../features/songs/song_detail_screen.dart';
 import '../features/songs/songs_screen.dart';
+import '../features/strumming/strum_step_screen.dart';
+import '../features/strumming/strumming_screen.dart';
 import '../features/technique/technique_screen.dart';
 import '../features/tuner/tuner_screen.dart';
 import '../features/workouts/workouts_screen.dart';
@@ -136,6 +138,17 @@ final GoRouter appRouter = GoRouter(
                 GoRoute(
                   path: 'capo',
                   builder: (_, _) => const CapoScreen(),
+                ),
+                GoRoute(
+                  path: 'strumming',
+                  builder: (_, _) => const StrummingScreen(),
+                  routes: [
+                    GoRoute(
+                      path: ':id',
+                      builder: (_, state) =>
+                          StrumStepScreen(stepId: state.pathParameters['id']!),
+                    ),
+                  ],
                 ),
                 GoRoute(
                   path: 'open-chords',

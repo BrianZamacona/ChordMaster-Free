@@ -81,7 +81,7 @@ class LessonDetailScreen extends ConsumerWidget {
             const SizedBox(height: 12),
             _Section(
               title: AppStrings.lessonStrum,
-              child: _StrumPattern(pattern: pattern),
+              child: StrumPatternView(pattern: pattern),
             ),
           ],
           if (lesson.tab.isNotEmpty) ...[
@@ -223,69 +223,6 @@ class _Section extends StatelessWidget {
           ),
         ),
       );
-}
-
-/// Una celda por corchea: flecha y conteo ("1 y 2 y…"; en 6/8, de 1 a 6).
-class _StrumPattern extends StatelessWidget {
-  const _StrumPattern({required this.pattern});
-
-  final String pattern;
-
-  @override
-  Widget build(BuildContext context) {
-    final p = context.palette;
-    final and = AppStrings.lessonStrumAnd;
-    return Column(
-      crossAxisAlignment: CrossAxisAlignment.start,
-      children: [
-        Row(
-          children: [
-            for (final (i, stroke) in pattern.split('').indexed)
-              Expanded(
-                child: Container(
-                  margin: const EdgeInsets.symmetric(horizontal: 2),
-                  padding: const EdgeInsets.symmetric(vertical: 8),
-                  decoration: BoxDecoration(
-                    color: stroke == ' '
-                        ? p.surfaceHigh
-                        : p.accent.withValues(alpha: 0.14),
-                    borderRadius: BorderRadius.circular(8),
-                  ),
-                  child: Column(
-                    children: [
-                      Text(
-                        switch (stroke) {
-                          'D' => '↓',
-                          'U' => '↑',
-                          _ => '—',
-                        },
-                        style: musicMono(
-                          fontSize: 18,
-                          fontWeight: FontWeight.w600,
-                          color: stroke == ' ' ? p.textSecondary : p.accent,
-                        ),
-                      ),
-                      Text(
-                        strumCountAt(pattern, i, and),
-                        style: musicMono(fontSize: 12, color: p.textSecondary),
-                      ),
-                    ],
-                  ),
-                ),
-              ),
-          ],
-        ),
-        const SizedBox(height: 8),
-        Text(
-          AppStrings.lessonStrumHint,
-          style: Theme.of(context)
-              .textTheme
-              .bodySmall
-              ?.copyWith(color: p.textSecondary),
-        ),
-      ],
-    );
-  }
 }
 
 /// Diagramas de los acordes de la lección; cada uno abre su ficha.

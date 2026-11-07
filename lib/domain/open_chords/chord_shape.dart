@@ -305,19 +305,38 @@ LocalizedText changeText(ChordChange change) {
 
 // ── Audio ────────────────────────────────────────────────────────────────────
 
-/// Un golpe hacia abajo por pulso sobre cada forma de [slots], que dura
-/// [beatsPerSlot] pulsos; las cuerdas se separan [defaultStrumGap].
+/// Cuerdas que toca un golpe hacia arriba: las más agudas (la mano sube y
+/// roza solo la parte de abajo del rasgueo).
+const upStrumStrings = 4;
+
+/// Lo que suena en un golpe [stroke] (`D` o `U`) sobre [shape]: abajo, todas
+/// las cuerdas de grave a aguda; arriba, las [upStrumStrings] más agudas, de
+/// aguda a grave.
+List<int> strokeMidi(ChordShape shape, String stroke) {
+  final all = shape.midi;
+  if (stroke != 'U') return all;
+  final from = all.length > upStrumStrings ? all.length - upStrumStrings : 0;
+  return all.sublist(from).reversed.toList();
+}
+
+/// El rasgueo de cada forma de [slots], que dura [beatsPerSlot] pulsos. Cada
+/// forma sigue su patrón de [patterns] (una letra por corchea, como en
+/// `strum_pattern.dart`); sin patrones, un golpe hacia abajo por pulso. Las
+/// cuerdas de un golpe se separan [defaultStrumGap].
 List<NoteEvent> strumEvents(
   List<ChordShape> slots, {
   required int bpm,
   required int beatsPerSlot,
+  List<String>? patterns,
 }) {
-  final beat = 60 / bpm;
+  final eighth = 30 / bpm;
+  final perSlot = beatsPerSlot * 2;
   return [
     for (final (i, shape) in slots.indexed)
-      for (var b = 0; b < beatsPerSlot; b++)
-        for (final (j, m) in shape.midi.indexed)
-          (midi: m, at: (i * beatsPerSlot + b) * beat + j * defaultStrumGap),
+      for (final (k, stroke) in (patterns?[i] ?? 'D ' * beatsPerSlot).split('').indexed)
+        if (stroke != ' ')
+          for (final (j, m) in strokeMidi(shape, stroke).indexed)
+            (midi: m, at: (i * perSlot + k) * eighth + j * defaultStrumGap),
   ];
 }
 
@@ -328,14 +347,15 @@ double strumRingSeconds(int bpm) => 60 / bpm;
 double strumDurationSeconds(int count, {required int bpm, required int beatsPerSlot}) =>
     count == 0 ? 0 : count * beatsPerSlot * 60 / bpm + 0.3;
 
-/// Qué forma suena a los [elapsed] segundos; `null` antes y al terminar.
-int? strumSlotAt(
+/// Qué corchea suena a los [elapsed] segundos, contando desde la primera
+/// forma; `null` antes y al terminar.
+int? strumEighthAt(
   double elapsed,
   int count, {
   required int bpm,
   required int beatsPerSlot,
 }) {
   if (elapsed < 0 || count == 0) return null;
-  final i = (elapsed / (beatsPerSlot * 60 / bpm)).floor();
-  return i < count ? i : null;
+  final i = (elapsed / (30 / bpm)).floor();
+  return i < count * beatsPerSlot * 2 ? i : null;
 }

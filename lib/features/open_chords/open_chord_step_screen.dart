@@ -2,15 +2,14 @@ import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 
 import '../../core/constants/app_strings.dart';
-import '../../core/widgets/chord_diagram.dart';
 import '../../domain/courses/course.dart';
 import '../../domain/open_chords/open_chords_course.dart';
-import '../chords/chord_viewmodel.dart';
+import '../courses/chord_shape_diagrams.dart';
 import '../courses/course_progress.dart';
 import '../courses/course_widgets.dart';
+import '../courses/strum_player.dart';
 import 'open_chords_course_provider.dart';
 import 'open_chords_screen.dart';
-import 'strum_player.dart';
 
 /// Un paso del curso de acordes abiertos: su texto, los diagramas (enteros o
 /// a medio armar) y, si se toca, los compases que suenan al tempo elegido.
@@ -49,36 +48,18 @@ class OpenChordStepScreen extends ConsumerWidget {
   }
 }
 
-class _StepBody extends ConsumerWidget {
+class _StepBody extends StatelessWidget {
   const _StepBody({required this.step});
 
   final OpenChordStep step;
 
   @override
-  Widget build(BuildContext context, WidgetRef ref) {
-    final vm = ref.read(chordViewModelProvider.notifier);
-    return Column(
-      crossAxisAlignment: CrossAxisAlignment.stretch,
-      children: [
-        Text(step.body.text, style: Theme.of(context).textTheme.bodyLarge),
-        const SizedBox(height: 12),
-        Wrap(
-          alignment: WrapAlignment.center,
-          spacing: 16,
-          runSpacing: 12,
-          children: [
-            for (final (i, shape) in step.chords.indexed)
-              ChordDiagramWidget(
-                key: Key('course-diagram-$i'),
-                chordName: shape.name,
-                fretPositions: shape.frets,
-                fingerPositions: shape.fingers,
-                root: vm.findByName(shape.name)?.root,
-                size: 120,
-              ),
-          ],
-        ),
-      ],
-    );
-  }
+  Widget build(BuildContext context) => Column(
+    crossAxisAlignment: CrossAxisAlignment.stretch,
+    children: [
+      Text(step.body.text, style: Theme.of(context).textTheme.bodyLarge),
+      const SizedBox(height: 12),
+      ChordShapeDiagrams(shapes: step.chords),
+    ],
+  );
 }

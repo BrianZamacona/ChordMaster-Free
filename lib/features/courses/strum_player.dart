@@ -7,12 +7,14 @@ import '../../core/constants/app_strings.dart';
 import '../../domain/open_chords/chord_shape.dart';
 import '../../services/audio_service.dart';
 import '../../ui/theme.dart';
+import '../lessons/lesson_widgets.dart';
 import '../lessons/tab_player.dart';
 
 /// Los acordes de un ejercicio o canción en compases, que se pueden escuchar:
-/// ▶ rasguea un golpe por pulso al tempo [bpm] y resalta la forma que suena,
-/// con los mismos instantes del audio ([strumEvents]). Comparte con las
-/// tablaturas el "uno a la vez" ([tabPlaybackProvider]).
+/// ▶ rasguea al tempo [bpm] (un golpe hacia abajo por pulso o, con
+/// [patterns], el patrón de cada compás) y resalta la forma y la corchea que
+/// suenan, con los mismos instantes del audio ([strumEvents]). Comparte con
+/// las tablaturas el "uno a la vez" ([tabPlaybackProvider]).
 class StrumPlayer extends ConsumerStatefulWidget {
   const StrumPlayer({
     super.key,
@@ -20,9 +22,13 @@ class StrumPlayer extends ConsumerStatefulWidget {
     required this.bpm,
     required this.beatsPerSlot,
     required this.beatsPerBar,
+    this.patterns,
   });
 
   final List<ChordShape> slots;
+
+  /// El patrón de rasgueo de cada forma (una letra por corchea).
+  final List<String>? patterns;
   final int bpm;
   final int beatsPerSlot;
   final int beatsPerBar;
@@ -38,6 +44,9 @@ class _StrumPlayerState extends ConsumerState<StrumPlayer> {
   final _clock = Stopwatch();
   Timer? _timer;
   int? _index;
+
+  /// Corchea que suena, contando desde el principio.
+  int? _eighth;
   late final ValueNotifier<Object?> _active;
 
   bool get _playing => _timer != null;
@@ -75,7 +84,12 @@ class _StrumPlayerState extends ConsumerState<StrumPlayer> {
     ref
         .read(audioServiceProvider)
         .playNotes(
-          strumEvents(w.slots, bpm: w.bpm, beatsPerSlot: w.beatsPerSlot),
+          strumEvents(
+            w.slots,
+            bpm: w.bpm,
+            beatsPerSlot: w.beatsPerSlot,
+            patterns: w.patterns,
+          ),
           seconds: strumDurationSeconds(
             w.slots.length,
             bpm: w.bpm,
@@ -87,21 +101,27 @@ class _StrumPlayerState extends ConsumerState<StrumPlayer> {
       ..reset()
       ..start();
     _timer = Timer.periodic(_frame, (_) => _tick());
-    setState(() => _index = 0);
+    setState(() {
+      _index = 0;
+      _eighth = 0;
+    });
   }
 
   void _tick() {
     final w = widget;
-    final index = strumSlotAt(
+    final eighth = strumEighthAt(
       _clock.elapsedMicroseconds / 1e6,
       w.slots.length,
       bpm: w.bpm,
       beatsPerSlot: w.beatsPerSlot,
     );
-    if (index == null) {
+    if (eighth == null) {
       _stop(silence: false);
-    } else if (index != _index) {
-      setState(() => _index = index);
+    } else if (eighth != _eighth) {
+      setState(() {
+        _eighth = eighth;
+        _index = eighth ~/ (w.beatsPerSlot * 2);
+      });
     }
   }
 
@@ -112,7 +132,12 @@ class _StrumPlayerState extends ConsumerState<StrumPlayer> {
     _clock.stop();
     if (silence) ref.read(audioServiceProvider).stopAll();
     if (_active.value == _token) _active.value = null;
-    if (mounted) setState(() => _index = null);
+    if (mounted) {
+      setState(() {
+        _index = null;
+        _eighth = null;
+      });
+    }
   }
 
   @override
@@ -124,9 +149,19 @@ class _StrumPlayerState extends ConsumerState<StrumPlayer> {
       for (var i = 0; i < w.slots.length; i += perBar)
         [for (var j = i; j < i + perBar && j < w.slots.length; j++) j],
     ];
+    final patterns = w.patterns;
+    final current = _index ?? 0;
     return Column(
       crossAxisAlignment: CrossAxisAlignment.stretch,
       children: [
+        if (patterns != null && patterns.isNotEmpty) ...[
+          StrumPatternView(
+            key: const Key('strum-pattern'),
+            pattern: patterns[current],
+            highlight: _eighth == null ? null : _eighth! % (w.beatsPerSlot * 2),
+          ),
+          const SizedBox(height: 10),
+        ],
         // Cuatro compases por renglón, como en una partitura (dos si cada
         // compás lleva dos acordes).
         LayoutBuilder(
