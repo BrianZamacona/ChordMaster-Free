@@ -41,6 +41,7 @@ enum GuideModule {
   capo,
   scales,
   health,
+  technique,
 }
 
 /// A dónde lleva un capítulo.
@@ -315,6 +316,16 @@ const List<Guide> guides = [
           en: 'One finger per fret on every string, slow and even.',
         ),
         target: LessonLink('l2_chromatic'),
+      ),
+      GuideChapter(
+        title: LocalizedText(es: 'Araña y diagonal', en: 'Spider and diagonal'),
+        body: LocalizedText(
+          es: 'Con 1-3-2-4 los dedos se cruzan; en diagonal la mano sube un '
+              'traste en cada cuerda.',
+          en: 'With 1-3-2-4 the fingers cross over; on the diagonal the hand '
+              'moves up one fret on each string.',
+        ),
+        target: ModuleLink(GuideModule.technique),
       ),
       GuideChapter(
         title: LocalizedText(es: 'Con metrónomo', en: 'With the metronome'),

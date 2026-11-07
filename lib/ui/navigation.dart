@@ -24,6 +24,7 @@ import '../features/progressions/progressions_screen.dart';
 import '../features/rhythm_games/rhythm_game_screen.dart';
 import '../features/songs/song_detail_screen.dart';
 import '../features/songs/songs_screen.dart';
+import '../features/technique/technique_screen.dart';
 import '../features/tuner/tuner_screen.dart';
 import '../features/workouts/workouts_screen.dart';
 import 'scales/detail/scale_detail_screen.dart';
@@ -212,6 +213,10 @@ final GoRouter appRouter = GoRouter(
                     scaleId: state.uri.queryParameters['scale'] ?? 'major',
                     root: int.tryParse(state.uri.queryParameters['root'] ?? '') ?? 0,
                   ),
+                ),
+                GoRoute(
+                  path: 'technique',
+                  builder: (_, _) => const TechniqueScreen(),
                 ),
                 GoRoute(
                   path: 'rhythm',
