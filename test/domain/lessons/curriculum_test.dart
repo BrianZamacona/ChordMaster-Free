@@ -52,9 +52,13 @@ void main() {
       expect(ids.toSet().length, ids.length);
     });
 
-    test('Fundamentos con 10 lecciones; rítmica con 17 y líder con 18', () {
-      expect(lessonsOf(LessonTrack.foundations), hasLength(10));
-      expect(lessonsOf(LessonTrack.rhythm), hasLength(17));
+    test('Fundamentos son dos cursos; rítmica con 20 lecciones y líder con 18', () {
+      expect(lessonsOf(LessonTrack.foundations), isEmpty);
+      expect(
+        [for (final u in unitsOf(LessonTrack.foundations)) u.course],
+        [LessonCourse.basics, LessonCourse.melodies],
+      );
+      expect(lessonsOf(LessonTrack.rhythm), hasLength(20));
       expect(lessonsOf(LessonTrack.lead), hasLength(18));
     });
 
@@ -401,23 +405,6 @@ void main() {
       expect(blues.difference(penta), {6});
       expect(penta.difference(blues), isEmpty);
       expect(pitchClassName(noteIndex('A') + 6), 'D#');
-    });
-
-    test('f_tab_reading: 1ª cuerda 0-1-3 = E F G y 2ª cuerda 0-1-3 = B C D', () {
-      expect(tabOf('f_tab_reading'), ['E', 'F', 'G', 'B', 'C', 'D']);
-      // La 1ª cuerda es la de arriba en la tablatura y en los diagramas.
-      expect(pitchClassName(standardOpenStringMidi.first), 'E');
-    });
-
-    test('f_first_melody: el Himno de la alegría con C D E F G en la 1ª y 2ª', () {
-      expect(tabOf('f_first_melody'), [
-        'E', 'E', 'F', 'G', 'G', 'F', 'E', 'D', //
-        'C', 'C', 'D', 'E', 'E', 'D', 'D',
-      ]);
-      final tab = lessonsById['f_first_melody']!.tab;
-      expect(tab.every((n) => n.string <= 2), isTrue);
-      expect(tab.map((n) => n.fret).toSet(), {0, 1, 3});
-      expect(tabOf('f_first_melody').toSet(), {'C', 'D', 'E', 'F', 'G'});
     });
 
     test('r11: de D a Dm solo cambia la 1ª cuerda, del traste 2 (F#) al 1 (F)', () {

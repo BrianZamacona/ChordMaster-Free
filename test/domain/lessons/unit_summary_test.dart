@@ -4,7 +4,7 @@ import 'package:chordmaster_free/domain/lessons/unit_summary.dart';
 import 'package:flutter_test/flutter_test.dart';
 
 void main() {
-  final firstSteps = unitsOf(LessonTrack.foundations).first;
+  final firstSteps = lessonUnits.firstWhere((u) => u.course == null);
 
   test('minutos y avance salen de las lecciones', () {
     final lessons = lessonsOfUnit(firstSteps);

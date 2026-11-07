@@ -39,10 +39,10 @@ class LessonUnitScreen extends ConsumerWidget {
     if (unit.course case final course?) {
       return _CourseUnitScreen(unit: unit, course: course);
     }
-    final path = ref.watch(lessonsViewModelProvider.select((s) => s.path));
+    final path = ref.watch(learningPathProvider);
     final summary = UnitSummary(unit, completed: path.completed);
     final lessons = summary.lessons;
-    final next = path.next;
+    final next = path.nextLesson;
     final challenge = summary.closingChallenge;
     final nextUnit = summary.nextUnit;
     final text = Theme.of(context).textTheme;
@@ -622,7 +622,7 @@ class _CourseUnitScreen extends ConsumerWidget {
   @override
   Widget build(BuildContext context, WidgetRef ref) {
     final levels = watchCourseLevels(ref, course);
-    final path = ref.watch(lessonsViewModelProvider.select((s) => s.path));
+    final path = ref.watch(learningPathProvider);
     final summary = UnitSummary(unit, completed: path.completed);
     final (done, total) = watchUnitProgress(ref, unit);
     final progress = ref.watch(courseProgressProvider(course.progressId));

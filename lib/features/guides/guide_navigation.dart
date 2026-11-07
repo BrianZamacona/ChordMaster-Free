@@ -7,6 +7,7 @@ import '../../data/repository/scale_repository.dart';
 import '../../domain/guides/guides.dart';
 import '../../domain/lessons/curriculum.dart';
 import '../chords/chord_viewmodel.dart';
+import '../courses/course_registry.dart';
 
 /// Ruta de un módulo y si vive en otra pestaña (`go`) o se apila en Aprender
 /// (`push`, para que atrás vuelva a la guía).
@@ -30,6 +31,7 @@ String guideTargetLabel(GuideTarget target) => switch (target) {
   LessonLink(:final lessonId) => AppStrings.guideOpenLesson(
     lessonsById[lessonId]?.title.text ?? lessonId,
   ),
+  CourseLink(:final course) => AppStrings.guideOpenLesson(unitOfCourse(course).title.text),
   ScaleLink() => AppStrings.lessonOpenScale,
   ChordLink(:final chord) => AppStrings.guideOpenChord(chord),
   WorkoutLink() => AppStrings.hubWorkouts,
@@ -56,6 +58,7 @@ String _moduleName(GuideModule module) => switch (module) {
 /// Icono del botón de un capítulo.
 IconData guideTargetIcon(GuideTarget target) => switch (target) {
   LessonLink() => Icons.school_outlined,
+  CourseLink() => Icons.school_outlined,
   ScaleLink() => Icons.linear_scale,
   ChordLink() => Icons.library_music_outlined,
   WorkoutLink() => Icons.fitness_center,
@@ -71,6 +74,8 @@ Future<void> openGuideTarget(
   switch (target) {
     case LessonLink(:final lessonId):
       await context.push('/learn/lessons/$lessonId');
+    case CourseLink(:final course, :final stepId):
+      await context.push(course.stepRoute(stepId));
     case ChordLink(:final chord):
       final found = ref.read(chordViewModelProvider.notifier).findByName(chord);
       if (found != null) {

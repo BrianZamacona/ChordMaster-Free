@@ -11,6 +11,7 @@ import '../../domain/practice/technique_exercises.dart';
 import '../../domain/theory/notes.dart';
 import '../../services/activity_log.dart';
 import '../../ui/theme.dart';
+import '../lessons/lesson_widgets.dart';
 import '../lessons/lessons_viewmodel.dart';
 
 /// "Práctica de hoy": la siguiente lección, la rutina y la técnica del día,
@@ -23,7 +24,7 @@ class TodayPlanCard extends ConsumerWidget {
     final p = context.palette;
     final text = Theme.of(context).textTheme;
     final log = ref.watch(activityLogProvider);
-    final next = ref.watch(lessonsViewModelProvider.select((s) => s.path.next));
+    final next = ref.watch(learningPathProvider.select((p) => p.next));
     final today = DateTime.now();
     bool doneToday(PracticeActivity a) => log[a]?.contains(dayKey(today)) ?? false;
     final done = dailyPlanDone(log, today);
@@ -81,16 +82,23 @@ class TodayPlanCard extends ConsumerWidget {
             _Step(
               key: const Key('today-lesson'),
               icon: Icons.school_outlined,
-              title: next == null
-                  ? AppStrings.todayLessonsAllDone
-                  : AppStrings.guideOpenLesson(next.title.text),
-              subtitle: next == null
-                  ? AppStrings.lessonsReview
-                  : '${LessonPath.labelOf(next)} · ${AppStrings.lessonMinutes(next.minutes)}',
+              title: switch (next) {
+                null => AppStrings.todayLessonsAllDone,
+                NextLesson(:final lesson) => AppStrings.guideOpenLesson(lesson.title.text),
+                NextCourse(:final unit) => AppStrings.guideOpenLesson(unit.title.text),
+              },
+              subtitle: switch (next) {
+                null => AppStrings.lessonsReview,
+                NextLesson(:final lesson) =>
+                  '${LessonPath.labelOf(lesson)} · ${AppStrings.lessonMinutes(lesson.minutes)}',
+                NextCourse(:final unit) => trackName(unit.track),
+              },
               done: doneToday(PracticeActivity.lessons),
-              onTap: () => next == null
-                  ? context.go('/learn/lessons')
-                  : context.go('/learn/lessons/${next.id}'),
+              onTap: () => context.go(switch (next) {
+                null => '/learn/lessons',
+                NextLesson(:final lesson) => '/learn/lessons/${lesson.id}',
+                NextCourse(:final unit) => '/learn/lessons/unit/${unit.id}',
+              }),
             ),
             _Step(
               key: const Key('today-workout'),

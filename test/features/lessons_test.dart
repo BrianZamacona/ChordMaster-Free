@@ -3,10 +3,15 @@ import 'dart:async';
 import 'package:chordmaster_free/app.dart';
 import 'package:chordmaster_free/core/constants/app_strings.dart';
 import 'package:chordmaster_free/core/i18n/tr.dart';
+import 'package:chordmaster_free/domain/courses/course.dart';
 import 'package:chordmaster_free/domain/lessons/curriculum.dart';
 import 'package:chordmaster_free/domain/lessons/lesson.dart';
+import 'package:chordmaster_free/domain/lessons/lesson_path.dart';
 import 'package:chordmaster_free/domain/lessons/unit_summary.dart';
+import 'package:chordmaster_free/domain/melodies/basics_course.dart';
+import 'package:chordmaster_free/domain/melodies/melody_course.dart';
 import 'package:chordmaster_free/features/circle/circle_screen.dart';
+import 'package:chordmaster_free/features/courses/course_progress.dart';
 import 'package:chordmaster_free/features/lessons/lesson_tab.dart';
 import 'package:chordmaster_free/features/lessons/lesson_widgets.dart';
 import 'package:chordmaster_free/features/lessons/lessons_viewmodel.dart';
@@ -21,29 +26,67 @@ import 'package:flutter_test/flutter_test.dart';
 import '../support/in_memory_store.dart';
 
 void main() {
-  final foundations = [for (final l in lessonsOf(LessonTrack.foundations)) l.id];
+  // La primera unidad de lecciones del mapa (Fundamentos son cursos).
+  final lessonUnit = lessonUnits.firstWhere((u) => u.course == null);
+  final first = [for (final l in lessonsOfUnit(lessonUnit)) l.id];
+
+  /// Progreso guardado con los cursos de Fundamentos terminados (todas las
+  /// estrellas y la teoría leída), salvo [except].
+  Map<String, Object?> foundationsDone({String? except}) => {
+    for (final (id, levels) in [
+      (CourseId.basics, basicsCourse),
+      (CourseId.melodies, melodyCourse),
+    ]) ...{
+      id.keyBest: {
+        for (final s in courseSteps(levels))
+          if (s.kind != CourseStepKind.theory && s.id != except) s.id: 100,
+      },
+      id.keyRead: [
+        for (final s in courseSteps(levels))
+          if (s.kind == CourseStepKind.theory && s.id != except) s.id,
+      ],
+    },
+  };
 
   Future<ProviderContainer> containerWith(InMemoryStore store) async {
     final container = ProviderContainer(
       overrides: [keyValueStoreProvider.overrideWithValue(store)],
     );
     addTearDown(container.dispose);
-    container.read(lessonsViewModelProvider);
+    container
+      ..read(lessonsViewModelProvider)
+      ..read(foundationsDoneProvider);
     await Future<void>.delayed(Duration.zero);
     return container;
   }
 
   group('LessonsViewModel', () {
-    test('lee lo guardado: terminadas y camino', () async {
+    test('lee lo guardado: terminadas y camino; lo primero es Fundamentos', () async {
       final store = InMemoryStore(progress: {
-        LessonsViewModel.keyCompleted: [foundations.first],
+        LessonsViewModel.keyCompleted: [first.first],
         LessonsViewModel.keyTrack: 'lead',
       });
-      final state = (await containerWith(store)).read(lessonsViewModelProvider);
+      final container = await containerWith(store);
+      final state = container.read(lessonsViewModelProvider);
       expect(state.isLoading, isFalse);
       expect(state.chosen, LessonTrack.lead);
-      expect(state.path.completed, {foundations.first});
-      expect(state.path.next?.id, foundations[1]);
+      expect(state.completed, {first.first});
+      expect(container.read(foundationsDoneProvider), isFalse);
+      // Fundamentos son cursos: lo que toca es el primero.
+      final next = LessonPath(completed: state.completed, chosen: state.chosen).next;
+      expect(next, isA<NextCourse>());
+      expect(next!.unit, unitOfCourse(LessonCourse.basics));
+    });
+
+    test('con Fundamentos terminado, el camino sigue por el elegido', () async {
+      final container = await containerWith(InMemoryStore(progress: foundationsDone()));
+      expect(container.read(foundationsDoneProvider), isTrue);
+      final done = {
+        LessonCourse.basics: (courseSteps(basicsCourse).length, courseSteps(basicsCourse).length),
+        LessonCourse.melodies: (courseSteps(melodyCourse).length, courseSteps(melodyCourse).length),
+      };
+      final path = LessonPath(completed: const {}, chosen: LessonTrack.rhythm, courses: done);
+      expect(path.next?.unit.track, LessonTrack.rhythm);
     });
 
     test('marcar y desmarcar guarda la lista', () async {
@@ -51,10 +94,10 @@ void main() {
       final container = await containerWith(store);
       final vm = container.read(lessonsViewModelProvider.notifier);
 
-      await vm.toggleCompleted(foundations.first);
-      expect(store.progress[LessonsViewModel.keyCompleted], [foundations.first]);
+      await vm.toggleCompleted(first.first);
+      expect(store.progress[LessonsViewModel.keyCompleted], [first.first]);
 
-      await vm.toggleCompleted(foundations.first);
+      await vm.toggleCompleted(first.first);
       expect(store.progress[LessonsViewModel.keyCompleted], isEmpty);
     });
 
@@ -71,23 +114,15 @@ void main() {
 
     test('el mapa no resalta un camino hasta que toque decidir', () async {
       final fresh = await containerWith(InMemoryStore());
-      expect(fresh.read(lessonsViewModelProvider).highlightedTrack, isNull);
+      expect(highlightedTrackOf(fresh.read(lessonsViewModelProvider), foundationsDone: fresh.read(foundationsDoneProvider)), isNull);
 
-      final done = await containerWith(
-        InMemoryStore(progress: {LessonsViewModel.keyCompleted: foundations}),
-      );
-      expect(
-        done.read(lessonsViewModelProvider).highlightedTrack,
-        LessonTrack.rhythm,
-      );
+      final done = await containerWith(InMemoryStore(progress: foundationsDone()));
+      expect(highlightedTrackOf(done.read(lessonsViewModelProvider), foundationsDone: done.read(foundationsDoneProvider)), LessonTrack.rhythm);
 
       final saved = await containerWith(
         InMemoryStore(progress: {LessonsViewModel.keyTrack: 'lead'}),
       );
-      expect(
-        saved.read(lessonsViewModelProvider).highlightedTrack,
-        LessonTrack.lead,
-      );
+      expect(highlightedTrackOf(saved.read(lessonsViewModelProvider), foundationsDone: saved.read(foundationsDoneProvider)), LessonTrack.lead);
     });
 
     test('tocar el camino por defecto antes de tiempo también lo elige', () async {
@@ -98,22 +133,26 @@ void main() {
           .read(lessonsViewModelProvider.notifier)
           .choose(LessonTrack.rhythm);
       expect(store.progress[LessonsViewModel.keyTrack], 'rhythm');
-      expect(
-        container.read(lessonsViewModelProvider).highlightedTrack,
-        LessonTrack.rhythm,
-      );
+      expect(highlightedTrackOf(container.read(lessonsViewModelProvider), foundationsDone: container.read(foundationsDoneProvider)), LessonTrack.rhythm);
     });
 
-    test('terminar Fundamentos desbloquea su logro', () async {
-      final store = InMemoryStore(progress: {
-        LessonsViewModel.keyCompleted: foundations.sublist(1),
-      });
-      final container = await containerWith(store);
+    testWidgets('terminar Fundamentos (su último paso) desbloquea su logro', (
+      tester,
+    ) async {
+      final store = InMemoryStore(progress: foundationsDone(except: 'mf_part3'));
+      await tester.pumpWidget(
+        ProviderScope(
+          overrides: [keyValueStoreProvider.overrideWithValue(store)],
+          child: const ChordMasterApp(),
+        ),
+      );
+      await tester.pump(const Duration(milliseconds: 300));
       expect(store.achievements['foundations_done'], isNull);
-
+      final container = ProviderScope.containerOf(tester.element(find.byType(Scaffold).first));
       await container
-          .read(lessonsViewModelProvider.notifier)
-          .toggleCompleted(foundations.first);
+          .read(courseProgressProvider(CourseId.melodies).notifier)
+          .saveClean('mf_part3', 60);
+      await tester.pump(const Duration(milliseconds: 300));
       expect(store.achievements['foundations_done'], isA<String>());
     });
   });
@@ -242,7 +281,7 @@ void main() {
     testWidgets('con lecciones hechas, la unidad sigue por la pendiente', (
       tester,
     ) async {
-      final unit = unitsOf(LessonTrack.foundations).first;
+      final unit = lessonUnit;
       final lessons = lessonsOfUnit(unit);
       await open(
         tester,
@@ -262,7 +301,7 @@ void main() {
     });
 
     testWidgets('con la unidad terminada, el botón es para repasar', (tester) async {
-      final unit = unitsOf(LessonTrack.foundations).first;
+      final unit = lessonUnit;
       await open(
         tester,
         '/learn/lessons/unit/${unit.id}',
@@ -282,12 +321,13 @@ void main() {
     testWidgets('una lección con tablatura la dibuja en renglones de 8', (
       tester,
     ) async {
-      await open(tester, '/learn/lessons/f_first_melody');
+      final lesson = curriculum.reduce((a, b) => b.tab.length > a.tab.length ? b : a);
+      expect(lesson.tab, isNotEmpty);
+      await open(tester, '/learn/lessons/${lesson.id}');
       expect(find.byType(LessonTabView), findsOneWidget);
-      // 15 notas: dos renglones.
-      expect(find.byKey(const Key('lesson-tab-line-0')), findsOneWidget);
-      expect(find.byKey(const Key('lesson-tab-line-1')), findsOneWidget);
-      expect(find.byKey(const Key('lesson-tab-line-2')), findsNothing);
+      final lines = (lesson.tab.length + 7) ~/ 8;
+      expect(find.byKey(Key('lesson-tab-line-${lines - 1}'), skipOffstage: false), findsOneWidget);
+      expect(find.byKey(Key('lesson-tab-line-$lines'), skipOffstage: false), findsNothing);
     });
 
     testWidgets('el rasgueo en 6/8 se cuenta de 1 a 6', (tester) async {
@@ -325,7 +365,7 @@ void main() {
     }
 
     testWidgets('la unidad lista sus lecciones', (tester) async {
-      final unit = unitsOf(LessonTrack.foundations).first;
+      final unit = lessonUnit;
       await open(tester, '/learn/lessons/unit/${unit.id}');
       for (final lesson in lessonsOfUnit(unit)) {
         expect(find.byKey(Key('lesson-${lesson.id}')), findsOneWidget);
@@ -336,7 +376,7 @@ void main() {
     testWidgets('la unidad dice dónde está y qué practica cada lección', (
       tester,
     ) async {
-      final unit = unitsOf(LessonTrack.foundations).first;
+      final unit = lessonUnit;
       await open(tester, '/learn/lessons/unit/${unit.id}');
       final (index, total) = UnitSummary(unit).position;
       expect(
@@ -380,7 +420,8 @@ void main() {
     testWidgets('"Siguiente unidad" reemplaza a esta y atrás vuelve al mapa', (
       tester,
     ) async {
-      final units = unitsOf(LessonTrack.foundations);
+      final rhythm = unitsOf(LessonTrack.rhythm);
+      final units = rhythm.sublist(rhythm.indexOf(lessonUnit));
       await open(tester, '/learn/lessons');
       unawaited(appRouter.push('/learn/lessons/unit/${units.first.id}'));
       for (var i = 0; i < 5; i++) {
@@ -411,12 +452,12 @@ void main() {
     });
 
     testWidgets('el detalle marca la lección como completada', (tester) async {
-      final store = await open(tester, '/learn/lessons/${foundations.first}');
+      final store = await open(tester, '/learn/lessons/${first.first}');
       final button = find.byKey(const Key('lesson-toggle-done'));
       await tester.ensureVisible(button);
       await tester.tap(button);
       await tester.pump(const Duration(milliseconds: 300));
-      expect(store.progress[LessonsViewModel.keyCompleted], [foundations.first]);
+      expect(store.progress[LessonsViewModel.keyCompleted], [first.first]);
     });
 
     testWidgets('los acordes de la lección enlazan a la biblioteca', (tester) async {
