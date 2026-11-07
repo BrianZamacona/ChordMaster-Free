@@ -472,6 +472,28 @@ class AppStrings {
       '$track · ${lessonsLevel(level)}';
   static String get lessonsResume => tr(es: 'Continuar', en: 'Continue');
   static String get lessonsReview => tr(es: 'Repasar', en: 'Review');
+  static String unitPosition(int index, int total) =>
+      tr(es: 'Unidad $index de $total', en: 'Unit $index of $total');
+  static String get unitLessons => tr(es: 'Lecciones', en: 'Lessons');
+  static String get unitChallenge =>
+      tr(es: 'Reto del nivel', en: 'Level challenge');
+  static String get unitResults =>
+      tr(es: 'Resultados de la unidad', en: 'Unit results');
+  static String get unitResultLessons => tr(es: 'lecciones', en: 'lessons');
+  static String get unitResultMinutes =>
+      tr(es: 'min practicados', en: 'min practiced');
+  static String get unitResultChords => tr(es: 'acordes', en: 'chords');
+  static String get unitResultNotes =>
+      tr(es: 'notas en tablatura', en: 'tab notes');
+  static String get unitNext => tr(es: 'Siguiente unidad', en: 'Next unit');
+  static String get unitEndOfPath => tr(
+    es: 'Es la última unidad de este camino.',
+    en: 'This is the last unit on this path.',
+  );
+  static String lessonChordList(String chords) =>
+      tr(es: 'Acordes: $chords', en: 'Chords: $chords');
+  static String lessonTabNotes(int notes) =>
+      tr(es: 'Tablatura · $notes notas', en: 'Tab · $notes notes');
   static String lessonsUnitCount(int lessons, int minutes) => tr(
     es: '$lessons lecciones · unos $minutes min',
     en: '$lessons lessons · about $minutes min',

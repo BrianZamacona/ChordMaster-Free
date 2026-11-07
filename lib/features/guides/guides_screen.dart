@@ -128,31 +128,21 @@ class _GuidesScreenState extends ConsumerState<GuidesScreen> {
             ),
           ),
         ),
-        // Cada fila tiene pocas guías: se construyen todas y se deslizan.
-        SingleChildScrollView(
+        Padding(
           key: Key('guides-row-$id'),
-          scrollDirection: Axis.horizontal,
           padding: const EdgeInsets.symmetric(horizontal: 16),
-          child: Row(
-            crossAxisAlignment: CrossAxisAlignment.start,
-            spacing: 12,
-            children: [
-              for (final g in items)
-                SizedBox(height: GuideCard.height, child: GuideCard(guide: g)),
-            ],
+          child: Column(
+            spacing: 8,
+            children: [for (final g in items) GuideCard(guide: g)],
           ),
         ),
       ];
 }
 
-/// Tarjeta de una guía: el dibujo arriba, el título con su subtítulo y, abajo,
-/// cuánto llevas o cuánto tarda.
+/// Fila de una guía: el dibujo a la izquierda; título, subtítulo, capítulos,
+/// minutos y, si la empezaste, cuánto llevas.
 class GuideCard extends ConsumerWidget {
   const GuideCard({super.key, required this.guide});
-
-  // A 360 dp caben dos y asoma la tercera: se nota que la fila se desliza.
-  static const width = 148.0;
-  static const height = 236.0;
 
   final Guide guide;
 
@@ -163,59 +153,67 @@ class GuideCard extends ConsumerWidget {
     final progress = ref.watch(guideProgressProvider);
     final done = progress.doneCount(guide);
     final total = guide.chapters.length;
-    return SizedBox(
-      width: width,
-      child: Card(
-        margin: EdgeInsets.zero,
-        clipBehavior: Clip.antiAlias,
-        child: InkWell(
-          key: Key('guide-${guide.id}'),
-          onTap: () => context.push('/learn/guides/${guide.id}'),
-          child: Padding(
-            padding: const EdgeInsets.all(12),
-            child: Column(
-              crossAxisAlignment: CrossAxisAlignment.stretch,
-              children: [
-                UnitArtView(art: guide.art, size: 72),
-                const SizedBox(height: 10),
-                Text(
-                  guide.title.text,
-                  maxLines: 3,
-                  overflow: TextOverflow.ellipsis,
-                  style: text.titleSmall,
-                ),
-                const SizedBox(height: 4),
-                Expanded(
-                  child: Text(
-                    guide.subtitle.text,
-                    maxLines: 3,
-                    overflow: TextOverflow.ellipsis,
-                    style: text.bodySmall?.copyWith(color: p.textSecondary),
-                  ),
-                ),
-                Text(
-                  AppStrings.guideChapters(total),
-                  style: musicMono(fontSize: 12, color: p.textSecondary),
-                ),
-                const SizedBox(height: 4),
-                if (done == 0)
-                  Text(
-                    AppStrings.guideMinutes(guideMinutes(guide)),
-                    style: musicMono(fontSize: 12, color: p.textSecondary),
-                  )
-                else
-                  ClipRRect(
-                    key: Key('guide-card-progress-${guide.id}'),
-                    borderRadius: BorderRadius.circular(3),
-                    child: LinearProgressIndicator(
-                      value: done / total,
-                      minHeight: 5,
-                      backgroundColor: p.surfaceHigh,
-                      color: done == total ? p.success : p.accent,
+    return Card(
+      margin: EdgeInsets.zero,
+      clipBehavior: Clip.antiAlias,
+      child: InkWell(
+        key: Key('guide-${guide.id}'),
+        onTap: () => context.push('/learn/guides/${guide.id}'),
+        child: Padding(
+          padding: const EdgeInsets.fromLTRB(12, 12, 8, 12),
+          child: Row(
+            children: [
+              SizedBox(width: 76, child: UnitArtView(art: guide.art, size: 60)),
+              const SizedBox(width: 12),
+              Expanded(
+                child: Column(
+                  crossAxisAlignment: CrossAxisAlignment.start,
+                  children: [
+                    Text(guide.title.text, style: text.titleSmall),
+                    const SizedBox(height: 2),
+                    Text(
+                      guide.subtitle.text,
+                      style: text.bodySmall?.copyWith(color: p.textSecondary),
                     ),
-                  ),
-              ],
-            ),
+                    const SizedBox(height: 6),
+                    Row(
+                      children: [
+                        Expanded(
+                          child: Text(
+                            '${AppStrings.guideChapters(total)} · '
+                            '${AppStrings.guideMinutes(guideMinutes(guide))}',
+                            style: musicMono(fontSize: 11, color: p.textSecondary),
+                          ),
+                        ),
+                        if (done > 0)
+                          Text(
+                            '$done/$total',
+                            style: musicMono(
+                              fontSize: 11,
+                              fontWeight: FontWeight.w600,
+                              color: done == total ? p.success : p.accent,
+                            ),
+                          ),
+                      ],
+                    ),
+                    if (done > 0) ...[
+                      const SizedBox(height: 6),
+                      ClipRRect(
+                        key: Key('guide-card-progress-${guide.id}'),
+                        borderRadius: BorderRadius.circular(3),
+                        child: LinearProgressIndicator(
+                          value: done / total,
+                          minHeight: 5,
+                          backgroundColor: p.surfaceHigh,
+                          color: done == total ? p.success : p.accent,
+                        ),
+                      ),
+                    ],
+                  ],
+                ),
+              ),
+              Icon(Icons.chevron_right, color: p.textSecondary),
+            ],
           ),
         ),
       ),
