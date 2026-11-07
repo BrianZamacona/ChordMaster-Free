@@ -5,6 +5,7 @@ import 'package:chordmaster_free/domain/guides/guides.dart';
 import 'package:chordmaster_free/features/capo/capo_screen.dart';
 import 'package:chordmaster_free/features/guides/guide_detail_screen.dart';
 import 'package:chordmaster_free/features/lessons/lesson_detail_screen.dart';
+import 'package:chordmaster_free/features/workouts/workouts_screen.dart';
 import 'package:chordmaster_free/services/key_value_store.dart';
 import 'package:chordmaster_free/ui/navigation.dart';
 import 'package:flutter/material.dart';
@@ -121,6 +122,19 @@ void main() {
       await tester.tap(find.byKey(const Key('guide-open-0')));
       await settle(tester);
       expect(find.byType(CapoScreen), findsOneWidget);
+    });
+
+    testWidgets('el capítulo de rutinas abre las de su escala', (tester) async {
+      await open(tester, '/learn/guides/minor_pentatonic');
+      final guide = guidesById['minor_pentatonic']!;
+      final index = guide.chapters.indexWhere((c) => c.target is WorkoutLink);
+      expect(index, isNonNegative);
+      final button = find.byKey(Key('guide-open-$index'));
+      await tester.ensureVisible(button);
+      await tester.pump();
+      await tester.tap(button);
+      await settle(tester);
+      expect(find.byType(WorkoutsScreen), findsOneWidget);
     });
 
     testWidgets('una guía que no existe muestra un aviso', (tester) async {

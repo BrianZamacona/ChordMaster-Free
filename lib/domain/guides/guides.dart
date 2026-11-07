@@ -66,6 +66,12 @@ class ChordLink extends GuideTarget {
   final String chord;
 }
 
+/// Las rutinas de una escala en su tónica.
+class WorkoutLink extends GuideTarget {
+  const WorkoutLink(this.scale);
+  final LessonScale scale;
+}
+
 /// Un módulo de la app.
 class ModuleLink extends GuideTarget {
   const ModuleLink(this.module);
@@ -319,6 +325,14 @@ const List<Guide> guides = [
         target: ModuleLink(GuideModule.metronome),
       ),
       GuideChapter(
+        title: LocalizedText(es: 'Rutina de escala', en: 'Scale workout'),
+        body: LocalizedText(
+          es: 'Sube y baja una posición de la escala mayor antes de tocar canciones.',
+          en: 'Run a major scale position up and down before playing songs.',
+        ),
+        target: WorkoutLink(LessonScale(scaleId: 'major', root: 0)),
+      ),
+      GuideChapter(
         title: LocalizedText(es: 'Descansos', en: 'Breaks'),
         body: LocalizedText(
           es: 'Practica en bloques cortos: Salud de práctica cuenta tu tiempo y '
@@ -364,6 +378,14 @@ const List<Guide> guides = [
         ),
         target: ScaleLink(LessonScale(scaleId: 'pentatonic_minor', root: 9)),
       ),
+      GuideChapter(
+        title: LocalizedText(es: 'Rutinas', en: 'Workouts'),
+        body: LocalizedText(
+          es: 'Sube, baja, terceras y grupos de notas, en tres niveles y con audio.',
+          en: 'Up, down, thirds and note groups, in three levels and with audio.',
+        ),
+        target: WorkoutLink(LessonScale(scaleId: 'pentatonic_minor', root: 9)),
+      ),
     ],
   ),
   Guide(
@@ -391,6 +413,14 @@ const List<Guide> guides = [
           en: 'Its boxes and the whole neck, in the key you choose.',
         ),
         target: ScaleLink(LessonScale(scaleId: 'pentatonic_major', root: 0)),
+      ),
+      GuideChapter(
+        title: LocalizedText(es: 'Rutinas', en: 'Workouts'),
+        body: LocalizedText(
+          es: 'Sube, baja, terceras y grupos de notas, en tres niveles y con audio.',
+          en: 'Up, down, thirds and note groups, in three levels and with audio.',
+        ),
+        target: WorkoutLink(LessonScale(scaleId: 'pentatonic_major', root: 0)),
       ),
     ],
   ),
@@ -420,6 +450,14 @@ const List<Guide> guides = [
         ),
         target: ScaleLink(LessonScale(scaleId: 'blues_minor', root: 9)),
       ),
+      GuideChapter(
+        title: LocalizedText(es: 'Rutinas', en: 'Workouts'),
+        body: LocalizedText(
+          es: 'Sube, baja, terceras y grupos de notas, en tres niveles y con audio.',
+          en: 'Up, down, thirds and note groups, in three levels and with audio.',
+        ),
+        target: WorkoutLink(LessonScale(scaleId: 'blues_minor', root: 9)),
+      ),
     ],
   ),
   Guide(
@@ -448,6 +486,14 @@ const List<Guide> guides = [
         ),
         target: ScaleLink(LessonScale(scaleId: 'major', root: 7)),
       ),
+      GuideChapter(
+        title: LocalizedText(es: 'Rutinas', en: 'Workouts'),
+        body: LocalizedText(
+          es: 'Sube, baja, terceras y grupos de notas, en tres niveles y con audio.',
+          en: 'Up, down, thirds and note groups, in three levels and with audio.',
+        ),
+        target: WorkoutLink(LessonScale(scaleId: 'major', root: 7)),
+      ),
     ],
   ),
   Guide(
@@ -475,6 +521,14 @@ const List<Guide> guides = [
           en: 'Positions and the whole neck for E minor.',
         ),
         target: ScaleLink(LessonScale(scaleId: 'natural_minor', root: 4)),
+      ),
+      GuideChapter(
+        title: LocalizedText(es: 'Rutinas', en: 'Workouts'),
+        body: LocalizedText(
+          es: 'Sube, baja, terceras y grupos de notas, en tres niveles y con audio.',
+          en: 'Up, down, thirds and note groups, in three levels and with audio.',
+        ),
+        target: WorkoutLink(LessonScale(scaleId: 'natural_minor', root: 4)),
       ),
     ],
   ),
