@@ -273,6 +273,8 @@ class AppStrings {
       tr(es: 'Lección: $title', en: 'Lesson: $title');
   static String guideOpenChord(String chord) =>
       tr(es: 'Ver el acorde $chord', en: 'See the $chord chord');
+  static String get guideOpenCapo =>
+      tr(es: 'Calcular el capo', en: 'Find the capo fret');
   static String guideOpenModuleNamed(String name) =>
       tr(es: 'Abrir $name', en: 'Open $name');
   static String get capoTitle => tr(es: '¿Qué capo uso?', en: 'Which capo?');
