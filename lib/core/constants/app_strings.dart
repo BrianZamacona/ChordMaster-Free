@@ -381,6 +381,22 @@ class AppStrings {
       tr(es: 'Agregar la bajada', en: 'Add the way down');
   static String get workoutsOnlyUp =>
       tr(es: 'Solo la subida', en: 'Only the way up');
+  static String get todayPlanTitle =>
+      tr(es: 'Práctica de hoy', en: "Today's practice");
+  static String get todayPlanDone =>
+      tr(es: '¡Listo por hoy!', en: 'Done for today!');
+  static String get todayLessonsAllDone =>
+      tr(es: 'Terminaste el camino', en: 'You finished the path');
+  static String todayWorkout(String scale) =>
+      tr(es: 'Rutina: $scale', en: 'Workout: $scale');
+  static String get todayWorkoutHint =>
+      tr(es: 'Escúchala y tócala al tempo', en: 'Listen, then play it in time');
+  static String todayTechnique(String exercise) =>
+      tr(es: 'Técnica: $exercise', en: 'Technique: $exercise');
+  static String get todayTechniqueHint => tr(
+    es: 'Guarda un tempo limpio',
+    en: 'Save a clean tempo',
+  );
   static String get hubMultiDay =>
       tr(es: 'Retos de la semana', en: 'Weekly challenges');
   static String get hubMultiDaySub => tr(
