@@ -10,6 +10,7 @@ import '../../domain/lessons/lesson.dart';
 import '../../ui/theme.dart';
 import '../chords/chord_viewmodel.dart';
 import '../metronome/metronome_viewmodel.dart';
+import 'lesson_tab.dart';
 import 'lesson_widgets.dart';
 import 'lessons_viewmodel.dart';
 
@@ -83,6 +84,13 @@ class LessonDetailScreen extends ConsumerWidget {
               child: _StrumPattern(pattern: pattern),
             ),
           ],
+          if (lesson.tab.isNotEmpty) ...[
+            const SizedBox(height: 12),
+            _Section(
+              title: AppStrings.lessonTab,
+              child: LessonTabView(notes: lesson.tab),
+            ),
+          ],
           if (lesson.chords.isNotEmpty) ...[
             const SizedBox(height: 12),
             _Section(
@@ -99,27 +107,7 @@ class LessonDetailScreen extends ConsumerWidget {
           if (lesson.tool case final tool?)
             Padding(
               padding: const EdgeInsets.only(bottom: 8),
-              child: OutlinedButton.icon(
-                key: const Key('lesson-open-tool'),
-                icon: Icon(
-                  tool == LessonTool.tuner ? Icons.tune : Icons.av_timer,
-                ),
-                label: Text(
-                  tool == LessonTool.tuner
-                      ? AppStrings.lessonOpenTuner
-                      : AppStrings.lessonOpenMetronome(lesson.bpm),
-                ),
-                onPressed: () {
-                  if (tool == LessonTool.metronome && lesson.bpm != null) {
-                    ref
-                        .read(metronomeViewModelProvider.notifier)
-                        .setBpm(lesson.bpm!);
-                  }
-                  context.go(
-                    tool == LessonTool.tuner ? '/tools/tuner' : '/tools/metronome',
-                  );
-                },
-              ),
+              child: _ToolButton(tool: tool, bpm: lesson.bpm),
             ),
           const SizedBox(height: 8),
           _ToggleDoneButton(
@@ -130,6 +118,67 @@ class LessonDetailScreen extends ConsumerWidget {
           ),
         ],
       ),
+    );
+  }
+}
+
+/// Abre la herramienta o el módulo que pide la lección. Afinador y metrónomo
+/// están en otra pestaña (`go`); los módulos de Aprender se apilan (`push`)
+/// para que atrás vuelva a la lección.
+class _ToolButton extends ConsumerWidget {
+  const _ToolButton({required this.tool, required this.bpm});
+
+  final LessonTool tool;
+  final int? bpm;
+
+  @override
+  Widget build(BuildContext context, WidgetRef ref) {
+    final (icon, label, route, stacked) = switch (tool) {
+      LessonTool.tuner => (
+          Icons.tune,
+          AppStrings.lessonOpenTuner,
+          '/tools/tuner',
+          false,
+        ),
+      LessonTool.metronome => (
+          Icons.av_timer,
+          AppStrings.lessonOpenMetronome(bpm),
+          '/tools/metronome',
+          false,
+        ),
+      LessonTool.progressions => (
+          Icons.queue_music,
+          AppStrings.lessonOpenProgressions,
+          '/learn/progressions',
+          true,
+        ),
+      LessonTool.doubleStops => (
+          Icons.straighten,
+          AppStrings.lessonOpenDoubleStops,
+          '/learn/scales/double-stops',
+          true,
+        ),
+      LessonTool.circle => (
+          Icons.donut_large,
+          AppStrings.lessonOpenCircle,
+          '/learn/circle',
+          true,
+        ),
+    };
+    return OutlinedButton.icon(
+      key: const Key('lesson-open-tool'),
+      icon: Icon(icon),
+      label: Text(label),
+      onPressed: () {
+        if (tool == LessonTool.metronome && bpm != null) {
+          ref.read(metronomeViewModelProvider.notifier).setBpm(bpm!);
+        }
+        if (stacked) {
+          context.push(route);
+        } else {
+          context.go(route);
+        }
+      },
     );
   }
 }
@@ -176,7 +225,7 @@ class _Section extends StatelessWidget {
       );
 }
 
-/// Una celda por corchea: flecha y conteo ("1 y 2 y…").
+/// Una celda por corchea: flecha y conteo ("1 y 2 y…"; en 6/8, de 1 a 6).
 class _StrumPattern extends StatelessWidget {
   const _StrumPattern({required this.pattern});
 
@@ -217,7 +266,7 @@ class _StrumPattern extends StatelessWidget {
                         ),
                       ),
                       Text(
-                        i.isEven ? '${i ~/ 2 + 1}' : and,
+                        strumCountAt(pattern, i, and),
                         style: musicMono(fontSize: 12, color: p.textSecondary),
                       ),
                     ],

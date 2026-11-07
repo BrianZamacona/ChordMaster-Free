@@ -11,6 +11,13 @@ import '../../domain/theory/notes.dart';
 import '../../ui/theme.dart';
 import '../chords/chord_viewmodel.dart';
 
+/// Conteo de la corchea [index] de [pattern]: un compás de 6 corcheas es 6/8 y
+/// se cuenta de 1 a 6; uno de 8 es 4/4 y se cuenta "1 [and] 2 [and]…".
+String strumCountAt(String pattern, int index, String and) {
+  if (pattern.length == 6) return '${index + 1}';
+  return index.isEven ? '${index ~/ 2 + 1}' : and;
+}
+
 /// Nombre visible de cada camino.
 String trackName(LessonTrack track) => switch (track) {
       LessonTrack.foundations => AppStrings.trackFoundations,

@@ -134,25 +134,40 @@ cada nota pertenezca a la escala. No bajar la tolerancia de 0.
   se eliminó (no tenía ruta y solo guardaba en el teléfono).
 
 ## Lecciones
-- Currículo en `lib/domain/lessons/curriculum.dart` (fuente única): Fundamentos (F1–F8) y,
-  al terminarlo, dos caminos: rítmica (R1–R10) y líder (L1–L10). Las lecciones se agrupan en
-  unidades (`LessonUnit`, nodos del mapa). Acordes por `displayName` de `chords.json` y
-  escalas por id de `scales_master.json`.
+- Currículo en `lib/domain/lessons/curriculum.dart` (fuente única): Fundamentos (F1–F10) y,
+  al terminarlo, dos caminos: rítmica (R1–R17) y líder (L1–L18), cada uno en dos niveles
+  (`LessonUnit.level`; Fundamentos solo tiene el 1). Las lecciones se agrupan en unidades
+  (`LessonUnit`, nodos del mapa, con un `summary` que la pantalla de la unidad muestra como
+  vista previa). Acordes por `displayName` de `chords.json` y escalas por id de
+  `scales_master.json`.
+- Nivel 2 (decisión del usuario, inspirado en roadmaps tipo "Part 1/2"): rítmica = Acordes
+  abiertos 2 (D/Dm, séptimas, maj7/m7), Rasgueo 2 (6/8 y acento en 2 y 4) y Riffs (power
+  chords y boogie); líder = Licks, Mayor y menor (escala mayor, relativa menor, círculo) y
+  Double stops (terceras y sextas). Fundamentos suma "Primeras melodías" (tablatura y el Himno
+  de la alegría, de dominio público). Nada de riffs ni melodías con derechos de autor.
+- Tablatura en `Lesson.tab` (`TabNote`: cuerda 1 = mi aguda, traste). Toda lección con tab
+  declara `scale` y un test exige que cada nota pertenezca a ella; las notas que el texto nombra
+  se verifican una por una. Se dibuja en `lesson_tab.dart`, en renglones de 8 notas.
+- `Lesson.tool` abre afinador o metrónomo (pestaña Afinar, `go`) o un módulo de Aprender
+  (Progresiones, double stops, círculo: `push`, atrás vuelve a la lección).
 - Todo lo que una lección afirma sobre cuerdas, dedos o notas tiene su test en
   `test/domain/lessons/curriculum_test.dart`, verificado contra los datos. Lección nueva o
   texto nuevo con una afirmación musical = test nuevo.
-- `LessonPath` decide la siguiente: Fundamentos primero, luego el camino elegido, después el
-  otro. Se puede adelantar cualquier lección. Progreso en `userProgress`
-  (`lessons_completed`, `lessons_track`); los ids de lecciones y unidades son permanentes.
+- `LessonPath` decide la siguiente: Fundamentos primero, luego el camino elegido (nivel 1 y
+  luego 2), después el otro. Se puede adelantar cualquier lección. Progreso en `userProgress`
+  (`lessons_completed`, `lessons_track`); los ids de lecciones y unidades son permanentes. Las
+  etiquetas (F5, R11…) salen de la posición, así que insertar una lección las corre.
 - Mapa (`lessons_screen.dart`): identidad propia, dibujado como mástil. Fundamentos es una
   cuerda que se abre en dos; cada unidad es un nodo con un dibujo generado desde los datos
   (`UnitArt`: diagrama, escala, rasgueo o notas). Nada de fotos ni imágenes de terceros.
-  Los dos caminos se arman por filas de igual altura, así que deben tener tantas unidades como
-  retos (hay test). Ningún camino se resalta hasta terminar Fundamentos o tocar uno
-  (`highlightedTrack`).
-- Retos (`challenges`): al final de rítmica y de líder, con el doble punto del traste 12. Se
-  superan solos con el récord de un módulo de práctica (precisión del juego de ritmo, mejor
-  racha de Oído en `ear_training_best_streak`); no se marcan a mano.
+  Los dos caminos se arman por filas de igual altura, nivel por nivel, así que en cada nivel
+  deben tener tantas unidades como retos (hay test); un separador marca el nivel 2. Ningún
+  camino se resalta hasta terminar Fundamentos o tocar uno (`highlightedTrack`). Al abrir, las
+  cuerdas se dibujan escalonadas; con "reducir movimiento" aparecen completas.
+- Retos (`challenges`): uno al cerrar cada nivel de rítmica y de líder, con el doble punto del
+  traste 12; el del nivel 2 pide más (ritmo 85 → 95 %, Oído 5 → 10). Se superan solos con el
+  récord de un módulo de práctica (precisión del juego de ritmo, mejor racha de Oído en
+  `ear_training_best_streak`); no se marcan a mano.
 - Rutas: `/learn/lessons`, `/learn/lessons/unit/:unitId` y `/learn/lessons/:id`. Logro
   `foundations_done`.
 
@@ -291,6 +306,12 @@ Objetivo: código legible y mantenible antes que ingenioso. Capas (puertos y ada
   ocultas siguen montadas: lo que use micrófono/audio debe pausarse con `TickerMode`.
 
 ## Pendiente (en orden)
+0. Compilar en esta máquina: `android/gradle.properties` fija `org.gradle.java.home` a
+   `C:/Program Files/Android/Android Studio/jbr`, que quedó roto al reinstalar Android Studio.
+   Mientras tanto: `gradlew assembleRelease` con `-Dorg.gradle.java.home=` y
+   `-Porg.gradle.java.installations.paths=` apuntando a `C:/Program Files/Android/openjdk/jdk-21.0.8`.
+   Decidir si esa línea debe salir del repo (es una ruta de una sola máquina).
+   `chords.json`: Dm marca el dedo 1 en la 3ª y en la 1ª cuerda; revisar en el generador.
 1. Revisión en un dispositivo físico: rediseño completo, versión bilingüe, "Mi progresión",
    tarjetas "¿Por qué?", notificaciones, audio y afinador con una nota real. Lecciones: reto
    superado y letra grande.
