@@ -3,7 +3,9 @@ import 'dart:math';
 import 'package:flutter/foundation.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 
+import '../../domain/practice/multi_day_challenges.dart';
 import '../../services/achievement_service.dart';
+import '../../services/activity_log.dart';
 import '../../services/audio_service.dart';
 import '../../services/key_value_store.dart';
 
@@ -150,6 +152,9 @@ class RhythmGameViewModel extends Notifier<RhythmGameState> {
     final score = state.accuracy;
     state = state.copyWith(isRunning: false);
 
+    if (score > 0) {
+      unawaited(ref.read(activityLogProvider.notifier).record(PracticeActivity.rhythm));
+    }
     if (score > 0 && state.countsForRecord) {
       final newBest = max(score, state.bestScore);
       state = state.copyWith(bestScore: newBest);
