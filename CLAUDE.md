@@ -160,6 +160,11 @@ cada nota pertenezca a la escala. No bajar la tolerancia de 0.
   traste 12; el del nivel 2 pide más (ritmo 85 → 95 %, Oído 5 → 10). Se superan solos con el
   récord de un módulo de práctica (precisión del juego de ritmo, mejor racha de Oído en
   `ear_training_best_streak`); no se marcan a mano.
+- Pantalla de unidad (`lesson_unit_screen.dart`, datos de `unit_summary.dart`): encabezado con
+  "camino · Unidad n de m", lecciones en una línea vertical con lo que practica cada una (acordes,
+  escala, rasgueo, tablatura, herramienta), el reto si la unidad cierra su nivel, resultados
+  (lecciones, minutos, acordes, notas) y la siguiente unidad (reemplaza la pantalla). Inspirada en
+  cursos tipo "Level 1 · Learn to Fret", pero en vertical (decisión del usuario).
 - Rutas: `/learn/lessons`, `/learn/lessons/unit/:unitId` y `/learn/lessons/:id`. Logro
   `foundations_done`.
 
@@ -178,7 +183,9 @@ cada nota pertenezca a la escala. No bajar la tolerancia de 0.
   arriba "Sigue donde ibas" con las empezadas.
 - Buscador: `searchGuides` busca todas las palabras, sin tildes ni mayúsculas, en título,
   subtítulo y títulos de capítulo del idioma actual; las filas vacías se ocultan.
-- Las filas se deslizan de lado; las tarjetas miden 148 dp para que a 360 dp asome la tercera.
+- Diseño vertical (decisión del usuario: nada de filas que se deslizan de lado): cada categoría es
+  una sección con sus guías en lista, a todo lo ancho (dibujo, título, subtítulo, capítulos,
+  minutos y avance).
 - "¿Qué capo uso?" (`lib/domain/theory/capo.dart`, ruta `/learn/capo`): por regla, el traste del
   capo para cada forma abierta (C A G E D; Am Em Dm en menor), hasta el traste 7, con su
   I – IV – V. Las cinco formas mayores cubren cualquier tonalidad sin pasar del 7 (hay test).

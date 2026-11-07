@@ -1,8 +1,11 @@
+import 'dart:async';
+
 import 'package:chordmaster_free/app.dart';
 import 'package:chordmaster_free/core/constants/app_strings.dart';
 import 'package:chordmaster_free/core/i18n/tr.dart';
 import 'package:chordmaster_free/domain/lessons/curriculum.dart';
 import 'package:chordmaster_free/domain/lessons/lesson.dart';
+import 'package:chordmaster_free/domain/lessons/unit_summary.dart';
 import 'package:chordmaster_free/features/circle/circle_screen.dart';
 import 'package:chordmaster_free/features/lessons/lesson_tab.dart';
 import 'package:chordmaster_free/features/lessons/lesson_widgets.dart';
@@ -330,6 +333,83 @@ void main() {
       expect(find.byType(BackButton), findsOneWidget);
     });
 
+    testWidgets('la unidad dice dónde está y qué practica cada lección', (
+      tester,
+    ) async {
+      final unit = unitsOf(LessonTrack.foundations).first;
+      await open(tester, '/learn/lessons/unit/${unit.id}');
+      final (index, total) = UnitSummary(unit).position;
+      expect(
+        tester.widget<Text>(find.byKey(const Key('unit-eyebrow'))).data,
+        endsWith(AppStrings.unitPosition(index, total)),
+      );
+      // Cada lección con acordes los muestra en su paso.
+      for (final lesson in lessonsOfUnit(unit)) {
+        if (lesson.chords.isEmpty) continue;
+        expect(
+          find.descendant(
+            of: find.byKey(Key('lesson-${lesson.id}')),
+            matching: find.text(AppStrings.lessonChordList(lesson.chords.join(' '))),
+          ),
+          findsOneWidget,
+          reason: lesson.id,
+        );
+      }
+      expect(find.byKey(const Key('unit-results'), skipOffstage: false), findsOneWidget);
+    });
+
+    testWidgets('la última unidad de un nivel termina en su reto', (tester) async {
+      final unit = unitsOf(LessonTrack.rhythm, level: 1).last;
+      final challenge = challengesOf(LessonTrack.rhythm, level: 1).single;
+      await open(tester, '/learn/lessons/unit/${unit.id}');
+      expect(
+        find.byKey(Key('unit-challenge-${challenge.id}'), skipOffstage: false),
+        findsOneWidget,
+      );
+      // Las demás no.
+      await open(
+        tester,
+        '/learn/lessons/unit/${unitsOf(LessonTrack.rhythm, level: 1).first.id}',
+      );
+      expect(
+        find.byKey(Key('unit-challenge-${challenge.id}'), skipOffstage: false),
+        findsNothing,
+      );
+    });
+
+    testWidgets('"Siguiente unidad" reemplaza a esta y atrás vuelve al mapa', (
+      tester,
+    ) async {
+      final units = unitsOf(LessonTrack.foundations);
+      await open(tester, '/learn/lessons');
+      unawaited(appRouter.push('/learn/lessons/unit/${units.first.id}'));
+      for (var i = 0; i < 5; i++) {
+        await tester.pump(const Duration(milliseconds: 300));
+      }
+      final next = find.byKey(const Key('unit-next'));
+      await tester.ensureVisible(next);
+      await tester.pump();
+      await tester.tap(next);
+      for (var i = 0; i < 5; i++) {
+        await tester.pump(const Duration(milliseconds: 300));
+      }
+      expect(
+        tester.widget<Text>(find.byKey(const Key('unit-title'))).data,
+        units[1].title.text,
+      );
+      appRouter.pop();
+      for (var i = 0; i < 5; i++) {
+        await tester.pump(const Duration(milliseconds: 300));
+      }
+      expect(find.byKey(const Key('unit-title')), findsNothing);
+    });
+
+    testWidgets('al final de un camino no hay siguiente unidad', (tester) async {
+      await open(tester, '/learn/lessons/unit/${unitsOf(LessonTrack.lead).last.id}');
+      expect(find.byKey(const Key('unit-end'), skipOffstage: false), findsOneWidget);
+      expect(find.byKey(const Key('unit-next'), skipOffstage: false), findsNothing);
+    });
+
     testWidgets('el detalle marca la lección como completada', (tester) async {
       final store = await open(tester, '/learn/lessons/${foundations.first}');
       final button = find.byKey(const Key('lesson-toggle-done'));
@@ -493,14 +573,14 @@ void main() {
               await tester.pump(const Duration(milliseconds: 300));
             }
             final title = find.byKey(const Key('unit-title'));
-            final art = find.byType(UnitArtView).last;
+            final art = find.byType(UnitArtView).first;
             expect(
               tester.getRect(art).bottom,
               lessThanOrEqualTo(tester.getRect(title).top),
               reason: unit.id,
             );
-            // 360 − 32 de la lista − 8 de margen − 32 del relleno de la tarjeta.
-            expect(tester.getSize(title).width, 288, reason: unit.id);
+            // 360 − 32 de la lista − 32 del relleno de la tarjeta.
+            expect(tester.getSize(title).width, 296, reason: unit.id);
           }
         }
       });

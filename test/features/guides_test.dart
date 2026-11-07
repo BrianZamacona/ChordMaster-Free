@@ -337,11 +337,13 @@ void main() {
           },
         );
         expect(tester.takeException(), isNull);
-        // Dos tarjetas enteras y un trozo de la tercera a la vista.
+        // En lista: cada guía ocupa todo el ancho, una debajo de otra (la
+        // primera está empezada y sale también arriba).
         final row = guidesIn(GuideCategory.acoustic);
-        final third = tester.getRect(find.byKey(Key('guide-${row[2].id}')));
-        expect(third.left, lessThan(360));
-        expect(third.right, greaterThan(360));
+        final firstRect = tester.getRect(find.byKey(Key('guide-${row[1].id}')));
+        final secondRect = tester.getRect(find.byKey(Key('guide-${row[2].id}')));
+        expect(firstRect.width, 328);
+        expect(secondRect.top, greaterThan(firstRect.bottom));
         for (final g in guides) {
           appRouter.go('/learn/guides/${g.id}');
           await settle(tester);
