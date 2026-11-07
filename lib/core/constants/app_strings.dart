@@ -410,23 +410,23 @@ class AppStrings {
         'neck. Each exercise and song gives up to three stars by the tempo '
         'you can play it cleanly.',
   );
-  static String melodiesLevel(int level) =>
+  static String courseLevel(int level) =>
       tr(es: 'Nivel $level', en: 'Level $level');
-  static String get melodiesTheory => tr(es: 'Teoría', en: 'Theory');
-  static String get melodiesExercise => tr(es: 'Ejercicio', en: 'Exercise');
-  static String get melodiesSong => tr(es: 'Canción', en: 'Song');
-  static String get melodiesResults =>
+  static String get courseTheory => tr(es: 'Teoría', en: 'Theory');
+  static String get courseExercise => tr(es: 'Ejercicio', en: 'Exercise');
+  static String get courseSong => tr(es: 'Canción', en: 'Song');
+  static String get courseResults =>
       tr(es: 'Resultados del curso', en: 'Course results');
-  static String get melodiesStars => tr(es: 'estrellas', en: 'stars');
-  static String get melodiesSongs => tr(es: 'canciones', en: 'songs');
-  static String get melodiesStarRule => tr(
+  static String get courseStarsLabel => tr(es: 'estrellas', en: 'stars');
+  static String get courseSongsLabel => tr(es: 'canciones', en: 'songs');
+  static String get courseStarRule => tr(
     es: '★ a 60 BPM · ★★ a 80 · ★★★ a 100',
     en: '★ at 60 BPM · ★★ at 80 · ★★★ at 100',
   );
-  static String get melodiesRead => tr(es: 'Entendido', en: 'Got it');
-  static String get melodiesUnread =>
+  static String get courseRead => tr(es: 'Entendido', en: 'Got it');
+  static String get courseUnread =>
       tr(es: 'Marcar como pendiente', en: 'Mark as not done');
-  static String get melodiesNext => tr(es: 'Siguiente paso', en: 'Next step');
+  static String get courseNext => tr(es: 'Siguiente paso', en: 'Next step');
   static String get melodiesEvenRhythm => tr(
     es: 'Suena con todas las notas iguales (corcheas): sirve para aprender '
         'las notas; el ritmo de la canción lo pones tú.',
