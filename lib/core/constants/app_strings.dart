@@ -397,6 +397,42 @@ class AppStrings {
     es: 'Guarda un tempo limpio',
     en: 'Save a clean tempo',
   );
+  static String get hubMelodies => tr(es: 'Melodías', en: 'Melodies');
+  static String get hubMelodiesSub => tr(
+    es: 'Curso por niveles: de las cuerdas agudas a tocar canciones de memoria.',
+    en: 'A course by levels: from the high strings to playing songs by heart.',
+  );
+  static String get melodiesIntro => tr(
+    es: 'Aprende a tocar melodías en las cuerdas agudas y luego más arriba del '
+        'mástil. Cada ejercicio y canción da hasta tres estrellas según el '
+        'tempo al que te sale limpio.',
+    en: 'Learn to play melodies on the high strings and then higher up the '
+        'neck. Each exercise and song gives up to three stars by the tempo '
+        'you can play it cleanly.',
+  );
+  static String melodiesLevel(int level) =>
+      tr(es: 'Nivel $level', en: 'Level $level');
+  static String get melodiesTheory => tr(es: 'Teoría', en: 'Theory');
+  static String get melodiesExercise => tr(es: 'Ejercicio', en: 'Exercise');
+  static String get melodiesSong => tr(es: 'Canción', en: 'Song');
+  static String get melodiesResults =>
+      tr(es: 'Resultados del curso', en: 'Course results');
+  static String get melodiesStars => tr(es: 'estrellas', en: 'stars');
+  static String get melodiesSongs => tr(es: 'canciones', en: 'songs');
+  static String get melodiesStarRule => tr(
+    es: '★ a 60 BPM · ★★ a 80 · ★★★ a 100',
+    en: '★ at 60 BPM · ★★ at 80 · ★★★ at 100',
+  );
+  static String get melodiesRead => tr(es: 'Entendido', en: 'Got it');
+  static String get melodiesUnread =>
+      tr(es: 'Marcar como pendiente', en: 'Mark as not done');
+  static String get melodiesNext => tr(es: 'Siguiente paso', en: 'Next step');
+  static String get melodiesEvenRhythm => tr(
+    es: 'Suena con todas las notas iguales (corcheas): sirve para aprender '
+        'las notas; el ritmo de la canción lo pones tú.',
+    en: 'It plays every note the same length (eighth notes): it is for '
+        "learning the notes; you add the song's rhythm.",
+  );
   static String get hubMultiDay =>
       tr(es: 'Retos de la semana', en: 'Weekly challenges');
   static String get hubMultiDaySub => tr(
