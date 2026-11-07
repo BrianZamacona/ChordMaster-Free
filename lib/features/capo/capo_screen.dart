@@ -5,6 +5,7 @@ import 'package:go_router/go_router.dart';
 import '../../core/constants/app_strings.dart';
 import '../../core/widgets/chord_diagram.dart';
 import '../../core/widgets/selector_pill.dart';
+import '../../domain/progressions/progression_data.dart';
 import '../../domain/theory/capo.dart';
 import '../../domain/theory/notes.dart';
 import '../../ui/theme.dart';
@@ -22,6 +23,7 @@ class CapoScreen extends StatefulWidget {
 class _CapoScreenState extends State<CapoScreen> {
   var _key = noteIndex('A');
   var _minor = false;
+  var _progression = 0;
 
   @override
   Widget build(BuildContext context) {
@@ -77,12 +79,122 @@ class _CapoScreenState extends State<CapoScreen> {
           ),
           const SizedBox(height: 8),
           for (final o in options) _CapoOptionCard(option: o),
+          // Las progresiones son de la tonalidad mayor.
+          if (!_minor) ...[
+            const SizedBox(height: 16),
+            _TurnProgression(
+              keyName: keyName,
+              keyRoot: _key,
+              options: options,
+              progression: progressions[_progression],
+              onPick: () => _pickProgression(context),
+            ),
+          ],
           const SizedBox(height: 8),
           Text(
             AppStrings.capoRule,
             style: text.bodySmall?.copyWith(color: p.textSecondary),
           ),
         ],
+      ),
+    );
+  }
+
+  void _pickProgression(BuildContext context) => showSelectorSheet(
+        context,
+        title: AppStrings.capoProgression,
+        builder: (sheet) => Column(
+          children: [
+            for (final (i, p) in progressions.indexed)
+              ListTile(
+                key: Key('capo-progression-${p.id}'),
+                title: Text(p.label, style: musicMono(fontSize: 14)),
+                trailing: i == _progression
+                    ? Icon(Icons.check, color: sheet.palette.accent)
+                    : null,
+                onTap: () {
+                  setState(() => _progression = i);
+                  Navigator.of(sheet).pop();
+                },
+              ),
+          ],
+        ),
+      );
+}
+
+/// Una progresión de la tonalidad elegida y, por cada capo, qué acordes arma
+/// la mano y cómo suenan.
+class _TurnProgression extends StatelessWidget {
+  const _TurnProgression({
+    required this.keyName,
+    required this.keyRoot,
+    required this.options,
+    required this.progression,
+    required this.onPick,
+  });
+
+  final String keyName;
+  final int keyRoot;
+  final List<CapoOption> options;
+  final Progression progression;
+  final VoidCallback onPick;
+
+  @override
+  Widget build(BuildContext context) {
+    final p = context.palette;
+    final text = Theme.of(context).textTheme;
+    final degrees = [
+      for (final d in progression.degrees) (semitones: d.semitones, type: d.type),
+    ];
+    return Card(
+      key: const Key('capo-turn'),
+      margin: EdgeInsets.zero,
+      child: Padding(
+        padding: const EdgeInsets.all(14),
+        child: Column(
+          crossAxisAlignment: CrossAxisAlignment.start,
+          children: [
+            Text(AppStrings.capoTurnTitle, style: text.titleMedium),
+            const SizedBox(height: 4),
+            Text(
+              AppStrings.capoTurnIntro(keyName),
+              style: text.bodySmall?.copyWith(color: p.textSecondary),
+            ),
+            const SizedBox(height: 10),
+            SelectorPill(
+              key: const Key('capo-progression'),
+              label: AppStrings.capoProgression,
+              value: progression.label,
+              onOpen: onPick,
+            ),
+            const SizedBox(height: 10),
+            Text(
+              AppStrings.capoTurnInKey(
+                keyName,
+                chordsInKey(degrees, keyRoot).join(' – '),
+              ),
+              key: const Key('capo-turn-target'),
+              style: musicMono(fontSize: 14, fontWeight: FontWeight.w600),
+            ),
+            for (final o in options) ...[
+              const Divider(height: 20),
+              Text(
+                o.fret == 0 ? AppStrings.capoNone(o.shape) : AppStrings.capoAt(o.fret, o.shape),
+                style: text.labelLarge,
+              ),
+              const SizedBox(height: 2),
+              Text(
+                capoTransposition(degrees, o).shapes.join(' – '),
+                key: Key('capo-turn-${o.shape}'),
+                style: musicMono(fontSize: 14, fontWeight: FontWeight.w600, color: p.accent),
+              ),
+              Text(
+                AppStrings.capoSounds(capoTransposition(degrees, o).sounds.join(' – ')),
+                style: musicMono(fontSize: 12, color: p.textSecondary),
+              ),
+            ],
+          ],
+        ),
       ),
     );
   }
