@@ -5,7 +5,6 @@ import 'package:chordmaster_free/domain/audio/pluck_synth.dart';
 import 'package:chordmaster_free/domain/melodies/melody_course.dart';
 import 'package:chordmaster_free/features/courses/course_progress.dart';
 import 'package:chordmaster_free/features/courses/course_widgets.dart';
-import 'package:chordmaster_free/features/melodies/melodies_screen.dart';
 import 'package:chordmaster_free/services/audio_service.dart';
 import 'package:chordmaster_free/services/key_value_store.dart';
 import 'package:chordmaster_free/ui/navigation.dart';
@@ -68,11 +67,14 @@ void main() {
     return (store, audio);
   }
 
-  testWidgets('Aprender enlaza el curso con todos sus niveles y pasos', (tester) async {
-    await open(tester, '/learn');
-    await tester.tap(find.text(AppStrings.hubMelodies));
+  testWidgets('el mapa de Lecciones enlaza el curso con todos sus niveles y pasos', (tester) async {
+    await open(tester, '/learn/lessons');
+    final node = find.byKey(const Key('unit-f_melodies'));
+    await tester.ensureVisible(node);
+    await tester.pump();
+    await tester.tap(node);
     await settle(tester);
-    expect(find.byType(MelodiesScreen), findsOneWidget);
+    expect(find.byKey(const Key('unit-title')), findsOneWidget);
     for (var i = 0; i < melodyCourse.length; i++) {
       expect(find.byKey(Key('course-level-$i'), skipOffstage: false), findsOneWidget);
       for (final s in melodyCourse[i].steps) {
@@ -83,7 +85,7 @@ void main() {
   });
 
   testWidgets('las estrellas guardadas se ven en el curso', (tester) async {
-    await open(tester, '/learn/melodies', progress: {
+    await open(tester, '/learn/lessons/unit/f_melodies', progress: {
       CourseId.melodies.keyBest: {'m1_twinkle': 85},
     });
     final stars = tester.widget<CourseStars>(
@@ -95,7 +97,7 @@ void main() {
   testWidgets('una canción suena entera y "Me salió limpio" da su estrella', (
     tester,
   ) async {
-    final (store, audio) = await open(tester, '/learn/melodies/m1_twinkle');
+    final (store, audio) = await open(tester, '/learn/lessons/course/melodies/m1_twinkle');
     // Sin récord empieza en el tempo de la primera estrella.
     expect(
       tester.widget<Text>(find.byKey(const Key('course-bpm'))).data,
@@ -124,7 +126,7 @@ void main() {
   });
 
   testWidgets('la teoría se marca como leída', (tester) async {
-    final (store, _) = await open(tester, '/learn/melodies/m1_notes');
+    final (store, _) = await open(tester, '/learn/lessons/course/melodies/m1_notes');
     await tester.tap(find.byKey(const Key('course-read')));
     await tester.pump();
     expect(store.progress[CourseId.melodies.keyRead], ['m1_notes']);
@@ -132,7 +134,7 @@ void main() {
   });
 
   testWidgets('"Siguiente paso" reemplaza y atrás vuelve al curso', (tester) async {
-    await open(tester, '/learn/melodies');
+    await open(tester, '/learn/lessons/unit/f_melodies');
     await tester.tap(find.byKey(const Key('course-step-m1_notes')));
     await settle(tester);
     final next = find.byKey(const Key('course-next'));
@@ -146,15 +148,15 @@ void main() {
     );
     appRouter.pop();
     await settle(tester);
-    expect(find.byType(MelodiesScreen), findsOneWidget);
+    expect(find.byKey(const Key('unit-title')), findsOneWidget);
   });
 
   for (final code in ['es', 'en']) {
     testWidgets('a 360 dp ($code) el curso y cada paso sin desbordes', (tester) async {
-      await open(tester, '/learn/melodies', code: code, size: const Size(360, 5000));
+      await open(tester, '/learn/lessons/unit/f_melodies', code: code, size: const Size(360, 5000));
       expect(tester.takeException(), isNull);
       for (final id in melodyStepsById.keys) {
-        appRouter.go('/learn/melodies/$id');
+        appRouter.go('/learn/lessons/course/melodies/$id');
         await settle(tester);
         expect(tester.takeException(), isNull, reason: id);
       }

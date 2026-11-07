@@ -437,12 +437,8 @@ void main() {
     });
   });
 
-  test('los dos caminos tienen tantas unidades como retos (el mapa va por filas)', () {
+  test('los dos caminos tienen tantos retos por nivel (el mapa va por filas)', () {
     for (final level in levelsOf(LessonTrack.rhythm)) {
-      expect(
-        unitsOf(LessonTrack.rhythm, level: level).length,
-        unitsOf(LessonTrack.lead, level: level).length,
-      );
       expect(
         challengesOf(LessonTrack.rhythm, level: level).length,
         challengesOf(LessonTrack.lead, level: level).length,
@@ -495,9 +491,17 @@ void main() {
           const Key('lessons-track-rhythm'),
           const Key('lessons-track-lead'),
         );
-        for (var i = 0; i < rhythm.length; i++) {
-          expectAligned(Key('unit-${rhythm[i].id}'), Key('unit-${lead[i].id}'));
+        // Nivel por nivel, la fila i de un camino va a la altura de la del
+        // otro; si un camino tiene más unidades, el otro deja la celda vacía.
+        for (final level in levelsOf(LessonTrack.rhythm)) {
+          final r = unitsOf(LessonTrack.rhythm, level: level);
+          final l = unitsOf(LessonTrack.lead, level: level);
+          for (var i = 0; i < r.length && i < l.length; i++) {
+            expectAligned(Key('unit-${r[i].id}'), Key('unit-${l[i].id}'));
+          }
         }
+        expect(rhythm, isNotEmpty);
+        expect(lead, isNotEmpty);
         for (final level in levelsOf(LessonTrack.rhythm)) {
           expectAligned(
             Key('challenge-${challengesOf(LessonTrack.rhythm, level: level).single.id}'),
@@ -573,6 +577,11 @@ void main() {
               await tester.pump(const Duration(milliseconds: 300));
             }
             final title = find.byKey(const Key('unit-title'));
+            // Un curso espera las digitaciones de chords.json (otro isolate).
+            for (var i = 0; i < 5 && title.evaluate().isEmpty; i++) {
+              await tester.runAsync(() => Future<void>.delayed(const Duration(seconds: 1)));
+              await tester.pump(const Duration(milliseconds: 300));
+            }
             final art = find.byType(UnitArtView).first;
             expect(
               tester.getRect(art).bottom,

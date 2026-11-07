@@ -1283,7 +1283,8 @@ const _firstSteps = LessonUnit(
   summary: LocalizedText(
     es: 'Conoce la guitarra, afínala y toca tus primeros acordes.',
     en: 'Meet the guitar, tune it and play your first chords.',
-  ),
+  ),
+
   art: ChordArt('Em'),
 );
 const _openChords = LessonUnit(
@@ -1293,7 +1294,8 @@ const _openChords = LessonUnit(
   summary: LocalizedText(
     es: 'Los acordes abiertos de miles de canciones y tu primera progresión.',
     en: 'The open chords behind thousands of songs, and your first progression.',
-  ),
+  ),
+
   art: ChordArt('G'),
 );
 const _strumming = LessonUnit(
@@ -1303,7 +1305,8 @@ const _strumming = LessonUnit(
   summary: LocalizedText(
     es: 'Corcheas, el rasgueo pop y el compás de 3/4.',
     en: 'Eighth notes, the pop strum and 3/4 time.',
-  ),
+  ),
+
   art: StrumArt('D DU UDU'),
 );
 const _beyondOpen = LessonUnit(
@@ -1313,7 +1316,8 @@ const _beyondOpen = LessonUnit(
   summary: LocalizedText(
     es: 'Cejillas, power chords, apagado con la palma y el blues de 12 compases.',
     en: 'Barre chords, power chords, palm muting and the 12-bar blues.',
-  ),
+  ),
+
   art: ChordArt('F'),
 );
 const _fingerstyle = LessonUnit(
@@ -1323,7 +1327,8 @@ const _fingerstyle = LessonUnit(
   summary: LocalizedText(
     es: 'Arpegios y bajo alterno con los dedos.',
     en: 'Arpeggios and alternating bass with your fingers.',
-  ),
+  ),
+
   art: ChordArt('C'),
 );
 const _scalesAndTechnique = LessonUnit(
@@ -1333,7 +1338,8 @@ const _scalesAndTechnique = LessonUnit(
   summary: LocalizedText(
     es: 'La pentatónica menor, calentamiento, ligados y bends.',
     en: 'The minor pentatonic, warm-ups, legato and bends.',
-  ),
+  ),
+
   art: ScaleArt(LessonScale(scaleId: 'pentatonic_minor', root: 9)),
 );
 const _expression = LessonUnit(
@@ -1343,7 +1349,8 @@ const _expression = LessonUnit(
   summary: LocalizedText(
     es: 'Vibrato, la escala de blues, la pentatónica mayor y tu primer solo.',
     en: 'Vibrato, the blues scale, the major pentatonic and your first solo.',
-  ),
+  ),
+
   art: ScaleArt(LessonScale(scaleId: 'blues_minor', root: 9)),
 );
 const _theNeck = LessonUnit(
@@ -1353,7 +1360,8 @@ const _theNeck = LessonUnit(
   summary: LocalizedText(
     es: 'Los nombres de las notas en las cuerdas graves y la segunda caja.',
     en: 'Note names on the low strings and the second box.',
-  ),
+  ),
+
   art: NotesArt(['E', 'F', 'G', 'A', 'B', 'C', 'D']),
 );
 
@@ -1436,6 +1444,63 @@ const _doubleStops = LessonUnit(
 
 /// Retos al final de cada nivel de cada camino; se superan con el récord de
 /// un módulo de práctica.
+const _melodiesCourse = LessonUnit(
+  id: 'f_melodies',
+  track: LessonTrack.foundations,
+  title: LocalizedText(es: 'Melodías', en: 'Melodies'),
+  summary: LocalizedText(
+    es: 'Curso por niveles: de las cuerdas agudas a tocar canciones de memoria.',
+    en: 'A course by levels: from the high strings to playing songs by heart.',
+  ),
+  art: NotesArt(['G', 'A', 'B', 'C']),
+  course: LessonCourse.melodies,
+);
+const _openChordsCourse = LessonUnit(
+  id: 'r_open_chords_1',
+  track: LessonTrack.rhythm,
+  title: LocalizedText(es: 'Acordes abiertos – Parte 1', en: 'Open chords – Part 1'),
+  summary: LocalizedText(
+    es: 'Em, G, D y C dedo a dedo, los cambios entre ellos y canciones con solo esos acordes.',
+    en: 'Em, G, D and C finger by finger, the changes between them and songs with only those chords.',
+  ),
+  art: ChordArt('Em'),
+  course: LessonCourse.openChords,
+);
+const _strummingCourse = LessonUnit(
+  id: 'r_strumming_patterns_1',
+  track: LessonTrack.rhythm,
+  title: LocalizedText(es: 'Patrones de rasgueo – Parte 1', en: 'Strumming patterns – Part 1'),
+  summary: LocalizedText(
+    es: 'Cinco rasgueos con Em, G, D y C: tempo, conteo, péndulo y canciones.',
+    en: 'Five strums with Em, G, D and C: tempo, counting, pendulum and songs.',
+  ),
+  art: StrumArt('D DUD DU'),
+  course: LessonCourse.strumming,
+);
+
+/// Todas las unidades, en el orden del mapa (cada camino de arriba abajo).
+/// Las de curso no tienen lecciones; las demás, las suyas en [curriculum].
+const List<LessonUnit> lessonUnits = [
+  _firstSteps,
+  _openChords,
+  _firstMelodies,
+  _melodiesCourse,
+  _openChordsCourse,
+  _strummingCourse,
+  _strumming,
+  _beyondOpen,
+  _fingerstyle,
+  _openChords2,
+  _strumming2,
+  _riffs,
+  _scalesAndTechnique,
+  _expression,
+  _theNeck,
+  _licks,
+  _majorMinor,
+  _doubleStops,
+];
+
 const List<LessonChallenge> challenges = [
   LessonChallenge(
     id: 'rc1_steady_beat',
@@ -1491,14 +1556,10 @@ List<Lesson> lessonsOf(LessonTrack track) =>
 
 /// Unidades de [track] en el orden del camino; con [level], solo las de ese
 /// nivel.
-List<LessonUnit> unitsOf(LessonTrack track, {int? level}) {
-  final units = <LessonUnit>[];
-  for (final l in lessonsOf(track)) {
-    if (level != null && l.unit.level != level) continue;
-    if (!units.contains(l.unit)) units.add(l.unit);
-  }
-  return units;
-}
+List<LessonUnit> unitsOf(LessonTrack track, {int? level}) => [
+  for (final u in lessonUnits)
+    if (u.track == track && (level == null || u.level == level)) u,
+];
 
 /// Niveles de [track], de menor a mayor.
 List<int> levelsOf(LessonTrack track) =>
@@ -1518,6 +1579,8 @@ List<LessonChallenge> challengesOf(LessonTrack track, {int? level}) => [
 final Map<String, Lesson> lessonsById = {for (final l in curriculum) l.id: l};
 
 /// Unidades por id.
-final Map<String, LessonUnit> unitsById = {
-  for (final l in curriculum) l.unit.id: l.unit,
-};
+final Map<String, LessonUnit> unitsById = {for (final u in lessonUnits) u.id: u};
+
+/// La unidad del mapa que abre [course].
+LessonUnit unitOfCourse(LessonCourse course) =>
+    lessonUnits.firstWhere((u) => u.course == course);

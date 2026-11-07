@@ -403,10 +403,6 @@ class AppStrings {
     es: 'Patrones de rasgueo – Parte\u00a01',
     en: 'Strumming patterns – Part\u00a01',
   );
-  static String get hubStrummingSub => tr(
-    es: 'Cinco rasgueos con Em, G, D y C: tempo, conteo, péndulo y canciones.',
-    en: 'Five strums with Em, G, D and C: tempo, counting, pendulum and songs.',
-  );
   static String get strummingIntro => tr(
     es: 'Sigue con Em, G, D y C, ahora con cinco patrones de rasgueo hacia '
         'abajo y hacia arriba. Aprendes qué es el tempo, el pulso, los BPM y el '
@@ -426,10 +422,6 @@ class AppStrings {
   // Espacio duro antes del número: "Parte 1" no se parte en dos renglones.
   static String get hubOpenChords =>
       tr(es: 'Acordes abiertos – Parte\u00a01', en: 'Open chords – Part\u00a01');
-  static String get hubOpenChordsSub => tr(
-    es: 'Curso por niveles: Em, G, D y C dedo a dedo, sus cambios y canciones.',
-    en: 'A course by levels: Em, G, D and C finger by finger, their changes and songs.',
-  );
   static String get openChordsIntro => tr(
     es: 'Aprende Em, G, D y C: cada uno se arma dedo a dedo, luego se practican '
         'los cambios entre ellos y se tocan canciones de dominio público con '
@@ -448,10 +440,6 @@ class AppStrings {
   );
   static String openChordsTimeSignature(int beats, int bpm) =>
       tr(es: '$beats/4 · $bpm BPM', en: '$beats/4 · $bpm BPM');
-  static String get hubMelodiesSub => tr(
-    es: 'Curso por niveles: de las cuerdas agudas a tocar canciones de memoria.',
-    en: 'A course by levels: from the high strings to playing songs by heart.',
-  );
   static String get melodiesIntro => tr(
     es: 'Aprende a tocar melodías en las cuerdas agudas y luego más arriba del '
         'mástil. Cada ejercicio y canción da hasta tres estrellas según el '
@@ -645,6 +633,8 @@ class AppStrings {
       '$track · ${lessonsLevel(level)}';
   static String get lessonsResume => tr(es: 'Continuar', en: 'Continue');
   static String get lessonsReview => tr(es: 'Repasar', en: 'Review');
+  static String unitCourseSteps(int done, int total) =>
+      tr(es: '$done de $total pasos', en: '$done of $total steps');
   static String unitPosition(int index, int total) =>
       tr(es: 'Unidad $index de $total', en: 'Unit $index of $total');
   static String get unitLessons => tr(es: 'Lecciones', en: 'Lessons');

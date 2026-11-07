@@ -3,14 +3,15 @@ import 'package:flutter_riverpod/flutter_riverpod.dart';
 
 import '../../core/constants/app_strings.dart';
 import '../../domain/courses/course.dart';
+import '../../domain/lessons/lesson.dart';
 import '../../domain/strumming/strumming_course.dart';
 import '../courses/chord_shape_diagrams.dart';
 import '../courses/course_progress.dart';
+import '../courses/course_registry.dart';
 import '../courses/course_widgets.dart';
 import '../courses/strum_player.dart';
 import '../lessons/lesson_widgets.dart';
 import 'strumming_course_provider.dart';
-import 'strumming_screen.dart';
 
 /// Un paso del curso de rasgueos: su texto, el patrón dibujado y, si se toca,
 /// los compases con su patrón al tempo elegido.
@@ -42,7 +43,7 @@ class StrumStepScreen extends ConsumerWidget {
             beatsPerBar: 4,
           ),
           playerNote: AppStrings.strummingPlayerNote,
-          routeOf: StrummingScreen.routeOf,
+          routeOf: LessonCourse.strumming.stepRoute,
         ),
         _ => Center(child: Text(AppStrings.guideNotFound)),
       },

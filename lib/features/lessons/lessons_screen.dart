@@ -10,6 +10,7 @@ import '../../ui/theme.dart';
 import 'challenge_progress.dart';
 import 'lesson_widgets.dart';
 import 'lessons_viewmodel.dart';
+import 'unit_progress.dart';
 
 /// Mapa de lecciones dibujado como un mástil: Fundamentos es una sola
 /// cuerda con sus unidades; al terminarla se abre en dos (rítmica y líder),
@@ -175,8 +176,8 @@ class _NextCard extends StatelessWidget {
 }
 
 /// Los dos caminos, fila por fila y nivel por nivel: cada fila tiene un nodo
-/// de cada camino a la misma altura, y cada nivel cierra con un reto. Un test
-/// exige que, en cada nivel, ambos tengan tantas unidades como retos.
+/// de cada camino a la misma altura (si un camino tiene más unidades en un
+/// nivel, el otro deja la celda vacía) y cada nivel cierra con un reto.
 class _TrackRows extends StatelessWidget {
   const _TrackRows({
     required this.highlighted,
@@ -191,6 +192,11 @@ class _TrackRows extends StatelessWidget {
 
   /// Orden de dibujo del primer tramo de estas filas.
   final int firstOrder;
+
+  /// Filas de unidades del nivel: las del camino que tenga más.
+  static int _rowsIn(int level) => [
+    for (final t in [LessonTrack.rhythm, LessonTrack.lead]) unitsOf(t, level: level).length,
+  ].reduce((a, b) => a > b ? a : b);
 
   /// Una fila con una celda por camino, ambas de la altura de la mayor.
   Widget _row(Widget Function(LessonTrack track) cell) => IntrinsicHeight(
@@ -228,16 +234,14 @@ class _TrackRows extends StatelessWidget {
         ),
         for (final level in levelsOf(LessonTrack.rhythm)) ...[
           if (level > 1) ...[segments(), _LevelHeader(level: level)],
-          for (var i = 0;
-              i < unitsOf(LessonTrack.rhythm, level: level).length;
-              i++) ...[
+          for (var i = 0; i < _rowsIn(level); i++) ...[
             segments(),
-            _row(
-              (track) => _UnitNode(
-                unit: unitsOf(track, level: level)[i],
-                path: path,
-              ),
-            ),
+            _row((track) {
+              final units = unitsOf(track, level: level);
+              return i < units.length
+                  ? _UnitNode(unit: units[i], path: path)
+                  : const SizedBox.shrink();
+            }),
           ],
           for (var i = 0;
               i < challengesOf(LessonTrack.rhythm, level: level).length;
@@ -502,21 +506,21 @@ class _ForkPainter extends CustomPainter {
       old.knot != knot;
 }
 
-/// Nodo de una unidad: su dibujo, el título y el avance.
-class _UnitNode extends StatelessWidget {
+/// Nodo de una unidad: su dibujo, el título y el avance (lecciones o, si es
+/// un curso, pasos).
+class _UnitNode extends ConsumerWidget {
   const _UnitNode({required this.unit, required this.path});
 
   final LessonUnit unit;
   final LessonPath path;
 
   @override
-  Widget build(BuildContext context) {
+  Widget build(BuildContext context, WidgetRef ref) {
     final p = context.palette;
     final text = Theme.of(context).textTheme;
-    final lessons = lessonsOfUnit(unit);
-    final done = lessons.where(path.isDone).length;
-    final complete = done == lessons.length;
-    final isCurrent = lessons.contains(path.next);
+    final (done, total) = watchUnitProgress(ref, unit);
+    final complete = total > 0 && done == total;
+    final isCurrent = lessonsOfUnit(unit).contains(path.next);
     return Card(
       // Sin margen: la cuerda llega hasta el borde de la tarjeta.
       margin: EdgeInsets.zero,
@@ -554,7 +558,7 @@ class _UnitNode extends StatelessWidget {
                 children: [
                   const SizedBox(height: 6),
                   LinearProgressIndicator(
-                    value: done / lessons.length,
+                    value: total == 0 ? 0 : done / total,
                     color: complete ? p.success : p.accent,
                     backgroundColor: p.surfaceHigh,
                   ),
@@ -567,7 +571,7 @@ class _UnitNode extends StatelessWidget {
                         const SizedBox(width: 4),
                       ],
                       Text(
-                        AppStrings.lessonsProgress(done, lessons.length),
+                        AppStrings.lessonsProgress(done, total),
                         style: musicMono(fontSize: 12, color: p.textSecondary),
                       ),
                     ],

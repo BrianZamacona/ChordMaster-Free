@@ -55,7 +55,10 @@ class NotesArt extends UnitArt {
   final List<String> notes;
 }
 
-/// Grupo de lecciones: un nodo del mapa.
+/// Curso por niveles que ocupa un nodo del mapa en lugar de lecciones.
+enum LessonCourse { melodies, openChords, strumming }
+
+/// Grupo de lecciones, o un curso por niveles ([course]): un nodo del mapa.
 class LessonUnit {
   const LessonUnit({
     required this.id,
@@ -64,6 +67,7 @@ class LessonUnit {
     required this.summary,
     required this.art,
     this.level = 1,
+    this.course,
   });
 
   /// Identificador estable (va en la ruta `/learn/lessons/unit/:id`).
@@ -77,6 +81,9 @@ class LessonUnit {
 
   /// Nivel del camino (1 o 2). Fundamentos solo tiene nivel 1.
   final int level;
+
+  /// Si no es `null`, el nodo abre ese curso y no tiene lecciones.
+  final LessonCourse? course;
 }
 
 /// Qué mide un reto. Cada tipo lee el récord de un módulo de práctica.

@@ -50,11 +50,18 @@ class CourseOverview<S extends CourseStep> extends ConsumerWidget {
     required this.intro,
     required this.levels,
     required this.routeOf,
+    this.header = const [],
+    this.footer = const [],
   });
 
   final CourseId course;
   final String intro;
   final List<CourseLevel<S>> levels;
+
+  /// Lo que va antes de la presentación y después de los resultados (en el
+  /// mapa: el encabezado de la unidad y la que sigue).
+  final List<Widget> header;
+  final List<Widget> footer;
 
   /// Ruta del paso con ese id.
   final String Function(String stepId) routeOf;
@@ -67,6 +74,7 @@ class CourseOverview<S extends CourseStep> extends ConsumerWidget {
     return ListView(
       padding: const EdgeInsets.fromLTRB(16, 12, 16, 32),
       children: [
+        ...header,
         Text(intro, style: text.bodyMedium?.copyWith(color: p.textSecondary)),
         for (final (i, level) in levels.indexed) ...[
           const SizedBox(height: 24),
@@ -97,6 +105,7 @@ class CourseOverview<S extends CourseStep> extends ConsumerWidget {
         ],
         const SizedBox(height: 24),
         _CourseResults(progress: progress, steps: courseSteps(levels)),
+        ...footer,
       ],
     );
   }

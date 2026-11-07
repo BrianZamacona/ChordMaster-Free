@@ -3,13 +3,14 @@ import 'package:flutter_riverpod/flutter_riverpod.dart';
 
 import '../../core/constants/app_strings.dart';
 import '../../domain/courses/course.dart';
+import '../../domain/lessons/lesson.dart';
 import '../../domain/open_chords/open_chords_course.dart';
 import '../courses/chord_shape_diagrams.dart';
 import '../courses/course_progress.dart';
+import '../courses/course_registry.dart';
 import '../courses/course_widgets.dart';
 import '../courses/strum_player.dart';
 import 'open_chords_course_provider.dart';
-import 'open_chords_screen.dart';
 
 /// Un paso del curso de acordes abiertos: su texto, los diagramas (enteros o
 /// a medio armar) y, si se toca, los compases que suenan al tempo elegido.
@@ -40,7 +41,7 @@ class OpenChordStepScreen extends ConsumerWidget {
             beatsPerBar: step.beatsPerBar,
           ),
           playerNote: AppStrings.openChordsStrumNote,
-          routeOf: OpenChordsScreen.routeOf,
+          routeOf: LessonCourse.openChords.stepRoute,
         ),
         _ => Center(child: Text(AppStrings.guideNotFound)),
       },
