@@ -163,6 +163,21 @@ cada nota pertenezca a la escala. No bajar la tolerancia de 0.
 - Rutas: `/learn/lessons`, `/learn/lessons/unit/:unitId` y `/learn/lessons/:id`. Logro
   `foundations_done`.
 
+## Guías y capo
+- Guías (`lib/domain/guides/guides.dart`, rutas `/learn/guides` y `/learn/guides/:id`): recorridos
+  por tema agrupados en filas (`GuideCategory`). No traen trastes propios: cada capítulo enlaza
+  algo que ya existe (`LessonLink`, `ScaleLink`, `ChordLink`, `ModuleLink`) y un test exige que
+  exista. Lo que afirma un capítulo se verifica en `test/domain/guides/guides_test.dart`.
+- Inspiradas en un catálogo de guías tipo "Guides", pero sin artistas reales, sin fotos y sin
+  contenido de terceros: géneros genéricos (blues, rock, folk/pop) y técnica.
+- Buscador: `searchGuides` busca todas las palabras, sin tildes ni mayúsculas, en título,
+  subtítulo y títulos de capítulo del idioma actual; las filas vacías se ocultan.
+- Las filas se deslizan de lado; las tarjetas miden 148 dp para que a 360 dp asome la tercera.
+- "¿Qué capo uso?" (`lib/domain/theory/capo.dart`, ruta `/learn/capo`): por regla, el traste del
+  capo para cada forma abierta (C A G E D; Am Em Dm en menor), hasta el traste 7, con su
+  I – IV – V. Las cinco formas mayores cubren cualquier tonalidad sin pasar del 7 (hay test).
+  Cubre la parte "¿qué capo uso?" de la fase 3 del círculo; falta girar una progresión.
+
 ## Ícono y nombre
 - El ícono se genera desde código: `flutter test tool/app_icon/render_app_icon_test.dart`
   (diagrama de C abierto con la paleta oscura; escribe Android clásico + capa adaptable,
@@ -310,8 +325,8 @@ Objetivo: código legible y mantenible antes que ingenioso. Capas (puertos y ada
      nombrados con sostenidos según la regla.
    - Modos ordenados por brillo (lidio → locrio) como recorrido del círculo.
 7. Círculo de quintas, fase 3:
-   - Capo y transposición: girar una progresión a otra tonalidad y "¿qué capo uso?": para una
-     tonalidad, el traste de capo y la forma abierta (C, A, G, E o D) que la dan.
+   - Transposición: girar una progresión a otra tonalidad ("¿qué capo uso?" ya está en
+     `/learn/capo`).
    - Juego/quiz: "¿cuál es el V de E?", "¿cuántos ♯ tiene A?", "¿qué acorde falta en la ventana?",
      con récord en `userProgress` y un logro nuevo que se pueda conseguir.
    - Unidad "Círculo de quintas" en Lecciones (según las reglas de esa sección), con un reto que

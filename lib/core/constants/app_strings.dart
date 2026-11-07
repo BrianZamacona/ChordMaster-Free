@@ -240,6 +240,69 @@ class AppStrings {
       tr(es: '$name en el mástil', en: '$name on the neck');
   static String get circleBuildPrevious => tr(es: 'Anterior', en: 'Previous');
   static String get circleBuildNext => tr(es: 'Siguiente', en: 'Next');
+  static String get hubGuides => tr(es: 'Guías', en: 'Guides');
+  static String get hubGuidesSub => tr(
+    es: 'Recorridos por tema: géneros, técnica, escalas y teoría.',
+    en: 'Topic tours: genres, technique, scales and theory.',
+  );
+  static String get hubCapo => tr(es: '¿Qué capo uso?', en: 'Which capo?');
+  static String get hubCapoSub => tr(
+    es: 'El traste y la forma abierta para cualquier tonalidad.',
+    en: 'The fret and open shape for any key.',
+  );
+  static String get guidesTitle => tr(es: 'Guías', en: 'Guides');
+  static String get guidesIntro => tr(
+    es: 'Cada guía junta lecciones, escalas y módulos sobre un tema. Toca una '
+        'para ver sus capítulos.',
+    en: 'Each guide brings together lessons, scales and modules on one topic. '
+        'Tap one to see its chapters.',
+  );
+  static String get guidesSearch =>
+      tr(es: 'Buscar guías…', en: 'Search guides…');
+  static String get guidesNoResults => tr(
+    es: 'Ninguna guía coincide con tu búsqueda.',
+    en: 'No guide matches your search.',
+  );
+  static String get guideNotFound =>
+      tr(es: 'No encontramos esta guía.', en: 'We could not find this guide.');
+  static String guideChapters(int count) => tr(
+    es: count == 1 ? '1 capítulo' : '$count capítulos',
+    en: count == 1 ? '1 chapter' : '$count chapters',
+  );
+  static String guideOpenLesson(String title) =>
+      tr(es: 'Lección: $title', en: 'Lesson: $title');
+  static String guideOpenChord(String chord) =>
+      tr(es: 'Ver el acorde $chord', en: 'See the $chord chord');
+  static String get guideOpenCapo =>
+      tr(es: 'Calcular el capo', en: 'Find the capo fret');
+  static String guideOpenModuleNamed(String name) =>
+      tr(es: 'Abrir $name', en: 'Open $name');
+  static String get capoTitle => tr(es: '¿Qué capo uso?', en: 'Which capo?');
+  static String get capoIntro => tr(
+    es: 'Elige la tonalidad que quieres que suene. Cada forma abierta te dice '
+        'en qué traste va el capo y qué tocas con la mano.',
+    en: 'Pick the key you want to hear. Each open shape tells you which fret '
+        'the capo goes on and what your hand plays.',
+  );
+  static String get capoKey => tr(es: 'Tonalidad', en: 'Key');
+  static String get capoMajor => tr(es: 'Mayor', en: 'Major');
+  static String get capoMinor => tr(es: 'Menor', en: 'Minor');
+  static String capoResults(String key) =>
+      tr(es: 'Para que suene en $key', en: 'To sound in $key');
+  static String capoNone(String shape) =>
+      tr(es: 'Sin capo · forma de $shape', en: 'No capo · $shape shape');
+  static String capoAt(int fret, String shape) => tr(
+    es: 'Capo en el traste $fret · forma de $shape',
+    en: 'Capo on fret $fret · $shape shape',
+  );
+  static String capoSounds(String chord) =>
+      tr(es: 'suena $chord', en: 'sounds $chord');
+  static String get capoRule => tr(
+    es: 'El capo sube cada cuerda un semitono por traste. Solo se muestran '
+        'capos hasta el traste 7: más arriba los trastes quedan muy juntos.',
+    en: 'A capo raises every string a half step per fret. Only capos up to fret '
+        '7 are shown: higher up the frets get too close together.',
+  );
   static String get hubEar => tr(es: 'Oído', en: 'Ear');
   static String get hubEarSub => tr(
     es: 'Reconoce intervalos y acordes de oído.',

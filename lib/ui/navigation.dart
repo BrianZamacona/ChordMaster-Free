@@ -3,6 +3,7 @@ import 'package:go_router/go_router.dart';
 import '../core/widgets/app_scaffold.dart';
 import '../data/models/scale_definition.dart';
 import '../features/achievements/achievements_screen.dart';
+import '../features/capo/capo_screen.dart';
 import '../features/chords/chord_compare_screen.dart';
 import '../features/chords/chord_detail_screen.dart';
 import '../features/chords/chord_explorer_screen.dart';
@@ -10,6 +11,8 @@ import '../features/chords/chord_library_screen.dart';
 import '../features/circle/circle_build_screen.dart';
 import '../features/circle/circle_screen.dart';
 import '../features/ear_training/ear_training_screen.dart';
+import '../features/guides/guide_detail_screen.dart';
+import '../features/guides/guides_screen.dart';
 import '../features/health/health_screen.dart';
 import '../features/home/home_screen.dart';
 import '../features/hubs/hubs.dart';
@@ -110,6 +113,22 @@ final GoRouter appRouter = GoRouter(
                       ),
                     ),
                   ],
+                ),
+                GoRoute(
+                  path: 'guides',
+                  builder: (_, _) => const GuidesScreen(),
+                  routes: [
+                    GoRoute(
+                      path: ':guideId',
+                      builder: (_, state) => GuideDetailScreen(
+                        guideId: state.pathParameters['guideId']!,
+                      ),
+                    ),
+                  ],
+                ),
+                GoRoute(
+                  path: 'capo',
+                  builder: (_, _) => const CapoScreen(),
                 ),
                 GoRoute(
                   path: 'circle',

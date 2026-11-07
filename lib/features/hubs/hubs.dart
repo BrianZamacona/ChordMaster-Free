@@ -20,6 +20,12 @@ class LearnHubScreen extends StatelessWidget {
             route: '/learn/lessons',
           ),
           HubEntry(
+            icon: Icons.auto_stories_outlined,
+            title: AppStrings.hubGuides,
+            subtitle: AppStrings.hubGuidesSub,
+            route: '/learn/guides',
+          ),
+          HubEntry(
             icon: Icons.library_music_outlined,
             title: AppStrings.hubChords,
             subtitle: AppStrings.hubChordsSub,
@@ -42,6 +48,12 @@ class LearnHubScreen extends StatelessWidget {
             title: AppStrings.circleTitle,
             subtitle: AppStrings.hubCircleSub,
             route: '/learn/circle',
+          ),
+          HubEntry(
+            icon: Icons.vertical_align_top,
+            title: AppStrings.hubCapo,
+            subtitle: AppStrings.hubCapoSub,
+            route: '/learn/capo',
           ),
         ],
       );
