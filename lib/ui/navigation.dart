@@ -25,6 +25,7 @@ import '../features/rhythm_games/rhythm_game_screen.dart';
 import '../features/songs/song_detail_screen.dart';
 import '../features/songs/songs_screen.dart';
 import '../features/tuner/tuner_screen.dart';
+import '../features/workouts/workouts_screen.dart';
 import 'scales/detail/scale_detail_screen.dart';
 import 'scales/double_stops/double_stops_screen.dart';
 import 'scales/scales_screen.dart';
@@ -204,6 +205,13 @@ final GoRouter appRouter = GoRouter(
                 GoRoute(
                   path: 'ear-training',
                   builder: (_, _) => const EarTrainingScreen(),
+                ),
+                GoRoute(
+                  path: 'workouts',
+                  builder: (_, state) => WorkoutsScreen(
+                    scaleId: state.uri.queryParameters['scale'] ?? 'major',
+                    root: int.tryParse(state.uri.queryParameters['root'] ?? '') ?? 0,
+                  ),
                 ),
                 GoRoute(
                   path: 'rhythm',

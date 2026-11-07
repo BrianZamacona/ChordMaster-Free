@@ -31,6 +31,7 @@ String guideTargetLabel(GuideTarget target) => switch (target) {
   ),
   ScaleLink() => AppStrings.lessonOpenScale,
   ChordLink(:final chord) => AppStrings.guideOpenChord(chord),
+  WorkoutLink() => AppStrings.hubWorkouts,
   ModuleLink(:final module) => AppStrings.guideOpenModuleNamed(_moduleName(module)),
 };
 
@@ -53,6 +54,7 @@ IconData guideTargetIcon(GuideTarget target) => switch (target) {
   LessonLink() => Icons.school_outlined,
   ScaleLink() => Icons.linear_scale,
   ChordLink() => Icons.library_music_outlined,
+  WorkoutLink() => Icons.fitness_center,
   ModuleLink() => Icons.open_in_new,
 };
 
@@ -80,6 +82,10 @@ Future<void> openGuideTarget(
       await context.push(
         '/learn/scales/${definition.id}?root=${scale.root}',
         extra: definition,
+      );
+    case WorkoutLink(:final scale):
+      context.go(
+        '/practice/workouts?scale=${scale.scaleId}&root=${scale.root}',
       );
     case ModuleLink(:final module):
       final (route, stacked) = moduleRoute(module);

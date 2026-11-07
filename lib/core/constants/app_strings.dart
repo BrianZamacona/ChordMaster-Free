@@ -301,6 +301,44 @@ class AppStrings {
     en: 'A capo raises every string a half step per fret. Only capos up to fret '
         '7 are shown: higher up the frets get too close together.',
   );
+  static String get hubWorkouts =>
+      tr(es: 'Rutinas de escala', en: 'Scale workouts');
+  static String get hubWorkoutsSub => tr(
+    es: 'Ejercicios por nivel en cualquier escala y tónica, para escuchar y tocar.',
+    en: 'Exercises by level in any scale and key, to hear and play.',
+  );
+  static String get workoutsTitle =>
+      tr(es: 'Rutinas de escala', en: 'Scale workouts');
+  static String get workoutsIntro => tr(
+    es: 'Cada rutina sale de una posición real de la escala. Escúchala, sigue la '
+        'nota marcada y luego tócala tú al mismo tempo.',
+    en: 'Each workout comes from a real scale position. Listen to it, follow the '
+        'highlighted note, then play it yourself at the same tempo.',
+  );
+  static String get workoutsScale => tr(es: 'Escala', en: 'Scale');
+  static String get workoutsPrevious =>
+      tr(es: 'Posición anterior', en: 'Previous position');
+  static String get workoutsNext =>
+      tr(es: 'Posición siguiente', en: 'Next position');
+  static String workoutsPosition(
+    String position,
+    String system,
+    int start,
+    int end,
+  ) => tr(
+    es: '$position · $system · trastes $start–$end',
+    en: '$position · $system · frets $start–$end',
+  );
+  static String workoutsPositionCount(int index, int total) =>
+      tr(es: '$index de $total, de grave a aguda', en: '$index of $total, low to high');
+  static String workoutsNoteCount(int count) =>
+      tr(es: '$count notas', en: '$count notes');
+  static String get tabListen => tr(es: 'Escuchar', en: 'Listen');
+  static String get tabStop => tr(es: 'Detener', en: 'Stop');
+  static String tabAtBpm(int bpm) =>
+      tr(es: 'a $bpm BPM, en corcheas', en: 'at $bpm BPM, in eighth notes');
+  static String guideOpenWorkout(String scale) =>
+      tr(es: 'Rutinas de $scale', en: '$scale workouts');
   static String get hubEar => tr(es: 'Oído', en: 'Ear');
   static String get hubEarSub => tr(
     es: 'Reconoce intervalos y acordes de oído.',

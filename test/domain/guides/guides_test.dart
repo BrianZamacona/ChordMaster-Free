@@ -66,6 +66,9 @@ void main() {
             case ScaleLink(:final scale):
               expect(scales.keys, contains(scale.scaleId), reason: g.id);
               expect(scale.root, inInclusiveRange(0, 11), reason: g.id);
+            case WorkoutLink(:final scale):
+              expect(scales.keys, contains(scale.scaleId), reason: g.id);
+              expect(scale.root, inInclusiveRange(0, 11), reason: g.id);
             case ModuleLink():
               break;
           }
