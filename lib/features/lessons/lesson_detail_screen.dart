@@ -10,9 +10,9 @@ import '../../domain/lessons/lesson.dart';
 import '../../ui/theme.dart';
 import '../chords/chord_viewmodel.dart';
 import '../metronome/metronome_viewmodel.dart';
-import 'lesson_tab.dart';
 import 'lesson_widgets.dart';
 import 'lessons_viewmodel.dart';
+import 'tab_player.dart';
 
 /// Una lección: explicación, pasos, acordes, rasgueo y accesos a la escala o
 /// a la herramienta que usa.
@@ -88,7 +88,7 @@ class LessonDetailScreen extends ConsumerWidget {
             const SizedBox(height: 12),
             _Section(
               title: AppStrings.lessonTab,
-              child: LessonTabView(notes: lesson.tab),
+              child: TabPlayer(notes: lesson.tab, bpm: lesson.bpm ?? 70),
             ),
           ],
           if (lesson.chords.isNotEmpty) ...[
