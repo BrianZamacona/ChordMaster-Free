@@ -11,6 +11,7 @@ import 'package:chordmaster_free/domain/melodies/melody_course.dart';
 import 'package:chordmaster_free/domain/open_chords/chord_shape.dart';
 import 'package:chordmaster_free/domain/open_chords/open_chords_course.dart';
 import 'package:chordmaster_free/domain/practice/technique_exercises.dart';
+import 'package:chordmaster_free/domain/strumming/strum_pattern.dart';
 import 'package:chordmaster_free/domain/strumming/strumming_course.dart';
 import 'package:chordmaster_free/domain/theory/notes.dart';
 import 'package:flutter_test/flutter_test.dart';
@@ -222,7 +223,7 @@ void main() {
 
     test('4/4: cuatro negras o, en corcheas, ocho golpes por compás', () {
       expect(strummingPatterns.first.replaceAll(' ', ''), 'DDDD');
-      expect(lessonsById['r1_eighths']!.strumPattern?.length ?? 8, 8);
+      expect(strummingPatterns[1], 'DUDUDUDU');
     });
 
     test('los capítulos que enlazan un curso dicen lo que hace el paso', () {
@@ -230,6 +231,10 @@ void main() {
       expect(basicsStepsById['b_meet']!.body.es, contains('E, A, D, G, B y E'));
       // «Negras: un golpe por pulso» → Patrón 1, con un acorde.
       expect(strummingPatterns.first, 'D D D D ');
+      // «Corcheas: abajo en los números, arriba en las y» → Patrón 2.
+      expect(followsPendulum(strummingPatterns[1]), isTrue);
+      // «El rasgueo pop: huecos donde la mano pasa sin tocar» → Patrón 4.
+      expect(strummingPatterns[3], contains(' '));
     });
   });
 

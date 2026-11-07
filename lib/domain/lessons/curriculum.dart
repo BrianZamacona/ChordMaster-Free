@@ -94,120 +94,6 @@ const List<Lesson> curriculum = [
     chords: ['D', 'A', 'E'],
   ),
   Lesson(
-    id: 'r1_eighths',
-    unit: _strumming,
-    title: LocalizedText(es: 'Corcheas: abajo y arriba', en: 'Eighth notes: down and up'),
-    body: LocalizedText(
-      es: 'La mano que rasguea nunca se detiene: abajo en cada número y arriba '
-          'en cada "y". Así el ritmo queda parejo.',
-      en: 'Your strumming hand never stops: down on every number and up on '
-          'every "and". That keeps the rhythm even.',
-    ),
-    steps: [
-      LocalizedText(es: 'Cuenta "1 y 2 y 3 y 4 y".', en: 'Count "1 and 2 and 3 and 4 and".'),
-      LocalizedText(
-        es: 'Abajo en los números, arriba en las "y".',
-        en: 'Down on the numbers, up on the "ands".',
-      ),
-      LocalizedText(
-        es: 'Empieza a 70 BPM y sube de 5 en 5.',
-        en: 'Start at 70 BPM and go up 5 at a time.',
-      ),
-    ],
-    minutes: 6,
-    chords: ['Em'],
-    strumPattern: 'DUDUDUDU',
-    tool: LessonTool.metronome,
-    bpm: 70,
-  ),
-  Lesson(
-    id: 'r2_pop_strum',
-    unit: _strumming,
-    title: LocalizedText(es: 'El rasgueo pop', en: 'The pop strum'),
-    body: LocalizedText(
-      es: 'Abajo, abajo-arriba, arriba-abajo-arriba. En los huecos la mano '
-          'sigue moviéndose, solo que sin tocar las cuerdas.',
-      en: 'Down, down-up, up-down-up. In the gaps your hand keeps moving, it '
-          'just does not touch the strings.',
-    ),
-    steps: [
-      LocalizedText(
-        es: 'Tócalo en C sin cambiar de acorde.',
-        en: 'Play it on C without changing chords.',
-      ),
-      LocalizedText(
-        es: 'Cuenta en voz alta para no perder el lugar de los huecos.',
-        en: 'Count out loud so you do not lose track of the gaps.',
-      ),
-      LocalizedText(
-        es: 'Cuando salga solo, súbele al metrónomo.',
-        en: 'Once it comes easily, speed up the metronome.',
-      ),
-    ],
-    minutes: 8,
-    chords: ['C'],
-    strumPattern: 'D DU UDU',
-    tool: LessonTool.metronome,
-    bpm: 80,
-  ),
-  Lesson(
-    id: 'r3_g_d_em_c',
-    unit: _strumming,
-    title: LocalizedText(es: 'G – D – Em – C', en: 'G – D – Em – C'),
-    body: LocalizedText(
-      es: 'Una de las progresiones más usadas en el pop. Toca un compás del '
-          'rasgueo pop por acorde.',
-      en: 'One of the most used progressions in pop. Play one bar of the pop '
-          'strum per chord.',
-    ),
-    steps: [
-      LocalizedText(
-        es: 'Practica primero el cambio D → Em, que es el más difícil.',
-        en: 'Practice the D → Em change first; it is the hardest one.',
-      ),
-      LocalizedText(
-        es: 'Toca la progresión rasgueando solo hacia abajo.',
-        en: 'Play the progression with downstrums only.',
-      ),
-      LocalizedText(es: 'Agrega el rasgueo pop.', en: 'Add the pop strum.'),
-    ],
-    minutes: 10,
-    chords: ['G', 'D', 'Em', 'C'],
-    strumPattern: 'D DU UDU',
-    tool: LessonTool.metronome,
-    bpm: 80,
-  ),
-  Lesson(
-    id: 'r4_three_four',
-    unit: _strumming,
-    title: LocalizedText(es: 'Ritmo en 3/4', en: 'Playing in 3/4'),
-    body: LocalizedText(
-      es: 'Tres pulsos por compás en lugar de cuatro: el compás del vals y de '
-          'muchas baladas.',
-      en: 'Three beats per bar instead of four: the time signature of the '
-          'waltz and of many ballads.',
-    ),
-    steps: [
-      LocalizedText(
-        es: 'Pon el metrónomo en 3/4: el acento marca el inicio de cada compás.',
-        en: 'Set the metronome to 3/4: the accent marks the start of each bar.',
-      ),
-      LocalizedText(
-        es: 'Rasguea el 1 con más fuerza que el 2 y el 3.',
-        en: 'Strum beat 1 harder than beats 2 and 3.',
-      ),
-      LocalizedText(
-        es: 'Toca C, G y Am, un compás cada uno.',
-        en: 'Play C, G and Am, one bar each.',
-      ),
-    ],
-    minutes: 8,
-    chords: ['C', 'G', 'Am'],
-    strumPattern: 'D DUDU',
-    tool: LessonTool.metronome,
-    bpm: 90,
-  ),
-  Lesson(
     id: 'r5_barre',
     unit: _beyondOpen,
     title: LocalizedText(es: 'Tu primera cejilla: F y Bm', en: 'Your first barre: F and Bm'),
@@ -462,6 +348,36 @@ const List<Lesson> curriculum = [
     minutes: 10,
     chords: ['Cmaj7', 'Am7', 'Fmaj7'],
     tool: LessonTool.progressions,
+  ),
+  Lesson(
+    id: 'r4_three_four',
+    unit: _strumming2,
+    title: LocalizedText(es: 'Ritmo en 3/4', en: 'Playing in 3/4'),
+    body: LocalizedText(
+      es: 'Tres pulsos por compás en lugar de cuatro: el compás del vals y de '
+          'muchas baladas.',
+      en: 'Three beats per bar instead of four: the time signature of the '
+          'waltz and of many ballads.',
+    ),
+    steps: [
+      LocalizedText(
+        es: 'Pon el metrónomo en 3/4: el acento marca el inicio de cada compás.',
+        en: 'Set the metronome to 3/4: the accent marks the start of each bar.',
+      ),
+      LocalizedText(
+        es: 'Rasguea el 1 con más fuerza que el 2 y el 3.',
+        en: 'Strum beat 1 harder than beats 2 and 3.',
+      ),
+      LocalizedText(
+        es: 'Toca C, G y Am, un compás cada uno.',
+        en: 'Play C, G and Am, one bar each.',
+      ),
+    ],
+    minutes: 8,
+    chords: ['C', 'G', 'Am'],
+    strumPattern: 'D DUDU',
+    tool: LessonTool.metronome,
+    bpm: 90,
   ),
   Lesson(
     id: 'r14_six_eight',
@@ -1078,17 +994,6 @@ const List<Lesson> curriculum = [
   ),
 ];
 
-const _strumming = LessonUnit(
-  id: 'r_strumming',
-  track: LessonTrack.rhythm,
-  title: LocalizedText(es: 'Rasgueo', en: 'Strumming'),
-  summary: LocalizedText(
-    es: 'Corcheas, el rasgueo pop y el compás de 3/4.',
-    en: 'Eighth notes, the pop strum and 3/4 time.',
-  ),
-
-  art: StrumArt('D DU UDU'),
-);
 const _beyondOpen = LessonUnit(
   id: 'r_beyond_open',
   track: LessonTrack.rhythm,
@@ -1162,8 +1067,8 @@ const _strumming2 = LessonUnit(
   level: 2,
   title: LocalizedText(es: 'Rasgueo 2', en: 'Strumming 2'),
   summary: LocalizedText(
-    es: 'El compás de 6/8 y el acento que hace sonar la guitarra con la banda.',
-    en: '6/8 time and the accent that locks the guitar in with the band.',
+    es: 'Los compases de 3/4 y 6/8 y el acento que hace sonar la guitarra con la banda.',
+    en: '3/4 and 6/8 time and the accent that locks the guitar in with the band.',
   ),
   art: StrumArt('DUUDUU'),
 );
@@ -1279,7 +1184,6 @@ const List<LessonUnit> lessonUnits = [
   _openChordsCourse,
   _strummingCourse,
   _moreOpenChords,
-  _strumming,
   _beyondOpen,
   _fingerstyle,
   _openChords2,

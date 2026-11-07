@@ -200,7 +200,7 @@ const List<Guide> guides = [
           es: 'Practica aparte el cambio que más cuesta antes de tocar la vuelta.',
           en: 'Practice the toughest change on its own before playing the loop.',
         ),
-        target: LessonLink('r3_g_d_em_c'),
+        target: CourseLink(LessonCourse.openChords, 'oc_final_round'),
       ),
       GuideChapter(
         title: LocalizedText(es: 'Las digitaciones más cómodas', en: 'The most comfortable fingerings'),
@@ -268,7 +268,7 @@ const List<Guide> guides = [
           es: 'La mano nunca se detiene: abajo en los números, arriba en las "y".',
           en: 'The hand never stops: down on the numbers, up on the "ands".',
         ),
-        target: LessonLink('r1_eighths'),
+        target: CourseLink(LessonCourse.strumming, 'sp2_learn'),
       ),
       GuideChapter(
         title: LocalizedText(es: 'El rasgueo pop', en: 'The pop strum'),
@@ -276,7 +276,7 @@ const List<Guide> guides = [
           es: 'Huecos donde la mano pasa sin tocar.',
           en: 'Gaps where the hand passes without touching.',
         ),
-        target: LessonLink('r2_pop_strum'),
+        target: CourseLink(LessonCourse.strumming, 'sp4_learn'),
       ),
       GuideChapter(
         title: LocalizedText(es: 'Apagado con la palma', en: 'Palm muting'),
@@ -648,7 +648,7 @@ const List<Guide> guides = [
           es: 'G – D – Em – C con el rasgueo pop.',
           en: 'G – D – Em – C with the pop strum.',
         ),
-        target: LessonLink('r3_g_d_em_c'),
+        target: CourseLink(LessonCourse.strumming, 'sp4_four'),
       ),
       GuideChapter(
         title: LocalizedText(es: 'Con los dedos', en: 'Fingerpicking'),
@@ -774,7 +774,7 @@ const List<Guide> guides = [
           es: 'Dos golpes por pulso: ocho por compás en 4/4.',
           en: 'Two strokes per beat: eight per bar in 4/4.',
         ),
-        target: LessonLink('r1_eighths'),
+        target: CourseLink(LessonCourse.strumming, 'sp2_learn'),
       ),
       GuideChapter(
         title: LocalizedText(es: '3/4', en: '3/4'),
