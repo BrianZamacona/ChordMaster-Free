@@ -113,6 +113,12 @@ void main() {
 
     testWidgets('el capítulo del capo abre la calculadora', (tester) async {
       await open(tester, '/learn/guides/capo');
+      // El nombre del módulo es una pregunta: el botón no lo repite.
+      expect(find.text(AppStrings.guideOpenCapo), findsWidgets);
+      expect(
+        find.textContaining(AppStrings.guideOpenModuleNamed(AppStrings.hubCapo)),
+        findsNothing,
+      );
       await tester.tap(find.byKey(const Key('guide-open-0')));
       await settle(tester);
       expect(find.byType(CapoScreen), findsOneWidget);

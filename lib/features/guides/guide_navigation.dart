@@ -32,6 +32,8 @@ String guideTargetLabel(GuideTarget target) => switch (target) {
   ScaleLink() => AppStrings.lessonOpenScale,
   ChordLink(:final chord) => AppStrings.guideOpenChord(chord),
   WorkoutLink() => AppStrings.hubWorkouts,
+  // El nombre del capo es una pregunta: "Abrir ¿Qué capo uso?" no se lee.
+  ModuleLink(module: GuideModule.capo) => AppStrings.guideOpenCapo,
   ModuleLink(:final module) => AppStrings.guideOpenModuleNamed(_moduleName(module)),
 };
 
