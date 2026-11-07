@@ -20,6 +20,12 @@ class LearnHubScreen extends StatelessWidget {
             route: '/learn/lessons',
           ),
           HubEntry(
+            icon: Icons.auto_stories_outlined,
+            title: AppStrings.hubGuides,
+            subtitle: AppStrings.hubGuidesSub,
+            route: '/learn/guides',
+          ),
+          HubEntry(
             icon: Icons.library_music_outlined,
             title: AppStrings.hubChords,
             subtitle: AppStrings.hubChordsSub,
@@ -43,6 +49,12 @@ class LearnHubScreen extends StatelessWidget {
             subtitle: AppStrings.hubCircleSub,
             route: '/learn/circle',
           ),
+          HubEntry(
+            icon: Icons.vertical_align_top,
+            title: AppStrings.hubCapo,
+            subtitle: AppStrings.hubCapoSub,
+            route: '/learn/capo',
+          ),
         ],
       );
 }
@@ -60,6 +72,12 @@ class PracticeHubScreen extends StatelessWidget {
             title: AppStrings.hubEar,
             subtitle: AppStrings.hubEarSub,
             route: '/practice/ear-training',
+          ),
+          HubEntry(
+            icon: Icons.fitness_center,
+            title: AppStrings.hubWorkouts,
+            subtitle: AppStrings.hubWorkoutsSub,
+            route: '/practice/workouts',
           ),
           HubEntry(
             icon: Icons.av_timer,

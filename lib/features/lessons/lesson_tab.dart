@@ -20,9 +20,12 @@ List<String> get tabStringNames => [
 /// Tablatura de una lección: seis líneas (la 1ª cuerda arriba) y el traste de
 /// cada nota, de izquierda a derecha, en renglones de [tabNotesPerLine].
 class LessonTabView extends StatelessWidget {
-  const LessonTabView({super.key, required this.notes});
+  const LessonTabView({super.key, required this.notes, this.highlight});
 
   final List<TabNote> notes;
+
+  /// Nota que está sonando (índice en [notes]); va resaltada.
+  final int? highlight;
 
   @override
   Widget build(BuildContext context) {
@@ -49,7 +52,13 @@ class LessonTabView extends StatelessWidget {
                   height: _TabPainter.height,
                   width: double.infinity,
                   child: CustomPaint(
-                    painter: _TabPainter(notes: line, palette: p),
+                    painter: _TabPainter(
+                      notes: line,
+                      palette: p,
+                      highlight: highlight == null
+                          ? null
+                          : highlight! - i * tabNotesPerLine,
+                    ),
                   ),
                 ),
               ],
@@ -70,7 +79,11 @@ class LessonTabView extends StatelessWidget {
 }
 
 class _TabPainter extends CustomPainter {
-  const _TabPainter({required this.notes, required this.palette});
+  const _TabPainter({
+    required this.notes,
+    required this.palette,
+    this.highlight,
+  });
 
   static const lineGap = 14.0;
   static const top = 8.0;
@@ -79,6 +92,9 @@ class _TabPainter extends CustomPainter {
 
   final List<TabNote> notes;
   final AppPalette palette;
+
+  /// Índice dentro de este renglón de la nota que suena.
+  final int? highlight;
 
   double _y(int string) => top + (string - 1) * lineGap;
 
@@ -101,11 +117,28 @@ class _TabPainter extends CustomPainter {
     for (final (i, n) in notes.indexed) {
       final center = Offset(_x(i, size.width), _y(n.string));
       // Un hueco en la línea para que el número se lea.
-      canvas.drawRect(
-        Rect.fromCenter(center: center, width: 18, height: 13),
-        Paint()..color = palette.surface,
+      final playing = i == highlight;
+      // Un hueco en la línea para que el número se lea; la nota que suena va
+      // sobre el acento, y además más grande (no solo por color).
+      canvas.drawRRect(
+        RRect.fromRectAndRadius(
+          Rect.fromCenter(
+            center: center,
+            width: playing ? 22 : 18,
+            height: playing ? 17 : 13,
+          ),
+          const Radius.circular(4),
+        ),
+        Paint()..color = playing ? palette.accent : palette.surface,
       );
-      _text(canvas, '${n.fret}', center, palette.textPrimary, 13, bold: true);
+      _text(
+        canvas,
+        '${n.fret}',
+        center,
+        playing ? palette.onAccent : palette.textPrimary,
+        playing ? 15 : 13,
+        bold: true,
+      );
     }
   }
 
@@ -133,5 +166,7 @@ class _TabPainter extends CustomPainter {
 
   @override
   bool shouldRepaint(_TabPainter old) =>
-      !identical(old.notes, notes) || old.palette != palette;
+      !identical(old.notes, notes) ||
+      old.palette != palette ||
+      old.highlight != highlight;
 }
