@@ -136,6 +136,10 @@ cada nota pertenezca a la escala. No bajar la tolerancia de 0.
   una lección, escuchar una rutina, guardar un tempo limpio en Técnica, responder en Oído o
   terminar una ronda de Ritmo con puntaje. "Semana constante" pide 7 días seguidos de cualquier
   práctica; los demás, N días de los últimos 7. Hay test de que todos se pueden superar.
+- Práctica de hoy (Inicio, `lib/domain/practice/daily_plan.dart`): la siguiente lección del
+  camino, una rutina (escala que rota por día entre `dailyWorkoutScales`) y un ejercicio de
+  Técnica (rota por día). Cada paso se marca solo cuando `ActivityLog` anota su actividad hoy.
+  Sin azar: `dayNumber` cuenta días de calendario, así que la hora no cambia el plan.
 - Logros: todos deben poder conseguirse (test en `achievement_service_test.dart`). Comunidad
   se eliminó (no tenía ruta y solo guardaba en el teléfono).
 
@@ -374,8 +378,7 @@ Objetivo: código legible y mantenible antes que ingenioso. Capas (puertos y ada
 1. Revisión en un dispositivo físico: rediseño completo, versión bilingüe, "Mi progresión",
    tarjetas "¿Por qué?", notificaciones, audio y afinador con una nota real. Lecciones: reto
    superado y letra grande.
-2. Inicio: el reto del día se lee mal en tema claro y su tarjeta usa `Colors.white24`.
-   Lecciones: números de dedo casi ilegibles a 64 dp, diagramas unos 2 dp descentrados y el reto
+2. Lecciones: números de dedo casi ilegibles a 64 dp, diagramas unos 2 dp descentrados y el reto
    en inglés dice "in Ear" en vez de "Ear Training".
 3. Sandbox TS: corregir la 7ª diatónica del grado VII (allí sigue como disminuida; aquí se
    corrigió a 7ª menor y se regeneraron solo esas filas del golden, 2005 → 1983).
