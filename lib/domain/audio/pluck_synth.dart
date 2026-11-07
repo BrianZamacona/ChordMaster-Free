@@ -65,14 +65,23 @@ Float64List pluck(double hz, double seconds, {int seed = 1, double decay = 0.996
 }
 
 /// Mezcla de cuerdas pulsadas: cada evento suena desde su instante hasta el
-/// final de [seconds]. Normalizada a un pico de 0.9.
-Float64List renderNotes(List<NoteEvent> events, {double seconds = 2.5}) {
+/// final de [seconds] o, con [ring], solo esos segundos (en una frase la nota
+/// siguiente apaga la anterior, y así el costo no crece con el cuadrado).
+/// Normalizada a un pico de 0.9.
+Float64List renderNotes(
+  List<NoteEvent> events, {
+  double seconds = 2.5,
+  double? ring,
+}) {
   final total = (seconds * synthSampleRate).round();
   final mix = Float64List(total);
+  final ringSamples = ring == null ? null : (ring * synthSampleRate).round();
   for (final (i, e) in events.indexed) {
     final start = (e.at * synthSampleRate).round();
     if (start >= total) continue;
-    final note = pluck(midiToHz(e.midi), (total - start) / synthSampleRate, seed: i + 1);
+    var length = total - start;
+    if (ringSamples != null && ringSamples < length) length = ringSamples;
+    final note = pluck(midiToHz(e.midi), length / synthSampleRate, seed: i + 1);
     for (var t = 0; t < note.length && start + t < total; t++) {
       mix[start + t] += note[t];
     }
