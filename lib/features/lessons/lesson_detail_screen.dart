@@ -31,7 +31,7 @@ class LessonDetailScreen extends ConsumerWidget {
       );
     }
     final done = ref.watch(
-      lessonsViewModelProvider.select((s) => s.path.completed.contains(lesson.id)),
+      lessonsViewModelProvider.select((s) => s.completed.contains(lesson.id)),
     );
     final p = context.palette;
     final text = Theme.of(context).textTheme;

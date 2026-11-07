@@ -3,33 +3,35 @@ import 'dart:async';
 import 'package:flutter/foundation.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 
+import '../../domain/lessons/curriculum.dart';
 import '../../domain/lessons/lesson.dart';
 import '../../domain/lessons/lesson_path.dart';
 import '../../domain/practice/multi_day_challenges.dart';
 import '../../services/achievement_service.dart';
 import '../../services/activity_log.dart';
 import '../../services/key_value_store.dart';
+import '../courses/course_registry.dart';
 
-/// Estado de la pantalla de lecciones.
+/// Lecciones terminadas y camino elegido. El camino completo (con los cursos)
+/// lo arma [learningPathProvider].
 class LessonsState {
   LessonsState({
     Set<String> completed = const {},
     this.chosen = LessonTrack.rhythm,
     this.hasChosen = false,
     this.isLoading = true,
-  }) : path = LessonPath(completed: completed, chosen: chosen);
+  }) : completed = {
+          for (final id in completed)
+            if (lessonsById.containsKey(id)) id,
+        };
 
-  final LessonPath path;
+  /// Ids terminados que siguen existiendo en el currículo.
+  final Set<String> completed;
   final LessonTrack chosen;
 
   /// Si el usuario tocó un camino; si no, [chosen] es solo el de por defecto.
   final bool hasChosen;
   final bool isLoading;
-
-  /// Camino que el mapa resalta: ninguno hasta que toque decidir, es decir,
-  /// hasta terminar Fundamentos o elegir uno antes.
-  LessonTrack? get highlightedTrack =>
-      path.foundationsDone || hasChosen ? chosen : null;
 
   LessonsState copyWith({
     Set<String>? completed,
@@ -38,19 +40,100 @@ class LessonsState {
     bool? isLoading,
   }) =>
       LessonsState(
-        completed: completed ?? path.completed,
+        completed: completed ?? this.completed,
         chosen: chosen ?? this.chosen,
         hasChosen: hasChosen ?? this.hasChosen,
         isLoading: isLoading ?? this.isLoading,
       );
 }
 
+/// El camino: lecciones terminadas más los pasos hechos de cada curso. Se
+/// recalcula cuando cambia una fuente (`ref.listen`), no al dibujar: así una
+/// pestaña oculta que vuelve no dispara recálculos en cadena durante el build.
+final learningPathProvider =
+    NotifierProvider<LearningPathNotifier, LessonPath>(LearningPathNotifier.new);
+
+class LearningPathNotifier extends Notifier<LessonPath> {
+  @override
+  LessonPath build() {
+    ref.listen(lessonsViewModelProvider, (_, _) => state = _compute());
+    for (final course in LessonCourse.values) {
+      for (final source in courseSources(course)) {
+        ref.listen(source, (_, _) => state = _compute());
+      }
+    }
+    return _compute();
+  }
+
+  LessonPath _compute() {
+    final lessons = ref.read(lessonsViewModelProvider);
+    return LessonPath(
+      completed: lessons.completed,
+      chosen: lessons.chosen,
+      courses: {
+        for (final course in LessonCourse.values)
+          course: ?courseDone(ref.read, course),
+      },
+    );
+  }
+}
+
+/// Al terminar Fundamentos (lecciones o cursos) se desbloquea el logro
+/// `foundations_done`. La raíz de la app lo escucha: así nadie que guarde
+/// avance tiene que acordarse.
+void unlockFoundationsWhenDone(WidgetRef ref) {
+  ref.listen(foundationsDoneProvider, (_, done) {
+    if (done) ref.read(achievementServiceProvider).unlock('foundations_done');
+  });
+}
+
+/// Si Fundamentos está terminado. Solo mira sus unidades (sus cursos no
+/// dependen de `chords.json`), así escucharlo desde el arranque no carga los
+/// acordes. Como [learningPathProvider], se recalcula por avisos.
+final foundationsDoneProvider =
+    NotifierProvider<FoundationsDoneNotifier, bool>(FoundationsDoneNotifier.new);
+
+class FoundationsDoneNotifier extends Notifier<bool> {
+  static final _courses = {
+    for (final u in unitsOf(LessonTrack.foundations)) ?u.course,
+  };
+
+  @override
+  bool build() {
+    ref.listen(lessonsViewModelProvider, (_, _) => state = _compute());
+    for (final course in _courses) {
+      for (final source in courseSources(course)) {
+        ref.listen(source, (_, _) => state = _compute());
+      }
+    }
+    return _compute();
+  }
+
+  bool _compute() {
+    final lessons = ref.read(lessonsViewModelProvider);
+    return LessonPath(
+      completed: lessons.completed,
+      chosen: lessons.chosen,
+      courses: {for (final c in _courses) c: ?courseDone(ref.read, c)},
+    ).foundationsDone;
+  }
+}
+
+/// Camino que el mapa resalta: ninguno hasta que toque decidir, es decir,
+/// hasta terminar Fundamentos o elegir uno antes.
+LessonTrack? highlightedTrackOf(LessonsState state, {required bool foundationsDone}) =>
+    foundationsDone || state.hasChosen ? state.chosen : null;
+
+LessonTrack? watchHighlightedTrack(WidgetRef ref) => highlightedTrackOf(
+  ref.watch(lessonsViewModelProvider),
+  foundationsDone: ref.watch(foundationsDoneProvider),
+);
+
 final lessonsViewModelProvider =
     NotifierProvider<LessonsViewModel, LessonsState>(LessonsViewModel.new);
 
 /// Lecciones terminadas y camino elegido, guardados en
-/// [StorageBoxes.userProgress]. Al terminar Fundamentos desbloquea el logro
-/// `foundations_done`.
+/// [StorageBoxes.userProgress].
 class LessonsViewModel extends Notifier<LessonsState> {
   static const keyCompleted = 'lessons_completed';
   static const keyTrack = 'lessons_track';
@@ -90,7 +173,7 @@ class LessonsViewModel extends Notifier<LessonsState> {
 
   /// Marca [lessonId] como terminada o, si ya lo estaba, como pendiente.
   Future<void> toggleCompleted(String lessonId) async {
-    final completed = {...state.path.completed};
+    final completed = {...state.completed};
     final nowDone = !completed.remove(lessonId);
     if (nowDone) completed.add(lessonId);
     state = state.copyWith(completed: completed);
@@ -103,9 +186,6 @@ class LessonsViewModel extends Notifier<LessonsState> {
         keyCompleted,
         completed.toList()..sort(),
       );
-      if (state.path.foundationsDone) {
-        await ref.read(achievementServiceProvider).unlock('foundations_done');
-      }
     } catch (e, st) {
       debugPrint('LessonsViewModel.toggleCompleted error: $e\n$st');
     }

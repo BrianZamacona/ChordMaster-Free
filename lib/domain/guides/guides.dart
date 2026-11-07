@@ -55,6 +55,13 @@ class LessonLink extends GuideTarget {
   final String lessonId;
 }
 
+/// Un paso de un curso del mapa (por id del paso).
+class CourseLink extends GuideTarget {
+  const CourseLink(this.course, this.stepId);
+  final LessonCourse course;
+  final String stepId;
+}
+
 /// El detalle de una escala en su tónica.
 class ScaleLink extends GuideTarget {
   const ScaleLink(this.scale);
@@ -185,7 +192,7 @@ const List<Guide> guides = [
           es: 'Durante el último rasgueo, la mano ya viaja al acorde que sigue.',
           en: 'During the last strum, the hand is already traveling to the next chord.',
         ),
-        target: LessonLink('f8_g_c_d'),
+        target: CourseLink(LessonCourse.openChords, 'oc_em_g_practice'),
       ),
       GuideChapter(
         title: LocalizedText(es: 'El cambio más difícil primero', en: 'Hardest change first'),
@@ -687,7 +694,7 @@ const List<Guide> guides = [
           es: 'De la 6ª a la 1ª: E, A, D, G, B y E.',
           en: 'From the 6th to the 1st: E, A, D, G, B and E.',
         ),
-        target: LessonLink('f1_meet_guitar'),
+        target: CourseLink(LessonCourse.basics, 'b_meet'),
       ),
       GuideChapter(
         title: LocalizedText(es: 'Las notas graves', en: 'The low notes'),
@@ -759,7 +766,7 @@ const List<Guide> guides = [
           es: 'Un golpe por pulso: cuatro por compás en 4/4.',
           en: 'One stroke per beat: four per bar in 4/4.',
         ),
-        target: LessonLink('f7_quarter_strum'),
+        target: CourseLink(LessonCourse.strumming, 'sp1_one'),
       ),
       GuideChapter(
         title: LocalizedText(es: 'Corcheas', en: 'Eighth notes'),

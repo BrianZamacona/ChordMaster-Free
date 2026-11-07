@@ -397,7 +397,6 @@ class AppStrings {
     es: 'Guarda un tempo limpio',
     en: 'Save a clean tempo',
   );
-  static String get hubMelodies => tr(es: 'Melodías', en: 'Melodies');
   // Espacio duro antes del número: "Parte 1" no se parte en dos renglones.
   static String get hubStrumming => tr(
     es: 'Patrones de rasgueo – Parte\u00a01',
@@ -440,12 +439,24 @@ class AppStrings {
   );
   static String openChordsTimeSignature(int beats, int bpm) =>
       tr(es: '$beats/4 · $bpm BPM', en: '$beats/4 · $bpm BPM');
-  static String get melodiesIntro => tr(
-    es: 'Aprende a tocar melodías en las cuerdas agudas y luego más arriba del '
-        'mástil. Cada ejercicio y canción da hasta tres estrellas según el '
+  static String get basicsIntro => tr(
+    es: 'Empieza desde cero: conoce la guitarra, afínala y aprende a pisar un '
+        'traste, luego dos, otra cuerda y otro dedo, con melodías sencillas en '
+        'cada nivel. Cada ejercicio y canción da hasta tres estrellas según el '
         'tempo al que te sale limpio.',
-    en: 'Learn to play melodies on the high strings and then higher up the '
-        'neck. Each exercise and song gives up to three stars by the tempo '
+    en: 'Start from zero: meet the guitar, tune it and learn to fret one note, '
+        'then two, another string and another finger, with simple melodies in '
+        'every level. Each exercise and song gives up to three stars by the '
+        'tempo you can play it cleanly.',
+  );
+  static String get melodiesIntro => tr(
+    es: 'Explora melodías: primero en una sola cuerda, luego combinando '
+        'cuerdas, subiendo y bajando, más arriba del mástil, con patrones, más '
+        'velocidad y de memoria. Cada ejercicio y canción da hasta tres '
+        'estrellas según el tempo al que te sale limpio.',
+    en: 'Explore melodies: first on a single string, then combining strings, '
+        'going up and down, higher up the neck, with patterns, more speed and '
+        'by heart. Each exercise and song gives up to three stars by the tempo '
         'you can play it cleanly.',
   );
   static String courseLevel(int level) =>

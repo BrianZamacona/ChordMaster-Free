@@ -1,9 +1,9 @@
 import '../../core/i18n/tr.dart';
 import 'lesson.dart';
 
-/// El camino de aprendizaje: Fundamentos para todos y, al terminarlo, dos
-/// caminos (rítmica y líder). Cada [LessonUnit] es un nodo del mapa y el
-/// orden de la lista es el orden de estudio.
+/// El camino de aprendizaje: Fundamentos para todos (dos cursos: Primeros
+/// pasos y Melodías) y, al terminarlo, dos caminos (rítmica y líder). Cada
+/// [LessonUnit] es un nodo del mapa y [lessonUnits] da su orden.
 ///
 /// Lo que estas lecciones afirman sobre acordes y escalas (qué cuerdas suenan,
 /// qué dedos se mueven, qué notas tiene una escala) lo verifica
@@ -12,66 +12,9 @@ import 'lesson.dart';
 const List<Lesson> curriculum = [
   // ── Fundamentos ──────────────────────────────────────────────────────────
   Lesson(
-    id: 'f1_meet_guitar',
-    unit: _firstSteps,
-    title: LocalizedText(es: 'Conoce tu guitarra', en: 'Meet your guitar'),
-    body: LocalizedText(
-      es: 'Las cuerdas se numeran de la más delgada (1ª, mi agudo) a la más '
-          'gruesa (6ª, mi grave). Al aire, de la 6ª a la 1ª, suenan E A D G B E.',
-      en: 'Strings are numbered from the thinnest (1st, high E) to the '
-          'thickest (6th, low E). Open, from the 6th to the 1st, they sound '
-          'E A D G B E.',
-    ),
-    steps: [
-      LocalizedText(
-        es: 'Toca cada cuerda al aire de la 6ª a la 1ª y di su nombre.',
-        en: 'Play each open string from the 6th to the 1st and say its name.',
-      ),
-      LocalizedText(
-        es: 'Pisa justo detrás del traste, no encima de él.',
-        en: 'Press right behind the fret, not on top of it.',
-      ),
-      LocalizedText(
-        es: 'Usa la punta del dedo y mantén cortas las uñas de la mano que pisa.',
-        en: 'Use your fingertip and keep the nails of your fretting hand short.',
-      ),
-    ],
-    minutes: 5,
-    tool: LessonTool.tuner,
-  ),
-  Lesson(
-    id: 'f2_tune',
-    unit: _firstSteps,
-    title: LocalizedText(es: 'Afina tu guitarra', en: 'Tune your guitar'),
-    body: LocalizedText(
-      es: 'El afinador escucha cada cuerda por el micrófono y te dice si está '
-          'grave o aguda. Afina siempre antes de practicar: una guitarra '
-          'desafinada hace que los acordes bien puestos suenen mal.',
-      en: 'The tuner listens to each string through the microphone and tells '
-          'you if it is flat or sharp. Always tune before practicing: an '
-          'out-of-tune guitar makes well-placed chords sound wrong.',
-    ),
-    steps: [
-      LocalizedText(es: 'Empieza por la 6ª cuerda.', en: 'Start with the 6th string.'),
-      LocalizedText(
-        es: 'Si está grave, aprieta la clavija; si está aguda, aflójala.',
-        en: 'If it is flat, tighten the tuning peg; if it is sharp, loosen it.',
-      ),
-      LocalizedText(
-        es: 'Gira poco a poco y vuelve a tocar la cuerda.',
-        en: 'Turn a little at a time and play the string again.',
-      ),
-    ],
-    minutes: 5,
-    tool: LessonTool.tuner,
-  ),
-  Lesson(
     id: 'f3_em_am',
-    unit: _firstSteps,
-    title: LocalizedText(
-      es: 'Tus primeros acordes: Em y Am',
-      en: 'Your first chords: Em and Am',
-    ),
+    unit: _moreOpenChords,
+    title: LocalizedText(es: 'Em y Am', en: 'Em and Am'),
     body: LocalizedText(
       es: 'Em usa dos dedos y suenan las seis cuerdas. Am empieza en la 5ª '
           'cuerda: la 6ª no se toca.',
@@ -97,7 +40,7 @@ const List<Lesson> curriculum = [
   ),
   Lesson(
     id: 'f4_em_am_change',
-    unit: _firstSteps,
+    unit: _moreOpenChords,
     title: LocalizedText(es: 'Cambio Em ↔ Am', en: 'Em ↔ Am change'),
     body: LocalizedText(
       es: 'Para pasar de Em a Am, los dedos 2 y 3 bajan juntos una cuerda (de '
@@ -124,64 +67,8 @@ const List<Lesson> curriculum = [
     chords: ['Em', 'Am'],
   ),
   Lesson(
-    id: 'f_tab_reading',
-    unit: _firstMelodies,
-    title: LocalizedText(es: 'Leer tablatura', en: 'Reading tablature'),
-    body: LocalizedText(
-      es: 'La tablatura dibuja las seis cuerdas como líneas: la de arriba es la 1ª (mi aguda), igual que en los diagramas de escala. Cada número es el traste que pisas y el 0 es la cuerda al aire. Se lee de izquierda a derecha.',
-      en: 'Tablature draws the six strings as lines: the top one is the 1st (high E), just like the scale diagrams. Each number is the fret you press and 0 is the open string. You read it from left to right.',
-    ),
-    steps: [
-      LocalizedText(
-        es: 'Toca la 1ª cuerda al aire y luego los trastes 1 y 3: E, F y G.',
-        en: 'Play the open 1st string, then frets 1 and 3: E, F and G.',
-      ),
-      LocalizedText(
-        es: 'Haz lo mismo en la 2ª cuerda: B, C y D.',
-        en: 'Do the same on the 2nd string: B, C and D.',
-      ),
-      LocalizedText(
-        es: 'Una nota por clic, sin apurarte.',
-        en: 'One note per click, no rush.',
-      ),
-    ],
-    minutes: 6,
-    scale: LessonScale(scaleId: 'major', root: 0),
-    tool: LessonTool.metronome,
-    bpm: 60,
-    tab: [TabNote(1, 0), TabNote(1, 1), TabNote(1, 3), TabNote(2, 0), TabNote(2, 1), TabNote(2, 3)],
-  ),
-  Lesson(
-    id: 'f_first_melody',
-    unit: _firstMelodies,
-    title: LocalizedText(es: 'Tu primera melodía', en: 'Your first melody'),
-    body: LocalizedText(
-      es: 'El Himno de la alegría de Beethoven (de dominio público) usa solo cinco notas en la 1ª y la 2ª cuerda: C, D, E, F y G. Si conoces la melodía, el oído te avisa cuando te equivocas.',
-      en: 'Beethoven’s Ode to Joy (in the public domain) uses only five notes on the 1st and 2nd strings: C, D, E, F and G. If you know the tune, your ear tells you when you slip.',
-    ),
-    steps: [
-      LocalizedText(
-        es: 'Lee la tablatura nota por nota antes de tocarla seguida.',
-        en: 'Read the tab note by note before playing it straight through.',
-      ),
-      LocalizedText(
-        es: 'Dedo 1 en el traste 1 y dedo 3 en el traste 3.',
-        en: 'Finger 1 on fret 1 and finger 3 on fret 3.',
-      ),
-      LocalizedText(
-        es: 'Cuando salga entera, súbele al metrónomo de 5 en 5.',
-        en: 'Once it comes out whole, raise the metronome by 5 at a time.',
-      ),
-    ],
-    minutes: 8,
-    scale: LessonScale(scaleId: 'major', root: 0),
-    tool: LessonTool.metronome,
-    bpm: 70,
-    tab: [TabNote(1, 0), TabNote(1, 0), TabNote(1, 1), TabNote(1, 3), TabNote(1, 3), TabNote(1, 1), TabNote(1, 0), TabNote(2, 3), TabNote(2, 1), TabNote(2, 1), TabNote(2, 3), TabNote(1, 0), TabNote(1, 0), TabNote(2, 3), TabNote(2, 3)],
-  ),
-  Lesson(
     id: 'f5_d_a_e',
-    unit: _openChords,
+    unit: _moreOpenChords,
     title: LocalizedText(es: 'D, A y E', en: 'D, A and E'),
     body: LocalizedText(
       es: 'Tres acordes mayores de miles de canciones. D se toca desde la 4ª '
@@ -206,91 +93,6 @@ const List<Lesson> curriculum = [
     minutes: 10,
     chords: ['D', 'A', 'E'],
   ),
-  Lesson(
-    id: 'f6_g_c',
-    unit: _openChords,
-    title: LocalizedText(es: 'G y C', en: 'G and C'),
-    body: LocalizedText(
-      es: 'G y C piden abrir más la mano. Es normal que al principio una '
-          'cuerda suene apagada.',
-      en: 'G and C ask you to stretch your hand more. It is normal for a '
-          'string to sound muted at first.',
-    ),
-    steps: [
-      LocalizedText(
-        es: 'En G, el meñique (dedo 4) va en la 1ª cuerda, traste 3.',
-        en: 'In G, your pinky (finger 4) goes on the 1st string, fret 3.',
-      ),
-      LocalizedText(
-        es: 'En C, arquea los dedos para no apagar la 1ª cuerda.',
-        en: 'In C, arch your fingers so you do not mute the 1st string.',
-      ),
-      LocalizedText(
-        es: 'Alterna G y C, cuatro rasgueos cada uno.',
-        en: 'Alternate G and C, four strums each.',
-      ),
-    ],
-    minutes: 10,
-    chords: ['G', 'C'],
-  ),
-  Lesson(
-    id: 'f7_quarter_strum',
-    unit: _openChords,
-    title: LocalizedText(es: 'Rasgueo en negras', en: 'Quarter-note strumming'),
-    body: LocalizedText(
-      es: 'Un rasgueo hacia abajo en cada pulso. Si el pulso es estable, todo '
-          'lo demás se acomoda.',
-      en: 'One downstrum on every beat. If the beat is steady, everything '
-          'else falls into place.',
-    ),
-    steps: [
-      LocalizedText(es: 'Pon el metrónomo a 70 BPM.', en: 'Set the metronome to 70 BPM.'),
-      LocalizedText(
-        es: 'Rasguea G hacia abajo en cada clic.',
-        en: 'Strum G downward on every click.',
-      ),
-      LocalizedText(
-        es: 'Cuenta en voz alta: 1, 2, 3, 4.',
-        en: 'Count out loud: 1, 2, 3, 4.',
-      ),
-    ],
-    minutes: 6,
-    chords: ['G'],
-    strumPattern: 'D D D D ',
-    tool: LessonTool.metronome,
-    bpm: 70,
-  ),
-  Lesson(
-    id: 'f8_g_c_d',
-    unit: _openChords,
-    title: LocalizedText(es: 'Progresión G – C – D', en: 'G – C – D progression'),
-    body: LocalizedText(
-      es: 'Tu primera progresión completa: cuatro rasgueos por acorde y '
-          'vuelta a empezar. Al terminarla eliges tu camino.',
-      en: 'Your first full progression: four strums per chord, then start '
-          'over. After this lesson you choose your path.',
-    ),
-    steps: [
-      LocalizedText(
-        es: 'Toca G, C y D con cuatro rasgueos cada uno.',
-        en: 'Play G, C and D with four strums each.',
-      ),
-      LocalizedText(
-        es: 'Prepara el siguiente acorde durante el último rasgueo.',
-        en: 'Get ready for the next chord during the last strum.',
-      ),
-      LocalizedText(
-        es: 'Vuelve a G y repite sin detenerte.',
-        en: 'Go back to G and repeat without stopping.',
-      ),
-    ],
-    minutes: 8,
-    chords: ['G', 'C', 'D'],
-    tool: LessonTool.metronome,
-    bpm: 70,
-  ),
-
-  // ── Guitarra rítmica ─────────────────────────────────────────────────────
   Lesson(
     id: 'r1_eighths',
     unit: _strumming,
@@ -1276,28 +1078,6 @@ const List<Lesson> curriculum = [
   ),
 ];
 
-const _firstSteps = LessonUnit(
-  id: 'f_first_steps',
-  track: LessonTrack.foundations,
-  title: LocalizedText(es: 'Primeros pasos', en: 'First steps'),
-  summary: LocalizedText(
-    es: 'Conoce la guitarra, afínala y toca tus primeros acordes.',
-    en: 'Meet the guitar, tune it and play your first chords.',
-  ),
-
-  art: ChordArt('Em'),
-);
-const _openChords = LessonUnit(
-  id: 'f_open_chords',
-  track: LessonTrack.foundations,
-  title: LocalizedText(es: 'Acordes abiertos', en: 'Open chords'),
-  summary: LocalizedText(
-    es: 'Los acordes abiertos de miles de canciones y tu primera progresión.',
-    en: 'The open chords behind thousands of songs, and your first progression.',
-  ),
-
-  art: ChordArt('G'),
-);
 const _strumming = LessonUnit(
   id: 'r_strumming',
   track: LessonTrack.rhythm,
@@ -1365,16 +1145,6 @@ const _theNeck = LessonUnit(
   art: NotesArt(['E', 'F', 'G', 'A', 'B', 'C', 'D']),
 );
 
-const _firstMelodies = LessonUnit(
-  id: 'f_first_melodies',
-  track: LessonTrack.foundations,
-  title: LocalizedText(es: 'Primeras melodías', en: 'First melodies'),
-  summary: LocalizedText(
-    es: 'Lee tablatura y toca notas sueltas antes de los acordes.',
-    en: 'Read tablature and play single notes before chords.',
-  ),
-  art: NotesArt(['E', 'F', 'G']),
-);
 const _openChords2 = LessonUnit(
   id: 'r_open_chords_2',
   track: LessonTrack.rhythm,
@@ -1444,6 +1214,29 @@ const _doubleStops = LessonUnit(
 
 /// Retos al final de cada nivel de cada camino; se superan con el récord de
 /// un módulo de práctica.
+const _basicsCourse = LessonUnit(
+  id: 'f_basics',
+  track: LessonTrack.foundations,
+  title: LocalizedText(es: 'Primeros pasos', en: 'First steps'),
+  summary: LocalizedText(
+    es: 'Conoce la guitarra, afínala y pisa tus primeros trastes: uno, dos, '
+        'otra cuerda y otro dedo.',
+    en: 'Meet the guitar, tune it and fret your first notes: one fret, two, '
+        'another string and another finger.',
+  ),
+  art: NotesArt(['E', 'A', 'D', 'G', 'B']),
+  course: LessonCourse.basics,
+);
+const _moreOpenChords = LessonUnit(
+  id: 'r_more_open_chords',
+  track: LessonTrack.rhythm,
+  title: LocalizedText(es: 'Más acordes abiertos', en: 'More open chords'),
+  summary: LocalizedText(
+    es: 'Am, A y E: los abiertos que faltan, y el cambio Em ↔ Am.',
+    en: 'Am, A and E: the remaining open chords, and the Em ↔ Am change.',
+  ),
+  art: ChordArt('Am'),
+);
 const _melodiesCourse = LessonUnit(
   id: 'f_melodies',
   track: LessonTrack.foundations,
@@ -1481,12 +1274,11 @@ const _strummingCourse = LessonUnit(
 /// Todas las unidades, en el orden del mapa (cada camino de arriba abajo).
 /// Las de curso no tienen lecciones; las demás, las suyas en [curriculum].
 const List<LessonUnit> lessonUnits = [
-  _firstSteps,
-  _openChords,
-  _firstMelodies,
+  _basicsCourse,
   _melodiesCourse,
   _openChordsCourse,
   _strummingCourse,
+  _moreOpenChords,
   _strumming,
   _beyondOpen,
   _fingerstyle,

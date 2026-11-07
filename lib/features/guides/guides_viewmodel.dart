@@ -15,7 +15,7 @@ final guideChecksProvider =
 final guideProgressProvider = Provider<GuideProgress>(
   (ref) => GuideProgress(
     checked: ref.watch(guideChecksProvider),
-    lessonsCompleted: ref.watch(lessonsViewModelProvider).path.completed,
+    lessonsCompleted: ref.watch(lessonsViewModelProvider).completed,
   ),
 );
 

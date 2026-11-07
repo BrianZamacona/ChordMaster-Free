@@ -6,6 +6,7 @@ import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'core/constants/app_strings.dart';
 import 'core/i18n/app_i18n.dart';
 import 'core/i18n/tr.dart';
+import 'features/lessons/lessons_viewmodel.dart';
 import 'features/settings/settings_viewmodel.dart';
 import 'ui/navigation.dart';
 import 'ui/theme.dart';
@@ -17,6 +18,7 @@ class ChordMasterApp extends ConsumerWidget {
 
   @override
   Widget build(BuildContext context, WidgetRef ref) {
+    unlockFoundationsWhenDone(ref);
     final themeMode =
         ref.watch(settingsViewModelProvider.select((s) => s.themeMode));
     final localeCode =

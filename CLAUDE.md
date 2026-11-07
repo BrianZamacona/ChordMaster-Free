@@ -144,8 +144,10 @@ cada nota pertenezca a la escala. No bajar la tolerancia de 0.
   se eliminó (no tenía ruta y solo guardaba en el teléfono).
 
 ## Lecciones
-- Currículo en `lib/domain/lessons/curriculum.dart` (fuente única): Fundamentos (F1–F10) y,
-  al terminarlo, dos caminos: rítmica (R1–R17) y líder (L1–L18), cada uno en dos niveles
+- Currículo en `lib/domain/lessons/curriculum.dart` (fuente única): Fundamentos (dos cursos:
+  Primeros pasos y Melodías, sin lecciones sueltas) y, al terminarlo, dos caminos: rítmica
+  (R1–R20, empieza por los cursos de Acordes abiertos y Rasgueo) y líder (L1–L18), cada uno en
+  dos niveles
   (`LessonUnit.level`; Fundamentos solo tiene el 1). Las lecciones se agrupan en unidades
   (`LessonUnit`, nodos del mapa, con un `summary` que la pantalla de la unidad muestra como
   vista previa). Acordes por `displayName` de `chords.json` y escalas por id de
@@ -153,8 +155,10 @@ cada nota pertenezca a la escala. No bajar la tolerancia de 0.
 - Nivel 2 (decisión del usuario, inspirado en roadmaps tipo "Part 1/2"): rítmica = Acordes
   abiertos 2 (D/Dm, séptimas, maj7/m7), Rasgueo 2 (6/8 y acento en 2 y 4) y Riffs (power
   chords y boogie); líder = Licks, Mayor y menor (escala mayor, relativa menor, círculo) y
-  Double stops (terceras y sextas). Fundamentos suma "Primeras melodías" (tablatura y el Himno
-  de la alegría, de dominio público). Nada de riffs ni melodías con derechos de autor.
+  Double stops (terceras y sextas). Nada de riffs ni melodías con derechos de autor.
+- Fundamentos (decisión del usuario, inspirado en "Basic Skills" y "Melodies"): conocer el
+  instrumento y moverse con ganas de seguir, no acordes. Am, A y E (antes en Fundamentos) son la
+  unidad "Más acordes abiertos" de rítmica; sus lecciones conservan su id (f3, f4, f5).
 - Tablatura en `Lesson.tab` (`TabNote`: cuerda 1 = mi aguda, traste). Toda lección con tab
   declara `scale` y un test exige que cada nota pertenezca a ella; las notas que el texto nombra
   se verifican una por una. Se dibuja en `lesson_tab.dart`, en renglones de 8 notas.
@@ -163,8 +167,14 @@ cada nota pertenezca a la escala. No bajar la tolerancia de 0.
 - Todo lo que una lección afirma sobre cuerdas, dedos o notas tiene su test en
   `test/domain/lessons/curriculum_test.dart`, verificado contra los datos. Lección nueva o
   texto nuevo con una afirmación musical = test nuevo.
-- `LessonPath` decide la siguiente: Fundamentos primero, luego el camino elegido (nivel 1 y
-  luego 2), después el otro. Se puede adelantar cualquier lección. Progreso en `userProgress`
+- `LessonPath` decide lo siguiente (`PathNext`: una lección o un curso): Fundamentos primero,
+  luego el camino elegido (nivel 1 y luego 2), después el otro, unidad por unidad; un curso
+  cuenta como terminado con todos sus pasos hechos, y el avance de cada camino suma lecciones y
+  pasos. Lo arma `learningPathProvider` con los pasos de cada curso; el logro
+  `foundations_done` lo desbloquea un `ref.listen` en la raíz de la app. Los proveedores del
+  camino y de los cursos se actualizan por `ref.listen` (Notifiers), no con cadenas de
+  `Provider` derivados: una cadena así se recalcula durante el build al volver a una pestaña
+  oculta (TickerMode) y Riverpod falla. Se puede adelantar cualquier lección. Progreso en `userProgress`
   (`lessons_completed`, `lessons_track`); los ids de lecciones y unidades son permanentes. Las
   etiquetas (F5, R11…) salen de la posición, así que insertar una lección las corre.
 - Mapa (`lessons_screen.dart`): identidad propia, dibujado como mástil. Fundamentos es una
@@ -196,17 +206,23 @@ cada nota pertenezca a la escala. No bajar la tolerancia de 0.
   rasgueo – Parte 1; Melodías va en Fundamentos. Las rutas viejas `/learn/melodies`,
   `/learn/open-chords` y `/learn/strumming` redirigen.
 
-## Curso de melodías
-- `lib/domain/melodies/melody_course.dart`, unidad `f_melodies` del mapa (Fundamentos).
-  Niveles (cuerdas agudas, saltos, posición V, melodías conocidas) con pasos de teoría, ejercicio
-  y canción. Inspirado en cursos tipo "Melodies · Level 1…", en vertical (decisión del usuario).
-- Las melodías se escriben como alturas ("C4") y `tabForPitches` las pone en la cuerda donde
-  caen dentro de la ventana de trastes del paso (si caben en dos, el traste más bajo). Un test
-  exige que cada nota suene lo pedido, caiga en su ventana y pertenezca a la escala del nivel;
-  lo que afirma cada texto tiene su test. Solo canciones de dominio público (tradicionales o
-  Beethoven), con su origen en el paso.
+## Cursos de melodía: Primeros pasos y Melodías (Fundamentos)
+- Primeros pasos (`lib/domain/melodies/basics_course.dart`, unidad `f_basics`): conocer la
+  guitarra, afinar, sostenerla y la púa; un traste (índice), dos (1 y 3), un dedo por traste;
+  la 2ª cuerda (con un consejo sobre el dolor en los dedos); el dedo medio y la 3ª cuerda;
+  final. Cada nivel solo usa las cuerdas ya presentadas (hay test).
+- Melodías (`melody_course.dart`, unidad `f_melodies`): una cuerda a la vez, combinar cuerdas,
+  subir y bajar, el mástil (posición V), patrones (grupos de 3 y 4, los de las rutinas),
+  velocidad, de memoria y final. Inspirados en cursos tipo "Basic Skills" y "Melodies", en
+  vertical (decisión del usuario).
+- Los dos usan `MelodyStep`: las melodías se escriben como alturas ("C4") y `tabForPitches`
+  las pone dentro de la ventana de trastes y, si se dan, de las cuerdas del paso (si caben en
+  dos, el traste más bajo). Un test exige que cada nota suene lo pedido, caiga en su ventana y
+  sus cuerdas y pertenezca a la escala del nivel; lo que afirma cada texto tiene su test. Solo
+  canciones de dominio público (tradicionales, Beethoven, Pierpont), con su origen.
 - Estrellas por tempo limpio, autoinformado como en Técnica: ★ 60, ★★ 80, ★★★ 100 BPM
-  (`melodies_best_bpm`); la teoría se marca leída (`melodies_read`). El reproductor toca
+  (`basics_*` y `melodies_*`); la teoría se marca leída. Hacer un paso de curso cuenta como
+  lección del día (Práctica de hoy y retos de la semana). El reproductor toca
   corcheas iguales: la pantalla lo aclara (el ritmo de la canción lo pone quien toca).
 - La línea vertical de pasos es `StepRail` (`lesson_widgets.dart`), la misma de la unidad.
 

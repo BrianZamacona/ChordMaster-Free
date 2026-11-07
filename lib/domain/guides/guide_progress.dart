@@ -16,6 +16,7 @@ int chapterMinutes(GuideTarget target) => switch (target) {
   ChordLink() => 3,
   ScaleLink() => 5,
   ModuleLink() => 5,
+  CourseLink() => 5,
   WorkoutLink() => 10,
 };
 

@@ -6,7 +6,7 @@ import '../courses/course_shapes_provider.dart';
 
 /// El curso de rasgueos con las digitaciones de `chords.json`; `null` mientras
 /// se cargan los acordes.
-final strummingCourseProvider = Provider<List<CourseLevel<StrumStep>>?>((ref) {
-  final shapes = ref.watch(courseChordShapesProvider(strummingCourseChords));
-  return shapes == null ? null : buildStrummingCourse(shapes);
-});
+final strummingCourseProvider = NotifierProvider<
+  CourseFromShapes<List<CourseLevel<StrumStep>>>,
+  List<CourseLevel<StrumStep>>?
+>(() => CourseFromShapes(strummingCourseChords, buildStrummingCourse));

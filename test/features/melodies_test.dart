@@ -68,7 +68,7 @@ void main() {
   }
 
   testWidgets('el mapa de Lecciones enlaza el curso con todos sus niveles y pasos', (tester) async {
-    await open(tester, '/learn/lessons');
+    await open(tester, '/learn/lessons', size: const Size(500, 20000));
     final node = find.byKey(const Key('unit-f_melodies'));
     await tester.ensureVisible(node);
     await tester.pump();
@@ -86,10 +86,10 @@ void main() {
 
   testWidgets('las estrellas guardadas se ven en el curso', (tester) async {
     await open(tester, '/learn/lessons/unit/f_melodies', progress: {
-      CourseId.melodies.keyBest: {'m1_twinkle': 85},
+      CourseId.melodies.keyBest: {'mo_first': 85},
     });
     final stars = tester.widget<CourseStars>(
-      find.byKey(const Key('course-stars-m1_twinkle')),
+      find.byKey(const Key('course-stars-mo_first')),
     );
     expect(stars.stars, 2);
   });
@@ -97,7 +97,7 @@ void main() {
   testWidgets('una canción suena entera y "Me salió limpio" da su estrella', (
     tester,
   ) async {
-    final (store, audio) = await open(tester, '/learn/lessons/course/melodies/m1_twinkle');
+    final (store, audio) = await open(tester, '/learn/lessons/course/melodies/mo_first');
     // Sin récord empieza en el tempo de la primera estrella.
     expect(
       tester.widget<Text>(find.byKey(const Key('course-bpm'))).data,
@@ -108,7 +108,7 @@ void main() {
     await tester.pump();
     await tester.tap(play);
     await tester.pump();
-    final step = melodyStepsById['m1_twinkle']!;
+    final step = melodyStepsById['mo_first']!;
     expect(audio.played.single, hasLength(step.pitches.length));
     expect(audio.played.single.first.midi, pitchMidi(step.pitches.first));
     await tester.tap(play);
@@ -118,7 +118,7 @@ void main() {
     await tester.pump();
     await tester.tap(clean);
     await tester.pump();
-    expect(store.progress[CourseId.melodies.keyBest], {'m1_twinkle': 60});
+    expect(store.progress[CourseId.melodies.keyBest], {'mo_first': 60});
     expect(
       tester.widget<CourseStars>(find.byKey(const Key('course-step-stars'))).stars,
       1,
@@ -126,16 +126,16 @@ void main() {
   });
 
   testWidgets('la teoría se marca como leída', (tester) async {
-    final (store, _) = await open(tester, '/learn/lessons/course/melodies/m1_notes');
+    final (store, _) = await open(tester, '/learn/lessons/course/melodies/mo_theory');
     await tester.tap(find.byKey(const Key('course-read')));
     await tester.pump();
-    expect(store.progress[CourseId.melodies.keyRead], ['m1_notes']);
+    expect(store.progress[CourseId.melodies.keyRead], ['mo_theory']);
     expect(find.text(AppStrings.courseUnread), findsOneWidget);
   });
 
   testWidgets('"Siguiente paso" reemplaza y atrás vuelve al curso', (tester) async {
     await open(tester, '/learn/lessons/unit/f_melodies');
-    await tester.tap(find.byKey(const Key('course-step-m1_notes')));
+    await tester.tap(find.byKey(const Key('course-step-mo_theory')));
     await settle(tester);
     final next = find.byKey(const Key('course-next'));
     await tester.ensureVisible(next);
@@ -144,7 +144,7 @@ void main() {
     await settle(tester);
     expect(
       tester.widget<Text>(find.byKey(const Key('course-title'))).data,
-      melodyStepsById['m1_ladder']!.title.text,
+      melodyStepsById['mo_first']!.title.text,
     );
     appRouter.pop();
     await settle(tester);

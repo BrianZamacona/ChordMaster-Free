@@ -5,6 +5,7 @@ import 'package:chordmaster_free/core/constants/app_strings.dart';
 import 'package:chordmaster_free/core/i18n/tr.dart';
 import 'package:chordmaster_free/data/repository/scale_repository.dart';
 import 'package:chordmaster_free/domain/audio/pluck_synth.dart';
+import 'package:chordmaster_free/domain/lessons/curriculum.dart';
 import 'package:chordmaster_free/domain/lessons/lesson.dart';
 import 'package:chordmaster_free/domain/practice/scale_workouts.dart';
 import 'package:chordmaster_free/domain/practice/tab_playback.dart';
@@ -297,13 +298,14 @@ void main() {
     });
 
     testWidgets('la lección con tablatura también se escucha', (tester) async {
-      final audio = await open(tester, '/learn/lessons/f_first_melody');
+      final lesson = curriculum.firstWhere((l) => l.tab.isNotEmpty);
+      final audio = await open(tester, '/learn/lessons/${lesson.id}');
       final button = find.byKey(const Key('tab-play'));
       await tester.ensureVisible(button);
       await tester.pump();
       await tester.tap(button);
       await tester.pump();
-      expect(audio.played.single.events, hasLength(15));
+      expect(audio.played.single.events, hasLength(lesson.tab.length));
       await tester.tap(button);
       await tester.pump();
     });

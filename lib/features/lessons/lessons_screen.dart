@@ -52,7 +52,8 @@ class _LessonsScreenState extends ConsumerState<LessonsScreen>
   @override
   Widget build(BuildContext context) {
     final state = ref.watch(lessonsViewModelProvider);
-    final path = state.path;
+    final path = ref.watch(learningPathProvider);
+    final highlighted = watchHighlightedTrack(ref);
     final p = context.palette;
     var order = 0;
     Widget segment() =>
@@ -97,11 +98,11 @@ class _LessonsScreenState extends ConsumerState<LessonsScreen>
                   ),
                 ),
                 _Fork(
-                  highlighted: state.highlightedTrack,
+                  highlighted: highlighted,
                   open: path.foundationsDone,
                 ),
                 _TrackRows(
-                  highlighted: state.highlightedTrack,
+                  highlighted: highlighted,
                   path: path,
                   reveal: _reveal,
                   firstOrder: order,
@@ -127,49 +128,63 @@ Animation<double> _revealAt(Animation<double> parent, int order) {
 class _NextCard extends StatelessWidget {
   const _NextCard({required this.next});
 
-  final Lesson? next;
+  final PathNext? next;
 
   @override
   Widget build(BuildContext context) {
     final p = context.palette;
     final text = Theme.of(context).textTheme;
-    final lesson = next;
+    final next = this.next;
+    if (next == null) {
+      return Card(
+        child: Padding(
+          padding: const EdgeInsets.all(16),
+          child: Text(AppStrings.lessonsAllDone, style: text.bodyLarge),
+        ),
+      );
+    }
+    final (title, subtitle, route) = switch (next) {
+      NextLesson(:final lesson) => (
+        lesson.title.text,
+        '${lesson.unit.title.text} · ${AppStrings.lessonMinutes(lesson.minutes)}',
+        '/learn/lessons/${lesson.id}',
+      ),
+      NextCourse(:final unit) => (
+        unit.title.text,
+        trackName(unit.track),
+        '/learn/lessons/unit/${unit.id}',
+      ),
+    };
     return Card(
       child: Padding(
         padding: const EdgeInsets.all(16),
-        child: lesson == null
-            ? Text(AppStrings.lessonsAllDone, style: text.bodyLarge)
-            : Row(
+        child: Row(
+          children: [
+            Expanded(
+              child: Column(
+                crossAxisAlignment: CrossAxisAlignment.start,
                 children: [
-                  Expanded(
-                    child: Column(
-                      crossAxisAlignment: CrossAxisAlignment.start,
-                      children: [
-                        Text(
-                          AppStrings.lessonsContinue.toUpperCase(),
-                          style: text.labelSmall?.copyWith(
-                            color: p.textSecondary,
-                            letterSpacing: 1.2,
-                          ),
-                        ),
-                        const SizedBox(height: 4),
-                        Text(lesson.title.text, style: text.titleMedium),
-                        Text(
-                          '${lesson.unit.title.text} · '
-                          '${AppStrings.lessonMinutes(lesson.minutes)}',
-                          style: text.bodySmall?.copyWith(color: p.textSecondary),
-                        ),
-                      ],
+                  Text(
+                    AppStrings.lessonsContinue.toUpperCase(),
+                    style: text.labelSmall?.copyWith(
+                      color: p.textSecondary,
+                      letterSpacing: 1.2,
                     ),
                   ),
-                  const SizedBox(width: 12),
-                  FilledButton(
-                    key: const Key('lessons-start-next'),
-                    onPressed: () => context.go('/learn/lessons/${lesson.id}'),
-                    child: Text(AppStrings.lessonsStart),
-                  ),
+                  const SizedBox(height: 4),
+                  Text(title, style: text.titleMedium),
+                  Text(subtitle, style: text.bodySmall?.copyWith(color: p.textSecondary)),
                 ],
               ),
+            ),
+            const SizedBox(width: 12),
+            FilledButton(
+              key: const Key('lessons-start-next'),
+              onPressed: () => context.go(route),
+              child: Text(AppStrings.lessonsStart),
+            ),
+          ],
+        ),
       ),
     );
   }
@@ -520,7 +535,7 @@ class _UnitNode extends ConsumerWidget {
     final text = Theme.of(context).textTheme;
     final (done, total) = watchUnitProgress(ref, unit);
     final complete = total > 0 && done == total;
-    final isCurrent = lessonsOfUnit(unit).contains(path.next);
+    final isCurrent = path.next?.unit == unit;
     return Card(
       // Sin margen: la cuerda llega hasta el borde de la tarjeta.
       margin: EdgeInsets.zero,

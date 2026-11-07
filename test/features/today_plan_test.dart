@@ -5,7 +5,7 @@ import 'package:chordmaster_free/domain/lessons/curriculum.dart';
 import 'package:chordmaster_free/domain/lessons/lesson.dart';
 import 'package:chordmaster_free/domain/practice/daily_plan.dart';
 import 'package:chordmaster_free/domain/practice/multi_day_challenges.dart';
-import 'package:chordmaster_free/features/lessons/lesson_detail_screen.dart';
+import 'package:chordmaster_free/features/lessons/lesson_unit_screen.dart';
 import 'package:chordmaster_free/features/technique/technique_screen.dart';
 import 'package:chordmaster_free/features/workouts/workouts_screen.dart';
 import 'package:chordmaster_free/services/activity_log.dart';
@@ -55,11 +55,11 @@ void main() {
   String progressText(WidgetTester tester) =>
       tester.widget<Text>(find.byKey(const Key('today-plan-progress'))).data!;
 
-  testWidgets('sin práctica: la primera lección, 0 de 3', (tester) async {
+  testWidgets('sin práctica: el primer curso de Fundamentos, 0 de 3', (tester) async {
     await open(tester);
     expect(find.byKey(const Key('today-plan')), findsOneWidget);
     expect(progressText(tester), AppStrings.lessonsProgress(0, 3));
-    final first = lessonsOf(LessonTrack.foundations).first;
+    final first = unitOfCourse(LessonCourse.basics);
     expect(
       find.descendant(
         of: find.byKey(const Key('today-lesson')),
@@ -87,7 +87,7 @@ void main() {
 
   testWidgets('cada paso abre su módulo', (tester) async {
     for (final (key, screen) in [
-      ('today-lesson', LessonDetailScreen),
+      ('today-lesson', LessonUnitScreen),
       ('today-workout', WorkoutsScreen),
       ('today-technique', TechniqueScreen),
     ]) {

@@ -2,10 +2,16 @@ import 'dart:convert';
 import 'dart:io';
 
 import 'package:chordmaster_free/core/i18n/tr.dart';
+import 'package:chordmaster_free/domain/courses/course.dart';
 import 'package:chordmaster_free/domain/guides/guides.dart';
 import 'package:chordmaster_free/domain/lessons/curriculum.dart';
 import 'package:chordmaster_free/domain/lessons/lesson.dart';
+import 'package:chordmaster_free/domain/melodies/basics_course.dart';
+import 'package:chordmaster_free/domain/melodies/melody_course.dart';
+import 'package:chordmaster_free/domain/open_chords/chord_shape.dart';
+import 'package:chordmaster_free/domain/open_chords/open_chords_course.dart';
 import 'package:chordmaster_free/domain/practice/technique_exercises.dart';
+import 'package:chordmaster_free/domain/strumming/strumming_course.dart';
 import 'package:chordmaster_free/domain/theory/notes.dart';
 import 'package:flutter_test/flutter_test.dart';
 
@@ -13,6 +19,27 @@ import '../../support/chord_data.dart';
 
 void main() {
   final chords = {for (final c in loadChordJson()) c['displayName'] as String: c};
+  ChordShape shapeOf(String name) => ChordShape(
+    name: name,
+    frets: (chords[name]!['fretPositions'] as List).cast<int>(),
+    fingers: (chords[name]!['fingerPositions'] as List).cast<int>(),
+  );
+  final courseStepIds = <LessonCourse, Set<String>>{
+    LessonCourse.basics: basicsStepsById.keys.toSet(),
+    LessonCourse.melodies: melodyStepsById.keys.toSet(),
+    LessonCourse.openChords: {
+      for (final s in courseSteps(buildOpenChordsCourse(
+        {for (final n in openChordsCourseChords) n: shapeOf(n)},
+      )))
+        s.id,
+    },
+    LessonCourse.strumming: {
+      for (final s in courseSteps(buildStrummingCourse(
+        {for (final n in strummingCourseChords) n: shapeOf(n)},
+      )))
+        s.id,
+    },
+  };
   final scalesJson =
       jsonDecode(File('assets/data/scales_master.json').readAsStringSync())
           as Map<String, dynamic>;
@@ -70,6 +97,8 @@ void main() {
             case WorkoutLink(:final scale):
               expect(scales.keys, contains(scale.scaleId), reason: g.id);
               expect(scale.root, inInclusiveRange(0, 11), reason: g.id);
+            case CourseLink(:final course, :final stepId):
+              expect(courseStepIds[course], contains(stepId), reason: g.id);
             case ModuleLink():
               break;
           }
@@ -192,8 +221,15 @@ void main() {
     });
 
     test('4/4: cuatro negras o, en corcheas, ocho golpes por compás', () {
-      expect(lessonsById['f7_quarter_strum']!.strumPattern!.replaceAll(' ', ''), 'DDDD');
+      expect(strummingPatterns.first.replaceAll(' ', ''), 'DDDD');
       expect(lessonsById['r1_eighths']!.strumPattern?.length ?? 8, 8);
+    });
+
+    test('los capítulos que enlazan un curso dicen lo que hace el paso', () {
+      // «Las cuerdas al aire: E, A, D, G, B y E» → Conoce tu guitarra.
+      expect(basicsStepsById['b_meet']!.body.es, contains('E, A, D, G, B y E'));
+      // «Negras: un golpe por pulso» → Patrón 1, con un acorde.
+      expect(strummingPatterns.first, 'D D D D ');
     });
   });
 

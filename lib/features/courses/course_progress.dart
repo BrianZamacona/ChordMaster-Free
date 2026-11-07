@@ -1,11 +1,16 @@
+import 'dart:async';
+
 import 'package:flutter/foundation.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 
 import '../../domain/courses/course.dart';
+import '../../domain/practice/multi_day_challenges.dart';
+import '../../services/activity_log.dart';
 import '../../services/key_value_store.dart';
 
 /// Cursos de la app, cada uno con sus claves en `userProgress`.
 enum CourseId {
+  basics(keyBest: 'basics_best_bpm', keyRead: 'basics_read'),
   melodies(keyBest: 'melodies_best_bpm', keyRead: 'melodies_read'),
   openChords(keyBest: 'open_chords_best_bpm', keyRead: 'open_chords_read'),
   strumming(keyBest: 'strumming_best_bpm', keyRead: 'strumming_read');
@@ -62,12 +67,17 @@ class CourseProgressViewModel extends Notifier<CourseProgress> {
     }
   }
 
+  /// Un paso de curso cuenta como lección del día (Práctica de hoy y retos).
+  void _practiced() =>
+      unawaited(ref.read(activityLogProvider.notifier).record(PracticeActivity.lessons));
+
   /// "Me salió limpio a [bpm]": guarda el tempo si supera el mejor.
   Future<void> saveClean(String stepId, int bpm) async {
     final current = state.best[stepId];
     if (current != null && current >= bpm) return;
     final best = {...state.best, stepId: bpm};
     state = state.copyWith(best: best);
+    _practiced();
     try {
       await _storage.save(StorageBoxes.userProgress, course.keyBest, best);
     } catch (e, st) {
@@ -78,8 +88,10 @@ class CourseProgressViewModel extends Notifier<CourseProgress> {
   /// Marca un paso de teoría como leído o, si ya lo estaba, como pendiente.
   Future<void> toggleRead(String stepId) async {
     final read = {...state.read};
-    if (!read.remove(stepId)) read.add(stepId);
+    final nowRead = !read.remove(stepId);
+    if (nowRead) read.add(stepId);
     state = state.copyWith(read: read);
+    if (nowRead) _practiced();
     try {
       await _storage.save(
         StorageBoxes.userProgress,
