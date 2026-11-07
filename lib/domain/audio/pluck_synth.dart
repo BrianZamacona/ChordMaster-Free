@@ -90,8 +90,15 @@ Float64List renderNotes(
   return mix;
 }
 
+/// Segundos entre una cuerda y la siguiente al rasguear.
+const defaultStrumGap = 0.035;
+
 /// Rasgueo de grave a aguda: [midiNotes] separadas [strum] segundos.
-Float64List renderStrum(List<int> midiNotes, {double strum = 0.035, double seconds = 2.5}) {
+Float64List renderStrum(
+  List<int> midiNotes, {
+  double strum = defaultStrumGap,
+  double seconds = 2.5,
+}) {
   final sorted = [...midiNotes]..sort();
   return renderNotes(
     [for (final (i, m) in sorted.indexed) (midi: m, at: i * strum)],

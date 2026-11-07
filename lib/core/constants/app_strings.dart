@@ -398,6 +398,30 @@ class AppStrings {
     en: 'Save a clean tempo',
   );
   static String get hubMelodies => tr(es: 'Melodías', en: 'Melodies');
+  static String get hubOpenChords =>
+      tr(es: 'Acordes abiertos – Parte 1', en: 'Open chords – Part 1');
+  static String get hubOpenChordsSub => tr(
+    es: 'Curso por niveles: Em, G, D y C dedo a dedo, sus cambios y canciones.',
+    en: 'A course by levels: Em, G, D and C finger by finger, their changes and songs.',
+  );
+  static String get openChordsIntro => tr(
+    es: 'Aprende Em, G, D y C: cada uno se arma dedo a dedo, luego se practican '
+        'los cambios entre ellos y se tocan canciones de dominio público con '
+        'solo esos acordes. Cada ejercicio y canción da hasta tres estrellas '
+        'según el tempo al que te sale limpio.',
+    en: 'Learn Em, G, D and C: each one is built finger by finger, then you '
+        'practice the changes between them and play public-domain songs with '
+        'only those chords. Each exercise and song gives up to three stars by '
+        'the tempo you can play it cleanly.',
+  );
+  static String get openChordsStrumNote => tr(
+    es: 'Suena un golpe hacia abajo por pulso: sirve para los cambios; el '
+        'rasgueo de cada canción lo pones tú.',
+    en: 'It plays one downstrum per beat: it is for the changes; you add each '
+        "song's strum.",
+  );
+  static String openChordsTimeSignature(int beats, int bpm) =>
+      tr(es: '$beats/4 · $bpm BPM', en: '$beats/4 · $bpm BPM');
   static String get hubMelodiesSub => tr(
     es: 'Curso por niveles: de las cuerdas agudas a tocar canciones de memoria.',
     en: 'A course by levels: from the high strings to playing songs by heart.',
