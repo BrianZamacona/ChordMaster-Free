@@ -126,10 +126,19 @@ void main() {
     expect(store.progress[CourseId.openChords.keyBest], {'oc_em_f1': 60});
   });
 
-  testWidgets('una canción muestra sus compases', (tester) async {
-    await open(tester, '/learn/open-chords/oc_song_skip_to_my_lou');
+  testWidgets('una canción muestra sus compases, cuatro por renglón a 360 dp', (
+    tester,
+  ) async {
+    await open(
+      tester,
+      '/learn/open-chords/oc_song_skip_to_my_lou',
+      size: const Size(360, 3000),
+    );
     expect(find.byKey(const Key('strum-chart')), findsOneWidget);
-    expect(find.byKey(const Key('strum-slot-7')), findsOneWidget);
+    double y(int i) => tester.getTopLeft(find.byKey(Key('strum-slot-$i'))).dy;
+    expect(y(3), y(0));
+    expect(y(4), greaterThan(y(3)));
+    expect(y(7), y(4));
     expect(find.text('Tradicional (EE. UU., s. XIX)'), findsWidgets);
   });
 

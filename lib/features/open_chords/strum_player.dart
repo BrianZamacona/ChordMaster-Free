@@ -72,9 +72,15 @@ class _StrumPlayerState extends ConsumerState<StrumPlayer> {
   void _play() {
     _active.value = _token;
     final w = widget;
-    ref.read(audioServiceProvider).playNotes(
+    ref
+        .read(audioServiceProvider)
+        .playNotes(
           strumEvents(w.slots, bpm: w.bpm, beatsPerSlot: w.beatsPerSlot),
-          seconds: strumDurationSeconds(w.slots.length, bpm: w.bpm, beatsPerSlot: w.beatsPerSlot),
+          seconds: strumDurationSeconds(
+            w.slots.length,
+            bpm: w.bpm,
+            beatsPerSlot: w.beatsPerSlot,
+          ),
           ring: strumRingSeconds(w.bpm),
         );
     _clock
@@ -121,42 +127,59 @@ class _StrumPlayerState extends ConsumerState<StrumPlayer> {
     return Column(
       crossAxisAlignment: CrossAxisAlignment.stretch,
       children: [
-        Wrap(
-          key: const Key('strum-chart'),
-          spacing: 6,
-          runSpacing: 6,
-          children: [
-            for (final bar in bars)
-              Container(
-                padding: const EdgeInsets.symmetric(horizontal: 8, vertical: 6),
-                decoration: BoxDecoration(
-                  border: Border(left: BorderSide(color: p.outline, width: 2)),
-                ),
-                child: Row(
-                  mainAxisSize: MainAxisSize.min,
-                  children: [
-                    for (final i in bar)
-                      Container(
-                        key: Key('strum-slot-$i'),
-                        margin: const EdgeInsets.only(right: 4),
-                        padding: const EdgeInsets.symmetric(horizontal: 8, vertical: 4),
-                        decoration: BoxDecoration(
-                          color: i == _index ? p.accent : null,
-                          borderRadius: BorderRadius.circular(6),
-                        ),
-                        child: Text(
-                          w.slots[i].name,
-                          style: musicMono(
-                            fontSize: 16,
-                            fontWeight: FontWeight.w600,
-                            color: i == _index ? p.onAccent : p.textPrimary,
-                          ),
-                        ),
+        // Cuatro compases por renglón, como en una partitura (dos si cada
+        // compás lleva dos acordes).
+        LayoutBuilder(
+          builder: (context, box) {
+            final perRow = perBar == 1 ? 4 : 2;
+            final width = (box.maxWidth - 6 * (perRow - 1)) / perRow;
+            return Wrap(
+              key: const Key('strum-chart'),
+              spacing: 6,
+              runSpacing: 6,
+              children: [
+                for (final bar in bars)
+                  Container(
+                    width: width,
+                    padding: const EdgeInsets.symmetric(
+                      horizontal: 4,
+                      vertical: 6,
+                    ),
+                    decoration: BoxDecoration(
+                      border: Border(
+                        left: BorderSide(color: p.outline, width: 2),
                       ),
-                  ],
-                ),
-              ),
-          ],
+                    ),
+                    child: Row(
+                      mainAxisSize: MainAxisSize.min,
+                      children: [
+                        for (final i in bar)
+                          Container(
+                            key: Key('strum-slot-$i'),
+                            margin: const EdgeInsets.only(right: 4),
+                            padding: const EdgeInsets.symmetric(
+                              horizontal: 8,
+                              vertical: 4,
+                            ),
+                            decoration: BoxDecoration(
+                              color: i == _index ? p.accent : null,
+                              borderRadius: BorderRadius.circular(6),
+                            ),
+                            child: Text(
+                              w.slots[i].name,
+                              style: musicMono(
+                                fontSize: 16,
+                                fontWeight: FontWeight.w600,
+                                color: i == _index ? p.onAccent : p.textPrimary,
+                              ),
+                            ),
+                          ),
+                      ],
+                    ),
+                  ),
+              ],
+            );
+          },
         ),
         const SizedBox(height: 10),
         Row(

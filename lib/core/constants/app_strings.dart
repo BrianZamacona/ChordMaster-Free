@@ -398,8 +398,9 @@ class AppStrings {
     en: 'Save a clean tempo',
   );
   static String get hubMelodies => tr(es: 'Melodías', en: 'Melodies');
+  // Espacio duro antes del número: "Parte 1" no se parte en dos renglones.
   static String get hubOpenChords =>
-      tr(es: 'Acordes abiertos – Parte 1', en: 'Open chords – Part 1');
+      tr(es: 'Acordes abiertos – Parte\u00a01', en: 'Open chords – Part\u00a01');
   static String get hubOpenChordsSub => tr(
     es: 'Curso por niveles: Em, G, D y C dedo a dedo, sus cambios y canciones.',
     en: 'A course by levels: Em, G, D and C finger by finger, their changes and songs.',
