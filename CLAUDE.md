@@ -220,7 +220,22 @@ cada nota pertenezca a la escala. No bajar la tolerancia de 0.
   desliza, que pasa a la cuerda vecina o lugar repetido con otro dedo).
 - Canciones: solo acordes, un acorde por compás, de dominio público (tradicionales, Foster,
   Newton), con su origen; un test exige que solo usen acordes ya aprendidos. El reproductor
-  (`StrumPlayer`) rasguea un golpe hacia abajo por pulso; la pantalla lo aclara.
+  (`StrumPlayer`, en `features/courses/`) rasguea un golpe hacia abajo por pulso; la pantalla
+  lo aclara. Las canciones viven en `lib/domain/courses/course_songs.dart` (una sola lista para
+  todos los cursos).
+
+## Curso de patrones de rasgueo (Parte 1)
+- `lib/domain/strumming/`, rutas `/learn/strumming` y `/learn/strumming/:id`. Cinco patrones de
+  4/4 (`strummingPatterns`, una letra por corchea: `D`, `U` o espacio, el mismo formato que
+  `Lesson.strumPattern`) con Em, G, D y C. Cada patrón: aprenderlo, con uno, dos y cuatro
+  acordes, consejos; luego "el patrón en canciones"; antes del 5, combinar 3 y 4; al final,
+  tres partes. Inspirado en cursos tipo "Strumming Patterns – Part 1", en vertical.
+- Todos los patrones siguen el péndulo (`followsPendulum`: abajo en los números, arriba en las
+  "y"; hay test). Los textos de cada patrón y sus consejos se generan del patrón.
+- Audio (`strumEvents` con `patterns`): abajo suenan todas las cuerdas de grave a aguda; arriba,
+  las `upStrumStrings` (4) más agudas, de aguda a grave. `StrumPatternView`
+  (`lesson_widgets.dart`, el mismo de las lecciones) resalta la corchea que suena.
+- Digitaciones por `courseChordShapesProvider` (una lectura para todos los cursos).
 
 ## Guías y capo
 - Guías (`lib/domain/guides/guides.dart`, rutas `/learn/guides` y `/learn/guides/:id`): recorridos

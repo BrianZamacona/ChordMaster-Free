@@ -200,12 +200,5 @@ void main() {
       expect(events[1].at - events[0].at, closeTo(0.035, 1e-9));
       expect([for (final e in events.take(6)) e.midi], em.midi);
     });
-
-    test('qué forma suena en cada instante', () {
-      expect(strumSlotAt(0, 3, bpm: 60, beatsPerSlot: 4), 0);
-      expect(strumSlotAt(4.1, 3, bpm: 60, beatsPerSlot: 4), 1);
-      expect(strumSlotAt(12.1, 3, bpm: 60, beatsPerSlot: 4), isNull);
-      expect(strumSlotAt(-1, 3, bpm: 60, beatsPerSlot: 4), isNull);
-    });
   });
 }

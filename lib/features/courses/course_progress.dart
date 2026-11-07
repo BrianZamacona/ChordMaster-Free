@@ -7,7 +7,8 @@ import '../../services/key_value_store.dart';
 /// Cursos de la app, cada uno con sus claves en `userProgress`.
 enum CourseId {
   melodies(keyBest: 'melodies_best_bpm', keyRead: 'melodies_read'),
-  openChords(keyBest: 'open_chords_best_bpm', keyRead: 'open_chords_read');
+  openChords(keyBest: 'open_chords_best_bpm', keyRead: 'open_chords_read'),
+  strumming(keyBest: 'strumming_best_bpm', keyRead: 'strumming_read');
 
   const CourseId({required this.keyBest, required this.keyRead});
 

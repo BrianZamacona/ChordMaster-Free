@@ -5,16 +5,10 @@ import '../../core/constants/app_strings.dart';
 import '../../core/widgets/chord_diagram.dart';
 import '../../data/repository/scale_repository.dart';
 import '../../domain/lessons/lesson.dart';
+import '../../domain/strumming/strum_pattern.dart';
 import '../../domain/theory/notes.dart';
 import '../../ui/theme.dart';
 import '../chords/chord_viewmodel.dart';
-
-/// Conteo de la corchea [index] de [pattern]: un compás de 6 corcheas es 6/8 y
-/// se cuenta de 1 a 6; uno de 8 es 4/4 y se cuenta "1 [and] 2 [and]…".
-String strumCountAt(String pattern, int index, String and) {
-  if (pattern.length == 6) return '${index + 1}';
-  return index.isEven ? '${index ~/ 2 + 1}' : and;
-}
 
 /// Nombre visible de cada camino.
 String trackName(LessonTrack track) => switch (track) {
@@ -189,6 +183,83 @@ class StepRail extends StatelessWidget {
           line(visible: !isLast, done: bottomDone),
         ],
       ),
+    );
+  }
+}
+
+/// Una celda por corchea: flecha y conteo ("1 y 2 y…"; en 6/8, de 1 a 6).
+/// La de [highlight] se pinta llena.
+class StrumPatternView extends StatelessWidget {
+  const StrumPatternView({super.key, required this.pattern, this.highlight});
+
+  final String pattern;
+
+  /// Corchea que está sonando; va resaltada.
+  final int? highlight;
+
+  @override
+  Widget build(BuildContext context) {
+    final p = context.palette;
+    final and = AppStrings.lessonStrumAnd;
+    return Column(
+      crossAxisAlignment: CrossAxisAlignment.start,
+      children: [
+        Row(
+          children: [
+            for (final (i, stroke) in pattern.split('').indexed)
+              Expanded(
+                child: Container(
+                  margin: const EdgeInsets.symmetric(horizontal: 2),
+                  padding: const EdgeInsets.symmetric(vertical: 8),
+                  key: Key('strum-cell-$i'),
+                  decoration: BoxDecoration(
+                    color: i == highlight
+                        ? p.accent
+                        : stroke == ' '
+                        ? p.surfaceHigh
+                        : p.accent.withValues(alpha: 0.14),
+                    borderRadius: BorderRadius.circular(8),
+                  ),
+                  child: Column(
+                    children: [
+                      Text(
+                        switch (stroke) {
+                          'D' => '↓',
+                          'U' => '↑',
+                          _ => '—',
+                        },
+                        style: musicMono(
+                          fontSize: 18,
+                          fontWeight: FontWeight.w600,
+                          color: i == highlight
+                              ? p.onAccent
+                              : stroke == ' '
+                              ? p.textSecondary
+                              : p.accent,
+                        ),
+                      ),
+                      Text(
+                        strumCountAt(pattern, i, and),
+                        style: musicMono(
+                          fontSize: 12,
+                          color: i == highlight ? p.onAccent : p.textSecondary,
+                        ),
+                      ),
+                    ],
+                  ),
+                ),
+              ),
+          ],
+        ),
+        const SizedBox(height: 8),
+        Text(
+          AppStrings.lessonStrumHint,
+          style: Theme.of(context)
+              .textTheme
+              .bodySmall
+              ?.copyWith(color: p.textSecondary),
+        ),
+      ],
     );
   }
 }

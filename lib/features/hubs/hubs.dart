@@ -32,6 +32,12 @@ class LearnHubScreen extends StatelessWidget {
             route: '/learn/open-chords',
           ),
           HubEntry(
+            icon: Icons.swap_vert_rounded,
+            title: AppStrings.hubStrumming,
+            subtitle: AppStrings.hubStrummingSub,
+            route: '/learn/strumming',
+          ),
+          HubEntry(
             icon: Icons.queue_music,
             title: AppStrings.hubMelodies,
             subtitle: AppStrings.hubMelodiesSub,

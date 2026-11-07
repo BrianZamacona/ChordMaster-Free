@@ -399,6 +399,31 @@ class AppStrings {
   );
   static String get hubMelodies => tr(es: 'Melodías', en: 'Melodies');
   // Espacio duro antes del número: "Parte 1" no se parte en dos renglones.
+  static String get hubStrumming => tr(
+    es: 'Patrones de rasgueo – Parte\u00a01',
+    en: 'Strumming patterns – Part\u00a01',
+  );
+  static String get hubStrummingSub => tr(
+    es: 'Cinco rasgueos con Em, G, D y C: tempo, conteo, péndulo y canciones.',
+    en: 'Five strums with Em, G, D and C: tempo, counting, pendulum and songs.',
+  );
+  static String get strummingIntro => tr(
+    es: 'Sigue con Em, G, D y C, ahora con cinco patrones de rasgueo hacia '
+        'abajo y hacia arriba. Aprendes qué es el tempo, el pulso, los BPM y el '
+        '4/4, a contar «1 y 2 y» y a mover la mano como un péndulo. Cada '
+        'ejercicio y canción da hasta tres estrellas según el tempo al que te '
+        'sale limpio.',
+    en: 'Keep going with Em, G, D and C, now with five strumming patterns using '
+        'down and up strokes. You learn what tempo, beat, BPM and 4/4 are, how '
+        'to count “1 and 2 and” and how to move your hand like a pendulum. Each '
+        'exercise and song gives up to three stars by the tempo you can play it '
+        'cleanly.',
+  );
+  static String get strummingPlayerNote => tr(
+    es: 'Abajo suenan las seis cuerdas; arriba, las cuatro más agudas.',
+    en: 'Down strums ring all six strings; up strums, the four highest.',
+  );
+  // Espacio duro antes del número: "Parte 1" no se parte en dos renglones.
   static String get hubOpenChords =>
       tr(es: 'Acordes abiertos – Parte\u00a01', en: 'Open chords – Part\u00a01');
   static String get hubOpenChordsSub => tr(

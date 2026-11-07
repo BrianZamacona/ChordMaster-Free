@@ -272,6 +272,8 @@ void main() {
     ) async {
       await open(tester, '/learn');
       expect(find.text(AppStrings.hubCircleSub), findsOneWidget);
+      await tester.ensureVisible(find.text(AppStrings.hubCircleSub));
+      await tester.pump();
       await tester.tap(find.text(AppStrings.hubCircleSub));
       await settle(tester);
       expect(find.byKey(const Key('circle-wheel')), findsOneWidget);
@@ -280,7 +282,7 @@ void main() {
       await tester.tap(find.byType(BackButton));
       await settle(tester);
       expect(find.byKey(const Key('circle-wheel')), findsNothing);
-      expect(find.text(AppStrings.hubCircleSub), findsOneWidget);
+      expect(find.text(AppStrings.hubCircleSub, skipOffstage: false), findsOneWidget);
     });
 
     testWidgets('cambiar de tonalidad actualiza el panel', (tester) async {
