@@ -200,6 +200,28 @@ cada nota pertenezca a la escala. No bajar la tolerancia de 0.
   corcheas iguales: la pantalla lo aclara (el ritmo de la canción lo pone quien toca).
 - La línea vertical de pasos es `StepRail` (`lesson_widgets.dart`), la misma de la unidad.
 
+## Cursos por niveles (base común)
+- `lib/domain/courses/course.dart`: `CourseStep` (teoría, ejercicio, canción), `CourseLevel`,
+  estrellas por tempo (`courseStarTempos`, `starsFor`, `startTempoFor`) y `CourseProgress`.
+  Pantallas comunes en `lib/features/courses/` (`CourseOverview`, `CourseStepView`,
+  `CourseStars`) y progreso por curso en `courseProgressProvider(CourseId.x)`, con sus claves
+  en `userProgress` (`melodies_*`, `open_chords_*`). Curso nuevo = un `CourseId` más, sin
+  copiar pantallas.
+
+## Curso de acordes abiertos (Parte 1)
+- `lib/domain/open_chords/`, rutas `/learn/open-chords` y `/learn/open-chords/:id`. Em, G, D y C
+  (`openChordsCourseChords`); detrás de cada acorde nuevo, sus cambios con los anteriores
+  (Em–G, D–G, D–Em, C–Em, C–G, C–D) y un final. Inspirado en cursos tipo "Open Chords – Part 1",
+  en vertical (decisión del usuario).
+- Las digitaciones salen de `chords.json` (`ChordShape`, armado en `openChordsCourseProvider`);
+  el curso solo dice el orden. Dedo a dedo = `ChordShape.partial`: las cuerdas de los dedos que
+  faltan no se tocan (X), así todo lo que suena es del acorde (hay test). Textos de "cómo se
+  toca", consejos y cambios generados de la forma (`ChordChange`: dedo que se queda, que se
+  desliza, que pasa a la cuerda vecina o lugar repetido con otro dedo).
+- Canciones: solo acordes, un acorde por compás, de dominio público (tradicionales, Foster,
+  Newton), con su origen; un test exige que solo usen acordes ya aprendidos. El reproductor
+  (`StrumPlayer`) rasguea un golpe hacia abajo por pulso; la pantalla lo aclara.
+
 ## Guías y capo
 - Guías (`lib/domain/guides/guides.dart`, rutas `/learn/guides` y `/learn/guides/:id`): recorridos
   por tema agrupados en filas (`GuideCategory`). No traen trastes propios: cada capítulo enlaza

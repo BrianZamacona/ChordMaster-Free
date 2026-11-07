@@ -5,6 +5,7 @@
 library;
 
 import '../../core/i18n/tr.dart';
+import '../courses/course.dart';
 import '../lessons/lesson.dart';
 import '../practice/scale_workouts.dart';
 import '../theory/notes.dart';
@@ -42,10 +43,8 @@ TabNote _place(int midi, int minFret, int maxFret, String name) {
   return best;
 }
 
-enum MelodyStepKind { theory, exercise, song }
-
 /// Un paso del curso. Los de teoría no tienen notas.
-class MelodyStep {
+class MelodyStep implements CourseStep {
   const MelodyStep({
     required this.id,
     required this.kind,
@@ -58,9 +57,11 @@ class MelodyStep {
     this.origin,
   });
 
-  /// Identificador estable: es la clave guardada en el progreso.
+  @override
   final String id;
-  final MelodyStepKind kind;
+  @override
+  final CourseStepKind kind;
+  @override
   final LocalizedText title;
   final LocalizedText body;
 
@@ -73,7 +74,7 @@ class MelodyStep {
   /// rutinas de escala.
   final bool thirds;
 
-  /// De dónde viene una canción (tradicional, compositor y año).
+  @override
   final LocalizedText? origin;
 
   /// La tablatura que se toca.
@@ -85,28 +86,17 @@ class MelodyStep {
   }
 }
 
-class MelodyLevel {
+class MelodyLevel extends CourseLevel<MelodyStep> {
   const MelodyLevel({
-    required this.title,
-    required this.intro,
+    required super.title,
+    required super.intro,
     required this.scale,
-    required this.steps,
+    required super.steps,
   });
-
-  final LocalizedText title;
-  final LocalizedText intro;
 
   /// Escala de todas sus notas (un test lo verifica).
   final LessonScale scale;
-  final List<MelodyStep> steps;
 }
-
-/// Tempos que dan una, dos y tres estrellas al tocar un paso limpio.
-const melodyStarTempos = [60, 80, 100];
-
-/// Estrellas de un paso con mejor tempo limpio [bestBpm].
-int starsFor(int? bestBpm) =>
-    bestBpm == null ? 0 : melodyStarTempos.where((t) => bestBpm >= t).length;
 
 const _cMajor = LessonScale(scaleId: 'major', root: 0);
 
@@ -123,7 +113,7 @@ const melodyCourse = [
     steps: [
       MelodyStep(
         id: 'm1_notes',
-        kind: MelodyStepKind.theory,
+        kind: CourseStepKind.theory,
         title: LocalizedText(es: 'Las notas de C mayor', en: 'The notes of C major'),
         body: LocalizedText(
           es: 'En la 3ª cuerda: G al aire y A en el traste 2. En la 2ª: B al '
@@ -138,7 +128,7 @@ const melodyCourse = [
       ),
       MelodyStep(
         id: 'm1_ladder',
-        kind: MelodyStepKind.exercise,
+        kind: CourseStepKind.exercise,
         title: LocalizedText(es: 'Escalera de G a G', en: 'Ladder from G to G'),
         body: LocalizedText(
           es: 'Las ocho notas de G a G, de la 3ª cuerda a la 1ª.',
@@ -148,7 +138,7 @@ const melodyCourse = [
       ),
       MelodyStep(
         id: 'm1_twinkle',
-        kind: MelodyStepKind.song,
+        kind: CourseStepKind.song,
         title: LocalizedText(es: 'Estrellita', en: 'Twinkle, Twinkle'),
         body: LocalizedText(
           es: 'La canción infantil, en C. Empieza en el C del traste 1 de la 2ª '
@@ -186,7 +176,7 @@ const melodyCourse = [
     steps: [
       MelodyStep(
         id: 'm2_skips',
-        kind: MelodyStepKind.theory,
+        kind: CourseStepKind.theory,
         title: LocalizedText(es: 'Terceras', en: 'Thirds'),
         body: LocalizedText(
           es: 'Una tercera salta una nota de la escala: de C a E, de D a F. En '
@@ -197,7 +187,7 @@ const melodyCourse = [
       ),
       MelodyStep(
         id: 'm2_thirds',
-        kind: MelodyStepKind.exercise,
+        kind: CourseStepKind.exercise,
         title: LocalizedText(es: 'Escalera en terceras', en: 'Ladder in thirds'),
         body: LocalizedText(
           es: 'G-B, A-C, B-D… cada nota y la que está dos lugares más arriba.',
@@ -208,7 +198,7 @@ const melodyCourse = [
       ),
       MelodyStep(
         id: 'm2_frere',
-        kind: MelodyStepKind.song,
+        kind: CourseStepKind.song,
         title: LocalizedText(es: 'Martinillo', en: 'Frère Jacques'),
         body: LocalizedText(
           es: 'El canon, en C. Al final baja al G al aire de la 3ª cuerda.',
@@ -242,7 +232,7 @@ const melodyCourse = [
     steps: [
       MelodyStep(
         id: 'm3_position',
-        kind: MelodyStepKind.theory,
+        kind: CourseStepKind.theory,
         title: LocalizedText(es: 'La posición V', en: 'Position V'),
         body: LocalizedText(
           es: 'El índice va en el traste 5. El C del traste 5 de la 3ª cuerda es '
@@ -253,7 +243,7 @@ const melodyCourse = [
       ),
       MelodyStep(
         id: 'm3_ladder',
-        kind: MelodyStepKind.exercise,
+        kind: CourseStepKind.exercise,
         title: LocalizedText(es: 'C mayor en la posición V', en: 'C major in position V'),
         body: LocalizedText(
           es: 'De C a C, de la 3ª cuerda a la 1ª, entre los trastes 5 y 8.',
@@ -265,7 +255,7 @@ const melodyCourse = [
       ),
       MelodyStep(
         id: 'm3_ode',
-        kind: MelodyStepKind.song,
+        kind: CourseStepKind.song,
         title: LocalizedText(es: 'Himno de la alegría arriba', en: 'Ode to Joy up high'),
         body: LocalizedText(
           es: 'La melodía que ya tocaste al aire, ahora en la posición V.',
@@ -295,7 +285,7 @@ const melodyCourse = [
     steps: [
       MelodyStep(
         id: 'm4_memory',
-        kind: MelodyStepKind.theory,
+        kind: CourseStepKind.theory,
         title: LocalizedText(es: 'Tocar de memoria', en: 'Playing by heart'),
         body: LocalizedText(
           es: 'Aprende la canción por frases: toca la primera tres veces sin '
@@ -306,7 +296,7 @@ const melodyCourse = [
       ),
       MelodyStep(
         id: 'm4_mary',
-        kind: MelodyStepKind.song,
+        kind: CourseStepKind.song,
         title: LocalizedText(es: 'María tenía un corderito', en: 'Mary Had a Little Lamb'),
         body: LocalizedText(
           es: 'En C, con solo cuatro notas: C, D, E y G.',
@@ -326,7 +316,7 @@ const melodyCourse = [
       ),
       MelodyStep(
         id: 'm4_london',
-        kind: MelodyStepKind.song,
+        kind: CourseStepKind.song,
         title: LocalizedText(es: 'El puente de Londres', en: 'London Bridge'),
         body: LocalizedText(
           es: 'En C. La melodía baja de G a E y vuelve a subir.',
@@ -353,7 +343,3 @@ final Map<String, MelodyStep> melodyStepsById = {
   for (final l in melodyCourse)
     for (final s in l.steps) s.id: s,
 };
-
-/// Nivel de un paso (desde 1).
-int levelOf(MelodyStep step) =>
-    melodyCourse.indexWhere((l) => l.steps.contains(step)) + 1;

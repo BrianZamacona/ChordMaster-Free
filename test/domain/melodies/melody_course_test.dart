@@ -1,6 +1,7 @@
 import 'dart:convert';
 import 'dart:io';
 
+import 'package:chordmaster_free/domain/courses/course.dart';
 import 'package:chordmaster_free/domain/lessons/lesson.dart';
 import 'package:chordmaster_free/domain/melodies/melody_course.dart';
 import 'package:chordmaster_free/domain/theory/notes.dart';
@@ -63,25 +64,17 @@ void main() {
       final ids = [for (final l in melodyCourse) for (final s in l.steps) s.id];
       expect(ids.toSet(), hasLength(ids.length));
       for (final s in melodyStepsById.values) {
-        if (s.kind == MelodyStepKind.theory) {
+        if (s.kind == CourseStepKind.theory) {
           expect(s.pitches, isEmpty, reason: s.id);
         } else {
           expect(s.pitches.length, greaterThanOrEqualTo(8), reason: s.id);
         }
-        if (s.kind == MelodyStepKind.song) expect(s.origin, isNotNull, reason: s.id);
+        if (s.kind == CourseStepKind.song) expect(s.origin, isNotNull, reason: s.id);
         for (final t in [s.title, s.body, ?s.origin]) {
           expect(t.es.trim(), isNotEmpty);
           expect(t.en.trim(), isNotEmpty);
         }
       }
-    });
-
-    test('estrellas: 60, 80 y 100 BPM', () {
-      expect(starsFor(null), 0);
-      expect(starsFor(55), 0);
-      expect(starsFor(60), 1);
-      expect(starsFor(95), 2);
-      expect(starsFor(120), 3);
     });
   });
 

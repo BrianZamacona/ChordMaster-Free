@@ -398,6 +398,31 @@ class AppStrings {
     en: 'Save a clean tempo',
   );
   static String get hubMelodies => tr(es: 'Melodías', en: 'Melodies');
+  // Espacio duro antes del número: "Parte 1" no se parte en dos renglones.
+  static String get hubOpenChords =>
+      tr(es: 'Acordes abiertos – Parte\u00a01', en: 'Open chords – Part\u00a01');
+  static String get hubOpenChordsSub => tr(
+    es: 'Curso por niveles: Em, G, D y C dedo a dedo, sus cambios y canciones.',
+    en: 'A course by levels: Em, G, D and C finger by finger, their changes and songs.',
+  );
+  static String get openChordsIntro => tr(
+    es: 'Aprende Em, G, D y C: cada uno se arma dedo a dedo, luego se practican '
+        'los cambios entre ellos y se tocan canciones de dominio público con '
+        'solo esos acordes. Cada ejercicio y canción da hasta tres estrellas '
+        'según el tempo al que te sale limpio.',
+    en: 'Learn Em, G, D and C: each one is built finger by finger, then you '
+        'practice the changes between them and play public-domain songs with '
+        'only those chords. Each exercise and song gives up to three stars by '
+        'the tempo you can play it cleanly.',
+  );
+  static String get openChordsStrumNote => tr(
+    es: 'Suena un golpe hacia abajo por pulso: sirve para los cambios; el '
+        'rasgueo de cada canción lo pones tú.',
+    en: 'It plays one downstrum per beat: it is for the changes; you add each '
+        "song's strum.",
+  );
+  static String openChordsTimeSignature(int beats, int bpm) =>
+      tr(es: '$beats/4 · $bpm BPM', en: '$beats/4 · $bpm BPM');
   static String get hubMelodiesSub => tr(
     es: 'Curso por niveles: de las cuerdas agudas a tocar canciones de memoria.',
     en: 'A course by levels: from the high strings to playing songs by heart.',
@@ -410,23 +435,23 @@ class AppStrings {
         'neck. Each exercise and song gives up to three stars by the tempo '
         'you can play it cleanly.',
   );
-  static String melodiesLevel(int level) =>
+  static String courseLevel(int level) =>
       tr(es: 'Nivel $level', en: 'Level $level');
-  static String get melodiesTheory => tr(es: 'Teoría', en: 'Theory');
-  static String get melodiesExercise => tr(es: 'Ejercicio', en: 'Exercise');
-  static String get melodiesSong => tr(es: 'Canción', en: 'Song');
-  static String get melodiesResults =>
+  static String get courseTheory => tr(es: 'Teoría', en: 'Theory');
+  static String get courseExercise => tr(es: 'Ejercicio', en: 'Exercise');
+  static String get courseSong => tr(es: 'Canción', en: 'Song');
+  static String get courseResults =>
       tr(es: 'Resultados del curso', en: 'Course results');
-  static String get melodiesStars => tr(es: 'estrellas', en: 'stars');
-  static String get melodiesSongs => tr(es: 'canciones', en: 'songs');
-  static String get melodiesStarRule => tr(
+  static String get courseStarsLabel => tr(es: 'estrellas', en: 'stars');
+  static String get courseSongsLabel => tr(es: 'canciones', en: 'songs');
+  static String get courseStarRule => tr(
     es: '★ a 60 BPM · ★★ a 80 · ★★★ a 100',
     en: '★ at 60 BPM · ★★ at 80 · ★★★ at 100',
   );
-  static String get melodiesRead => tr(es: 'Entendido', en: 'Got it');
-  static String get melodiesUnread =>
+  static String get courseRead => tr(es: 'Entendido', en: 'Got it');
+  static String get courseUnread =>
       tr(es: 'Marcar como pendiente', en: 'Mark as not done');
-  static String get melodiesNext => tr(es: 'Siguiente paso', en: 'Next step');
+  static String get courseNext => tr(es: 'Siguiente paso', en: 'Next step');
   static String get melodiesEvenRhythm => tr(
     es: 'Suena con todas las notas iguales (corcheas): sirve para aprender '
         'las notas; el ritmo de la canción lo pones tú.',

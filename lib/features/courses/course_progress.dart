@@ -1,22 +1,37 @@
 import 'package:flutter/foundation.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 
-import '../../domain/melodies/melody_progress.dart';
+import '../../domain/courses/course.dart';
 import '../../services/key_value_store.dart';
 
-final melodyProgressProvider =
-    NotifierProvider<MelodyProgressViewModel, MelodyProgress>(
-  MelodyProgressViewModel.new,
-);
+/// Cursos de la app, cada uno con sus claves en `userProgress`.
+enum CourseId {
+  melodies(keyBest: 'melodies_best_bpm', keyRead: 'melodies_read'),
+  openChords(keyBest: 'open_chords_best_bpm', keyRead: 'open_chords_read');
 
-class MelodyProgressViewModel extends Notifier<MelodyProgress> {
-  static const keyBest = 'melodies_best_bpm';
-  static const keyRead = 'melodies_read';
+  const CourseId({required this.keyBest, required this.keyRead});
+
+  /// Mejor tempo limpio por paso (`{id: bpm}`).
+  final String keyBest;
+
+  /// Pasos de teoría leídos (lista de ids).
+  final String keyRead;
+}
+
+final courseProgressProvider =
+    NotifierProvider.family<CourseProgressViewModel, CourseProgress, CourseId>(
+      CourseProgressViewModel.new,
+    );
+
+class CourseProgressViewModel extends Notifier<CourseProgress> {
+  CourseProgressViewModel(this.course);
+
+  final CourseId course;
 
   @override
-  MelodyProgress build() {
+  CourseProgress build() {
     _load();
-    return const MelodyProgress();
+    return const CourseProgress();
   }
 
   KeyValueStore get _storage => ref.read(keyValueStoreProvider);
@@ -25,15 +40,15 @@ class MelodyProgressViewModel extends Notifier<MelodyProgress> {
     try {
       final best = await _storage.get<Map<dynamic, dynamic>>(
             StorageBoxes.userProgress,
-            keyBest,
+            course.keyBest,
           ) ??
           const {};
       final read = await _storage.get<List<dynamic>>(
             StorageBoxes.userProgress,
-            keyRead,
+            course.keyRead,
           ) ??
           const [];
-      state = MelodyProgress(
+      state = CourseProgress(
         best: {
           for (final MapEntry(:key, :value) in best.entries)
             if (key is String && value is int) key: value,
@@ -42,7 +57,7 @@ class MelodyProgressViewModel extends Notifier<MelodyProgress> {
         read: {...read.whereType<String>(), ...state.read},
       );
     } catch (e, st) {
-      debugPrint('MelodyProgressViewModel._load error: $e\n$st');
+      debugPrint('CourseProgressViewModel._load error: $e\n$st');
     }
   }
 
@@ -53,9 +68,9 @@ class MelodyProgressViewModel extends Notifier<MelodyProgress> {
     final best = {...state.best, stepId: bpm};
     state = state.copyWith(best: best);
     try {
-      await _storage.save(StorageBoxes.userProgress, keyBest, best);
+      await _storage.save(StorageBoxes.userProgress, course.keyBest, best);
     } catch (e, st) {
-      debugPrint('MelodyProgressViewModel.saveClean error: $e\n$st');
+      debugPrint('CourseProgressViewModel.saveClean error: $e\n$st');
     }
   }
 
@@ -67,11 +82,11 @@ class MelodyProgressViewModel extends Notifier<MelodyProgress> {
     try {
       await _storage.save(
         StorageBoxes.userProgress,
-        keyRead,
+        course.keyRead,
         read.toList()..sort(),
       );
     } catch (e, st) {
-      debugPrint('MelodyProgressViewModel.toggleRead error: $e\n$st');
+      debugPrint('CourseProgressViewModel.toggleRead error: $e\n$st');
     }
   }
 }

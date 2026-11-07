@@ -23,6 +23,8 @@ import '../features/lessons/lessons_screen.dart';
 import '../features/melodies/melodies_screen.dart';
 import '../features/melodies/melody_step_screen.dart';
 import '../features/metronome/metronome_screen.dart';
+import '../features/open_chords/open_chord_step_screen.dart';
+import '../features/open_chords/open_chords_screen.dart';
 import '../features/progressions/progressions_screen.dart';
 import '../features/rhythm_games/rhythm_game_screen.dart';
 import '../features/songs/song_detail_screen.dart';
@@ -134,6 +136,17 @@ final GoRouter appRouter = GoRouter(
                 GoRoute(
                   path: 'capo',
                   builder: (_, _) => const CapoScreen(),
+                ),
+                GoRoute(
+                  path: 'open-chords',
+                  builder: (_, _) => const OpenChordsScreen(),
+                  routes: [
+                    GoRoute(
+                      path: ':id',
+                      builder: (_, state) =>
+                          OpenChordStepScreen(stepId: state.pathParameters['id']!),
+                    ),
+                  ],
                 ),
                 GoRoute(
                   path: 'melodies',
