@@ -1,9 +1,13 @@
+import 'dart:async';
+
 import 'package:flutter/foundation.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 
 import '../../domain/lessons/lesson.dart';
 import '../../domain/lessons/lesson_path.dart';
+import '../../domain/practice/multi_day_challenges.dart';
 import '../../services/achievement_service.dart';
+import '../../services/activity_log.dart';
 import '../../services/key_value_store.dart';
 
 /// Estado de la pantalla de lecciones.
@@ -87,8 +91,12 @@ class LessonsViewModel extends Notifier<LessonsState> {
   /// Marca [lessonId] como terminada o, si ya lo estaba, como pendiente.
   Future<void> toggleCompleted(String lessonId) async {
     final completed = {...state.path.completed};
-    if (!completed.remove(lessonId)) completed.add(lessonId);
+    final nowDone = !completed.remove(lessonId);
+    if (nowDone) completed.add(lessonId);
     state = state.copyWith(completed: completed);
+    if (nowDone) {
+      unawaited(ref.read(activityLogProvider.notifier).record(PracticeActivity.lessons));
+    }
     try {
       await _storage.save(
         StorageBoxes.userProgress,

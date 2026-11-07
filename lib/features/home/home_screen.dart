@@ -7,8 +7,10 @@ import '../../core/widgets/donation_button.dart';
 import '../../ui/animations.dart';
 import '../../ui/palette.dart';
 import 'home_viewmodel.dart';
+import 'today_plan_card.dart';
 
-/// Inicio: reto del día, racha de días y tarjetas de acceso a los módulos.
+/// Inicio: reto del día, práctica de hoy, racha de días y tarjetas de acceso a
+/// los módulos.
 ///
 /// This widget does not include a [Scaffold] — the shell route provides one.
 class HomeScreen extends ConsumerStatefulWidget {
@@ -93,6 +95,7 @@ class _HomeScreenState extends ConsumerState<HomeScreen>
                       slideUpFade(
                         _DailyChallengeCard(challenge: state.dailyChallenge),
                       ),
+                    slideUpFade(const TodayPlanCard()),
                     Padding(
                       padding: const EdgeInsets.fromLTRB(16, 20, 16, 8),
                       child: Text(
@@ -201,9 +204,11 @@ class _DailyChallengeCard extends StatelessWidget {
             gradient: LinearGradient(
               begin: Alignment.topLeft,
               end: Alignment.bottomRight,
+              // Opaco: con transparencia el texto claro se perdía en el tema
+              // claro.
               colors: [
-                context.palette.accent.withAlpha(200),
-                context.palette.accent.withAlpha(100),
+                context.palette.accent,
+                Color.lerp(context.palette.accent, context.palette.textPrimary, 0.25)!,
               ],
             ),
           ),
@@ -213,7 +218,7 @@ class _DailyChallengeCard extends StatelessWidget {
               Container(
                 padding: const EdgeInsets.all(10),
                 decoration: BoxDecoration(
-                  color: Colors.white24,
+                  color: context.palette.onAccent.withAlpha(40),
                   borderRadius: BorderRadius.circular(12),
                 ),
                 child: const Text('⚡', style: TextStyle(fontSize: 24)),

@@ -1,11 +1,14 @@
+import 'dart:async';
 import 'dart:math';
 import 'package:flutter/foundation.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 
 import '../../domain/audio/pluck_synth.dart' show NoteEvent;
+import '../../domain/practice/multi_day_challenges.dart';
 import '../../domain/theory/notes.dart';
 import '../../models/interval_model.dart';
 import '../../services/achievement_service.dart';
+import '../../services/activity_log.dart';
 import '../../services/audio_service.dart';
 import '../../services/key_value_store.dart';
 
@@ -192,6 +195,7 @@ class EarTrainingViewModel extends Notifier<EarTrainingState> {
   /// Interprets the user's answer [selectedInterval].
   Future<void> answer(IntervalModel selectedInterval) async {
     if (state.lastAnswerCorrect != null) return; // already answered
+    unawaited(ref.read(activityLogProvider.notifier).record(PracticeActivity.ear));
 
     final isCorrect = selectedInterval.semitones == state.currentInterval.semitones;
     final newCorrect = state.correctAnswers + (isCorrect ? 1 : 0);

@@ -1,12 +1,10 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
-import 'package:go_router/go_router.dart';
 
 import '../../core/constants/app_strings.dart';
 import '../../core/widgets/chord_diagram.dart';
 import '../../data/repository/scale_repository.dart';
 import '../../domain/lessons/lesson.dart';
-import '../../domain/lessons/lesson_path.dart';
 import '../../domain/theory/notes.dart';
 import '../../ui/theme.dart';
 import '../chords/chord_viewmodel.dart';
@@ -24,87 +22,6 @@ String trackName(LessonTrack track) => switch (track) {
       LessonTrack.rhythm => AppStrings.trackRhythm,
       LessonTrack.lead => AppStrings.trackLead,
     };
-
-/// Fila de una lección: número (o ✓), título y duración.
-class LessonTile extends StatelessWidget {
-  const LessonTile({
-    super.key,
-    required this.lesson,
-    required this.done,
-    required this.isNext,
-  });
-
-  final Lesson lesson;
-  final bool done;
-  final bool isNext;
-
-  @override
-  Widget build(BuildContext context) {
-    final p = context.palette;
-    final text = Theme.of(context).textTheme;
-    final (badgeColor, badgeText) = done
-        ? (p.success, p.onAccent)
-        : isNext
-            ? (p.accent, p.onAccent)
-            : (p.surfaceHigh, p.textSecondary);
-    return Card(
-      clipBehavior: Clip.antiAlias,
-      shape: RoundedRectangleBorder(
-        borderRadius: BorderRadius.circular(12),
-        side: isNext ? BorderSide(color: p.accent) : BorderSide.none,
-      ),
-      child: InkWell(
-        key: Key('lesson-${lesson.id}'),
-        // push: atrás vuelve a la unidad desde donde se abrió.
-        onTap: () => context.push('/learn/lessons/${lesson.id}'),
-        child: Padding(
-          padding: const EdgeInsets.all(12),
-          child: Row(
-            children: [
-              CircleAvatar(
-                radius: 20,
-                backgroundColor: badgeColor,
-                child: done
-                    ? Icon(Icons.check, color: badgeText, size: 20)
-                    : Text(
-                        LessonPath.labelOf(lesson),
-                        style: musicMono(
-                          fontSize: 13,
-                          fontWeight: FontWeight.w600,
-                          color: badgeText,
-                        ),
-                      ),
-              ),
-              const SizedBox(width: 12),
-              Expanded(
-                child: Column(
-                  crossAxisAlignment: CrossAxisAlignment.start,
-                  children: [
-                    Text(lesson.title.text, style: text.titleSmall),
-                    Text(
-                      AppStrings.lessonMinutes(lesson.minutes),
-                      style: text.bodySmall?.copyWith(color: p.textSecondary),
-                    ),
-                  ],
-                ),
-              ),
-              if (done)
-                Text(
-                  AppStrings.lessonDone,
-                  style: text.labelMedium?.copyWith(color: p.success),
-                )
-              else if (isNext)
-                Text(
-                  AppStrings.lessonNext,
-                  style: text.labelMedium?.copyWith(color: p.accent),
-                ),
-            ],
-          ),
-        ),
-      ),
-    );
-  }
-}
 
 /// El dibujo de una unidad, generado desde los datos de la app.
 class UnitArtView extends ConsumerWidget {
@@ -228,6 +145,50 @@ class _NoteRow extends StatelessWidget {
             ),
           ),
       ],
+    );
+  }
+}
+
+/// Columna de la izquierda de cada paso: la línea que une los pasos y el
+/// círculo del paso. Mide lo mismo que el contenido de la derecha.
+class StepRail extends StatelessWidget {
+  const StepRail({
+    super.key,
+    required this.circle,
+    required this.isFirst,
+    required this.isLast,
+    required this.topDone,
+    required this.bottomDone,
+  });
+
+  final Widget circle;
+  final bool isFirst;
+  final bool isLast;
+  final bool topDone;
+  final bool bottomDone;
+
+  @override
+  Widget build(BuildContext context) {
+    final p = context.palette;
+    Widget line({required bool visible, required bool done}) => Expanded(
+          child: visible
+              ? Container(width: 3, color: done ? p.accent : p.outline)
+              : const SizedBox.shrink(),
+        );
+    return SizedBox(
+      width: 48,
+      child: Column(
+        children: [
+          SizedBox(
+            height: 14,
+            child: isFirst
+                ? null
+                : Container(width: 3, color: topDone ? p.accent : p.outline),
+          ),
+          circle,
+          line(visible: !isLast, done: bottomDone),
+        ],
+      ),
     );
   }
 }

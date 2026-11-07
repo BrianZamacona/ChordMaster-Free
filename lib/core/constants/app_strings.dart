@@ -259,6 +259,230 @@ class AppStrings {
       );
   static String get circleBuildPrevious => tr(es: 'Anterior', en: 'Previous');
   static String get circleBuildNext => tr(es: 'Siguiente', en: 'Next');
+  static String get hubGuides => tr(es: 'Guías', en: 'Guides');
+  static String get hubGuidesSub => tr(
+    es: 'Recorridos por tema: géneros, técnica, escalas y teoría.',
+    en: 'Topic tours: genres, technique, scales and theory.',
+  );
+  static String get hubCapo => tr(es: '¿Qué capo uso?', en: 'Which capo?');
+  static String get hubCapoSub => tr(
+    es: 'El traste y la forma abierta para cualquier tonalidad.',
+    en: 'The fret and open shape for any key.',
+  );
+  static String get guidesTitle => tr(es: 'Guías', en: 'Guides');
+  static String get guidesIntro => tr(
+    es: 'Cada guía junta lecciones, escalas y módulos sobre un tema. Toca una '
+        'para ver sus capítulos.',
+    en: 'Each guide brings together lessons, scales and modules on one topic. '
+        'Tap one to see its chapters.',
+  );
+  static String get guidesSearch =>
+      tr(es: 'Buscar guías…', en: 'Search guides…');
+  static String get guidesNoResults => tr(
+    es: 'Ninguna guía coincide con tu búsqueda.',
+    en: 'No guide matches your search.',
+  );
+  static String get guideNotFound =>
+      tr(es: 'No encontramos esta guía.', en: 'We could not find this guide.');
+  static String guideChapters(int count) => tr(
+    es: count == 1 ? '1 capítulo' : '$count capítulos',
+    en: count == 1 ? '1 chapter' : '$count chapters',
+  );
+  static String guideMinutes(int minutes) =>
+      tr(es: 'unos $minutes min', en: 'about $minutes min');
+  static String guideDoneCount(int done, int total) =>
+      tr(es: '$done de $total hechos', en: '$done of $total done');
+  static String get guideMarkDone =>
+      tr(es: 'Marcar como hecho', en: 'Mark as done');
+  static String get guideMarkPending =>
+      tr(es: 'Marcar como pendiente', en: 'Mark as not done');
+  static String get guideContinueHere =>
+      tr(es: 'Sigue aquí', en: 'Continue here');
+  static String get guideFinished =>
+      tr(es: '¡Guía terminada!', en: 'Guide finished!');
+  static String get guideNext => tr(es: 'Siguiente guía', en: 'Next guide');
+  static String get guidesInProgress =>
+      tr(es: 'Sigue donde ibas', en: 'Pick up where you left off');
+  static String guideOpenLesson(String title) =>
+      tr(es: 'Lección: $title', en: 'Lesson: $title');
+  static String guideOpenChord(String chord) =>
+      tr(es: 'Ver el acorde $chord', en: 'See the $chord chord');
+  static String get guideOpenCapo =>
+      tr(es: 'Calcular el capo', en: 'Find the capo fret');
+  static String guideOpenModuleNamed(String name) =>
+      tr(es: 'Abrir $name', en: 'Open $name');
+  static String get capoTitle => tr(es: '¿Qué capo uso?', en: 'Which capo?');
+  static String get capoIntro => tr(
+    es: 'Elige la tonalidad que quieres que suene. Cada forma abierta te dice '
+        'en qué traste va el capo y qué tocas con la mano.',
+    en: 'Pick the key you want to hear. Each open shape tells you which fret '
+        'the capo goes on and what your hand plays.',
+  );
+  static String get capoKey => tr(es: 'Tonalidad', en: 'Key');
+  static String get capoMajor => tr(es: 'Mayor', en: 'Major');
+  static String get capoMinor => tr(es: 'Menor', en: 'Minor');
+  static String capoResults(String key) =>
+      tr(es: 'Para que suene en $key', en: 'To sound in $key');
+  static String capoNone(String shape) =>
+      tr(es: 'Sin capo · forma de $shape', en: 'No capo · $shape shape');
+  static String capoAt(int fret, String shape) => tr(
+    es: 'Capo en el traste $fret · forma de $shape',
+    en: 'Capo on fret $fret · $shape shape',
+  );
+  static String capoSounds(String chord) =>
+      tr(es: 'suena $chord', en: 'sounds $chord');
+  static String get capoTurnTitle =>
+      tr(es: 'Gira una progresión', en: 'Turn a progression');
+  static String capoTurnIntro(String key) => tr(
+    es: 'Elige una progresión: así la tocas en $key con cada capo.',
+    en: 'Pick a progression: this is how you play it in $key with each capo.',
+  );
+  static String get capoProgression =>
+      tr(es: 'Progresión', en: 'Progression');
+  static String capoTurnInKey(String key, String chords) =>
+      tr(es: 'En $key: $chords', en: 'In $key: $chords');
+  static String get capoRule => tr(
+    es: 'El capo sube cada cuerda un semitono por traste. Solo se muestran '
+        'capos hasta el traste 7: más arriba los trastes quedan muy juntos.',
+    en: 'A capo raises every string a half step per fret. Only capos up to fret '
+        '7 are shown: higher up the frets get too close together.',
+  );
+  static String get hubWorkouts =>
+      tr(es: 'Rutinas de escala', en: 'Scale workouts');
+  static String get hubWorkoutsSub => tr(
+    es: 'Ejercicios por nivel en cualquier escala y tónica, para escuchar y tocar.',
+    en: 'Exercises by level in any scale and key, to hear and play.',
+  );
+  static String get workoutsTitle =>
+      tr(es: 'Rutinas de escala', en: 'Scale workouts');
+  static String get workoutsIntro => tr(
+    es: 'Cada rutina sale de una posición real de la escala. Escúchala, sigue la '
+        'nota marcada y luego tócala tú al mismo tempo.',
+    en: 'Each workout comes from a real scale position. Listen to it, follow the '
+        'highlighted note, then play it yourself at the same tempo.',
+  );
+  static String get workoutsScale => tr(es: 'Escala', en: 'Scale');
+  static String get workoutsPrevious =>
+      tr(es: 'Posición anterior', en: 'Previous position');
+  static String get workoutsNext =>
+      tr(es: 'Posición siguiente', en: 'Next position');
+  static String workoutsPosition(
+    String position,
+    String system,
+    int start,
+    int end,
+  ) => tr(
+    es: '$position · $system · trastes $start–$end',
+    en: '$position · $system · frets $start–$end',
+  );
+  static String workoutsPositionCount(int index, int total) =>
+      tr(es: '$index de $total, de grave a aguda', en: '$index of $total, low to high');
+  static String get workoutsAddDown =>
+      tr(es: 'Agregar la bajada', en: 'Add the way down');
+  static String get workoutsOnlyUp =>
+      tr(es: 'Solo la subida', en: 'Only the way up');
+  static String get todayPlanTitle =>
+      tr(es: 'Práctica de hoy', en: "Today's practice");
+  static String get todayPlanDone =>
+      tr(es: '¡Listo por hoy!', en: 'Done for today!');
+  static String get todayLessonsAllDone =>
+      tr(es: 'Terminaste el camino', en: 'You finished the path');
+  static String todayWorkout(String scale) =>
+      tr(es: 'Rutina: $scale', en: 'Workout: $scale');
+  static String get todayWorkoutHint =>
+      tr(es: 'Escúchala y tócala al tempo', en: 'Listen, then play it in time');
+  static String todayTechnique(String exercise) =>
+      tr(es: 'Técnica: $exercise', en: 'Technique: $exercise');
+  static String get todayTechniqueHint => tr(
+    es: 'Guarda un tempo limpio',
+    en: 'Save a clean tempo',
+  );
+  static String get hubMelodies => tr(es: 'Melodías', en: 'Melodies');
+  static String get hubMelodiesSub => tr(
+    es: 'Curso por niveles: de las cuerdas agudas a tocar canciones de memoria.',
+    en: 'A course by levels: from the high strings to playing songs by heart.',
+  );
+  static String get melodiesIntro => tr(
+    es: 'Aprende a tocar melodías en las cuerdas agudas y luego más arriba del '
+        'mástil. Cada ejercicio y canción da hasta tres estrellas según el '
+        'tempo al que te sale limpio.',
+    en: 'Learn to play melodies on the high strings and then higher up the '
+        'neck. Each exercise and song gives up to three stars by the tempo '
+        'you can play it cleanly.',
+  );
+  static String melodiesLevel(int level) =>
+      tr(es: 'Nivel $level', en: 'Level $level');
+  static String get melodiesTheory => tr(es: 'Teoría', en: 'Theory');
+  static String get melodiesExercise => tr(es: 'Ejercicio', en: 'Exercise');
+  static String get melodiesSong => tr(es: 'Canción', en: 'Song');
+  static String get melodiesResults =>
+      tr(es: 'Resultados del curso', en: 'Course results');
+  static String get melodiesStars => tr(es: 'estrellas', en: 'stars');
+  static String get melodiesSongs => tr(es: 'canciones', en: 'songs');
+  static String get melodiesStarRule => tr(
+    es: '★ a 60 BPM · ★★ a 80 · ★★★ a 100',
+    en: '★ at 60 BPM · ★★ at 80 · ★★★ at 100',
+  );
+  static String get melodiesRead => tr(es: 'Entendido', en: 'Got it');
+  static String get melodiesUnread =>
+      tr(es: 'Marcar como pendiente', en: 'Mark as not done');
+  static String get melodiesNext => tr(es: 'Siguiente paso', en: 'Next step');
+  static String get melodiesEvenRhythm => tr(
+    es: 'Suena con todas las notas iguales (corcheas): sirve para aprender '
+        'las notas; el ritmo de la canción lo pones tú.',
+    en: 'It plays every note the same length (eighth notes): it is for '
+        "learning the notes; you add the song's rhythm.",
+  );
+  static String get hubMultiDay =>
+      tr(es: 'Retos de la semana', en: 'Weekly challenges');
+  static String get hubMultiDaySub => tr(
+    es: 'Practica varios días: racha, Técnica, rutinas, lecciones, Oído y Ritmo.',
+    en: 'Practice on several days: streak, Technique, workouts, lessons, Ear and Rhythm.',
+  );
+  static String get multiDayIntro => tr(
+    es: 'Se superan solos: cada día que practicas un módulo cuenta. Los '
+        'círculos son los últimos 7 días, el de la derecha es hoy.',
+    en: 'They complete themselves: every day you practice a module counts. '
+        'The circles are the last 7 days; the one on the right is today.',
+  );
+  static String multiDayPassed(int passed, int total) => tr(
+    es: '$passed de $total superados',
+    en: '$passed of $total completed',
+  );
+  static String get hubTechnique =>
+      tr(es: 'Técnica', en: 'Technique');
+  static String get hubTechniqueSub => tr(
+    es: 'Cromático, araña, diagonal y salto de cuerda, con tu récord de tempo.',
+    en: 'Chromatic, spider, diagonal and string skipping, with your tempo record.',
+  );
+  static String get techniqueIntro => tr(
+    es: 'Un dedo por traste en una ventana de cuatro trastes. Escucha, tócalo '
+        'al tempo y, cuando salga limpio, guarda el récord y sube 5 BPM.',
+    en: 'One finger per fret in a four-fret window. Listen, play it at the '
+        'tempo and, when it comes out clean, save the record and go up 5 BPM.',
+  );
+  static String get techniqueStartFret =>
+      tr(es: 'Empieza en el traste', en: 'Start at fret');
+  static String get techniqueTempo => tr(es: 'Tempo', en: 'Tempo');
+  static String get techniqueSlower => tr(es: 'Más lento', en: 'Slower');
+  static String get techniqueFaster => tr(es: 'Más rápido', en: 'Faster');
+  static String techniqueBpm(int bpm) => '$bpm BPM';
+  static String techniqueRecord(int bpm) =>
+      tr(es: 'Récord: $bpm BPM', en: 'Record: $bpm BPM');
+  static String get techniqueNoRecord =>
+      tr(es: 'Sin récord todavía', en: 'No record yet');
+  static String techniqueTryNext(int bpm) =>
+      tr(es: 'Prueba a $bpm BPM', en: 'Try $bpm BPM');
+  static String techniqueSaveClean(int bpm) =>
+      tr(es: 'Me salió limpio a $bpm BPM', en: 'Clean at $bpm BPM');
+  static String workoutsNoteCount(int count) =>
+      tr(es: '$count notas', en: '$count notes');
+  static String get tabListen => tr(es: 'Escuchar', en: 'Listen');
+  static String get tabStop => tr(es: 'Detener', en: 'Stop');
+  static String tabAtBpm(int bpm) =>
+      tr(es: 'a $bpm BPM, en corcheas', en: 'at $bpm BPM, in eighth notes');
+  static String guideOpenWorkout(String scale) =>
+      tr(es: 'Rutinas de $scale', en: '$scale workouts');
   static String get hubEar => tr(es: 'Oído', en: 'Ear');
   static String get hubEarSub => tr(
     es: 'Reconoce intervalos y acordes de oído.',
@@ -371,6 +595,28 @@ class AppStrings {
       '$track · ${lessonsLevel(level)}';
   static String get lessonsResume => tr(es: 'Continuar', en: 'Continue');
   static String get lessonsReview => tr(es: 'Repasar', en: 'Review');
+  static String unitPosition(int index, int total) =>
+      tr(es: 'Unidad $index de $total', en: 'Unit $index of $total');
+  static String get unitLessons => tr(es: 'Lecciones', en: 'Lessons');
+  static String get unitChallenge =>
+      tr(es: 'Reto del nivel', en: 'Level challenge');
+  static String get unitResults =>
+      tr(es: 'Resultados de la unidad', en: 'Unit results');
+  static String get unitResultLessons => tr(es: 'lecciones', en: 'lessons');
+  static String get unitResultMinutes =>
+      tr(es: 'min practicados', en: 'min practiced');
+  static String get unitResultChords => tr(es: 'acordes', en: 'chords');
+  static String get unitResultNotes =>
+      tr(es: 'notas en tablatura', en: 'tab notes');
+  static String get unitNext => tr(es: 'Siguiente unidad', en: 'Next unit');
+  static String get unitEndOfPath => tr(
+    es: 'Es la última unidad de este camino.',
+    en: 'This is the last unit on this path.',
+  );
+  static String lessonChordList(String chords) =>
+      tr(es: 'Acordes: $chords', en: 'Chords: $chords');
+  static String lessonTabNotes(int notes) =>
+      tr(es: 'Tablatura · $notes notas', en: 'Tab · $notes notes');
   static String lessonsUnitCount(int lessons, int minutes) => tr(
     es: '$lessons lecciones · unos $minutes min',
     en: '$lessons lessons · about $minutes min',
