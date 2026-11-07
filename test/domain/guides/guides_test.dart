@@ -5,6 +5,7 @@ import 'package:chordmaster_free/core/i18n/tr.dart';
 import 'package:chordmaster_free/domain/guides/guides.dart';
 import 'package:chordmaster_free/domain/lessons/curriculum.dart';
 import 'package:chordmaster_free/domain/lessons/lesson.dart';
+import 'package:chordmaster_free/domain/practice/technique_exercises.dart';
 import 'package:chordmaster_free/domain/theory/notes.dart';
 import 'package:flutter_test/flutter_test.dart';
 
@@ -103,6 +104,16 @@ void main() {
   });
 
   group('lo que afirman las guías', () {
+    test('calentamientos: araña 1-3-2-4 y diagonal un traste más por cuerda', () {
+      expect(techniqueFingers(TechniqueExercise.spider), [1, 3, 2, 4]);
+      final diagonal = techniqueNotes(TechniqueExercise.diagonal);
+      final starts = [for (var i = 0; i < diagonal.length; i += 4) diagonal[i]];
+      for (var i = 1; i < starts.length; i++) {
+        expect(starts[i].string, starts[i - 1].string - 1);
+        expect(starts[i].fret, starts[i - 1].fret + 1);
+      }
+    });
+
     test('Asus2: la 3ª se cambia por la 2ª', () {
       expect((chords['Asus2']!['intervals'] as List).cast<int>(), [0, 2, 7]);
     });

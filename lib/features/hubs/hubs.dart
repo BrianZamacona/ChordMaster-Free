@@ -80,6 +80,12 @@ class PracticeHubScreen extends StatelessWidget {
             route: '/practice/workouts',
           ),
           HubEntry(
+            icon: Icons.back_hand_outlined,
+            title: AppStrings.hubTechnique,
+            subtitle: AppStrings.hubTechniqueSub,
+            route: '/practice/technique',
+          ),
+          HubEntry(
             icon: Icons.av_timer,
             title: AppStrings.hubRhythm,
             subtitle: AppStrings.hubRhythmSub,
