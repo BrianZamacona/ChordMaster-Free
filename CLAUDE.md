@@ -168,8 +168,59 @@ cada nota pertenezca a la escala. No bajar la tolerancia de 0.
   traste 12; el del nivel 2 pide más (ritmo 85 → 95 %, Oído 5 → 10). Se superan solos con el
   récord de un módulo de práctica (precisión del juego de ritmo, mejor racha de Oído en
   `ear_training_best_streak`); no se marcan a mano.
+- Pantalla de unidad (`lesson_unit_screen.dart`, datos de `unit_summary.dart`): encabezado con
+  "camino · Unidad n de m", lecciones en una línea vertical con lo que practica cada una (acordes,
+  escala, rasgueo, tablatura, herramienta), el reto si la unidad cierra su nivel, resultados
+  (lecciones, minutos, acordes, notas) y la siguiente unidad (reemplaza la pantalla). Inspirada en
+  cursos tipo "Level 1 · Learn to Fret", pero en vertical (decisión del usuario).
 - Rutas: `/learn/lessons`, `/learn/lessons/unit/:unitId` y `/learn/lessons/:id`. Logro
   `foundations_done`.
+
+## Guías y capo
+- Guías (`lib/domain/guides/guides.dart`, rutas `/learn/guides` y `/learn/guides/:id`): recorridos
+  por tema agrupados en filas (`GuideCategory`). No traen trastes propios: cada capítulo enlaza
+  algo que ya existe (`LessonLink`, `ScaleLink`, `ChordLink`, `ModuleLink`) y un test exige que
+  exista. Lo que afirma un capítulo se verifica en `test/domain/guides/guides_test.dart`.
+- Inspiradas en un catálogo de guías tipo "Guides", pero sin artistas reales, sin fotos y sin
+  contenido de terceros: géneros genéricos (blues, rock, folk/pop) y técnica.
+- Progreso (`lib/domain/guides/guide_progress.dart`): un capítulo que enlaza una lección está
+  hecho si la lección está terminada (marcarlo marca la lección; una sola fuente); los demás se
+  marcan a mano en `guides_chapters_done` (`guideId/índice`). Minutos por capítulo: los de la
+  lección o un fijo por tipo. "Siguiente guía": la próxima sin terminar de la fila y luego del
+  catálogo; reemplaza la pantalla (atrás vuelve al catálogo). Sin búsqueda, el catálogo pone
+  arriba "Sigue donde ibas" con las empezadas.
+- Buscador: `searchGuides` busca todas las palabras, sin tildes ni mayúsculas, en título,
+  subtítulo y títulos de capítulo del idioma actual; las filas vacías se ocultan.
+- Diseño vertical (decisión del usuario: nada de filas que se deslizan de lado): cada categoría es
+  una sección con sus guías en lista, a todo lo ancho (dibujo, título, subtítulo, capítulos,
+  minutos y avance).
+- "¿Qué capo uso?" (`lib/domain/theory/capo.dart`, ruta `/learn/capo`): por regla, el traste del
+  capo para cada forma abierta (C A G E D; Am Em Dm en menor), hasta el traste 7, con su
+  I – IV – V. Las cinco formas mayores cubren cualquier tonalidad sin pasar del 7 (hay test).
+  Cubre la parte "¿qué capo uso?" de la fase 3 del círculo; falta girar una progresión.
+
+## Rutinas de escala y tablatura con audio
+- Rutinas (`lib/domain/practice/scale_workouts.dart`, ruta `/practice/workouts?scale=&root=`):
+  por regla sobre una posición real de `scales_master.json`. `positionLadder` ordena las notas
+  por altura sin repetir (si una nota está en dos cuerdas, queda la más grave) y `workoutNotes`
+  la recorre: subir y bajar, terceras, grupos de 3 y de 4, primero subiendo y luego bajando.
+  Niveles: principiante (subir y bajar, 60 BPM), intermedio (terceras y grupos de 3, 70) y
+  avanzado (grupos de 4 y terceras, 90). Sistema: 3NPS en las de 7 notas, cajas en pentatónicas
+  y blues, CAGED en el resto (`workoutSystemFor`). Un test exige que cada nota de cada rutina de
+  cada posición pertenezca a su escala.
+- Técnica (`lib/domain/practice/technique_exercises.dart`, ruta `/practice/technique`): cromático
+  1-2-3-4 y araña 1-3-2-4 (6ª→1ª y de vuelta), diagonal (cada cuerda un traste más arriba) y
+  salto de cuerda (6 4 5 3 4 2 3 1), un dedo por traste desde el traste 1, 5 o 9. Tempo de 5 en
+  5 BPM; "Me salió limpio" guarda el récord por ejercicio en `technique_best_bpm` y propone 5 más.
+- Audio de una tablatura (`lib/domain/practice/tab_playback.dart`): corcheas al tempo dado, y la
+  pantalla marca la nota con los mismos instantes (`tabIndexAt`). Se sintetiza la frase entera
+  en un WAV (`playNotes` con `ring`: cada nota suena 1.2 s, así el costo no crece con el
+  cuadrado). Claves de archivo largas pasan por `stableKey` (FNV-1a).
+- `TabPlayer` (`features/lessons/tab_player.dart`) es el único reproductor: lecciones con tab y
+  rutinas. Al empezar uno, el anterior se detiene (`tabPlaybackProvider`).
+- Tests de pantallas que leen `scales_master.json`: inyectar `ScaleRepository` con un bundle de
+  archivo. `rootBundle` guarda la lectura del primer test atada a su zona de tiempo falso y el
+  siguiente test se queda esperando para siempre.
 
 ## Ícono y nombre
 - El ícono se genera desde código: `flutter test tool/app_icon/render_app_icon_test.dart`
@@ -335,8 +386,8 @@ Objetivo: código legible y mantenible antes que ingenioso. Capas (puertos y ada
      nombrados con sostenidos según la regla.
    - Modos ordenados por brillo (lidio → locrio) como recorrido del círculo.
 7. Círculo de quintas, fase 3:
-   - Capo y transposición: girar una progresión a otra tonalidad y "¿qué capo uso?": para una
-     tonalidad, el traste de capo y la forma abierta (C, A, G, E o D) que la dan.
+   - Transposición: girar una progresión a otra tonalidad ("¿qué capo uso?" ya está en
+     `/learn/capo`).
    - Juego/quiz: "¿cuál es el V de E?", "¿cuántos ♯ tiene A?", "¿qué acorde falta en la ventana?",
      con récord en `userProgress` y un logro nuevo que se pueda conseguir.
    - Unidad "Círculo de quintas" en Lecciones (según las reglas de esa sección), con un reto que
