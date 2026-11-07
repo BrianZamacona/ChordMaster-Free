@@ -21,10 +21,18 @@ final tabPlaybackProvider = Provider<ValueNotifier<Object?>>((ref) {
 /// [bpm] y resalta la nota que suena, con los mismos instantes del audio
 /// ([tabEvents]).
 class TabPlayer extends ConsumerStatefulWidget {
-  const TabPlayer({super.key, required this.notes, required this.bpm});
+  const TabPlayer({
+    super.key,
+    required this.notes,
+    required this.bpm,
+    this.onPlay,
+  });
 
   final List<TabNote> notes;
   final int bpm;
+
+  /// Se llama al empezar a sonar (las rutinas lo anotan como día de práctica).
+  final VoidCallback? onPlay;
 
   @override
   ConsumerState<TabPlayer> createState() => _TabPlayerState();
@@ -71,6 +79,7 @@ class _TabPlayerState extends ConsumerState<TabPlayer> {
 
   void _play() {
     _active.value = _token;
+    widget.onPlay?.call();
     ref.read(audioServiceProvider).playNotes(
           tabEvents(widget.notes, bpm: widget.bpm),
           seconds: tabDurationSeconds(widget.notes.length, bpm: widget.bpm),

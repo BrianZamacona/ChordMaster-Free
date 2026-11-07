@@ -1,7 +1,11 @@
+import 'dart:async';
+
 import 'package:flutter/foundation.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 
+import '../../domain/practice/multi_day_challenges.dart';
 import '../../domain/practice/technique_exercises.dart';
+import '../../services/activity_log.dart';
 import '../../services/key_value_store.dart';
 
 /// Traste de inicio, tempo y récords de los ejercicios de técnica.
@@ -77,6 +81,7 @@ class TechniqueViewModel extends Notifier<TechniqueState> {
 
   /// "Me salió limpio": guarda el tempo actual si supera el récord.
   Future<void> saveRecord(TechniqueExercise exercise) async {
+    unawaited(ref.read(activityLogProvider.notifier).record(PracticeActivity.technique));
     final current = state.records[exercise];
     if (current != null && current >= state.bpm) return;
     final records = {...state.records, exercise: state.bpm};

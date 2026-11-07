@@ -4,6 +4,7 @@ import '../core/widgets/app_scaffold.dart';
 import '../data/models/scale_definition.dart';
 import '../features/achievements/achievements_screen.dart';
 import '../features/capo/capo_screen.dart';
+import '../features/challenges/multi_day_screen.dart';
 import '../features/chords/chord_compare_screen.dart';
 import '../features/chords/chord_detail_screen.dart';
 import '../features/chords/chord_explorer_screen.dart';
@@ -213,6 +214,10 @@ final GoRouter appRouter = GoRouter(
                     scaleId: state.uri.queryParameters['scale'] ?? 'major',
                     root: int.tryParse(state.uri.queryParameters['root'] ?? '') ?? 0,
                   ),
+                ),
+                GoRoute(
+                  path: 'challenges',
+                  builder: (_, _) => const MultiDayChallengesScreen(),
                 ),
                 GoRoute(
                   path: 'technique',
