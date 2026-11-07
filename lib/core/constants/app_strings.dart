@@ -333,6 +333,10 @@ class AppStrings {
   );
   static String workoutsPositionCount(int index, int total) =>
       tr(es: '$index de $total, de grave a aguda', en: '$index of $total, low to high');
+  static String get workoutsAddDown =>
+      tr(es: 'Agregar la bajada', en: 'Add the way down');
+  static String get workoutsOnlyUp =>
+      tr(es: 'Solo la subida', en: 'Only the way up');
   static String workoutsNoteCount(int count) =>
       tr(es: '$count notas', en: '$count notes');
   static String get tabListen => tr(es: 'Escuchar', en: 'Listen');

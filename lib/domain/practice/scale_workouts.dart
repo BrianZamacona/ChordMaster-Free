@@ -50,8 +50,8 @@ LocalizedText workoutPatternName(WorkoutPattern pattern) => switch (pattern) {
 
 LocalizedText workoutPatternHint(WorkoutPattern pattern) => switch (pattern) {
   WorkoutPattern.upDown => const LocalizedText(
-    es: 'Toda la posición de la nota más grave a la más aguda y de vuelta.',
-    en: 'The whole position from the lowest note to the highest and back.',
+    es: 'Toda la posición, de la nota más grave a la más aguda.',
+    en: 'The whole position, from the lowest note to the highest.',
   ),
   WorkoutPattern.thirds => const LocalizedText(
     es: 'Cada nota y la que está dos lugares más arriba en la escala.',
@@ -81,18 +81,38 @@ List<TabNote> positionLadder(List<TabNote> position) {
   return [for (final p in pitches) byPitch[p]!];
 }
 
-/// Las notas de [pattern] sobre la escalera [ladder]: primero sube y después
-/// baja con el mismo dibujo.
-List<TabNote> workoutNotes(WorkoutPattern pattern, List<TabNote> ladder) {
+/// Qué parte de la rutina se toca.
+enum WorkoutDirection { up, down, both }
+
+/// Las notas de [pattern] sobre la escalera [ladder]: la subida, la bajada
+/// (el mismo dibujo al revés, desde la nota más aguda) o las dos seguidas.
+List<TabNote> workoutNotes(
+  WorkoutPattern pattern,
+  List<TabNote> ladder, {
+  WorkoutDirection direction = WorkoutDirection.both,
+}) {
+  final up = _climb(pattern, ladder);
+  final down = _climb(pattern, ladder.reversed.toList());
+  return switch (direction) {
+    WorkoutDirection.up => up,
+    WorkoutDirection.down => down,
+    // Subir y bajar no repite la nota de arriba.
+    WorkoutDirection.both => pattern == WorkoutPattern.upDown
+        ? [...up, ...down.skip(1)]
+        : [...up, ...down],
+  };
+}
+
+/// El dibujo de [pattern] recorriendo [ladder] en su orden.
+List<TabNote> _climb(WorkoutPattern pattern, List<TabNote> ladder) {
   final n = ladder.length;
   switch (pattern) {
     case WorkoutPattern.upDown:
-      return [...ladder, ...ladder.reversed.skip(1)];
+      return ladder;
     case WorkoutPattern.thirds:
       if (n < 3) return const [];
       return [
         for (var i = 0; i + 2 < n; i++) ...[ladder[i], ladder[i + 2]],
-        for (var i = n - 1; i - 2 >= 0; i--) ...[ladder[i], ladder[i - 2]],
       ];
     case WorkoutPattern.groupsOf3:
       return _groups(ladder, 3);
@@ -107,7 +127,5 @@ List<TabNote> _groups(List<TabNote> ladder, int size) {
   return [
     for (var i = 0; i + size <= n; i++)
       for (var j = 0; j < size; j++) ladder[i + j],
-    for (var i = n - 1; i - size + 1 >= 0; i--)
-      for (var j = 0; j < size; j++) ladder[i - j],
   ];
 }

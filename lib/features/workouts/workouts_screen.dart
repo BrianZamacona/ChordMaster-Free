@@ -5,6 +5,7 @@ import '../../core/constants/app_strings.dart';
 import '../../core/constants/scale_names.dart';
 import '../../core/widgets/selector_pill.dart';
 import '../../domain/fingering_systems/fingering_systems_registry.dart';
+import '../../domain/lessons/lesson.dart';
 import '../../domain/practice/scale_workouts.dart';
 import '../../domain/theory/notes.dart';
 import '../../ui/theme.dart';
@@ -141,34 +142,14 @@ class WorkoutsScreen extends ConsumerWidget {
             ),
             const SizedBox(height: 8),
             for (final pattern in workoutPatterns[state.level]!)
-              if (workoutNotes(pattern, ladder) case final notes
-                  when notes.isNotEmpty)
-                Card(
-                  key: Key('workout-${pattern.name}'),
-                  child: Padding(
-                    padding: const EdgeInsets.all(14),
-                    child: Column(
-                      crossAxisAlignment: CrossAxisAlignment.stretch,
-                      children: [
-                        Text(
-                          workoutPatternName(pattern).text,
-                          style: text.titleSmall,
-                        ),
-                        const SizedBox(height: 4),
-                        Text(
-                          workoutPatternHint(pattern).text,
-                          style: text.bodySmall?.copyWith(color: p.textSecondary),
-                        ),
-                        const SizedBox(height: 4),
-                        Text(
-                          AppStrings.workoutsNoteCount(notes.length),
-                          style: musicMono(fontSize: 12, color: p.textSecondary),
-                        ),
-                        const SizedBox(height: 10),
-                        TabPlayer(notes: notes, bpm: bpm),
-                      ],
-                    ),
-                  ),
+              if (workoutNotes(pattern, ladder).isNotEmpty)
+                _WorkoutCard(
+                  // Otra posición o escala vuelve a mostrar solo la subida.
+                  key: ValueKey('workout-${pattern.name}-${position.positionId}-'
+                      '${state.scaleId}-${state.root}'),
+                  pattern: pattern,
+                  ladder: ladder,
+                  bpm: bpm,
                 ),
           ],
         ],
@@ -203,4 +184,74 @@ class WorkoutsScreen extends ConsumerWidget {
           ],
         ),
       );
+}
+
+/// Un patrón de la rutina. Muestra solo la subida, para que la tablatura no
+/// se haga larguísima; "Agregar la bajada" suma el mismo dibujo al revés.
+class _WorkoutCard extends StatefulWidget {
+  const _WorkoutCard({
+    super.key,
+    required this.pattern,
+    required this.ladder,
+    required this.bpm,
+  });
+
+  final WorkoutPattern pattern;
+  final List<TabNote> ladder;
+  final int bpm;
+
+  @override
+  State<_WorkoutCard> createState() => _WorkoutCardState();
+}
+
+class _WorkoutCardState extends State<_WorkoutCard> {
+  var _withDown = false;
+
+  @override
+  Widget build(BuildContext context) {
+    final p = context.palette;
+    final text = Theme.of(context).textTheme;
+    final notes = workoutNotes(
+      widget.pattern,
+      widget.ladder,
+      direction: _withDown ? WorkoutDirection.both : WorkoutDirection.up,
+    );
+    return Card(
+      key: Key('workout-${widget.pattern.name}'),
+      child: Padding(
+        padding: const EdgeInsets.all(14),
+        child: Column(
+          crossAxisAlignment: CrossAxisAlignment.stretch,
+          children: [
+            Text(workoutPatternName(widget.pattern).text, style: text.titleSmall),
+            const SizedBox(height: 4),
+            Text(
+              workoutPatternHint(widget.pattern).text,
+              style: text.bodySmall?.copyWith(color: p.textSecondary),
+            ),
+            const SizedBox(height: 4),
+            Text(
+              AppStrings.workoutsNoteCount(notes.length),
+              key: Key('workout-count-${widget.pattern.name}'),
+              style: musicMono(fontSize: 12, color: p.textSecondary),
+            ),
+            const SizedBox(height: 10),
+            TabPlayer(notes: notes, bpm: widget.bpm),
+            const SizedBox(height: 4),
+            Align(
+              alignment: Alignment.centerLeft,
+              child: TextButton.icon(
+                key: Key('workout-down-${widget.pattern.name}'),
+                onPressed: () => setState(() => _withDown = !_withDown),
+                icon: Icon(_withDown ? Icons.remove : Icons.add),
+                label: Text(
+                  _withDown ? AppStrings.workoutsOnlyUp : AppStrings.workoutsAddDown,
+                ),
+              ),
+            ),
+          ],
+        ),
+      ),
+    );
+  }
 }

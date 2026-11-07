@@ -179,13 +179,13 @@ void main() {
       expect(find.text(AppStrings.hubWorkouts), findsOneWidget);
     });
 
-    testWidgets('C mayor, principiante: 3NPS, subir y bajar con 35 notas', (
+    testWidgets('C mayor, principiante: 3NPS, la subida con 18 notas', (
       tester,
     ) async {
       await open(tester, '/practice/workouts');
       expect(find.byType(WorkoutsScreen), findsOneWidget);
       expect(find.byKey(const Key('workout-upDown')), findsOneWidget);
-      expect(find.text(AppStrings.workoutsNoteCount(35)), findsOneWidget);
+      expect(find.text(AppStrings.workoutsNoteCount(18)), findsOneWidget);
       expect(
         tester.widget<Text>(find.byKey(const Key('workouts-position'))).data,
         contains('3NPS'),
@@ -205,6 +205,41 @@ void main() {
           );
         }
       }
+    });
+
+    testWidgets('"Agregar la bajada" suma la vuelta y se puede quitar', (
+      tester,
+    ) async {
+      final audio = await open(tester, '/practice/workouts');
+      await tester.tap(find.text(workoutLevelName(WorkoutLevel.advanced).text));
+      await tester.pump();
+      String count() => tester
+          .widget<Text>(find.byKey(const Key('workout-count-groupsOf4')))
+          .data!;
+      expect(count(), AppStrings.workoutsNoteCount(60));
+      final toggle = find.byKey(const Key('workout-down-groupsOf4'));
+      await tester.ensureVisible(toggle);
+      await tester.pump();
+      await tester.tap(toggle);
+      await tester.pump();
+      expect(count(), AppStrings.workoutsNoteCount(120));
+      // Lo que suena es lo que se ve.
+      final play = find.descendant(
+        of: find.byKey(const Key('workout-groupsOf4')),
+        matching: find.byKey(const Key('tab-play')),
+      );
+      await tester.ensureVisible(play);
+      await tester.pump();
+      await tester.tap(play);
+      await tester.pump();
+      expect(audio.played.single.events, hasLength(120));
+      await tester.tap(play);
+      await tester.pump();
+      await tester.ensureVisible(toggle);
+      await tester.pump();
+      await tester.tap(toggle);
+      await tester.pump();
+      expect(count(), AppStrings.workoutsNoteCount(60));
     });
 
     testWidgets('‹ › cambian de posición', (tester) async {
@@ -252,7 +287,7 @@ void main() {
       await tester.tap(find.byKey(const Key('tab-play')).first);
       await tester.pump();
       final events = audio.played.single.events;
-      expect(events, hasLength(35));
+      expect(events, hasLength(18));
       expect(
         events[1].at - events[0].at,
         closeTo(tabStepSeconds(workoutBpm[WorkoutLevel.beginner]!), 1e-9),

@@ -55,6 +55,29 @@ void main() {
       }
     });
 
+    test('la subida y la bajada son mitades de la rutina completa', () {
+      for (final pattern in WorkoutPattern.values) {
+        final up = workoutNotes(pattern, simple, direction: WorkoutDirection.up);
+        final down = workoutNotes(pattern, simple, direction: WorkoutDirection.down);
+        final both = workoutNotes(pattern, simple);
+        expect(both.take(up.length), up, reason: pattern.name);
+        expect(both.last, down.last, reason: pattern.name);
+        // La bajada es la subida sobre la escalera al revés.
+        expect(down.first, simple.last, reason: pattern.name);
+        final skip = pattern == WorkoutPattern.upDown ? 1 : 0;
+        expect(both.length, up.length + down.length - skip, reason: pattern.name);
+      }
+    });
+
+    test('3NPS en C mayor, grupos de 4: la subida es la mitad de 120', () {
+      final ladder = [for (var i = 0; i < 18; i++) TabNote(1, i)];
+      expect(workoutNotes(WorkoutPattern.groupsOf4, ladder), hasLength(120));
+      expect(
+        workoutNotes(WorkoutPattern.groupsOf4, ladder, direction: WorkoutDirection.up),
+        hasLength(60),
+      );
+    });
+
     test('escaleras demasiado cortas no dan patrón', () {
       final two = simple.take(2).toList();
       expect(workoutNotes(WorkoutPattern.thirds, two), isEmpty);
