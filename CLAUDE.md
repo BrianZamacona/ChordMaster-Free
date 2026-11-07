@@ -186,6 +186,20 @@ cada nota pertenezca a la escala. No bajar la tolerancia de 0.
 - Rutas: `/learn/lessons`, `/learn/lessons/unit/:unitId` y `/learn/lessons/:id`. Logro
   `foundations_done`.
 
+## Curso de melodías
+- `lib/domain/melodies/melody_course.dart`, rutas `/learn/melodies` y `/learn/melodies/:id`.
+  Niveles (cuerdas agudas, saltos, posición V, melodías conocidas) con pasos de teoría, ejercicio
+  y canción. Inspirado en cursos tipo "Melodies · Level 1…", en vertical (decisión del usuario).
+- Las melodías se escriben como alturas ("C4") y `tabForPitches` las pone en la cuerda donde
+  caen dentro de la ventana de trastes del paso (si caben en dos, el traste más bajo). Un test
+  exige que cada nota suene lo pedido, caiga en su ventana y pertenezca a la escala del nivel;
+  lo que afirma cada texto tiene su test. Solo canciones de dominio público (tradicionales o
+  Beethoven), con su origen en el paso.
+- Estrellas por tempo limpio, autoinformado como en Técnica: ★ 60, ★★ 80, ★★★ 100 BPM
+  (`melodies_best_bpm`); la teoría se marca leída (`melodies_read`). El reproductor toca
+  corcheas iguales: la pantalla lo aclara (el ritmo de la canción lo pone quien toca).
+- La línea vertical de pasos es `StepRail` (`lesson_widgets.dart`), la misma de la unidad.
+
 ## Guías y capo
 - Guías (`lib/domain/guides/guides.dart`, rutas `/learn/guides` y `/learn/guides/:id`): recorridos
   por tema agrupados en filas (`GuideCategory`). No traen trastes propios: cada capítulo enlaza

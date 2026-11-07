@@ -148,3 +148,47 @@ class _NoteRow extends StatelessWidget {
     );
   }
 }
+
+/// Columna de la izquierda de cada paso: la línea que une los pasos y el
+/// círculo del paso. Mide lo mismo que el contenido de la derecha.
+class StepRail extends StatelessWidget {
+  const StepRail({
+    super.key,
+    required this.circle,
+    required this.isFirst,
+    required this.isLast,
+    required this.topDone,
+    required this.bottomDone,
+  });
+
+  final Widget circle;
+  final bool isFirst;
+  final bool isLast;
+  final bool topDone;
+  final bool bottomDone;
+
+  @override
+  Widget build(BuildContext context) {
+    final p = context.palette;
+    Widget line({required bool visible, required bool done}) => Expanded(
+          child: visible
+              ? Container(width: 3, color: done ? p.accent : p.outline)
+              : const SizedBox.shrink(),
+        );
+    return SizedBox(
+      width: 48,
+      child: Column(
+        children: [
+          SizedBox(
+            height: 14,
+            child: isFirst
+                ? null
+                : Container(width: 3, color: topDone ? p.accent : p.outline),
+          ),
+          circle,
+          line(visible: !isLast, done: bottomDone),
+        ],
+      ),
+    );
+  }
+}
