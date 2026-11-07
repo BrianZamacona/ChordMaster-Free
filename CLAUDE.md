@@ -178,6 +178,25 @@ cada nota pertenezca a la escala. No bajar la tolerancia de 0.
   I – IV – V. Las cinco formas mayores cubren cualquier tonalidad sin pasar del 7 (hay test).
   Cubre la parte "¿qué capo uso?" de la fase 3 del círculo; falta girar una progresión.
 
+## Rutinas de escala y tablatura con audio
+- Rutinas (`lib/domain/practice/scale_workouts.dart`, ruta `/practice/workouts?scale=&root=`):
+  por regla sobre una posición real de `scales_master.json`. `positionLadder` ordena las notas
+  por altura sin repetir (si una nota está en dos cuerdas, queda la más grave) y `workoutNotes`
+  la recorre: subir y bajar, terceras, grupos de 3 y de 4, primero subiendo y luego bajando.
+  Niveles: principiante (subir y bajar, 60 BPM), intermedio (terceras y grupos de 3, 70) y
+  avanzado (grupos de 4 y terceras, 90). Sistema: 3NPS en las de 7 notas, cajas en pentatónicas
+  y blues, CAGED en el resto (`workoutSystemFor`). Un test exige que cada nota de cada rutina de
+  cada posición pertenezca a su escala.
+- Audio de una tablatura (`lib/domain/practice/tab_playback.dart`): corcheas al tempo dado, y la
+  pantalla marca la nota con los mismos instantes (`tabIndexAt`). Se sintetiza la frase entera
+  en un WAV (`playNotes` con `ring`: cada nota suena 1.2 s, así el costo no crece con el
+  cuadrado). Claves de archivo largas pasan por `stableKey` (FNV-1a).
+- `TabPlayer` (`features/lessons/tab_player.dart`) es el único reproductor: lecciones con tab y
+  rutinas. Al empezar uno, el anterior se detiene (`tabPlaybackProvider`).
+- Tests de pantallas que leen `scales_master.json`: inyectar `ScaleRepository` con un bundle de
+  archivo. `rootBundle` guarda la lectura del primer test atada a su zona de tiempo falso y el
+  siguiente test se queda esperando para siempre.
+
 ## Ícono y nombre
 - El ícono se genera desde código: `flutter test tool/app_icon/render_app_icon_test.dart`
   (diagrama de C abierto con la paleta oscura; escribe Android clásico + capa adaptable,
