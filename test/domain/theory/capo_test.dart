@@ -1,3 +1,4 @@
+import 'package:chordmaster_free/domain/progressions/progression_data.dart';
 import 'package:chordmaster_free/domain/theory/capo.dart';
 import 'package:chordmaster_free/domain/theory/notes.dart';
 import 'package:flutter_test/flutter_test.dart';
@@ -69,5 +70,42 @@ void main() {
         expect(names, contains(c.shape), reason: shape);
       }
     }
+  });
+
+  group('girar una progresión', () {
+    List<({int semitones, String type})> degreesOf(Progression p) => [
+      for (final d in p.degrees) (semitones: d.semitones, type: d.type),
+    ];
+
+    test('I – V – vi – IV en A con la forma de G en el 2: G D Em C suena A E F#m D', () {
+      final p = progressions.firstWhere((p) => p.label == 'I - V - vi - IV');
+      expect(chordsInKey(degreesOf(p), noteIndex('A')), ['A', 'E', 'F#m', 'D']);
+      final t = capoTransposition(
+        degreesOf(p),
+        const CapoOption(fret: 2, shape: 'G'),
+      );
+      expect(t.shapes, ['G', 'D', 'Em', 'C']);
+      expect(t.sounds, ['A', 'E', 'F#m', 'D']);
+    });
+
+    test('con cada forma y en cada tonalidad suena la progresión pedida', () {
+      for (final p in progressions) {
+        for (var key = 0; key < 12; key++) {
+          for (final o in capoOptions(key)) {
+            final t = capoTransposition(degreesOf(p), o);
+            expect(t.sounds, chordsInKey(degreesOf(p), key), reason: '${p.id} $o');
+            for (final shape in t.shapes) {
+              expect(names, contains(shape), reason: '${p.id} $o $shape');
+            }
+          }
+        }
+      }
+    });
+
+    test('los sufijos salen del tipo', () {
+      expect(chordTypeSuffix('major'), '');
+      expect(chordTypeSuffix('minor'), 'm');
+      expect(chordTypeSuffix('diminished'), 'dim');
+    });
   });
 }

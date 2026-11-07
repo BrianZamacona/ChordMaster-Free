@@ -331,6 +331,16 @@ class AppStrings {
   );
   static String capoSounds(String chord) =>
       tr(es: 'suena $chord', en: 'sounds $chord');
+  static String get capoTurnTitle =>
+      tr(es: 'Gira una progresión', en: 'Turn a progression');
+  static String capoTurnIntro(String key) => tr(
+    es: 'Elige una progresión: así la tocas en $key con cada capo.',
+    en: 'Pick a progression: this is how you play it in $key with each capo.',
+  );
+  static String get capoProgression =>
+      tr(es: 'Progresión', en: 'Progression');
+  static String capoTurnInKey(String key, String chords) =>
+      tr(es: 'En $key: $chords', en: 'In $key: $chords');
   static String get capoRule => tr(
     es: 'El capo sube cada cuerda un semitono por traste. Solo se muestran '
         'capos hasta el traste 7: más arriba los trastes quedan muy juntos.',

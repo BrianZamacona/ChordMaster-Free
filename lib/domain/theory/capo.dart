@@ -82,3 +82,30 @@ List<({String shape, String sounds})> capoProgression(String shape, int fret) {
       ),
   ];
 }
+
+/// Sufijo del nombre de acorde para un `type` de chords.json.
+String chordTypeSuffix(String type) => switch (type) {
+  'minor' => 'm',
+  'diminished' => 'dim',
+  _ => '',
+};
+
+/// Acordes de una progresión en la tonalidad [key]: cada grado es su distancia
+/// en semitonos a la tónica y su tipo (`major`, `minor`, `diminished`).
+List<String> chordsInKey(List<({int semitones, String type})> degrees, int key) => [
+  for (final d in degrees)
+    '${pitchClassName(key + d.semitones)}${chordTypeSuffix(d.type)}',
+];
+
+/// Una progresión girada a [key] con el capo: lo que arma la mano con la
+/// forma abierta de [option] y cómo suena.
+({List<String> shapes, List<String> sounds}) capoTransposition(
+  List<({int semitones, String type})> degrees,
+  CapoOption option,
+) {
+  final shapes = chordsInKey(degrees, chordRoot(option.shape));
+  return (
+    shapes: shapes,
+    sounds: [for (final c in shapes) soundingChord(c, option.fret)],
+  );
+}

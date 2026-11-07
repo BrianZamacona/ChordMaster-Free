@@ -197,7 +197,9 @@ cada nota pertenezca a la escala. No bajar la tolerancia de 0.
 - "¿Qué capo uso?" (`lib/domain/theory/capo.dart`, ruta `/learn/capo`): por regla, el traste del
   capo para cada forma abierta (C A G E D; Am Em Dm en menor), hasta el traste 7, con su
   I – IV – V. Las cinco formas mayores cubren cualquier tonalidad sin pasar del 7 (hay test).
-  Cubre la parte "¿qué capo uso?" de la fase 3 del círculo; falta girar una progresión.
+  Cubre la parte "¿qué capo uso?" de la fase 3 del círculo. "Gira una progresión" (solo en mayor,
+  las de `progression_data.dart`): `chordsInKey` y `capoTransposition` dan, por cada capo, qué arma
+  la mano y cómo suena; un test lo comprueba en las 12 tonalidades y que cada forma exista.
 
 ## Rutinas de escala y tablatura con audio
 - Rutinas (`lib/domain/practice/scale_workouts.dart`, ruta `/practice/workouts?scale=&root=`):
@@ -386,8 +388,6 @@ Objetivo: código legible y mantenible antes que ingenioso. Capas (puertos y ada
      nombrados con sostenidos según la regla.
    - Modos ordenados por brillo (lidio → locrio) como recorrido del círculo.
 7. Círculo de quintas, fase 3:
-   - Transposición: girar una progresión a otra tonalidad ("¿qué capo uso?" ya está en
-     `/learn/capo`).
    - Juego/quiz: "¿cuál es el V de E?", "¿cuántos ♯ tiene A?", "¿qué acorde falta en la ventana?",
      con récord en `userProgress` y un logro nuevo que se pueda conseguir.
    - Unidad "Círculo de quintas" en Lecciones (según las reglas de esa sección), con un reto que

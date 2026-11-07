@@ -296,7 +296,13 @@ void main() {
       }
       // C quedaría en el traste 9: no se muestra.
       expect(find.byKey(const Key('capo-option-C'), skipOffstage: false), findsNothing);
-      expect(find.text(AppStrings.capoAt(2, 'G')), findsOneWidget);
+      expect(
+        find.descendant(
+          of: find.byKey(const Key('capo-option-G')),
+          matching: find.text(AppStrings.capoAt(2, 'G')),
+        ),
+        findsOneWidget,
+      );
     });
 
     testWidgets('cambiar a menor usa las formas Am, Em y Dm', (tester) async {
@@ -305,6 +311,35 @@ void main() {
       await tester.pump();
       expect(find.byKey(const Key('capo-option-Am'), skipOffstage: false), findsOneWidget);
       expect(find.byKey(const Key('capo-option-A'), skipOffstage: false), findsNothing);
+    });
+
+    testWidgets('girar una progresión: en A, la forma de G en el 2 toca G D Em C', (
+      tester,
+    ) async {
+      await open(tester, '/learn/capo');
+      final picker = find.byKey(const Key('capo-progression'));
+      await tester.ensureVisible(picker);
+      await tester.pump();
+      await tester.tap(picker);
+      await settle(tester);
+      await tester.tap(find.byKey(const Key('capo-progression-v1-2')));
+      await settle(tester);
+      String text(String key) => tester.widget<Text>(find.byKey(Key(key))).data!;
+      expect(
+        text('capo-turn-target'),
+        AppStrings.capoTurnInKey('A', 'A – E – F#m – D'),
+      );
+      expect(text('capo-turn-G'), 'G – D – Em – C');
+    });
+
+    testWidgets('en menor no se ofrece girar (las progresiones son mayores)', (
+      tester,
+    ) async {
+      await open(tester, '/learn/capo');
+      expect(find.byKey(const Key('capo-turn'), skipOffstage: false), findsOneWidget);
+      await tester.tap(find.text(AppStrings.capoMinor));
+      await tester.pump();
+      expect(find.byKey(const Key('capo-turn'), skipOffstage: false), findsNothing);
     });
 
     testWidgets('cambiar la tonalidad recalcula', (tester) async {
