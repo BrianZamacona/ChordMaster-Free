@@ -269,6 +269,21 @@ class AppStrings {
     es: count == 1 ? '1 capítulo' : '$count capítulos',
     en: count == 1 ? '1 chapter' : '$count chapters',
   );
+  static String guideMinutes(int minutes) =>
+      tr(es: 'unos $minutes min', en: 'about $minutes min');
+  static String guideDoneCount(int done, int total) =>
+      tr(es: '$done de $total hechos', en: '$done of $total done');
+  static String get guideMarkDone =>
+      tr(es: 'Marcar como hecho', en: 'Mark as done');
+  static String get guideMarkPending =>
+      tr(es: 'Marcar como pendiente', en: 'Mark as not done');
+  static String get guideContinueHere =>
+      tr(es: 'Sigue aquí', en: 'Continue here');
+  static String get guideFinished =>
+      tr(es: '¡Guía terminada!', en: 'Guide finished!');
+  static String get guideNext => tr(es: 'Siguiente guía', en: 'Next guide');
+  static String get guidesInProgress =>
+      tr(es: 'Sigue donde ibas', en: 'Pick up where you left off');
   static String guideOpenLesson(String title) =>
       tr(es: 'Lección: $title', en: 'Lesson: $title');
   static String guideOpenChord(String chord) =>

@@ -170,6 +170,12 @@ cada nota pertenezca a la escala. No bajar la tolerancia de 0.
   exista. Lo que afirma un capítulo se verifica en `test/domain/guides/guides_test.dart`.
 - Inspiradas en un catálogo de guías tipo "Guides", pero sin artistas reales, sin fotos y sin
   contenido de terceros: géneros genéricos (blues, rock, folk/pop) y técnica.
+- Progreso (`lib/domain/guides/guide_progress.dart`): un capítulo que enlaza una lección está
+  hecho si la lección está terminada (marcarlo marca la lección; una sola fuente); los demás se
+  marcan a mano en `guides_chapters_done` (`guideId/índice`). Minutos por capítulo: los de la
+  lección o un fijo por tipo. "Siguiente guía": la próxima sin terminar de la fila y luego del
+  catálogo; reemplaza la pantalla (atrás vuelve al catálogo). Sin búsqueda, el catálogo pone
+  arriba "Sigue donde ibas" con las empezadas.
 - Buscador: `searchGuides` busca todas las palabras, sin tildes ni mayúsculas, en título,
   subtítulo y títulos de capítulo del idioma actual; las filas vacías se ocultan.
 - Las filas se deslizan de lado; las tarjetas miden 148 dp para que a 360 dp asome la tercera.
