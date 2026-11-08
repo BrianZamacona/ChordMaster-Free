@@ -280,7 +280,7 @@ List<HomeModule> get homeModules => [
   HomeModule(
       label: AppStrings.moduleFinder,
       icon: Icons.search,
-      route: '/learn/finder'),
+      route: '/finder'),
   HomeModule(
       label: AppStrings.moduleTuner,
       icon: Icons.graphic_eq,

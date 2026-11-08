@@ -7,6 +7,7 @@ import 'package:chordmaster_free/core/i18n/tr.dart';
 import 'package:chordmaster_free/data/repository/scale_repository.dart';
 import 'package:chordmaster_free/features/chords/chord_detail_screen.dart';
 import 'package:chordmaster_free/features/finder/note_finder_screen.dart';
+import 'package:chordmaster_free/features/home/home_screen.dart';
 import 'package:chordmaster_free/services/key_value_store.dart';
 import 'package:chordmaster_free/ui/navigation.dart';
 import 'package:chordmaster_free/ui/scales/detail/scale_detail_screen.dart';
@@ -55,6 +56,9 @@ void main() {
     await tester.pump();
   }
 
+  int selectedTab(WidgetTester tester) =>
+      tester.widget<NavigationBar>(find.byType(NavigationBar)).selectedIndex;
+
   String titleOf(WidgetTester tester, int i) => tester
       .widget<Text>(
         find.descendant(of: find.byKey(Key('finder-result-$i')), matching: find.byType(Text)).first,
@@ -87,6 +91,7 @@ void main() {
       await tester.tap(find.text(AppStrings.moduleFinder));
       await settle(tester);
       expect(find.byType(NoteFinderScreen), findsOneWidget);
+      expect(selectedTab(tester), 0, reason: 'el buscador es de Inicio');
       for (var i = 0; i < 10 && find.byKey(const Key('finder-message')).evaluate().isEmpty; i++) {
         await tester.runAsync(() => Future<void>.delayed(const Duration(milliseconds: 300)));
         await tester.pump();
@@ -113,6 +118,7 @@ void main() {
       await tester.tap(find.byKey(const Key('finder-result-0')));
       await settle(tester);
       expect(find.byType(ChordDetailScreen), findsOneWidget);
+      expect(selectedTab(tester), 0);
       await tester.tap(find.byType(BackButton));
       await settle(tester);
       expect(find.text(AppStrings.finderNotes('C E G')), findsOneWidget);
@@ -139,6 +145,16 @@ void main() {
       await tester.tap(find.byKey(const Key('finder-result-0')));
       await settle(tester);
       expect(find.byType(ScaleDetailScreen), findsOneWidget);
+      expect(selectedTab(tester), 0, reason: 'la ficha se abre sin salir de Inicio');
+
+      // Atrás: a la ficha le sigue el buscador, y al buscador, Inicio.
+      await tester.tap(find.byType(BackButton));
+      await settle(tester);
+      expect(find.byType(NoteFinderScreen), findsOneWidget);
+      await tester.tap(find.byType(BackButton));
+      await settle(tester);
+      expect(find.byType(HomeScreen), findsOneWidget);
+      expect(find.byType(NoteFinderScreen), findsNothing);
     });
   }
 }

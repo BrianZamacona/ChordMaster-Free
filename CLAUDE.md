@@ -397,7 +397,8 @@ Objetivo: código legible y mantenible antes que ingenioso. Capas (puertos y ada
 - Todo texto nuevo de teoría: bilingüe y con test que verifique lo que afirma.
 
 ## Buscador por notas (Inicio)
-- Ruta `/learn/finder` (acceso en Inicio). Mástil vacío (`FretboardNeck` con `onTapCell`; el
+- Ruta `/finder`, en la pestaña Inicio (atrás vuelve a Inicio); sus resultados abren la ficha
+  en `/finder/chord/:id` y `/finder/scale/:scaleId` (mismas pantallas, sin cambiar de pestaña). Mástil vacío (`FretboardNeck` con `onTapCell`; el
   toque se ubica con `FretGridGeometry.cellAt`, el inverso de `noteOffset`) y dos secciones,
   cada una con sus notas (`noteFinderProvider`):
   - Acordes: una nota por cuerda (tocar otra vez la apaga; el nombre de la cuerda = al aire).
@@ -409,7 +410,7 @@ Objetivo: código legible y mantenible antes que ingenioso. Capas (puertos y ada
   - Escalas: notas sueltas. `scalesFor` da las escalas y modos de `scales_master.json` (12
     tónicas) que las contienen todas: primero las que menos notas agregan, luego la de
     tónica en la nota más grave. Misma tónica y mismas notas (mayor = jónica) sale una vez.
-- Cada resultado abre su ficha con `push` (atrás vuelve al buscador con las notas).
+- Cada resultado abre su ficha con `push` (atrás vuelve al buscador con las notas, y de ahí a Inicio).
 
 ## Círculo de quintas
 - `lib/domain/theory/circle_of_fifths.dart`: todo por regla, sin tablas. Orden sumando 7 semitonos

@@ -95,7 +95,36 @@ final GoRouter appRouter = GoRouter(
       branches: [
         StatefulShellBranch(
           routes: [
-            GoRoute(path: '/', builder: (_, _) => const HomeScreen()),
+            GoRoute(
+              path: '/',
+              builder: (_, _) => const HomeScreen(),
+              routes: [
+                // Buscador por notas: vive en la pestaña Inicio, así que atrás
+                // vuelve a Inicio, y sus resultados abren la ficha aquí mismo.
+                GoRoute(
+                  path: 'finder',
+                  builder: (_, _) => const NoteFinderScreen(),
+                  routes: [
+                    GoRoute(
+                      path: 'chord/:id',
+                      builder: (_, state) => ChordDetailScreen(
+                        chordId: state.pathParameters['id']!,
+                      ),
+                    ),
+                    GoRoute(
+                      path: 'scale/:scaleId',
+                      builder: (_, state) => ScaleDetailScreen(
+                        scale: state.extra! as ScaleDefinition,
+                        initialRoot: int.tryParse(
+                              state.uri.queryParameters['root'] ?? '',
+                            ) ??
+                            0,
+                      ),
+                    ),
+                  ],
+                ),
+              ],
+            ),
           ],
         ),
         StatefulShellBranch(
@@ -215,11 +244,6 @@ final GoRouter appRouter = GoRouter(
                       ),
                     ),
                   ],
-                ),
-                // Buscador por notas (se abre desde Inicio).
-                GoRoute(
-                  path: 'finder',
-                  builder: (_, _) => const NoteFinderScreen(),
                 ),
                 GoRoute(
                   path: 'progressions',
