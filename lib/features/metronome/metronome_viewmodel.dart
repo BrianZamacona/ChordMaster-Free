@@ -50,76 +50,105 @@ class MetronomeState {
       );
 }
 
-/// ViewModel for the Metronome feature.
+/// El metrónomo. El sonido es un bucle sintetizado con el tiempo exacto
+/// (`AudioService.startMetronome`); aquí solo se lleva la cuenta de los
+/// tiempos para la pantalla, con el reloj desde que empezó a sonar.
 class MetronomeViewModel extends Notifier<MetronomeState> {
   @override
   MetronomeState build() {
+    _audio = ref.read(audioServiceProvider);
     ref.onDispose(() {
-      _timer?.cancel();
+      _cancelTimers();
+      _audio.stopMetronome();
     });
     return const MetronomeState();
   }
 
-  Timer? _timer;
+  late AudioService _audio;
+  Timer? _beatTimer;
+  Timer? _restart;
+  final _clock = Stopwatch();
+
+  /// Cuenta cada arranque o parada: un arranque que termina de cargar
+  /// después de otra orden ya no cuenta.
+  int _order = 0;
   final List<DateTime> _taps = [];
 
-  // Subdivision multiplier map.
-  static const Map<String, double> _multipliers = {
+  /// Tras un cambio de tempo, compás o subdivisión sonando, cuánto se
+  /// espera a que deje de cambiar (p. ej. al arrastrar el deslizador) antes
+  /// de volver a arrancar el sonido.
+  static const restartDelay = Duration(milliseconds: 200);
+
+  /// Clics por tiempo de cada subdivisión.
+  static const Map<String, int> clicksPerBeat = {
     'quarter': 1,
     'eighth': 2,
-    'sixteenth': 4,
     'triplet': 3,
+    'sixteenth': 4,
   };
 
-  /// Interval in milliseconds for one tick.
-  int get _tickInterval {
-    final mult = _multipliers[state.subdivision] ?? 1;
-    return (60000 / state.bpm / mult).round();
-  }
-
-  /// Starts the metronome with drift compensation.
   void startMetronome() {
     if (state.isPlaying) return;
     state = state.copyWith(isPlaying: true, currentBeat: 0);
-    _scheduleNext();
+    _begin();
   }
 
-  int _beat = 0;
-  DateTime? _nextTick;
-
-  void _scheduleNext() {
-    final now = DateTime.now();
-    _nextTick ??= now;
-    _nextTick = _nextTick!.add(Duration(milliseconds: _tickInterval));
-    var delay = _nextTick!.difference(now);
-    // Safety valve: if the OS scheduler has starved us for more than one full
-    // tick interval (e.g. Android Doze, background throttling), reset the
-    // anchor so we never spin through a backlog of zero-delay timers.
-    if (delay < Duration(milliseconds: -_tickInterval)) {
-      _nextTick = now;
-      delay = Duration.zero;
-    }
-    _timer = Timer(delay.isNegative ? Duration.zero : delay, _onTick);
+  Future<void> _begin() async {
+    final order = ++_order;
+    _cancelTimers();
+    await _audio.startMetronome(
+      bpm: state.bpm,
+      beats: state.totalBeats,
+      perBeat: clicksPerBeat[state.subdivision] ?? 1,
+    );
+    if (order != _order || !state.isPlaying) return;
+    _clock
+      ..reset()
+      ..start();
+    state = state.copyWith(currentBeat: 0);
+    _scheduleBeat();
   }
 
-  void _onTick() {
+  /// Programa el tiempo siguiente contra el reloj (no suma intervalos, así
+  /// que la pantalla no se desfasa del sonido).
+  void _scheduleBeat() {
+    final beatMicros = 60e6 / state.bpm;
+    final elapsed = _clock.elapsedMicroseconds;
+    final next = (elapsed / beatMicros).floor() + 1;
+    _beatTimer = Timer(
+      Duration(microseconds: (next * beatMicros - elapsed).round()),
+      () {
+        if (!state.isPlaying) return;
+        state = state.copyWith(currentBeat: next % state.totalBeats);
+        _scheduleBeat();
+      },
+    );
+  }
+
+  void _cancelTimers() {
+    _beatTimer?.cancel();
+    _restart?.cancel();
+    _beatTimer = _restart = null;
+  }
+
+  /// Sonando, aplica un cambio cuando deja de cambiar.
+  void _restartSoon() {
     if (!state.isPlaying) return;
-    final isAccent = _beat == 0;
-    ref.read(audioServiceProvider).playMetronomeTick(isAccent: isAccent);
-    state = state.copyWith(currentBeat: _beat);
-    _beat = (_beat + 1) % state.totalBeats;
-    _scheduleNext();
+    _cancelTimers();
+    _restart = Timer(restartDelay, () {
+      if (state.isPlaying) _begin();
+    });
   }
 
   /// Stops the metronome.
   void stopMetronome() {
-    _timer?.cancel();
-    _timer = null;
-    _nextTick = null;
-    _beat = 0;
+    _order++;
+    _cancelTimers();
+    _clock.stop();
     // Sin cambio de estado si ya estaba parado: se llama al ocultar o
     // desmontar la pantalla y no debe notificar a widgets que se desmontan.
     if (!state.isPlaying && state.currentBeat == 0) return;
+    _audio.stopMetronome();
     state = state.copyWith(isPlaying: false, currentBeat: 0);
   }
 
@@ -141,11 +170,9 @@ class MetronomeViewModel extends Notifier<MetronomeState> {
   /// Sets BPM, clamped to [20, 300].
   void setBpm(int bpm) {
     final clamped = bpm.clamp(20, 300);
+    if (clamped == state.bpm) return;
     state = state.copyWith(bpm: clamped);
-    if (state.isPlaying) {
-      stopMetronome();
-      startMetronome();
-    }
+    _restartSoon();
   }
 
   /// Sets the time signature (e.g. "5/4").
@@ -153,23 +180,14 @@ class MetronomeViewModel extends Notifier<MetronomeState> {
     final parts = ts.split('/');
     final beats = int.tryParse(parts.first) ?? 4;
     state = state.copyWith(timeSignature: ts, totalBeats: beats, currentBeat: 0);
-    _beat = 0;
-    if (state.isPlaying) {
-      stopMetronome();
-      startMetronome();
-    }
+    _restartSoon();
   }
 
   /// Sets the subdivision.
   void setSubdivision(String sub) {
     state = state.copyWith(subdivision: sub);
-    if (state.isPlaying) {
-      stopMetronome();
-      startMetronome();
-    }
+    _restartSoon();
   }
-
-  
 }
 
 /// Riverpod provider for [MetronomeViewModel].

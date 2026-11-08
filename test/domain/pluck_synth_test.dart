@@ -97,4 +97,41 @@ void main() {
     expect(data.getInt16(44 + 6, Endian.little), 32767);
     expect(data.getInt16(44 + 8, Endian.little), -32767);
   });
+
+  group('metrónomo en bucle', () {
+    test('120 BPM en 4/4: un clic cada 0.5 s exactos, acento solo en el 1', () {
+      final clicks = metronomeClicks(bpm: 120, beats: 4);
+      expect([for (final c in clicks) c.at], [0, 22050, 44100, 66150]);
+      expect([for (final c in clicks) c.kind],
+          [ClickKind.accent, ClickKind.beat, ClickKind.beat, ClickKind.beat]);
+    });
+
+    test('las subdivisiones no son tiempos: corcheas en 3/4 = 6 clics, 3 tiempos', () {
+      final clicks = metronomeClicks(bpm: 90, beats: 3, perBeat: 2);
+      expect(clicks, hasLength(6));
+      expect(clicks.where((c) => c.kind != ClickKind.subdivision), hasLength(3));
+      expect(clicks[1].kind, ClickKind.subdivision);
+      expect(clicks[2].kind, ClickKind.beat);
+    });
+
+    test('en cualquier tempo y subdivisión, los clics quedan a ±1 muestra de su instante', () {
+      for (final bpm in [20, 61, 97, 133, 300]) {
+        for (final per in [1, 2, 3, 4]) {
+          final step = 60 * synthSampleRate / bpm / per;
+          for (final (i, c) in metronomeClicks(bpm: bpm, beats: 7, perBeat: per).indexed) {
+            expect((c.at - i * step).abs(), lessThanOrEqualTo(1), reason: '$bpm/$per');
+          }
+        }
+      }
+    });
+
+    test('el bucle son compases enteros y dura al menos 8 s', () {
+      final bar = metronomeBarSamples(bpm: 100, beats: 4);
+      final loop = renderMetronomeLoop(bpm: 100, beats: 4);
+      expect(loop.length % bar, 0);
+      expect(loop.length, greaterThanOrEqualTo(8 * synthSampleRate));
+      // Cada compás empieza con el acento: la misma señal en cada vuelta.
+      expect(loop.sublist(bar, bar + 100), loop.sublist(0, 100));
+    });
+  });
 }

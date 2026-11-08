@@ -33,9 +33,17 @@ class AudioService {
   /// Acordes, notas e intervalos (uno a la vez: el nuevo corta al anterior).
   AudioPlayer? _voice;
 
-  /// Clics del metrónomo, cargados una sola vez para que suenen sin demora.
+  /// Clics sueltos (juego de ritmo, círculo), cargados una sola vez para que
+  /// suenen sin demora.
   AudioPlayer? _tick;
   AudioPlayer? _accent;
+
+  /// El metrónomo: compases ya sintetizados que se repiten en bucle.
+  AudioPlayer? _metronome;
+
+  /// Cuenta cada arranque o parada del metrónomo: un arranque que terminó
+  /// de cargar después de otra orden ya no suena.
+  int _metronomeOrder = 0;
 
   Directory? _dir;
   final _files = <String, String>{};
@@ -49,14 +57,14 @@ class AudioService {
   }
 
   void dispose() {
-    for (final p in [_voice, _tick, _accent]) {
+    for (final p in [_voice, _tick, _accent, _metronome]) {
       try {
         p?.dispose();
       } catch (e, st) {
         debugPrint('AudioService.dispose error: $e\n$st');
       }
     }
-    _voice = _tick = _accent = null;
+    _voice = _tick = _accent = _metronome = null;
   }
 
   // ── Reproducción ──────────────────────────────────────────────────────────
@@ -97,7 +105,7 @@ class AudioService {
     );
   }
 
-  /// Clic del metrónomo; [isAccent] para el primer tiempo del compás.
+  /// Un clic suelto; [isAccent] para el primer tiempo del compás.
   Future<void> playMetronomeTick({bool isAccent = false}) async {
     try {
       final player = isAccent
@@ -107,6 +115,41 @@ class AudioService {
       unawaited(player.play());
     } catch (e, st) {
       debugPrint('AudioService.playMetronomeTick error: $e\n$st');
+    }
+  }
+
+  /// Metrónomo de [beats] tiempos a [bpm] con [perBeat] clics por tiempo,
+  /// hasta [stopMetronome]. El tiempo lo marcan las muestras del archivo
+  /// (`renderMetronomeLoop`), no un temporizador: no se adelanta ni se atrasa.
+  Future<void> startMetronome({
+    required int bpm,
+    required int beats,
+    int perBeat = 1,
+  }) async {
+    final order = ++_metronomeOrder;
+    try {
+      final player = _metronome ??= AudioPlayer();
+      await player.stop();
+      final path = await _file(
+        'metro-$bpm-$beats-$perBeat',
+        () => renderMetronomeLoop(bpm: bpm, beats: beats, perBeat: perBeat),
+      );
+      if (order != _metronomeOrder) return;
+      await player.setFilePath(path);
+      await player.setLoopMode(LoopMode.one);
+      if (order != _metronomeOrder) return;
+      unawaited(player.play());
+    } catch (e, st) {
+      debugPrint('AudioService.startMetronome error: $e\n$st');
+    }
+  }
+
+  Future<void> stopMetronome() async {
+    _metronomeOrder++;
+    try {
+      await _metronome?.stop();
+    } catch (e, st) {
+      debugPrint('AudioService.stopMetronome error: $e\n$st');
     }
   }
 

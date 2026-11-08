@@ -215,34 +215,53 @@ class _BeatIndicator extends StatelessWidget {
   final bool isPlaying;
   final AnimationController beatController;
 
+  /// Diámetro de un tiempo: 36 (44 el primero) si caben en una fila; si no
+  /// (9/8, 12/8 en un teléfono), todos se achican lo justo.
+  static double scaleFor(int beats, double width) {
+    const margin = 8.0;
+    final natural = 44 + (beats - 1) * 36 + beats * margin;
+    return natural <= width ? 1 : (width - beats * margin) / (natural - beats * margin);
+  }
+
   @override
   Widget build(BuildContext context) => SizedBox(
         height: 60,
-        child: Row(
-          mainAxisAlignment: MainAxisAlignment.center,
-          children: List.generate(totalBeats, (i) {
-            final isActive = isPlaying && i == currentBeat;
-            final isAccent = i == 0;
-            return AnimatedContainer(
-              duration: const Duration(milliseconds: 80),
-              margin: const EdgeInsets.symmetric(horizontal: 4),
-              width: isAccent ? 44 : 36,
-              height: isAccent ? 44 : 36,
-              decoration: BoxDecoration(
-                shape: BoxShape.circle,
-                color: isActive
-                    ? context.palette.accent
-                    : context.palette.accent.withValues(alpha: 0.2),
-                border: Border.all(
-                  color: context.palette.accent,
-                  width: isAccent ? 3 : 1.5,
-                ),
-              ),
-              child: isActive
-                  ? Icon(Icons.music_note, color: context.palette.onAccent, size: 18)
-                  : null,
+        child: LayoutBuilder(
+          builder: (context, constraints) {
+            final scale = scaleFor(totalBeats, constraints.maxWidth);
+            return Row(
+              mainAxisAlignment: MainAxisAlignment.center,
+              children: List.generate(totalBeats, (i) {
+                final isActive = isPlaying && i == currentBeat;
+                final isAccent = i == 0;
+                final size = (isAccent ? 44 : 36) * scale;
+                // El tamaño no se anima: al pasar a 12/8 los tiempos se
+                // achican de golpe y nunca se salen de la fila.
+                return Container(
+                  key: ValueKey('beat-$i'),
+                  margin: const EdgeInsets.symmetric(horizontal: 4),
+                  width: size,
+                  height: size,
+                  child: AnimatedContainer(
+                    duration: const Duration(milliseconds: 80),
+                    decoration: BoxDecoration(
+                      shape: BoxShape.circle,
+                      color: isActive
+                          ? context.palette.accent
+                          : context.palette.accent.withValues(alpha: 0.2),
+                      border: Border.all(
+                        color: context.palette.accent,
+                        width: isAccent ? 3 : 1.5,
+                      ),
+                    ),
+                    child: isActive
+                        ? Icon(Icons.music_note, color: context.palette.onAccent, size: 18 * scale)
+                        : null,
+                  ),
+                );
+              }),
             );
-          }),
+          },
         ),
       );
 }
