@@ -52,6 +52,7 @@ void main() {
     WidgetTester tester, {
     ScaleDefinition? scale,
     Size size = const Size(360, 800),
+    String? position,
   }) async {
     tester.view.devicePixelRatio = 1;
     tester.view.physicalSize = size;
@@ -66,17 +67,17 @@ void main() {
         ],
         child: MaterialApp(
           theme: lightTheme,
-          home: ScaleDetailScreen(scale: scale ?? major),
+          home: ScaleDetailScreen(scale: scale ?? major, initialPosition: position),
         ),
       ),
     );
     await settle(tester);
   }
 
-  ScaleDetailState stateOf(WidgetTester tester, [ScaleDefinition? scale]) =>
+  ScaleDetailState stateOf(WidgetTester tester, [ScaleDefinition? scale, String? position]) =>
       ProviderScope.containerOf(
         tester.element(find.byType(ScaleDetailScreen, skipOffstage: false)),
-      ).read(scaleDetailProvider((scale: scale ?? major, root: 0)));
+      ).read(scaleDetailProvider((scale: scale ?? major, root: 0, position: position)));
 
   FretboardDiagram board(WidgetTester tester) =>
       tester.widget<FretboardDiagram>(find.byType(FretboardDiagram).first);
@@ -97,6 +98,20 @@ void main() {
   }
 
   group('detalle', () {
+    testWidgets('abierta desde una guía en la forma A: CAGED y esa digitación', (tester) async {
+      await pump(tester, position: 'caged_a');
+      final s = stateOf(tester, major, 'caged_a');
+      expect(s.selectedSystemId, 'caged');
+      expect(s.currentPattern?.positionId, 'caged_a');
+      expect(board(tester).pattern.positionId, 'caged_a');
+    });
+
+    testWidgets('una digitación que no existe deja la predeterminada', (tester) async {
+      await pump(tester, position: 'no_existe');
+      final s = stateOf(tester, major, 'no_existe');
+      expect(s.selectedSystemId, isNull);
+      expect(s.selectedPatternIndex, isNull);
+    });
     testWidgets('arriba solo queda la tónica', (tester) async {
       await pump(tester);
       expect(find.byKey(const Key('scale-root')), findsOneWidget);

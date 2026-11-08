@@ -77,6 +77,40 @@ void main() {
       }
     });
 
+    testWidgets('el filtro de nivel deja solo ese nivel; "Todos" vuelve', (tester) async {
+      await open(tester, '/learn/guides');
+      await tester.tap(find.byKey(const Key('guides-level-advanced')));
+      await tester.pump();
+      for (final g in guides) {
+        expect(
+          find.byKey(Key('guide-${g.id}'), skipOffstage: false),
+          g.level == GuideLevel.advanced ? findsOneWidget : findsNothing,
+          reason: g.id,
+        );
+      }
+      await tester.tap(find.byKey(const Key('guides-level-all')));
+      await tester.pump();
+      expect(find.byKey(const Key('guide-capo'), skipOffstage: false), findsOneWidget);
+    });
+
+    testWidgets('el filtro de nivel se combina con la búsqueda', (tester) async {
+      await open(tester, '/learn/guides');
+      await tester.enterText(find.byKey(const Key('guides-search')), 'caged');
+      await tester.tap(find.byKey(const Key('guides-level-beginner')));
+      await tester.pump();
+      expect(find.byKey(const Key('guides-empty')), findsOneWidget);
+      await tester.tap(find.byKey(const Key('guides-level-intermediate')));
+      await tester.pump();
+      expect(find.byKey(const Key('guide-caged_chord_scale')), findsOneWidget);
+    });
+
+    testWidgets('cada tarjeta dice su nivel', (tester) async {
+      await open(tester, '/learn/guides');
+      for (final g in guides) {
+        final level = tester.widget<Text>(find.byKey(Key('guide-level-${g.id}'), skipOffstage: false));
+        expect(level.data, guideLevelTitle(g.level).text, reason: g.id);
+      }
+    });
     testWidgets('buscar filtra y oculta las filas vacías; la ✕ limpia', (tester) async {
       await open(tester, '/learn/guides');
       await tester.enterText(find.byKey(const Key('guides-search')), 'capo');
@@ -393,6 +427,18 @@ void main() {
         await tester.pump();
         expect(tester.takeException(), isNull);
       });
+    });
+  }
+
+  for (final code in ['es', 'en']) {
+    testWidgets('a 360 dp ($code) el filtro de nivel cabe', (tester) async {
+      await open(tester, '/learn/guides', code: code, size: const Size(360, 3200));
+      expect(tester.takeException(), isNull);
+      for (final key in ['guides-levels', 'guides-level-intermediate', 'guides-level-advanced']) {
+        final rect = tester.getRect(find.byKey(Key(key)));
+        expect(rect.left, greaterThanOrEqualTo(0), reason: key);
+        expect(rect.right, lessThanOrEqualTo(360), reason: key);
+      }
     });
   }
 }

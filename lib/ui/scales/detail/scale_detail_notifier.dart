@@ -86,8 +86,9 @@ class ScaleDetailState {
       );
 }
 
-/// Escala y tónica inicial (semitono, C = 0) del detalle.
-typedef ScaleDetailArgs = ({ScaleDefinition scale, int root});
+/// Escala, tónica inicial (semitono, C = 0) y, si se pide, la digitación con
+/// la que abre (id de `scales_master.json`, p. ej. `caged_a` desde una guía).
+typedef ScaleDetailArgs = ({ScaleDefinition scale, int root, String? position});
 
 class ScaleDetailNotifier extends Notifier<ScaleDetailState> {
   ScaleDetailNotifier(this._arg);
@@ -102,7 +103,8 @@ class ScaleDetailNotifier extends Notifier<ScaleDetailState> {
       selectedSystemId: null,
       visiblePatterns: const [],
     );
-    _load(initial);
+    final loaded = _load(initial);
+    if (_arg.position case final id?) loaded.then((_) => _openPosition(id));
     // Logro "Explorador de escalas": 10 escalas distintas abiertas.
     ref.read(achievementServiceProvider).recordDistinct(
       key: 'viewed_scale_ids',
@@ -128,6 +130,16 @@ class ScaleDetailNotifier extends Notifier<ScaleDetailState> {
     }
   }
 
+  /// Abre en la digitación [positionId]: elige su sistema y la marca.
+  Future<void> _openPosition(String positionId) async {
+    if (!ref.mounted) return;
+    final pattern = state.visiblePatterns.where((p) => p.positionId == positionId).firstOrNull;
+    if (pattern == null) return;
+    await _load(state.copyWith(selectedSystemId: pattern.systemId, clearPattern: true));
+    if (!ref.mounted) return;
+    selectPattern(state.visiblePatterns.indexWhere((p) => p.positionId == positionId));
+  }
+
   Future<void> _load(ScaleDetailState pending) async {
     state = pending.copyWith(isLoading: true);
     final patterns = await ref.read(scaleRepositoryProvider).getPositions(
@@ -135,6 +147,7 @@ class ScaleDetailNotifier extends Notifier<ScaleDetailState> {
           rootSemitone: pending.rootSemitone,
           systemFilter: pending.selectedSystemId,
         );
+    if (!ref.mounted) return;
     state = pending.copyWith(
       visiblePatterns: patterns,
       isLoading: false,

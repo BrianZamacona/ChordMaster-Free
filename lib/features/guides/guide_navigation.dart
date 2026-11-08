@@ -81,7 +81,7 @@ Future<void> openGuideTarget(
       if (found != null) {
         await context.push('/learn/chords/${Uri.encodeComponent(found.name)}');
       }
-    case ScaleLink(:final scale):
+    case ScaleLink(:final scale, :final position):
       final all = await ref.read(allScalesProvider.future);
       final definition = all.where((s) => s.id == scale.scaleId).firstOrNull ??
           (await ref.read(allModesProvider.future))
@@ -89,7 +89,8 @@ Future<void> openGuideTarget(
               .firstOrNull;
       if (definition == null || !context.mounted) return;
       await context.push(
-        '/learn/scales/${definition.id}?root=${scale.root}',
+        '/learn/scales/${definition.id}?root=${scale.root}'
+        '${position == null ? '' : '&position=$position'}',
         extra: definition,
       );
     case WorkoutLink(:final scale):

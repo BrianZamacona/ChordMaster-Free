@@ -308,6 +308,14 @@ cada nota pertenezca a la escala. No bajar la tolerancia de 0.
   lección o un fijo por tipo. "Siguiente guía": la próxima sin terminar de la fila y luego del
   catálogo; reemplaza la pantalla (atrás vuelve al catálogo). Sin búsqueda, el catálogo pone
   arriba "Sigue donde ibas" con las empezadas.
+- Nivel (`GuideLevel`: principiante, intermedio, avanzado; inspirado en el filtro de Gibson):
+  cada guía declara el suyo y un test exige que no sea menor que el de las lecciones que
+  enlaza (nivel 2 del camino = intermedio o más). El catálogo filtra por nivel (se combina con
+  la búsqueda) y cada tarjeta lo dice con texto. `ScaleLink` puede llevar `position` (id de
+  `scales_master.json`): el detalle de escala abre con `?position=` en ese sistema y esa
+  digitación. "CAGED: acorde y escala" une cada forma de C de `chords.json` con su forma de la
+  escala mayor; el test verifica digitación, traste, tramo y que las notas del acorde caigan
+  dentro de la forma de escala.
 - Buscador: `searchGuides` busca todas las palabras, sin tildes ni mayúsculas, en título,
   subtítulo y títulos de capítulo del idioma actual; las filas vacías se ocultan.
 - Diseño vertical (decisión del usuario: nada de filas que se deslizan de lado): cada categoría es

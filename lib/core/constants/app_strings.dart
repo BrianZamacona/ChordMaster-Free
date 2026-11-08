@@ -567,6 +567,8 @@ class AppStrings {
     es: 'Pasadas limpias seguidas: $n',
     en: 'Clean runs in a row: $n',
   );
+  static String get guidesLevel => tr(es: 'Nivel', en: 'Level');
+  static String get guidesAllLevels => tr(es: 'Todos', en: 'All');
   static String get sessionTitle => tr(es: 'Tu sesión de hoy', en: "Today's session");
   static String todaySession(int runs) => runs == 0
       ? tr(es: 'Resumen de hoy', en: "Today's summary")
