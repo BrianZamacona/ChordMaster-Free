@@ -20,12 +20,21 @@ List<String> get tabStringNames => [
 /// Tablatura de una lección: seis líneas (la 1ª cuerda arriba) y el traste de
 /// cada nota, de izquierda a derecha, en renglones de [tabNotesPerLine].
 class LessonTabView extends StatelessWidget {
-  const LessonTabView({super.key, required this.notes, this.highlight});
+  const LessonTabView({
+    super.key,
+    required this.notes,
+    this.highlight,
+    this.played = 0,
+  });
 
   final List<TabNote> notes;
 
-  /// Nota que está sonando (índice en [notes]); va resaltada.
+  /// Nota que está sonando o que toca tocar (índice en [notes]); va resaltada.
   final int? highlight;
+
+  /// Cuántas notas ya salieron bien al tocar con el micrófono: van en verde
+  /// y subrayadas.
+  final int played;
 
   @override
   Widget build(BuildContext context) {
@@ -58,6 +67,7 @@ class LessonTabView extends StatelessWidget {
                       highlight: highlight == null
                           ? null
                           : highlight! - i * tabNotesPerLine,
+                      played: played - i * tabNotesPerLine,
                     ),
                   ),
                 ),
@@ -83,6 +93,7 @@ class _TabPainter extends CustomPainter {
     required this.notes,
     required this.palette,
     this.highlight,
+    this.played = 0,
   });
 
   static const lineGap = 14.0;
@@ -95,6 +106,9 @@ class _TabPainter extends CustomPainter {
 
   /// Índice dentro de este renglón de la nota que suena.
   final int? highlight;
+
+  /// Notas de este renglón ya tocadas bien (las primeras [played]).
+  final int played;
 
   double _y(int string) => top + (string - 1) * lineGap;
 
@@ -116,8 +130,8 @@ class _TabPainter extends CustomPainter {
     }
     for (final (i, n) in notes.indexed) {
       final center = Offset(_x(i, size.width), _y(n.string));
-      // Un hueco en la línea para que el número se lea.
       final playing = i == highlight;
+      final done = !playing && i < played;
       // Un hueco en la línea para que el número se lea; la nota que suena va
       // sobre el acento, y además más grande (no solo por color).
       canvas.drawRRect(
@@ -135,10 +149,20 @@ class _TabPainter extends CustomPainter {
         canvas,
         '${n.fret}',
         center,
-        playing ? palette.onAccent : palette.textPrimary,
+        playing ? palette.onAccent : (done ? palette.success : palette.textPrimary),
         playing ? 15 : 13,
         bold: true,
       );
+      if (done) {
+        // Hecha: además del color, una raya debajo (no solo color).
+        canvas.drawLine(
+          center + const Offset(-6, 8),
+          center + const Offset(6, 8),
+          Paint()
+            ..color = palette.success
+            ..strokeWidth = 2,
+        );
+      }
     }
   }
 
@@ -168,5 +192,6 @@ class _TabPainter extends CustomPainter {
   bool shouldRepaint(_TabPainter old) =>
       !identical(old.notes, notes) ||
       old.palette != palette ||
-      old.highlight != highlight;
+      old.highlight != highlight ||
+      old.played != played;
 }

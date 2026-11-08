@@ -511,6 +511,51 @@ class AppStrings {
   static String get tabStop => tr(es: 'Detener', en: 'Stop');
   static String tabAtBpm(int bpm) =>
       tr(es: 'a $bpm BPM, en corcheas', en: 'at $bpm BPM, in eighth notes');
+  static String get tabPlayMic => tr(es: 'Tocar yo', en: 'Play it myself');
+  static String get tabMicHint => tr(
+    es: 'Toca con el teléfono cerca: la app espera cada nota (sin apuro) y, '
+        'al terminar, mide tu tempo. Una nota a la vez.',
+    en: 'Play near the phone: the app waits for each note (no rush) and '
+        'measures your tempo at the end. One note at a time.',
+  );
+  static String tabMicProgress(int note, int total) => tr(
+    es: 'Te escucho: nota $note de $total',
+    en: 'Listening: note $note of $total',
+  );
+  static String tabMicMistakes(int n) => tr(
+    es: n == 1 ? '1 error' : '$n errores',
+    en: n == 1 ? '1 mistake' : '$n mistakes',
+  );
+  static String tabMicWrong(String heard, String wanted) => tr(
+    es: 'Sonó $heard; toca $wanted',
+    en: 'Heard $heard; play $wanted',
+  );
+  static String tabMicClean(int bpm) => tr(
+    es: '¡Sin errores, a $bpm BPM de media!',
+    en: 'No mistakes, $bpm BPM on average!',
+  );
+  static String tabMicTooSlow(int minBpm) => tr(
+    es: 'Sin errores, pero más lento que $minBpm BPM: no cuenta como récord.',
+    en: 'No mistakes, but slower than $minBpm BPM: it does not count as a record.',
+  );
+  static String tabMicWithMistakes(int n) => tr(
+    es: 'Terminada con ${tabMicMistakes(n)}. Otra vez, más lento si hace falta.',
+    en: 'Finished with ${tabMicMistakes(n)}. Try again, slower if needed.',
+  );
+  static String get tabMicPaused => tr(
+    es: 'Terminada, pero te detuviste en medio: tócala de corrido.',
+    en: 'Finished, but you stopped halfway: play it straight through.',
+  );
+  static String get tabMicDenied => tr(
+    es: 'Para tocar con el micrófono hace falta el permiso.',
+    en: 'Playing with the microphone needs microphone access.',
+  );
+  static String get tabMicDeniedForever => tr(
+    es: 'El permiso del micrófono está desactivado. Actívalo en los ajustes de la app.',
+    en: 'Microphone access is turned off. Enable it in the app settings.',
+  );
+  static String tabMicSaved(int bpm) =>
+      tr(es: 'Récord guardado: $bpm BPM', en: 'Record saved: $bpm BPM');
   static String guideOpenWorkout(String scale) =>
       tr(es: 'Rutinas de $scale', en: '$scale workouts');
   static String get hubEar => tr(es: 'Oído', en: 'Ear');

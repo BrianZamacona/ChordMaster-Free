@@ -34,12 +34,19 @@ class PitchResult {
       'cents: ${centsDeviation.toStringAsFixed(1)}, inTune: $isInTune)';
 }
 
+/// Una ventana de micrófono ya bajada a [PitchService.sampleRate]: termina en
+/// el instante [at] (segundos desde que empezó a escuchar, por el reloj de
+/// muestras) y trae [PitchService.hop] muestras nuevas.
+typedef MicWindow = ({Float64List samples, double at});
+
 /// Escucha el micrófono y emite la afinación detectada.
 ///
 /// El micrófono entrega PCM de 16 bits a 44.1 kHz; se baja a 22.05 kHz y,
 /// cada ~46 ms, se analiza una ventana de ~93 ms con YIN
 /// (`domain/audio/pitch_detection.dart`). La mediana de las últimas 5
-/// lecturas estabiliza la aguja. Nada se graba ni se guarda.
+/// lecturas estabiliza la aguja. Las ventanas también salen tal cual en
+/// [windowStream] (tocar con el micrófono las analiza sabiendo qué nota
+/// espera). Nada se graba ni se guarda.
 class PitchService {
   factory PitchService() => instance;
 
@@ -52,9 +59,13 @@ class PitchService {
   static final PitchService instance = PitchService._internal();
 
   static const _micRate = 44100;
-  static const _rate = _micRate ~/ 2;
+
+  /// Frecuencia de las ventanas (el micrófono, bajado a la mitad).
+  static const sampleRate = _micRate ~/ 2;
   static const _window = 2048; // muestras a 22.05 kHz (~93 ms)
-  static const _hop = 1024; // nueva lectura cada ~46 ms
+
+  /// Muestras nuevas en cada ventana: una lectura cada ~46 ms.
+  static const hop = 1024;
   static const _median = 5;
 
   /// La de referencia (440 Hz por defecto); lo cambia el afinador.
@@ -63,6 +74,7 @@ class PitchService {
   /// Se crea al usarlo por primera vez (abre el plugin del micrófono).
   late final AudioRecorder _recorder = AudioRecorder();
   final StreamController<PitchResult> _controller = StreamController<PitchResult>.broadcast();
+  final StreamController<MicWindow> _windows = StreamController<MicWindow>.broadcast();
   StreamSubscription<Uint8List>? _mic;
 
   /// Muestras a 22.05 kHz pendientes de analizar.
@@ -71,6 +83,9 @@ class PitchService {
   bool _isListening = false;
 
   Stream<PitchResult> get pitchStream => _controller.stream;
+
+  /// Cada ventana del micrófono, sin analizar.
+  Stream<MicWindow> get windowStream => _windows.stream;
 
   bool get isListening => _isListening;
 
@@ -115,8 +130,9 @@ class PitchService {
       _odd = null;
       _buffer.clear();
       _recent.clear();
+      _consumed = 0;
       _isListening = true;
-      _mic = stream.listen(onBytes, onError: _controller.addError);
+      _mic = stream.listen(onBytes, onError: _onMicError);
     } catch (e, st) {
       debugPrint('PitchService.startListening error: $e\n$st');
       _isListening = false;
@@ -138,9 +154,15 @@ class PitchService {
     }
   }
 
+  void _onMicError(Object error, StackTrace stack) {
+    _controller.addError(error, stack);
+    _windows.addError(error, stack);
+  }
+
   Future<void> dispose() async {
     await stopListening();
     await _controller.close();
+    await _windows.close();
     await _recorder.dispose();
   }
 
@@ -150,6 +172,9 @@ class PitchService {
 
   /// Muestra a 44.1 kHz que espera su par para bajar a 22.05 kHz.
   double? _odd;
+
+  /// Muestras a 22.05 kHz ya descartadas del búfer: el reloj de [MicWindow].
+  int _consumed = 0;
 
   /// Un bloque del micrófono (PCM de 16 bits a 44.1 kHz, de cualquier largo).
   @visibleForTesting
@@ -162,9 +187,17 @@ class PitchService {
     _odd = samples.length.isOdd ? samples.last : null;
     _buffer.addAll(decimateByTwo(samples));
     while (_buffer.length >= _window) {
-      final reading = analyze(Float64List.fromList(_buffer.sublist(0, _window)));
-      _buffer.removeRange(0, _hop);
-      if (reading != null && !_controller.isClosed) _controller.add(reading);
+      final window = Float64List.fromList(_buffer.sublist(0, _window));
+      if (_windows.hasListener) {
+        _windows.add((samples: window, at: (_consumed + _window) / sampleRate));
+      }
+      // YIN solo si alguien mira la afinación (el afinador).
+      if (_controller.hasListener) {
+        final reading = analyze(window);
+        if (reading != null) _controller.add(reading);
+      }
+      _buffer.removeRange(0, hop);
+      _consumed += hop;
     }
   }
 
@@ -173,7 +206,7 @@ class PitchService {
   /// historial para que la nota siguiente no arrastre la anterior.
   @visibleForTesting
   PitchResult? analyze(Float64List window) {
-    final hz = detectPitchHz(window, _rate);
+    final hz = detectPitchHz(window, sampleRate);
     if (hz == null) {
       _recent.clear();
       return null;

@@ -35,7 +35,7 @@ class StrumStepScreen extends ConsumerWidget {
           levels: levels,
           step: step,
           body: _StepBody(step: step),
-          player: (bpm) => StrumPlayer(
+          player: (bpm, _) => StrumPlayer(
             slots: step.slots,
             patterns: step.patterns,
             bpm: bpm,
