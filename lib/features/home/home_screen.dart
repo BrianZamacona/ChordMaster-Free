@@ -285,11 +285,11 @@ List<HomeModule> get homeModules => [
   HomeModule(
       label: AppStrings.moduleTuner,
       icon: Icons.graphic_eq,
-      route: '/tools/tuner'),
+      route: '/tuner'),
   HomeModule(
       label: AppStrings.moduleMetronome,
       icon: Icons.timer,
-      route: '/tools/metronome'),
+      route: '/metronome'),
   HomeModule(
       label: AppStrings.moduleProgressions,
       icon: Icons.queue_music,

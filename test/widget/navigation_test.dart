@@ -1,4 +1,7 @@
 import 'package:chordmaster_free/app.dart';
+import 'package:chordmaster_free/core/constants/app_strings.dart';
+import 'package:chordmaster_free/domain/lessons/curriculum.dart';
+import 'package:chordmaster_free/domain/lessons/lesson.dart';
 import 'package:chordmaster_free/features/chords/chord_library_screen.dart';
 import 'package:chordmaster_free/features/home/home_screen.dart';
 import 'package:chordmaster_free/features/hubs/hubs.dart';
@@ -8,13 +11,13 @@ import 'package:chordmaster_free/ui/section_routes.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:flutter_test/flutter_test.dart';
+import 'package:go_router/go_router.dart';
 
 import '../support/in_memory_store.dart';
 
 void main() {
   group('redirectLegacyRoute', () {
     test('rutas viejas a su sección', () {
-      expect(redirectLegacyRoute('/tuner'), '/tools/tuner');
       expect(redirectLegacyRoute('/rhythm-game'), '/practice/rhythm');
       expect(redirectLegacyRoute('/community'), '/progress');
       expect(redirectLegacyRoute('/composition'), '/learn/progressions');
@@ -30,12 +33,15 @@ void main() {
       expect(redirectLegacyRoute('/scales/double-stops'), isNull);
       expect(redirectLegacyRoute('/progressions'), isNull);
       expect(redirectLegacyRoute('/'), isNull);
+      // /tuner y /metronome son el afinador y el metrónomo apilados en Inicio.
+      expect(redirectLegacyRoute('/tuner'), isNull);
+      expect(redirectLegacyRoute('/metronome'), isNull);
     });
   });
 
-  Future<void> open(WidgetTester tester, String location) async {
+  Future<void> open(WidgetTester tester, String location, {Size size = const Size(500, 1000)}) async {
     tester.view.devicePixelRatio = 1;
-    tester.view.physicalSize = const Size(500, 1000);
+    tester.view.physicalSize = size;
     addTearDown(tester.view.reset);
     await tester.pumpWidget(
       ProviderScope(
@@ -59,6 +65,11 @@ void main() {
     ('/learn/progressions', true),
     ('/practice/ear-training', true),
     ('/tools/metronome', false),
+    ('/tools/tuner', false),
+    ('/tuner', true),
+    ('/metronome', true),
+    ('/learn/tuner', true),
+    ('/learn/metronome', true),
     ('/progress/achievements', true),
   ]) {
     testWidgets('$location: barra inferior${back ? ' y botón de atrás' : ''}', (
@@ -122,5 +133,71 @@ void main() {
     }
     context = tester.element(find.byType(ChordLibraryScreen));
     expect(context.sectionPath('chords/C%20Major'), '/learn/chords/C%20Major');
+  });
+
+  group('afinador y metrónomo: atrás vuelve a donde se abrieron', () {
+    Future<void> settle(WidgetTester tester) async {
+      for (var i = 0; i < 5; i++) {
+        await tester.pump(const Duration(milliseconds: 300));
+      }
+    }
+
+    // Un push no cambia la uri de la configuración: manda la última coincidencia.
+    String location() => switch (appRouter.routerDelegate.currentConfiguration.last) {
+          final ImperativeRouteMatch m => m.matches.uri.path,
+          _ => appRouter.routerDelegate.currentConfiguration.uri.path,
+        };
+
+    testWidgets('desde Inicio: se queda en Inicio y atrás vuelve a Inicio', (tester) async {
+      await open(tester, '/', size: const Size(500, 3000));
+      final tile = find.text(AppStrings.moduleMetronome).first;
+      await tester.ensureVisible(tile);
+      await tester.pump();
+      await tester.tap(tile);
+      await settle(tester);
+      expect(location(), '/metronome');
+      expect(tester.widget<NavigationBar>(find.byType(NavigationBar)).selectedIndex, 0);
+      await tester.tap(find.byType(BackButton));
+      await settle(tester);
+      expect(location(), '/');
+    });
+
+    testWidgets('desde una lección: atrás vuelve a la lección', (tester) async {
+      final lesson = curriculum.firstWhere((l) => l.tool == LessonTool.metronome);
+      await open(tester, '/learn/lessons/${lesson.id}', size: const Size(500, 3000));
+      final button = find.byKey(const Key('lesson-open-tool'));
+      await tester.ensureVisible(button);
+      await tester.pump();
+      await tester.tap(button);
+      await settle(tester);
+      expect(location(), '/learn/metronome');
+      await tester.tap(find.byType(BackButton));
+      await settle(tester);
+      expect(location(), '/learn/lessons/${lesson.id}');
+    });
+
+    testWidgets('el selector, apilado, cambia de herramienta sin perder el regreso', (tester) async {
+      final lesson = curriculum.firstWhere((l) => l.tool == LessonTool.metronome);
+      await open(tester, '/learn/lessons/${lesson.id}', size: const Size(500, 3000));
+      final button = find.byKey(const Key('lesson-open-tool'));
+      await tester.ensureVisible(button);
+      await tester.pump();
+      await tester.tap(button);
+      await settle(tester);
+      await tester.tap(find.text(AppStrings.toolTuner));
+      await settle(tester);
+      expect(location(), '/learn/tuner');
+      await tester.tap(find.byType(BackButton));
+      await settle(tester);
+      expect(location(), '/learn/lessons/${lesson.id}');
+    });
+
+    testWidgets('en la pestaña Afinar el selector cambia ahí y no hay atrás', (tester) async {
+      await open(tester, '/tools/tuner');
+      await tester.tap(find.text(AppStrings.toolMetronome));
+      await settle(tester);
+      expect(location(), '/tools/metronome');
+      expect(find.byType(BackButton), findsNothing);
+    });
   });
 }

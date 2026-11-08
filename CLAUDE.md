@@ -194,8 +194,11 @@ cada nota pertenezca a la escala. No bajar la tolerancia de 0.
 - Tablatura en `Lesson.tab` (`TabNote`: cuerda 1 = mi aguda, traste). Toda lección con tab
   declara `scale` y un test exige que cada nota pertenezca a ella; las notas que el texto nombra
   se verifican una por una. Se dibuja en `lesson_tab.dart`, en renglones de 8 notas.
-- `Lesson.tool` abre afinador o metrónomo (pestaña Afinar, `go`) o un módulo de Aprender
-  (Progresiones, double stops, círculo: `push`, atrás vuelve a la lección).
+- `Lesson.tool` abre afinador, metrónomo o un módulo de Aprender, siempre con `push`: atrás vuelve
+  a la lección. Regla (decisión del usuario): afinador y metrónomo abiertos desde otra pantalla
+  se apilan sobre ella (`/tuner` y `/metronome` en Inicio, `/learn/tuner` y `/learn/metronome`
+  en Aprender, `_toolRoutes`) y atrás vuelve ahí; solo en la pestaña Afinar son raíz. El selector
+  Afinador | Metrónomo, apilado, reemplaza la pantalla (`pushReplacement`) para no perder el regreso.
 - Todo lo que una lección afirma sobre cuerdas, dedos o notas tiene su test en
   `test/domain/lessons/curriculum_test.dart`, verificado contra los datos. Lección nueva o
   texto nuevo con una afirmación musical = test nuevo.
@@ -212,9 +215,9 @@ cada nota pertenezca a la escala. No bajar la tolerancia de 0.
 - Mapa (`lessons_screen.dart`): identidad propia, dibujado como mástil. Fundamentos es una
   cuerda que se abre en dos; cada unidad es un nodo con un dibujo generado desde los datos
   (`UnitArt`: diagrama, escala, rasgueo o notas). Nada de fotos ni imágenes de terceros.
-  Los dos caminos se arman por filas de igual altura, nivel por nivel: si un camino tiene más
-  unidades en un nivel, el otro deja la celda vacía; ambos tienen los mismos niveles y un reto
-  por nivel (hay test); un separador marca el nivel 2. Ningún
+  Los dos caminos van en columnas independientes, sin huecos (decisión del usuario: la rítmica
+  puede ser más larga que la líder); ambos tienen los mismos niveles y un reto por nivel (hay
+  test) y cada columna marca su nivel 2 (`lessons-level-2-<camino>`). Ningún
   camino se resalta hasta terminar Fundamentos o tocar uno (`highlightedTrack`). Al abrir, las
   cuerdas se dibujan escalonadas; con "reducir movimiento" aparecen completas.
 - Retos (`challenges`): uno al cerrar cada nivel de rítmica y de líder, con el doble punto del
