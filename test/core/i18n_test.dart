@@ -63,8 +63,8 @@ void main() {
     }
     expect(find.text('Learn'), findsWidgets);
     expect(find.text('Aprender'), findsNothing);
-    expect(find.text(AppStrings.hubChords), findsOneWidget);
-    expect(AppStrings.hubChords, 'Chords');
+    expect(find.text(AppStrings.hubLessons), findsOneWidget);
+    expect(AppStrings.hubLessons, 'Lessons');
     expect(
       appRouter.routerDelegate.currentConfiguration.uri.path,
       '/learn',

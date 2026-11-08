@@ -74,9 +74,21 @@ class PitchService {
 
   bool get isListening => _isListening;
 
+  /// Arranques y paradas van en fila: al volver rápido a la pestaña, un
+  /// `stop()` que aún no terminaba apagaba el micrófono recién encendido.
+  Future<void> _queue = Future.value();
+
+  Future<void> _inOrder(Future<void> Function() op) {
+    final done = _queue.then((_) => op());
+    _queue = done.catchError((Object _) {});
+    return done;
+  }
+
   /// Pide el micrófono y empieza a emitir en [pitchStream]. Lanza
   /// [PermissionFailure] si el permiso se niega.
-  Future<void> startListening() async {
+  Future<void> startListening() => _inOrder(_start);
+
+  Future<void> _start() async {
     if (_isListening) return;
     final granted = await PermissionUtils.requestMicrophonePermission();
     if (!granted || !await _recorder.hasPermission()) {
@@ -88,12 +100,23 @@ class PitchService {
       final stream = await _recorder.startStream(
         // 44.1 kHz mono, sin procesado de voz (autoGain, echoCancel y noiseSuppress
         // quedan en su valor por defecto, desactivados): altera la guitarra.
-        const RecordConfig(encoder: AudioEncoder.pcm16bits, numChannels: 1),
+        // Fuente de reconocimiento de voz: Android la exige sin control de
+        // ganancia ni supresión de ruido, que en la fuente por defecto de
+        // muchos teléfonos apagan una nota sostenida.
+        const RecordConfig(
+          encoder: AudioEncoder.pcm16bits,
+          numChannels: 1,
+          androidConfig: AndroidRecordConfig(
+            audioSource: AndroidAudioSource.voiceRecognition,
+          ),
+        ),
       );
+      _carry = null;
+      _odd = null;
       _buffer.clear();
       _recent.clear();
       _isListening = true;
-      _mic = stream.listen(_onBytes, onError: _controller.addError);
+      _mic = stream.listen(onBytes, onError: _controller.addError);
     } catch (e, st) {
       debugPrint('PitchService.startListening error: $e\n$st');
       _isListening = false;
@@ -101,7 +124,9 @@ class PitchService {
     }
   }
 
-  Future<void> stopListening() async {
+  Future<void> stopListening() => _inOrder(_stop);
+
+  Future<void> _stop() async {
     if (!_isListening) return;
     _isListening = false;
     try {
@@ -119,8 +144,23 @@ class PitchService {
     await _recorder.dispose();
   }
 
-  void _onBytes(Uint8List bytes) {
-    _buffer.addAll(decimateByTwo(pcm16ToSamples(bytes)));
+  /// Byte suelto del bloque anterior: un bloque puede cortar una muestra
+  /// de 16 bits a la mitad, y sin él todo lo que sigue se leería corrido.
+  int? _carry;
+
+  /// Muestra a 44.1 kHz que espera su par para bajar a 22.05 kHz.
+  double? _odd;
+
+  /// Un bloque del micrófono (PCM de 16 bits a 44.1 kHz, de cualquier largo).
+  @visibleForTesting
+  void onBytes(Uint8List chunk) {
+    var bytes = chunk;
+    if (_carry case final c?) bytes = Uint8List.fromList([c, ...chunk]);
+    _carry = bytes.length.isOdd ? bytes.last : null;
+    var samples = pcm16ToSamples(bytes);
+    if (_odd case final o?) samples = Float64List.fromList([o, ...samples]);
+    _odd = samples.length.isOdd ? samples.last : null;
+    _buffer.addAll(decimateByTwo(samples));
     while (_buffer.length >= _window) {
       final reading = analyze(Float64List.fromList(_buffer.sublist(0, _window)));
       _buffer.removeRange(0, _hop);

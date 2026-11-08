@@ -5,105 +5,88 @@ import '../../core/widgets/app_scaffold.dart';
 import '../../core/widgets/donation_button.dart';
 import 'section_hub_screen.dart';
 
+/// Aprender: lo que no está ya en Inicio (Acordes, Escalas, Progresiones y
+/// el Círculo de quintas se abren desde allí; ver `homeModules`).
 class LearnHubScreen extends StatelessWidget {
   const LearnHubScreen({super.key});
+
+  static List<HubEntry> get entries => [
+        HubEntry(
+          icon: Icons.school_outlined,
+          title: AppStrings.hubLessons,
+          subtitle: AppStrings.hubLessonsSub,
+          route: '/learn/lessons',
+        ),
+        HubEntry(
+          icon: Icons.auto_stories_outlined,
+          title: AppStrings.hubGuides,
+          subtitle: AppStrings.hubGuidesSub,
+          route: '/learn/guides',
+        ),
+        HubEntry(
+          icon: Icons.vertical_align_top,
+          title: AppStrings.hubCapo,
+          subtitle: AppStrings.hubCapoSub,
+          route: '/learn/capo',
+        ),
+      ];
 
   @override
   Widget build(BuildContext context) => SectionHubScreen(
         title: AppStrings.tabLearn,
         intro: AppStrings.learnIntro,
-        entries: [
-          HubEntry(
-            icon: Icons.school_outlined,
-            title: AppStrings.hubLessons,
-            subtitle: AppStrings.hubLessonsSub,
-            route: '/learn/lessons',
-          ),
-          HubEntry(
-            icon: Icons.auto_stories_outlined,
-            title: AppStrings.hubGuides,
-            subtitle: AppStrings.hubGuidesSub,
-            route: '/learn/guides',
-          ),
-          HubEntry(
-            icon: Icons.library_music_outlined,
-            title: AppStrings.hubChords,
-            subtitle: AppStrings.hubChordsSub,
-            route: '/learn/chords',
-          ),
-          HubEntry(
-            icon: Icons.linear_scale,
-            title: AppStrings.hubScales,
-            subtitle: AppStrings.hubScalesSub,
-            route: '/learn/scales',
-          ),
-          HubEntry(
-            icon: Icons.queue_music,
-            title: AppStrings.hubProgressions,
-            subtitle: AppStrings.hubProgressionsSub,
-            route: '/learn/progressions',
-          ),
-          HubEntry(
-            icon: Icons.donut_large,
-            title: AppStrings.circleTitle,
-            subtitle: AppStrings.hubCircleSub,
-            route: '/learn/circle',
-          ),
-          HubEntry(
-            icon: Icons.vertical_align_top,
-            title: AppStrings.hubCapo,
-            subtitle: AppStrings.hubCapoSub,
-            route: '/learn/capo',
-          ),
-        ],
+        entries: entries,
       );
 }
 
+/// Practicar. Sus módulos no se repiten en Inicio (ver `homeModules`).
 class PracticeHubScreen extends StatelessWidget {
   const PracticeHubScreen({super.key});
+
+  static List<HubEntry> get entries => [
+        HubEntry(
+          icon: Icons.hearing,
+          title: AppStrings.hubEar,
+          subtitle: AppStrings.hubEarSub,
+          route: '/practice/ear-training',
+        ),
+        HubEntry(
+          icon: Icons.fitness_center,
+          title: AppStrings.hubWorkouts,
+          subtitle: AppStrings.hubWorkoutsSub,
+          route: '/practice/workouts',
+        ),
+        HubEntry(
+          icon: Icons.back_hand_outlined,
+          title: AppStrings.hubTechnique,
+          subtitle: AppStrings.hubTechniqueSub,
+          route: '/practice/technique',
+        ),
+        HubEntry(
+          icon: Icons.event_available,
+          title: AppStrings.hubMultiDay,
+          subtitle: AppStrings.hubMultiDaySub,
+          route: '/practice/challenges',
+        ),
+        HubEntry(
+          icon: Icons.av_timer,
+          title: AppStrings.hubRhythm,
+          subtitle: AppStrings.hubRhythmSub,
+          route: '/practice/rhythm',
+        ),
+        HubEntry(
+          icon: Icons.music_note,
+          title: AppStrings.hubSongs,
+          subtitle: AppStrings.hubSongsSub,
+          route: '/practice/songs',
+        ),
+      ];
 
   @override
   Widget build(BuildContext context) => SectionHubScreen(
         title: AppStrings.tabPractice,
         intro: AppStrings.practiceIntro,
-        entries: [
-          HubEntry(
-            icon: Icons.hearing,
-            title: AppStrings.hubEar,
-            subtitle: AppStrings.hubEarSub,
-            route: '/practice/ear-training',
-          ),
-          HubEntry(
-            icon: Icons.fitness_center,
-            title: AppStrings.hubWorkouts,
-            subtitle: AppStrings.hubWorkoutsSub,
-            route: '/practice/workouts',
-          ),
-          HubEntry(
-            icon: Icons.back_hand_outlined,
-            title: AppStrings.hubTechnique,
-            subtitle: AppStrings.hubTechniqueSub,
-            route: '/practice/technique',
-          ),
-          HubEntry(
-            icon: Icons.event_available,
-            title: AppStrings.hubMultiDay,
-            subtitle: AppStrings.hubMultiDaySub,
-            route: '/practice/challenges',
-          ),
-          HubEntry(
-            icon: Icons.av_timer,
-            title: AppStrings.hubRhythm,
-            subtitle: AppStrings.hubRhythmSub,
-            route: '/practice/rhythm',
-          ),
-          HubEntry(
-            icon: Icons.music_note,
-            title: AppStrings.hubSongs,
-            subtitle: AppStrings.hubSongsSub,
-            route: '/practice/songs',
-          ),
-        ],
+        entries: entries,
       );
 }
 

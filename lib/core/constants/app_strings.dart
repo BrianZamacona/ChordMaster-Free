@@ -155,10 +155,10 @@ class AppStrings {
   static String get tabProgress => tr(es: 'Progreso', en: 'Progress');
 
   static String get learnIntro => tr(
-    es: 'Lecciones paso a paso, acordes, escalas y progresiones: qué tocar y '
-        'por qué suena así.',
-    en: 'Step-by-step lessons, chords, scales and progressions: what to play '
-        'and why it sounds that way.',
+    es: 'Lecciones paso a paso, guías por tema y qué capo usar. Acordes, '
+        'escalas, progresiones y el círculo de quintas están en Inicio.',
+    en: 'Step-by-step lessons, topic guides and which capo to use. Chords, '
+        'scales, progressions and the circle of fifths are on Home.',
   );
   static String get practiceIntro => tr(
     es: 'Entrena el oído y el ritmo, y aplica lo aprendido en canciones.',
@@ -170,29 +170,10 @@ class AppStrings {
   );
   static String get settingsTitle => tr(es: 'Ajustes', en: 'Settings');
 
-  static String get hubChords => tr(es: 'Acordes', en: 'Chords');
-  static String get hubChordsSub => tr(
-    es: 'Biblioteca de 288 acordes, formas CAGED, inversiones y comparador.',
-    en: 'A library of 288 chords, CAGED shapes, inversions and a comparer.',
-  );
   static String get hubScales =>
       tr(es: 'Escalas y double stops', en: 'Scales and double stops');
-  static String get hubScalesSub => tr(
-    es: 'Escalas y modos por sistema (CAGED, 3NPS…), cómo improvisar con '
-        'ellas y parejas de notas.',
-    en: 'Scales and modes by system (CAGED, 3NPS…), how to improvise with '
-        'them, and note pairs.',
-  );
   static String get hubProgressions =>
       tr(es: 'Progresiones', en: 'Progressions');
-  static String get hubProgressionsSub => tr(
-    es: 'Progresiones comunes con las digitaciones más cómodas, y las tuyas.',
-    en: 'Common progressions with the most comfortable fingerings, and your own.',
-  );
-  static String get hubCircleSub => tr(
-    es: 'Gira la rueda: armaduras, acordes de cada tonalidad y su cadencia.',
-    en: 'Spin the wheel: key signatures, the chords of each key and its cadence.',
-  );
   static String get circleTitle =>
       tr(es: 'Círculo de quintas', en: 'Circle of fifths');
   static String get circleWheelHint => tr(

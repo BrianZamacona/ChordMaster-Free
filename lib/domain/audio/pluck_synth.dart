@@ -122,6 +122,68 @@ Float64List renderClick({bool accent = false}) {
   return out;
 }
 
+/// Tipo de clic del metrónomo.
+enum ClickKind { accent, beat, subdivision }
+
+/// Cuándo suena cada clic de un compás de [beats] tiempos a [bpm], con
+/// [perBeat] clics por tiempo (1 = negras, 2 = corcheas, 3 = tresillos,
+/// 4 = semicorcheas): muestra de inicio y tipo. El compás dura un número
+/// entero de muestras ([metronomeBarSamples]) y cada clic cae en la muestra
+/// más cercana a su instante exacto.
+List<({int at, ClickKind kind})> metronomeClicks({
+  required int bpm,
+  required int beats,
+  int perBeat = 1,
+}) {
+  final bar = metronomeBarSamples(bpm: bpm, beats: beats);
+  final count = beats * perBeat;
+  return [
+    for (var i = 0; i < count; i++)
+      (
+        at: (i * bar / count).round(),
+        kind: i == 0
+            ? ClickKind.accent
+            : i % perBeat == 0
+                ? ClickKind.beat
+                : ClickKind.subdivision,
+      ),
+  ];
+}
+
+/// Muestras de un compás de [beats] tiempos a [bpm].
+int metronomeBarSamples({required int bpm, required int beats}) =>
+    (beats * 60 * synthSampleRate / bpm).round();
+
+/// Compases de metrónomo listos para repetirse en bucle sin hueco: el
+/// tiempo lo marcan las muestras, no un temporizador. Se repite el compás
+/// hasta durar al menos [minSeconds] (menos vueltas del reproductor), y un
+/// clic que pasa del final continúa al principio.
+Float64List renderMetronomeLoop({
+  required int bpm,
+  required int beats,
+  int perBeat = 1,
+  double minSeconds = 8,
+}) {
+  final bar = metronomeBarSamples(bpm: bpm, beats: beats);
+  final bars = math.max(1, (minSeconds * synthSampleRate / bar).ceil());
+  final out = Float64List(bar * bars);
+  final sounds = {
+    ClickKind.accent: renderClick(accent: true),
+    ClickKind.beat: renderClick(),
+    ClickKind.subdivision: Float64List.fromList([for (final x in renderClick()) x * 0.45]),
+  };
+  final clicks = metronomeClicks(bpm: bpm, beats: beats, perBeat: perBeat);
+  for (var b = 0; b < bars; b++) {
+    for (final c in clicks) {
+      final sound = sounds[c.kind]!;
+      for (var t = 0; t < sound.length; t++) {
+        out[(b * bar + c.at + t) % out.length] += sound[t];
+      }
+    }
+  }
+  return out;
+}
+
 /// WAV PCM de 16 bits, mono, de [samples] (-1..1).
 Uint8List encodeWav(Float64List samples) {
   final dataBytes = samples.length * 2;

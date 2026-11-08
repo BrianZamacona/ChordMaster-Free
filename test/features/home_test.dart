@@ -1,5 +1,7 @@
 import 'package:chordmaster_free/app.dart';
 import 'package:chordmaster_free/core/constants/app_strings.dart';
+import 'package:chordmaster_free/features/home/home_screen.dart';
+import 'package:chordmaster_free/features/hubs/hubs.dart';
 import 'package:chordmaster_free/services/key_value_store.dart';
 import 'package:chordmaster_free/ui/navigation.dart';
 import 'package:flutter/rendering.dart';
@@ -15,11 +17,26 @@ void main() {
         AppStrings.moduleTuner,
         AppStrings.moduleMetronome,
         AppStrings.moduleProgressions,
-        AppStrings.moduleEarTraining,
-        AppStrings.moduleRhythmGame,
-        AppStrings.moduleSongs,
+        AppStrings.circleTitle,
         AppStrings.moduleHealth,
       ];
+
+  test('lo que está en Inicio no se repite en Aprender ni en Practicar', () {
+    final home = {for (final m in homeModules) m.route};
+    final learn = {for (final e in LearnHubScreen.entries) e.route};
+    final practice = {for (final e in PracticeHubScreen.entries) e.route};
+    expect(home.intersection(learn), isEmpty);
+    expect(home.intersection(practice), isEmpty);
+    expect(home, contains('/learn/circle'));
+    // Y nada de Aprender queda sin acceso: cada módulo suyo está en uno de los dos.
+    expect(
+      home.union(learn),
+      containsAll(['/learn/lessons', '/learn/guides', '/learn/chords', '/learn/scales',
+        '/learn/progressions', '/learn/circle', '/learn/capo']),
+    );
+    // Oído, Ritmo y Canciones se abren desde Practicar.
+    expect(practice, containsAll(['/practice/ear-training', '/practice/rhythm', '/practice/songs']));
+  });
 
   for (final code in ['es', 'en']) {
     for (final width in [320.0, 360.0]) {

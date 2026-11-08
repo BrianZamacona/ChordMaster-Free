@@ -267,14 +267,13 @@ void main() {
     String textOf(WidgetTester tester, String key) =>
         tester.widget<Text>(find.byKey(Key(key))).data!;
 
-    testWidgets('el hub lleva a la ruta, con barra inferior y atrás', (
+    testWidgets('Inicio lleva al círculo, con barra inferior y atrás', (
       tester,
     ) async {
-      await open(tester, '/learn');
-      expect(find.text(AppStrings.hubCircleSub), findsOneWidget);
-      await tester.ensureVisible(find.text(AppStrings.hubCircleSub));
+      await open(tester, '/');
+      await tester.ensureVisible(find.text(AppStrings.circleTitle));
       await tester.pump();
-      await tester.tap(find.text(AppStrings.hubCircleSub));
+      await tester.tap(find.text(AppStrings.circleTitle));
       await settle(tester);
       expect(find.byKey(const Key('circle-wheel')), findsOneWidget);
       expect(find.byType(NavigationBar), findsOneWidget);
@@ -282,7 +281,6 @@ void main() {
       await tester.tap(find.byType(BackButton));
       await settle(tester);
       expect(find.byKey(const Key('circle-wheel')), findsNothing);
-      expect(find.text(AppStrings.hubCircleSub, skipOffstage: false), findsOneWidget);
     });
 
     testWidgets('cambiar de tonalidad actualiza el panel', (tester) async {

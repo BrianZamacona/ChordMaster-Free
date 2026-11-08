@@ -121,7 +121,7 @@ class _HomeScreenState extends ConsumerState<HomeScreen>
               ),
               delegate: SliverChildBuilderDelegate(
                 (context, index) {
-                  final module = _modules[index];
+                  final module = homeModules[index];
                   return scaleIn(
                     _ModuleCard(
                       module: module,
@@ -135,7 +135,7 @@ class _HomeScreenState extends ConsumerState<HomeScreen>
                     duration: Duration(milliseconds: 300 + index * 40),
                   );
                 },
-                childCount: _modules.length,
+                childCount: homeModules.length,
               ),
             ),
           ),
@@ -253,8 +253,9 @@ class _DailyChallengeCard extends StatelessWidget {
     );
 }
 
-class _ModuleInfo {
-  const _ModuleInfo({
+/// Un acceso directo de Inicio.
+class HomeModule {
+  const HomeModule({
     required this.label,
     required this.icon,
     required this.route,
@@ -265,40 +266,34 @@ class _ModuleInfo {
   final String route;
 }
 
-List<_ModuleInfo> get _modules => [
-  _ModuleInfo(
+/// Los accesos de Inicio. Lo que está aquí no se repite en los hubs de
+/// Aprender ni de Practicar (hay test).
+List<HomeModule> get homeModules => [
+  HomeModule(
       label: AppStrings.moduleChords,
       icon: Icons.piano,
       route: '/learn/chords'),
-  _ModuleInfo(
+  HomeModule(
       label: AppStrings.moduleScales,
       icon: Icons.music_note,
       route: '/learn/scales'),
-  _ModuleInfo(
+  HomeModule(
       label: AppStrings.moduleTuner,
       icon: Icons.graphic_eq,
       route: '/tools/tuner'),
-  _ModuleInfo(
+  HomeModule(
       label: AppStrings.moduleMetronome,
       icon: Icons.timer,
       route: '/tools/metronome'),
-  _ModuleInfo(
+  HomeModule(
       label: AppStrings.moduleProgressions,
       icon: Icons.queue_music,
       route: '/learn/progressions'),
-  _ModuleInfo(
-      label: AppStrings.moduleEarTraining,
-      icon: Icons.hearing,
-      route: '/practice/ear-training'),
-  _ModuleInfo(
-      label: AppStrings.moduleRhythmGame,
-      icon: Icons.sports_esports,
-      route: '/practice/rhythm'),
-  _ModuleInfo(
-      label: AppStrings.moduleSongs,
-      icon: Icons.library_music,
-      route: '/practice/songs'),
-  _ModuleInfo(
+  HomeModule(
+      label: AppStrings.circleTitle,
+      icon: Icons.donut_large,
+      route: '/learn/circle'),
+  HomeModule(
       label: AppStrings.moduleHealth,
       icon: Icons.favorite,
       route: '/progress/health'),
@@ -307,7 +302,7 @@ List<_ModuleInfo> get _modules => [
 class _ModuleCard extends StatelessWidget {
   const _ModuleCard({required this.module, required this.onTap});
 
-  final _ModuleInfo module;
+  final HomeModule module;
   final VoidCallback onTap;
 
   @override

@@ -197,6 +197,16 @@ void main() {
     expect(diagram.showChordName, isFalse);
   });
 
+  testWidgets('el detalle dice «Acordes» arriba: el nombre ya va grande debajo',
+      (tester) async {
+    await tester.pumpWidget(
+      _wrapWithFakeChords(ChordDetailScreen(chordId: Uri.encodeComponent('C 7#9'))),
+    );
+    await tester.pump(const Duration(milliseconds: 700));
+    final title = find.descendant(of: find.byType(AppBar), matching: find.byType(Text));
+    expect(tester.widget<Text>(title.first).data, AppStrings.moduleChords);
+  });
+
   testWidgets('chord explorer renders CAGED and inversion sections', (tester) async {
     await tester.pumpWidget(
       _wrapWithFakeChords(
