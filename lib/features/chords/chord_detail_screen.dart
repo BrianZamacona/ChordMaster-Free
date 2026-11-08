@@ -77,7 +77,7 @@ class _ChordDetailScreenState extends ConsumerState<ChordDetailScreen> {
 
     if (chordState.isLoading) {
       return Scaffold(
-        appBar: AppBar(title: Text(decodedName)),
+        appBar: AppBar(title: Text(AppStrings.moduleChords)),
         body: const Center(child: CircularProgressIndicator()),
       );
     }
@@ -86,7 +86,7 @@ class _ChordDetailScreenState extends ConsumerState<ChordDetailScreen> {
 
     if (chord == null) {
       return Scaffold(
-        appBar: AppBar(title: Text(decodedName)),
+        appBar: AppBar(title: Text(AppStrings.moduleChords)),
         body: Center(
           child: Text(
             AppStrings.errorGeneric,
@@ -110,7 +110,8 @@ class _ChordDetailScreenState extends ConsumerState<ChordDetailScreen> {
 
     return Scaffold(
       appBar: AppBar(
-        title: Text(displayName),
+        // El nombre del acorde ya va grande debajo: arriba, el módulo.
+        title: Text(AppStrings.moduleChords),
         elevation: 0,
         actions: [
           IconButton(
