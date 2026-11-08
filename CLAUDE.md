@@ -117,11 +117,17 @@ cada nota pertenezca a la escala. No bajar la tolerancia de 0.
   `AudioService.forTesting()` para un doble que registra lo que se pidió sonar.
 - Usos: rasgueo del acorde (detalle), escuchar la progresión, intervalos (oído), metrónomo y
   pulso del juego de ritmo.
+- Metrónomo: NO un Timer por clic (seek+play variaba y se oía desigual). `renderMetronomeLoop`
+  sintetiza compases enteros (acento, tiempos y subdivisiones a ±1 muestra, ≥ 8 s) y
+  `startMetronome` los repite con `LoopMode.one`. La pantalla cuenta solo tiempos contra un
+  reloj; un cambio sonando (deslizador) se aplica 200 ms después del último.
 - Afinador: `PitchService` lee el micrófono con `record` (PCM 16 bits, 44.1 kHz mono, sin
-  procesado de voz), baja a 22.05 kHz y detecta con YIN (`lib/domain/audio/pitch_detection.dart`,
+  procesado de voz: fuente `voiceRecognition` en Android), baja a 22.05 kHz y detecta con YIN (`lib/domain/audio/pitch_detection.dart`,
   test con cuerdas sintetizadas: < 2 cents, sin errores de octava, silencio/ruido = sin
   lectura). Mediana de 5 lecturas; el La de referencia (440/442…) llega al cálculo. Antes era
-  una simulación: no volver a eso.
+  una simulación: no volver a eso. La pantalla se actualiza a lo sumo cada 80 ms (throttle,
+  NUNCA debounce: con una nota sonando las lecturas no paran y la aguja no se movía).
+  Arranques y paradas del micrófono van en fila.
 
 ## Módulos de práctica (decisiones)
 - Salud: el aviso de pausa sale SOLO durante la sesión de práctica, al cumplirse cada intervalo
@@ -438,7 +444,11 @@ Objetivo: código legible y mantenible antes que ingenioso. Capas (puertos y ada
     veces; con intervalos, la afinación sigue al lado.
 - `lib/ui/navigation.dart` — UN solo `StatefulShellRoute` con 5 pestañas (`AppScaffold`):
   Inicio `/`, Aprender `/learn/...`, Practicar `/practice/...`, Afinar `/tools/tuner|metronome`,
-  Progreso `/progress/...` (incluye ajustes). Componer vive dentro de Progresiones ("Mi
+  Progreso `/progress/...` (incluye ajustes). Tocar una pestaña abre siempre su inicio.
+  Inicio y Aprender no repiten módulos (decisión del usuario, hay test): Acordes, Escalas,
+  Progresiones y el Círculo de quintas se abren desde Inicio (`homeModules`); el hub de
+  Aprender (`LearnHubScreen.entries`) tiene Lecciones, Guías y capo. Las rutas siguen en
+  `/learn/...`. El detalle de acorde dice "Acordes" en la barra (el nombre va debajo). Componer vive dentro de Progresiones ("Mi
   progresión", por grados) e Improvisación dentro del detalle de cada escala; sus rutas viejas
   redirigen. El detalle de escala acepta `?root=` (tónica inicial). Toda pantalla nueva cuelga de su hub para que el
   botón de atrás automático funcione; nada de `leading` manual ni barras inferiores propias.
