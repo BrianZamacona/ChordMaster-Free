@@ -15,6 +15,23 @@ const tabNoteRingSeconds = 1.2;
 /// MIDI de una nota de tablatura (cuerda 1 = mi aguda).
 int tabMidi(TabNote note) => standardOpenStringMidi[note.string - 1] + note.fret;
 
+/// Notas por renglón: la pantalla dibuja la tablatura de a tantas notas (a 360
+/// dp caben sin apretarse) y cada renglón se puede practicar suelto.
+const tabNotesPerLine = 8;
+
+/// Cuántos renglones ocupan [count] notas.
+int tabLineCount(int count) => (count + tabNotesPerLine - 1) ~/ tabNotesPerLine;
+
+/// Renglón (desde 0) de la nota [index].
+int tabLineOf(int index) => index ~/ tabNotesPerLine;
+
+/// Notas del renglón [line]: de [start] a [end] (sin incluirlo).
+({int start, int end}) tabLineRange(int count, int line) {
+  final start = line * tabNotesPerLine;
+  final end = start + tabNotesPerLine;
+  return (start: start, end: end < count ? end : count);
+}
+
 /// Segundos entre una nota y la siguiente.
 double tabStepSeconds(int bpm, {int notesPerBeat = defaultNotesPerBeat}) =>
     60 / bpm / notesPerBeat;
