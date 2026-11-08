@@ -297,6 +297,7 @@ class _TabPlayerState extends ConsumerState<TabPlayer> {
       children: [
         LessonTabView(
           notes: widget.notes,
+          showFingers: true,
           focusLine: _line,
           highlight: listening
               ? range.start + mine!.position
