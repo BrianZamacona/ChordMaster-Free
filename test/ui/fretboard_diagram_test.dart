@@ -44,6 +44,31 @@ void main() {
   );
 
   group('geometría', () {
+    test('tocar una nota la encuentra: cellAt es el inverso de noteOffset', () {
+      for (final g in [
+        grid(0, 4),
+        grid(5, 9),
+        const FretGridGeometry(
+          width: 360,
+          height: 230,
+          startFret: 1,
+          endFret: 24,
+          fixedFretWidth: 52,
+        ),
+      ]) {
+        for (var s = 1; s <= 6; s++) {
+          for (final f in [0, for (var n = g.firstFret; n <= g.lastFret; n++) n]) {
+            // Al centro y cerca del borde de la celda.
+            final center = g.noteOffset(s, f);
+            expect(g.cellAt(center), (string: s, fret: f));
+            expect(g.cellAt(center + Offset(0, g.stringSpacing * 0.45)), (string: s, fret: f));
+          }
+        }
+        expect(g.cellAt(Offset(g.boardWidth + 5, g.stringY(1))), isNull);
+        expect(g.cellAt(Offset(40, g.stringY(1) - g.stringSpacing)), isNull);
+      }
+    });
+
     test('el aire queda antes de la cejuela y el traste 1 después', () {
       final g = grid(0, 4);
       for (var s = 1; s <= 6; s++) {

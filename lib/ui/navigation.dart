@@ -15,6 +15,7 @@ import '../features/circle/circle_screen.dart';
 import '../features/courses/course_registry.dart';
 import '../features/courses/course_step_route.dart';
 import '../features/ear_training/ear_training_screen.dart';
+import '../features/finder/note_finder_screen.dart';
 import '../features/guides/guide_detail_screen.dart';
 import '../features/guides/guides_screen.dart';
 import '../features/health/health_screen.dart';
@@ -214,6 +215,11 @@ final GoRouter appRouter = GoRouter(
                       ),
                     ),
                   ],
+                ),
+                // Buscador por notas (se abre desde Inicio).
+                GoRoute(
+                  path: 'finder',
+                  builder: (_, _) => const NoteFinderScreen(),
                 ),
                 GoRoute(
                   path: 'progressions',

@@ -93,4 +93,16 @@ class FretGridGeometry {
     fret == 0 ? openNoteX : fretLineX(fret) - fretWidth / 2,
     stringY(string),
   );
+
+  /// La cuerda y el traste bajo el punto [p] (el inverso de [noteOffset]):
+  /// la columna de afinación es el traste 0. `null` fuera del diapasón.
+  ({int string, int fret})? cellAt(Offset p) {
+    final string = ((p.dy - top) / stringSpacing).round() + 1;
+    if (string < 1 || string > 6) return null;
+    if ((p.dy - stringY(string)).abs() > stringSpacing / 2) return null;
+    if (p.dx < 0 || p.dx > boardWidth) return null;
+    if (p.dx < nutX) return (string: string, fret: 0);
+    final fret = firstFret + ((p.dx - nutX) / fretWidth).floor();
+    return fret > lastFret ? null : (string: string, fret: fret);
+  }
 }

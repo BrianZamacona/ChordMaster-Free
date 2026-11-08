@@ -14,6 +14,7 @@ void main() {
   List<String> labels() => [
         AppStrings.moduleChords,
         AppStrings.moduleScales,
+        AppStrings.moduleFinder,
         AppStrings.moduleTuner,
         AppStrings.moduleMetronome,
         AppStrings.moduleProgressions,
@@ -32,7 +33,7 @@ void main() {
     expect(
       home.union(learn),
       containsAll(['/learn/lessons', '/learn/guides', '/learn/chords', '/learn/scales',
-        '/learn/progressions', '/learn/circle', '/learn/capo']),
+        '/learn/progressions', '/learn/circle', '/learn/capo', '/learn/finder']),
     );
     // Oído, Ritmo y Canciones se abren desde Practicar.
     expect(practice, containsAll(['/practice/ear-training', '/practice/rhythm', '/practice/songs']));

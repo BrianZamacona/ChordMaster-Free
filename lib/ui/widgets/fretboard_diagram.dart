@@ -86,6 +86,8 @@ class FretboardNeck extends StatefulWidget {
     this.highlighted,
     this.focus,
     this.label = FretboardLabel.interval,
+    this.onTapCell,
+    this.semanticLabel,
   });
 
   /// Ancho mínimo de traste para que los intervalos se lean.
@@ -99,6 +101,13 @@ class FretboardNeck extends StatefulWidget {
   final Set<NoteCoordinate>? highlighted;
   final ({int start, int end})? focus;
   final FretboardLabel label;
+
+  /// Con él, tocar el mástil marca cuerda (1 = mi aguda) y traste; la
+  /// columna de afinación es el traste 0 (cuerda al aire).
+  final void Function(int string, int fret)? onTapCell;
+
+  /// Lo que dice el lector de pantalla; por defecto, las notas de la escala.
+  final String? semanticLabel;
 
   @override
   State<FretboardNeck> createState() => _FretboardNeckState();
@@ -175,13 +184,27 @@ class _FretboardNeckState extends State<FretboardNeck> {
         highlighted: widget.highlighted,
         numberEveryFret: true,
       );
+      Widget tappable(Widget child, {bool open = false}) {
+        final onTap = widget.onTapCell;
+        if (onTap == null) return child;
+        return GestureDetector(
+          behavior: HitTestBehavior.opaque,
+          onTapUp: (d) {
+            final cell = geometry.cellAt(d.localPosition);
+            if (cell != null) onTap(cell.string, open ? 0 : cell.fret);
+          },
+          child: child,
+        );
+      }
+
       return Semantics(
-        label: tr(
-          es: 'Mástil completo, ${widget.coordinates.length} notas de la '
-              'escala${widget.highlighted == null ? '' : ', ${widget.highlighted!.length} resaltadas'}',
-          en: 'Whole neck, ${widget.coordinates.length} scale notes'
-              '${widget.highlighted == null ? '' : ', ${widget.highlighted!.length} highlighted'}',
-        ),
+        label: widget.semanticLabel ??
+            tr(
+              es: 'Mástil completo, ${widget.coordinates.length} notas de la '
+                  'escala${widget.highlighted == null ? '' : ', ${widget.highlighted!.length} resaltadas'}',
+              en: 'Whole neck, ${widget.coordinates.length} scale notes'
+                  '${widget.highlighted == null ? '' : ', ${widget.highlighted!.length} highlighted'}',
+            ),
         child: Stack(
           children: [
             ScrollConfiguration(
@@ -199,10 +222,12 @@ class _FretboardNeckState extends State<FretboardNeck> {
                   padding: const EdgeInsets.only(
                     bottom: FretboardNeck._scrollbarGap,
                   ),
-                  child: RepaintBoundary(
-                    child: CustomPaint(
-                      size: Size(geometry.boardWidth, height),
-                      painter: painter(_BoardLayer.frets),
+                  child: tappable(
+                    RepaintBoundary(
+                      child: CustomPaint(
+                        size: Size(geometry.boardWidth, height),
+                        painter: painter(_BoardLayer.frets),
+                      ),
                     ),
                   ),
                 ),
@@ -213,7 +238,10 @@ class _FretboardNeckState extends State<FretboardNeck> {
               top: 0,
               width: _BoardPainter.pinnedColumnWidth,
               height: height,
-              child: CustomPaint(painter: painter(_BoardLayer.tuning)),
+              child: tappable(
+                CustomPaint(painter: painter(_BoardLayer.tuning)),
+                open: true,
+              ),
             ),
           ],
         ),

@@ -1098,4 +1098,46 @@ class AppStrings {
     es: 'No se pudieron cargar los datos guardados.',
     en: 'Could not load saved data.',
   );
+
+  // ── Buscador por notas ──────────────────────────────────────────────────────
+
+  static String get moduleFinder => tr(es: 'Buscador', en: 'Finder');
+  static String get finderChordHint => tr(
+    es: 'Toca una nota por cuerda; la que no marques no suena. Toca el nombre '
+        'de una cuerda para tocarla al aire.',
+    en: 'Tap one note per string; a string you leave blank is not played. Tap '
+        'a string name to play it open.',
+  );
+  static String get finderScaleHint => tr(
+    es: 'Toca las notas que quieras, en cualquier cuerda: salen las escalas '
+        'que las tienen todas.',
+    en: 'Tap any notes, on any string: you get the scales that contain them all.',
+  );
+  static String get finderClear => tr(es: 'Borrar', en: 'Clear');
+  static String finderNotes(String notes) =>
+      tr(es: 'Notas: $notes', en: 'Notes: $notes');
+  static String get finderPickTwo =>
+      tr(es: 'Marca al menos dos notas distintas.', en: 'Mark at least two different notes.');
+  static String get finderNoChord => tr(
+    es: 'Ningún acorde de la app tiene esas notas.',
+    en: 'No chord in the app has those notes.',
+  );
+  static String get finderNoScale => tr(
+    es: 'Ninguna escala de la app tiene todas esas notas.',
+    en: 'No scale in the app has all those notes.',
+  );
+  static String finderOmitted(List<String> degrees) => tr(
+    es: 'Sin ${degrees.join(', ')}',
+    en: 'No ${degrees.join(', ')}',
+  );
+  static String get finderExact =>
+      tr(es: 'Son justo tus notas', en: 'Exactly your notes');
+  static String finderAdds(String notes) =>
+      tr(es: 'Agrega $notes', en: 'Adds $notes');
+  static String finderShowAll(int n) =>
+      tr(es: 'Ver todas ($n)', en: 'Show all ($n)');
+  static String finderResults(int n) => tr(
+    es: n == 1 ? '1 resultado' : '$n resultados',
+    en: n == 1 ? '1 result' : '$n results',
+  );
 }
