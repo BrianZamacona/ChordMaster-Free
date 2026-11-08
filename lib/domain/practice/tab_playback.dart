@@ -32,6 +32,27 @@ int tabLineOf(int index) => index ~/ tabNotesPerLine;
   return (start: start, end: end < count ? end : count);
 }
 
+/// Trastes que cubre la mano quieta: un dedo por traste.
+const handSpanFrets = 4;
+
+/// El dedo de la mano izquierda de cada nota (1 índice … 4 meñique; `null` =
+/// cuerda al aire), por la regla de un dedo por traste: si todo lo pisado cabe
+/// en los trastes 1 a 4, el dedo es el traste (primera posición); si no, el
+/// índice va en el traste más bajo. `null` si lo pisado no cabe en
+/// [handSpanFrets] trastes (la mano se mueve y la regla no alcanza).
+List<int?>? tabFingers(List<TabNote> notes) {
+  final fretted = [for (final n in notes) if (n.fret > 0) n.fret];
+  if (fretted.isEmpty) return [for (final _ in notes) null];
+  final low = fretted.reduce((a, b) => a < b ? a : b);
+  final high = fretted.reduce((a, b) => a > b ? a : b);
+  final start = high <= handSpanFrets ? 1 : low;
+  if (high - start >= handSpanFrets) return null;
+  return [
+    for (final n in notes)
+      if (n.fret == 0) null else n.fret - start + 1,
+  ];
+}
+
 /// Segundos entre una nota y la siguiente.
 double tabStepSeconds(int bpm, {int notesPerBeat = defaultNotesPerBeat}) =>
     60 / bpm / notesPerBeat;
