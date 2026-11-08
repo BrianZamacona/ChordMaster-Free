@@ -18,16 +18,15 @@ void main() {
         AppStrings.moduleMetronome,
         AppStrings.moduleProgressions,
         AppStrings.circleTitle,
-        AppStrings.moduleEarTraining,
-        AppStrings.moduleRhythmGame,
-        AppStrings.moduleSongs,
         AppStrings.moduleHealth,
       ];
 
-  test('lo que está en Inicio no se repite en Aprender', () {
+  test('lo que está en Inicio no se repite en Aprender ni en Practicar', () {
     final home = {for (final m in homeModules) m.route};
     final learn = {for (final e in LearnHubScreen.entries) e.route};
+    final practice = {for (final e in PracticeHubScreen.entries) e.route};
     expect(home.intersection(learn), isEmpty);
+    expect(home.intersection(practice), isEmpty);
     expect(home, contains('/learn/circle'));
     // Y nada de Aprender queda sin acceso: cada módulo suyo está en uno de los dos.
     expect(
@@ -35,6 +34,8 @@ void main() {
       containsAll(['/learn/lessons', '/learn/guides', '/learn/chords', '/learn/scales',
         '/learn/progressions', '/learn/circle', '/learn/capo']),
     );
+    // Oído, Ritmo y Canciones se abren desde Practicar.
+    expect(practice, containsAll(['/practice/ear-training', '/practice/rhythm', '/practice/songs']));
   });
 
   for (final code in ['es', 'en']) {

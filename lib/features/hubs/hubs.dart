@@ -39,51 +39,54 @@ class LearnHubScreen extends StatelessWidget {
       );
 }
 
+/// Practicar. Sus módulos no se repiten en Inicio (ver `homeModules`).
 class PracticeHubScreen extends StatelessWidget {
   const PracticeHubScreen({super.key});
+
+  static List<HubEntry> get entries => [
+        HubEntry(
+          icon: Icons.hearing,
+          title: AppStrings.hubEar,
+          subtitle: AppStrings.hubEarSub,
+          route: '/practice/ear-training',
+        ),
+        HubEntry(
+          icon: Icons.fitness_center,
+          title: AppStrings.hubWorkouts,
+          subtitle: AppStrings.hubWorkoutsSub,
+          route: '/practice/workouts',
+        ),
+        HubEntry(
+          icon: Icons.back_hand_outlined,
+          title: AppStrings.hubTechnique,
+          subtitle: AppStrings.hubTechniqueSub,
+          route: '/practice/technique',
+        ),
+        HubEntry(
+          icon: Icons.event_available,
+          title: AppStrings.hubMultiDay,
+          subtitle: AppStrings.hubMultiDaySub,
+          route: '/practice/challenges',
+        ),
+        HubEntry(
+          icon: Icons.av_timer,
+          title: AppStrings.hubRhythm,
+          subtitle: AppStrings.hubRhythmSub,
+          route: '/practice/rhythm',
+        ),
+        HubEntry(
+          icon: Icons.music_note,
+          title: AppStrings.hubSongs,
+          subtitle: AppStrings.hubSongsSub,
+          route: '/practice/songs',
+        ),
+      ];
 
   @override
   Widget build(BuildContext context) => SectionHubScreen(
         title: AppStrings.tabPractice,
         intro: AppStrings.practiceIntro,
-        entries: [
-          HubEntry(
-            icon: Icons.hearing,
-            title: AppStrings.hubEar,
-            subtitle: AppStrings.hubEarSub,
-            route: '/practice/ear-training',
-          ),
-          HubEntry(
-            icon: Icons.fitness_center,
-            title: AppStrings.hubWorkouts,
-            subtitle: AppStrings.hubWorkoutsSub,
-            route: '/practice/workouts',
-          ),
-          HubEntry(
-            icon: Icons.back_hand_outlined,
-            title: AppStrings.hubTechnique,
-            subtitle: AppStrings.hubTechniqueSub,
-            route: '/practice/technique',
-          ),
-          HubEntry(
-            icon: Icons.event_available,
-            title: AppStrings.hubMultiDay,
-            subtitle: AppStrings.hubMultiDaySub,
-            route: '/practice/challenges',
-          ),
-          HubEntry(
-            icon: Icons.av_timer,
-            title: AppStrings.hubRhythm,
-            subtitle: AppStrings.hubRhythmSub,
-            route: '/practice/rhythm',
-          ),
-          HubEntry(
-            icon: Icons.music_note,
-            title: AppStrings.hubSongs,
-            subtitle: AppStrings.hubSongsSub,
-            route: '/practice/songs',
-          ),
-        ],
+        entries: entries,
       );
 }
 

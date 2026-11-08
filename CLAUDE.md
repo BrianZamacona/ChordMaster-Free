@@ -445,11 +445,11 @@ Objetivo: código legible y mantenible antes que ingenioso. Capas (puertos y ada
 - `lib/ui/navigation.dart` — UN solo `StatefulShellRoute` con 5 pestañas (`AppScaffold`):
   Inicio `/`, Aprender `/learn/...`, Practicar `/practice/...`, Afinar `/tools/tuner|metronome`,
   Progreso `/progress/...` (incluye ajustes). Tocar una pestaña abre siempre su inicio.
-  Inicio y Aprender no repiten módulos (decisión del usuario, hay test): Acordes, Escalas,
+  Inicio no repite módulos de Aprender ni de Practicar (decisión del usuario, hay test): Acordes, Escalas,
   Progresiones y el Círculo de quintas se abren desde Inicio (`homeModules`); el hub de
   Aprender (`LearnHubScreen.entries`) tiene Lecciones, Guías y capo. Las rutas siguen en
-  `/learn/...`. La regla vale solo para Aprender: Practicar sigue con Oído, Ritmo y Canciones
-  aunque también estén en Inicio (decisión del usuario). El detalle de acorde dice "Acordes" en la barra (el nombre va debajo). Componer vive dentro de Progresiones ("Mi
+  `/learn/...`. Lo mismo con Practicar: Oído, Ritmo y Canciones se abren solo desde Practicar
+  (`PracticeHubScreen.entries`), no desde Inicio. El detalle de acorde dice "Acordes" en la barra (el nombre va debajo). Componer vive dentro de Progresiones ("Mi
   progresión", por grados) e Improvisación dentro del detalle de cada escala; sus rutas viejas
   redirigen. El detalle de escala acepta `?root=` (tónica inicial). Toda pantalla nueva cuelga de su hub para que el
   botón de atrás automático funcione; nada de `leading` manual ni barras inferiores propias.

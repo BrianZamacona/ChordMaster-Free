@@ -266,8 +266,8 @@ class HomeModule {
   final String route;
 }
 
-/// Los accesos de Inicio. Lo que está aquí no se repite en el hub de
-/// Aprender (hay test).
+/// Los accesos de Inicio. Lo que está aquí no se repite en los hubs de
+/// Aprender ni de Practicar (hay test).
 List<HomeModule> get homeModules => [
   HomeModule(
       label: AppStrings.moduleChords,
@@ -293,18 +293,6 @@ List<HomeModule> get homeModules => [
       label: AppStrings.circleTitle,
       icon: Icons.donut_large,
       route: '/learn/circle'),
-  HomeModule(
-      label: AppStrings.moduleEarTraining,
-      icon: Icons.hearing,
-      route: '/practice/ear-training'),
-  HomeModule(
-      label: AppStrings.moduleRhythmGame,
-      icon: Icons.sports_esports,
-      route: '/practice/rhythm'),
-  HomeModule(
-      label: AppStrings.moduleSongs,
-      icon: Icons.library_music,
-      route: '/practice/songs'),
   HomeModule(
       label: AppStrings.moduleHealth,
       icon: Icons.favorite,
