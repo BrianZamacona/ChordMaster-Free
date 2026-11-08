@@ -43,7 +43,7 @@ void main() {
       (s) => s['id'] == 'major',
     ),
   );
-  final args = (scale: major, root: 0);
+  final args = (scale: major, root: 0, position: null);
 
   tearDown(() => CurrentLanguage.value = AppLanguage.es);
 

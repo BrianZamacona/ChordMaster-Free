@@ -66,12 +66,13 @@ class UnitArtView extends ConsumerWidget {
   }
 
   /// Notas de la escala en su tónica; vacío mientras carga el JSON.
+  /// Notas de [scale]; busca también en los modos (D dórico es un modo: antes
+  /// solo se buscaba en las escalas y el dibujo quedaba vacío).
   static List<String> _scaleNotes(WidgetRef ref, LessonScale scale) {
-    final definition = ref
-        .watch(allScalesProvider)
-        .value
-        ?.where((s) => s.id == scale.scaleId)
-        .firstOrNull;
+    final definition = [
+      ...?ref.watch(allScalesProvider).value,
+      ...?ref.watch(allModesProvider).value,
+    ].where((s) => s.id == scale.scaleId).firstOrNull;
     return [
       for (final i in definition?.intervals ?? const <int>[])
         pitchClassName(scale.root + i),

@@ -130,6 +130,7 @@ List<RouteBase> _moduleRoutes() => [
                   state.uri.queryParameters['root'] ?? '',
                 ) ??
                 0,
+            initialPosition: state.uri.queryParameters['position'],
           ),
         ),
       ],

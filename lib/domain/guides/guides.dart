@@ -28,6 +28,17 @@ LocalizedText guideCategoryTitle(GuideCategory category) => switch (category) {
   ),
 };
 
+/// Para quién es una guía. Una guía nunca es de un nivel menor que el de las
+/// lecciones que enlaza (hay test).
+enum GuideLevel { beginner, intermediate, advanced }
+
+/// Nombre visible de cada nivel.
+LocalizedText guideLevelTitle(GuideLevel level) => switch (level) {
+  GuideLevel.beginner => const LocalizedText(es: 'Principiante', en: 'Beginner'),
+  GuideLevel.intermediate => const LocalizedText(es: 'Intermedio', en: 'Intermediate'),
+  GuideLevel.advanced => const LocalizedText(es: 'Avanzado', en: 'Advanced'),
+};
+
 /// Módulo de la app al que lleva un capítulo.
 enum GuideModule {
   tuner,
@@ -62,10 +73,12 @@ class CourseLink extends GuideTarget {
   final String stepId;
 }
 
-/// El detalle de una escala en su tónica.
+/// El detalle de una escala en su tónica y, con [position], abierto en esa
+/// digitación (id de `scales_master.json`, p. ej. `caged_a`).
 class ScaleLink extends GuideTarget {
-  const ScaleLink(this.scale);
+  const ScaleLink(this.scale, {this.position});
   final LessonScale scale;
+  final String? position;
 }
 
 /// La ficha de un acorde (`displayName` de `chords.json`).
@@ -104,6 +117,7 @@ class Guide {
   const Guide({
     required this.id,
     required this.category,
+    required this.level,
     required this.title,
     required this.subtitle,
     required this.art,
@@ -113,6 +127,7 @@ class Guide {
   /// Identificador estable: va en la ruta `/learn/guides/:id`.
   final String id;
   final GuideCategory category;
+  final GuideLevel level;
   final LocalizedText title;
   final LocalizedText subtitle;
 
@@ -127,6 +142,7 @@ const List<Guide> guides = [
   Guide(
     id: 'chord_variations',
     category: GuideCategory.acoustic,
+    level: GuideLevel.intermediate,
     title: LocalizedText(es: 'Variaciones de acordes', en: 'Chord variations'),
     subtitle: LocalizedText(
       es: 'Más color moviendo un solo dedo',
@@ -171,6 +187,7 @@ const List<Guide> guides = [
   Guide(
     id: 'chord_changes',
     category: GuideCategory.acoustic,
+    level: GuideLevel.beginner,
     title: LocalizedText(es: 'Mejores cambios de acorde', en: 'Better chord changes'),
     subtitle: LocalizedText(
       es: 'Cambiar sin cortar el ritmo',
@@ -215,6 +232,7 @@ const List<Guide> guides = [
   Guide(
     id: 'capo',
     category: GuideCategory.acoustic,
+    level: GuideLevel.beginner,
     title: LocalizedText(es: 'Cómo usar el capo', en: 'How to use a capo'),
     subtitle: LocalizedText(
       es: 'Otra tonalidad con las formas de siempre',
@@ -255,6 +273,7 @@ const List<Guide> guides = [
   Guide(
     id: 'strumming_next_level',
     category: GuideCategory.acoustic,
+    level: GuideLevel.intermediate,
     title: LocalizedText(es: 'Rasgueo al siguiente nivel', en: 'Strumming to the next level'),
     subtitle: LocalizedText(
       es: 'De las negras al 6/8',
@@ -309,6 +328,7 @@ const List<Guide> guides = [
   Guide(
     id: 'warmups',
     category: GuideCategory.scales,
+    level: GuideLevel.beginner,
     title: LocalizedText(es: 'Calentamientos', en: 'Warm-ups'),
     subtitle: LocalizedText(
       es: 'El mejor comienzo para practicar',
@@ -365,6 +385,7 @@ const List<Guide> guides = [
   Guide(
     id: 'minor_pentatonic',
     category: GuideCategory.scales,
+    level: GuideLevel.beginner,
     title: LocalizedText(es: 'Pentatónica menor', en: 'Minor pentatonic'),
     subtitle: LocalizedText(
       es: 'Cinco notas para improvisar',
@@ -409,6 +430,7 @@ const List<Guide> guides = [
   Guide(
     id: 'major_pentatonic',
     category: GuideCategory.scales,
+    level: GuideLevel.intermediate,
     title: LocalizedText(es: 'Pentatónica mayor', en: 'Major pentatonic'),
     subtitle: LocalizedText(
       es: 'El sonido alegre del country y el pop',
@@ -445,6 +467,7 @@ const List<Guide> guides = [
   Guide(
     id: 'blues_scale',
     category: GuideCategory.scales,
+    level: GuideLevel.intermediate,
     title: LocalizedText(es: 'Escala de blues', en: 'Blues scale'),
     subtitle: LocalizedText(
       es: 'La pentatónica con una nota de paso',
@@ -481,6 +504,7 @@ const List<Guide> guides = [
   Guide(
     id: 'major_scale',
     category: GuideCategory.scales,
+    level: GuideLevel.intermediate,
     title: LocalizedText(es: 'Escala mayor', en: 'Major scale'),
     subtitle: LocalizedText(
       es: 'La base de la armonía',
@@ -517,6 +541,7 @@ const List<Guide> guides = [
   Guide(
     id: 'minor_scale',
     category: GuideCategory.scales,
+    level: GuideLevel.intermediate,
     title: LocalizedText(es: 'Escala menor', en: 'Minor scale'),
     subtitle: LocalizedText(
       es: 'La relativa de la mayor',
@@ -555,6 +580,7 @@ const List<Guide> guides = [
   Guide(
     id: 'intro_blues',
     category: GuideCategory.genres,
+    level: GuideLevel.intermediate,
     title: LocalizedText(es: 'Introducción al blues', en: 'Intro to blues'),
     subtitle: LocalizedText(
       es: 'Doce compases y tres acordes',
@@ -591,6 +617,7 @@ const List<Guide> guides = [
   Guide(
     id: 'intro_rock',
     category: GuideCategory.genres,
+    level: GuideLevel.intermediate,
     title: LocalizedText(es: 'Introducción al rock', en: 'Intro to rock'),
     subtitle: LocalizedText(
       es: 'Power chords, riffs y pentatónica',
@@ -635,6 +662,7 @@ const List<Guide> guides = [
   Guide(
     id: 'intro_folk_pop',
     category: GuideCategory.genres,
+    level: GuideLevel.beginner,
     title: LocalizedText(es: 'Introducción al folk y al pop', en: 'Intro to folk and pop'),
     subtitle: LocalizedText(
       es: 'Acordes abiertos y canciones',
@@ -681,6 +709,7 @@ const List<Guide> guides = [
   Guide(
     id: 'theory_fretboard',
     category: GuideCategory.theory,
+    level: GuideLevel.beginner,
     title: LocalizedText(es: 'El mástil', en: 'The fretboard'),
     subtitle: LocalizedText(
       es: 'Nombres de notas, sostenidos y octavas',
@@ -717,6 +746,7 @@ const List<Guide> guides = [
   Guide(
     id: 'theory_harmony',
     category: GuideCategory.theory,
+    level: GuideLevel.intermediate,
     title: LocalizedText(es: 'Armonía', en: 'Harmony'),
     subtitle: LocalizedText(
       es: 'Escalas, acordes y tonalidades',
@@ -753,6 +783,7 @@ const List<Guide> guides = [
   Guide(
     id: 'theory_rhythm',
     category: GuideCategory.theory,
+    level: GuideLevel.intermediate,
     title: LocalizedText(es: 'Ritmo', en: 'Rhythm'),
     subtitle: LocalizedText(
       es: 'Negras, corcheas y compases',
@@ -797,6 +828,7 @@ const List<Guide> guides = [
   Guide(
     id: 'theory_ear',
     category: GuideCategory.theory,
+    level: GuideLevel.intermediate,
     title: LocalizedText(es: 'Oído', en: 'Ear training'),
     subtitle: LocalizedText(
       es: 'Reconocer lo que escuchas',
@@ -835,6 +867,7 @@ const List<Guide> guides = [
   Guide(
     id: 'intro_caged',
     category: GuideCategory.lead,
+    level: GuideLevel.intermediate,
     title: LocalizedText(es: 'Introducción a CAGED', en: 'Intro to CAGED'),
     subtitle: LocalizedText(
       es: 'Cinco formas para todo el mástil',
@@ -869,8 +902,92 @@ const List<Guide> guides = [
     ],
   ),
   Guide(
+    id: 'caged_chord_scale',
+    category: GuideCategory.lead,
+    level: GuideLevel.intermediate,
+    title: LocalizedText(es: 'CAGED: acorde y escala', en: 'CAGED: chord and scale'),
+    subtitle: LocalizedText(
+      es: 'Cada forma del acorde con su escala alrededor',
+      en: 'Each chord shape with its scale around it',
+    ),
+    art: ChordArt('C'),
+    chapters: [
+      GuideChapter(
+        title: LocalizedText(es: 'Cinco formas de C', en: 'Five shapes of C'),
+        body: LocalizedText(
+          es: 'La ficha de C muestra sus cinco formas: C al aire, A en el traste 3, '
+              'G en el 5, E en el 8 y D en el 10.',
+          en: 'The C page shows its five shapes: open C, A at fret 3, G at 5, '
+              'E at 8 and D at 10.',
+        ),
+        target: ChordLink('C'),
+      ),
+      GuideChapter(
+        title: LocalizedText(es: 'Forma C', en: 'C shape'),
+        body: LocalizedText(
+          es: 'El C al aire (de la 6ª a la 1ª: x 3 2 0 1 0). Sus notas están dentro '
+              'de la forma C de la escala mayor, del traste 0 al 4.',
+          en: 'Open C (6th to 1st: x 3 2 0 1 0). Its notes sit inside the C shape '
+              'of the major scale, from fret 0 to 4.',
+        ),
+        target: ScaleLink(LessonScale(scaleId: 'major', root: 0), position: 'caged_c'),
+      ),
+      GuideChapter(
+        title: LocalizedText(es: 'Forma A', en: 'A shape'),
+        body: LocalizedText(
+          es: 'C con la forma A en el traste 3 (x 3 5 5 5 3). Sus notas están '
+              'dentro de la forma A de la escala, del traste 3 al 7.',
+          en: 'C with the A shape at fret 3 (x 3 5 5 5 3). Its notes sit inside '
+              'the A shape of the scale, from fret 3 to 7.',
+        ),
+        target: ScaleLink(LessonScale(scaleId: 'major', root: 0), position: 'caged_a'),
+      ),
+      GuideChapter(
+        title: LocalizedText(es: 'Forma G', en: 'G shape'),
+        body: LocalizedText(
+          es: 'C con la forma G en el traste 5 (8 7 5 5 5 8). Sus notas están '
+              'dentro de la forma G de la escala, del traste 5 al 9.',
+          en: 'C with the G shape at fret 5 (8 7 5 5 5 8). Its notes sit inside '
+              'the G shape of the scale, from fret 5 to 9.',
+        ),
+        target: ScaleLink(LessonScale(scaleId: 'major', root: 0), position: 'caged_g'),
+      ),
+      GuideChapter(
+        title: LocalizedText(es: 'Forma E', en: 'E shape'),
+        body: LocalizedText(
+          es: 'C con la forma E en el traste 8 (8 10 10 9 8 8). Sus notas están '
+              'dentro de la forma E de la escala, del traste 8 al 12.',
+          en: 'C with the E shape at fret 8 (8 10 10 9 8 8). Its notes sit inside '
+              'the E shape of the scale, from fret 8 to 12.',
+        ),
+        target: ScaleLink(LessonScale(scaleId: 'major', root: 0), position: 'caged_e'),
+      ),
+      GuideChapter(
+        title: LocalizedText(es: 'Forma D', en: 'D shape'),
+        body: LocalizedText(
+          es: 'C con la forma D en el traste 10 (x x 10 12 13 12). Sus notas están '
+              'dentro de la forma D de la escala, del traste 10 al 14.',
+          en: 'C with the D shape at fret 10 (x x 10 12 13 12). Its notes sit '
+              'inside the D shape of the scale, from fret 10 to 14.',
+        ),
+        target: ScaleLink(LessonScale(scaleId: 'major', root: 0), position: 'caged_d'),
+      ),
+      GuideChapter(
+        title: LocalizedText(es: 'Encadénalas', en: 'Chain them'),
+        body: LocalizedText(
+          es: 'Cada forma empieza antes de que termine la anterior: C, A, G, E, D '
+              'y, desde el traste 12, otra vez C.',
+          en: 'Each shape starts before the previous one ends: C, A, G, E, D and, '
+              'from fret 12, C again.',
+        ),
+        target: ScaleLink(LessonScale(scaleId: 'major', root: 0)),
+      ),
+    ],
+  ),
+  Guide(
     id: 'intro_arpeggios',
     category: GuideCategory.lead,
+    level: GuideLevel.intermediate,
     title: LocalizedText(es: 'Introducción a los arpegios', en: 'Intro to arpeggios'),
     subtitle: LocalizedText(
       es: 'Las notas del acorde, una por una',
@@ -899,6 +1016,7 @@ const List<Guide> guides = [
   Guide(
     id: 'intro_modes',
     category: GuideCategory.lead,
+    level: GuideLevel.advanced,
     title: LocalizedText(es: 'Introducción a los modos', en: 'Intro to modes'),
     subtitle: LocalizedText(
       es: 'Siete colores de la escala mayor',
@@ -935,6 +1053,7 @@ const List<Guide> guides = [
   Guide(
     id: 'bends_vibrato',
     category: GuideCategory.lead,
+    level: GuideLevel.intermediate,
     title: LocalizedText(es: 'Bends y vibrato', en: 'Bends and vibrato'),
     subtitle: LocalizedText(
       es: 'Que la guitarra cante',
@@ -971,6 +1090,7 @@ const List<Guide> guides = [
   Guide(
     id: 'phrasing',
     category: GuideCategory.lead,
+    level: GuideLevel.intermediate,
     title: LocalizedText(es: 'Fraseo', en: 'Phrasing'),
     subtitle: LocalizedText(
       es: 'Ligados y frases que dialogan',
@@ -1028,16 +1148,16 @@ String foldForSearch(String text) {
 }
 
 /// Guías que contienen todas las palabras de [query] en su título, subtítulo o
-/// en el título de un capítulo, en el idioma actual. Vacía = todas.
-List<Guide> searchGuides(String query) {
+/// en el título de un capítulo, en el idioma actual, y, con [level], solo las
+/// de ese nivel. Vacía y sin nivel = todas.
+List<Guide> searchGuides(String query, {GuideLevel? level}) {
   final words = foldForSearch(query)
       .split(RegExp(r'\s+'))
       .where((w) => w.isNotEmpty)
       .toList();
-  if (words.isEmpty) return guides;
   return [
     for (final g in guides)
-      if (_matches(g, words)) g,
+      if ((level == null || g.level == level) && (words.isEmpty || _matches(g, words))) g,
   ];
 }
 

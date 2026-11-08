@@ -23,6 +23,9 @@ class _GuidesScreenState extends ConsumerState<GuidesScreen> {
   final _search = TextEditingController();
   var _query = '';
 
+  /// Nivel elegido; `null` = todos.
+  GuideLevel? _level;
+
   @override
   void dispose() {
     _search.dispose();
@@ -33,9 +36,12 @@ class _GuidesScreenState extends ConsumerState<GuidesScreen> {
   Widget build(BuildContext context) {
     final p = context.palette;
     final text = Theme.of(context).textTheme;
-    final found = searchGuides(_query).toSet();
+    final found = searchGuides(_query, level: _level).toSet();
     final started = _query.trim().isEmpty
-        ? ref.watch(guideProgressProvider).inProgress()
+        ? [
+            for (final g in ref.watch(guideProgressProvider).inProgress())
+              if (_level == null || g.level == _level) g,
+          ]
         : const <Guide>[];
     final rows = [
       for (final category in GuideCategory.values)
@@ -79,6 +85,31 @@ class _GuidesScreenState extends ConsumerState<GuidesScreen> {
                   borderRadius: BorderRadius.circular(12),
                 ),
               ),
+            ),
+          ),
+          Padding(
+            padding: const EdgeInsets.fromLTRB(16, 0, 16, 4),
+            child: Wrap(
+              key: const Key('guides-levels'),
+              spacing: 6,
+              runSpacing: 4,
+              crossAxisAlignment: WrapCrossAlignment.center,
+              children: [
+                Text(AppStrings.guidesLevel, style: text.labelLarge),
+                ChoiceChip(
+                  key: const Key('guides-level-all'),
+                  label: Text(AppStrings.guidesAllLevels),
+                  selected: _level == null,
+                  onSelected: (_) => setState(() => _level = null),
+                ),
+                for (final l in GuideLevel.values)
+                  ChoiceChip(
+                    key: Key('guides-level-${l.name}'),
+                    label: Text(guideLevelTitle(l).text),
+                    selected: _level == l,
+                    onSelected: (_) => setState(() => _level = l),
+                  ),
+              ],
             ),
           ),
           if (rows.isEmpty)
@@ -175,7 +206,13 @@ class GuideCard extends ConsumerWidget {
                       guide.subtitle.text,
                       style: text.bodySmall?.copyWith(color: p.textSecondary),
                     ),
-                    const SizedBox(height: 6),
+                    const SizedBox(height: 4),
+                    Text(
+                      guideLevelTitle(guide.level).text,
+                      key: Key('guide-level-${guide.id}'),
+                      style: musicMono(fontSize: 11, fontWeight: FontWeight.w600, color: p.accent),
+                    ),
+                    const SizedBox(height: 2),
                     Row(
                       children: [
                         Expanded(

@@ -92,9 +92,16 @@ void main() {
               expect(lessonsById.keys, contains(lessonId), reason: g.id);
             case ChordLink(:final chord):
               expect(chords.keys, contains(chord), reason: g.id);
-            case ScaleLink(:final scale):
+            case ScaleLink(:final scale, :final position):
               expect(scales.keys, contains(scale.scaleId), reason: g.id);
               expect(scale.root, inInclusiveRange(0, 11), reason: g.id);
+              if (position != null) {
+                expect(
+                  [for (final p in scales[scale.scaleId]!['positions'] as List) (p as Map)['id']],
+                  contains(position),
+                  reason: g.id,
+                );
+              }
             case WorkoutLink(:final scale):
               expect(scales.keys, contains(scale.scaleId), reason: g.id);
               expect(scale.root, inInclusiveRange(0, 11), reason: g.id);
@@ -267,6 +274,111 @@ void main() {
 
     test('sin coincidencias, lista vacía', () {
       expect(searchGuides('zzzz'), isEmpty);
+    });
+  });
+
+  group('niveles', () {
+    test('cada nivel tiene nombre en los dos idiomas y al menos una guía', () {
+      for (final l in GuideLevel.values) {
+        expect(guideLevelTitle(l).es, isNotEmpty);
+        expect(guideLevelTitle(l).en, isNotEmpty);
+        expect(guides.where((g) => g.level == l), isNotEmpty, reason: l.name);
+      }
+    });
+
+    test('una guía no es de menor nivel que las lecciones que enlaza', () {
+      // Nivel 2 del camino = intermedio o más.
+      int needed(GuideTarget t) => switch (t) {
+        LessonLink(:final lessonId) => lessonsById[lessonId]!.unit.level - 1,
+        CourseLink(:final course) => unitOfCourse(course).level - 1,
+        _ => 0,
+      };
+      for (final g in guides) {
+        for (final c in g.chapters) {
+          expect(g.level.index, greaterThanOrEqualTo(needed(c.target)), reason: g.id);
+        }
+      }
+    });
+
+    test('el filtro por nivel deja solo ese nivel y se combina con la búsqueda', () {
+      for (final l in GuideLevel.values) {
+        final found = searchGuides('', level: l);
+        expect(found, isNotEmpty);
+        expect(found.every((g) => g.level == l), isTrue);
+      }
+      expect(searchGuides('caged', level: GuideLevel.advanced), isEmpty);
+      expect(
+        searchGuides('caged', level: GuideLevel.intermediate).map((g) => g.id),
+        containsAll(['intro_caged', 'caged_chord_scale']),
+      );
+    });
+  });
+
+  group('CAGED: acorde y escala', () {
+    final guide = guidesById['caged_chord_scale']!;
+    final c = chords['C']!;
+    final grips = {
+      for (final p in (c['cagedPositions'] as List).cast<Map<String, dynamic>>())
+        p['shape'] as String: p,
+    };
+    final positions = {
+      for (final p in (scales['major']!['positions'] as List).cast<Map<String, dynamic>>())
+        p['id'] as String: p,
+    };
+    List<(int, int)> coords(String id) => [
+      for (final k in (positions[id]!['coordinates'] as List).cast<Map<String, dynamic>>())
+        (k['string'] as int, k['fret_offset'] as int),
+    ];
+    int lowest(String id) => coords(id).map((e) => e.$2).reduce((a, b) => a < b ? a : b);
+    int highest(String id) => coords(id).map((e) => e.$2).reduce((a, b) => a > b ? a : b);
+    const shapes = ['C', 'A', 'G', 'E', 'D'];
+
+    test('cada forma: su digitación, su traste y el tramo de la escala que dice', () {
+      for (final shape in shapes) {
+        final chapter = guide.chapters.firstWhere(
+          (ch) => ch.target is ScaleLink && (ch.target as ScaleLink).position == 'caged_${shape.toLowerCase()}',
+        );
+        final grip = (grips[shape]!['fretPositions'] as List).cast<int>();
+        final written = grip.map((f) => f < 0 ? 'x' : '$f').join(' ');
+        final id = 'caged_${shape.toLowerCase()}';
+        for (final text in [chapter.body.es, chapter.body.en]) {
+          expect(text, contains('$written)'), reason: shape);
+        }
+        expect(chapter.body.es, contains('del traste ${lowest(id)} al ${highest(id)}'), reason: shape);
+        expect(chapter.body.en, contains('from fret ${lowest(id)} to ${highest(id)}'), reason: shape);
+        if (shape != 'C') {
+          final base = grips[shape]!['baseFret'] as int;
+          expect(chapter.body.es, contains('en el traste $base'), reason: shape);
+          expect(chapter.body.en, contains('at fret $base'), reason: shape);
+        }
+      }
+    });
+
+    test('las notas de cada forma del acorde están dentro de su forma de escala', () {
+      for (final shape in shapes) {
+        final grip = (grips[shape]!['fretPositions'] as List).cast<int>();
+        final scale = coords('caged_${shape.toLowerCase()}').toSet();
+        for (final (i, f) in grip.indexed) {
+          if (f >= 0) expect(scale, contains((6 - i, f)), reason: '$shape, cuerda ${6 - i}');
+        }
+      }
+    });
+
+    test('el primer capítulo dice dónde está cada forma', () {
+      final body = guide.chapters.first.body;
+      for (final shape in ['A', 'G', 'E', 'D']) {
+        final base = grips[shape]!['baseFret'] as int;
+        expect(body.es, contains('$shape en el ${shape == 'A' ? 'traste ' : ''}$base'), reason: shape);
+      }
+    });
+
+    test('encadenadas: cada una empieza antes de que termine la anterior, y en el 12 vuelve C', () {
+      final ids = [for (final s in shapes) 'caged_${s.toLowerCase()}'];
+      for (var i = 1; i < ids.length; i++) {
+        expect(lowest(ids[i]), lessThanOrEqualTo(highest(ids[i - 1])), reason: ids[i]);
+      }
+      expect(lowest('caged_c') + 12, 12);
+      expect(lowest('caged_c') + 12, lessThanOrEqualTo(highest('caged_d')));
     });
   });
 }

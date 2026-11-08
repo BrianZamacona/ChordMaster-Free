@@ -21,19 +21,28 @@ import 'widgets/scale_theory_cards.dart';
 /// vista previa. Sistema y digitación se eligen en la vista ampliada; aquí, lo
 /// elegido se muestra y debajo van el sistema y las notas.
 class ScaleDetailScreen extends ConsumerWidget {
-  const ScaleDetailScreen({super.key, required this.scale, this.initialRoot = 0});
+  const ScaleDetailScreen({
+    super.key,
+    required this.scale,
+    this.initialRoot = 0,
+    this.initialPosition,
+  });
 
   final ScaleDefinition scale;
 
   /// Tónica con la que abre (semitono, C = 0); p. ej. desde un acorde.
   final int initialRoot;
 
+  /// Digitación con la que abre (id de `scales_master.json`), p. ej. desde
+  /// una guía; `null` = la predeterminada.
+  final String? initialPosition;
+
   String get _scaleName =>
       scaleDisplayName(scale.id, scale.intervals, fallback: scale.name);
 
   @override
   Widget build(BuildContext context, WidgetRef ref) {
-    final args = (scale: scale, root: initialRoot);
+    final args = (scale: scale, root: initialRoot, position: initialPosition);
     final state = ref.watch(scaleDetailProvider(args));
     final notifier = ref.read(scaleDetailProvider(args).notifier);
     final pattern = state.currentPattern;
