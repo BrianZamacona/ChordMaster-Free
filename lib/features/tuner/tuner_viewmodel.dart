@@ -76,7 +76,7 @@ class TunerViewModel extends Notifier<TunerState> {
     // a hot-reload never creates a second PitchService instance.
     _pitchService = ref.read(pitchServiceProvider);
     ref.onDispose(() {
-      _debounce?.cancel();
+      _throttle?.cancel();
       _sub?.cancel();
     });
     return const TunerState();
@@ -84,13 +84,25 @@ class TunerViewModel extends Notifier<TunerState> {
 
   late final PitchService _pitchService;
   StreamSubscription<PitchResult>? _sub;
-  Timer? _debounce;
+  Timer? _throttle;
   PitchResult? _pending;
 
+  /// Cada cuánto, como mucho, se actualiza la pantalla.
+  static const refresh = Duration(milliseconds: 80);
+
+  /// Lo que pidió la pantalla por última vez. Si se oculta mientras el
+  /// micrófono arranca, al terminar de arrancar se vuelve a apagar.
+  bool _wanted = false;
+
   Future<void> startListening() async {
-    if (state.isListening) return;
+    if (_wanted) return;
+    _wanted = true;
     try {
       await _pitchService.startListening();
+      if (!_wanted) {
+        await _pitchService.stopListening();
+        return;
+      }
       state = state.copyWith(
         isListening: true,
         hasPermission: true,
@@ -99,6 +111,7 @@ class TunerViewModel extends Notifier<TunerState> {
       _sub = _pitchService.pitchStream.listen(_onPitch, onError: _onError);
     } catch (e) {
       debugPrint('TunerViewModel.startListening error: $e');
+      _wanted = false;
       state = state.copyWith(
         hasPermission: false,
         isListening: false,
@@ -107,28 +120,43 @@ class TunerViewModel extends Notifier<TunerState> {
     }
   }
 
+  /// Muestra cada lectura en cuanto llega, pero a lo sumo una cada
+  /// [refresh]: la que llega mientras tanto se muestra al cumplirse. (Antes
+  /// se esperaba a que dejaran de llegar lecturas, y con una nota sonando
+  /// llegan cada ~46 ms: la aguja no se movía hasta que la cuerda callaba.)
   void _onPitch(PitchResult result) {
-    _pending = result;
-    _debounce?.cancel();
-    _debounce = Timer(const Duration(milliseconds: 100), () {
+    if (_throttle?.isActive ?? false) {
+      _pending = result;
+      return;
+    }
+    _show(result);
+    _throttle = Timer(refresh, () {
       final r = _pending;
-      if (r == null) return;
-      state = state.copyWith(
-        note: r.noteName,
-        frequency: r.frequency,
-        cents: r.centsDeviation,
-        isInTune: r.isInTune,
-      );
+      _pending = null;
+      if (r != null) _onPitch(r);
     });
+  }
+
+  void _show(PitchResult r) {
+    if (!state.isListening) return;
+    state = state.copyWith(
+      note: r.noteName,
+      frequency: r.frequency,
+      cents: r.centsDeviation,
+      isInTune: r.isInTune,
+    );
   }
 
   void _onError(Object e) {
     debugPrint('TunerViewModel pitch stream error: $e');
+    _wanted = false;
     state = state.copyWith(hasPermission: false, isListening: false);
   }
 
   Future<void> stopListening() async {
-    _debounce?.cancel();
+    _wanted = false;
+    _throttle?.cancel();
+    _pending = null;
     await _sub?.cancel();
     _sub = null;
     await _pitchService.stopListening();
