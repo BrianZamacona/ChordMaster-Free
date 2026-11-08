@@ -15,6 +15,7 @@ import '../features/circle/circle_screen.dart';
 import '../features/courses/course_registry.dart';
 import '../features/courses/course_step_route.dart';
 import '../features/ear_training/ear_training_screen.dart';
+import '../features/finder/note_finder_screen.dart';
 import '../features/guides/guide_detail_screen.dart';
 import '../features/guides/guides_screen.dart';
 import '../features/health/health_screen.dart';
@@ -40,9 +41,6 @@ import 'scales/scales_screen.dart';
 /// Se conservan porque Inicio guarda el último módulo visitado con la ruta
 /// vieja y puede haber enlaces o notificaciones que la usen.
 const legacyRoutePrefixes = {
-  '/chords': '/learn/chords',
-  '/scales': '/learn/scales',
-  '/progressions': '/learn/progressions',
   // Componer se fusionó con Progresiones ("Mi progresión").
   '/composition': '/learn/progressions',
   '/learn/composition': '/learn/progressions',
@@ -73,6 +71,74 @@ String? redirectLegacyRoute(String location) {
   return null;
 }
 
+/// Acordes, Escalas, Progresiones y Círculo de quintas: cuelgan de Aprender
+/// (lecciones y guías los abren ahí) y de Inicio (sus accesos), con las
+/// mismas pantallas. Su navegación interna usa `context.sectionPath`
+/// para quedarse en la pestaña donde se abrió.
+List<RouteBase> _moduleRoutes() => [
+    GoRoute(
+      path: 'circle',
+      builder: (_, _) => const CircleScreen(),
+      routes: [
+        GoRoute(
+          path: 'build',
+          builder: (_, _) => const CircleBuildScreen(),
+        ),
+      ],
+    ),
+    GoRoute(
+      path: 'chords',
+      builder: (_, _) => const ChordLibraryScreen(),
+      routes: [
+        GoRoute(
+          path: ':id',
+          builder: (_, state) => ChordDetailScreen(
+            chordId: state.pathParameters['id']!,
+          ),
+          routes: [
+            GoRoute(
+              path: 'explorer',
+              builder: (_, state) => ChordExplorerScreen(
+                chordId: state.pathParameters['id']!,
+              ),
+            ),
+            GoRoute(
+              path: 'compare',
+              builder: (_, state) => ChordCompareScreen(
+                chordId: state.pathParameters['id']!,
+                selection: state.uri.queryParameters['sel'],
+              ),
+            ),
+          ],
+        ),
+      ],
+    ),
+    GoRoute(
+      path: 'scales',
+      builder: (_, _) => const ScalesScreen(),
+      routes: [
+        GoRoute(
+          path: 'double-stops',
+          builder: (_, _) => const DoubleStopsScreen(),
+        ),
+        GoRoute(
+          path: ':scaleId',
+          builder: (_, state) => ScaleDetailScreen(
+            scale: state.extra! as ScaleDefinition,
+            initialRoot: int.tryParse(
+                  state.uri.queryParameters['root'] ?? '',
+                ) ??
+                0,
+          ),
+        ),
+      ],
+    ),
+    GoRoute(
+      path: 'progressions',
+      builder: (_, _) => const ProgressionsScreen(),
+    ),
+    ];
+
 /// Router de ChordMaster Free.
 ///
 /// Todas las pantallas viven dentro de un único [StatefulShellRoute] con cinco
@@ -94,7 +160,20 @@ final GoRouter appRouter = GoRouter(
       branches: [
         StatefulShellBranch(
           routes: [
-            GoRoute(path: '/', builder: (_, _) => const HomeScreen()),
+            GoRoute(
+              path: '/',
+              builder: (_, _) => const HomeScreen(),
+              routes: [
+                // Buscador por notas.
+                GoRoute(
+                  path: 'finder',
+                  builder: (_, _) => const NoteFinderScreen(),
+                ),
+                // Los módulos que se abren desde Inicio viven también aquí, para
+                // que atrás vuelva a Inicio sin cambiar de pestaña.
+                ..._moduleRoutes(),
+              ],
+            ),
           ],
         ),
         StatefulShellBranch(
@@ -158,67 +237,7 @@ final GoRouter appRouter = GoRouter(
                   path: 'capo',
                   builder: (_, _) => const CapoScreen(),
                 ),
-                GoRoute(
-                  path: 'circle',
-                  builder: (_, _) => const CircleScreen(),
-                  routes: [
-                    GoRoute(
-                      path: 'build',
-                      builder: (_, _) => const CircleBuildScreen(),
-                    ),
-                  ],
-                ),
-                GoRoute(
-                  path: 'chords',
-                  builder: (_, _) => const ChordLibraryScreen(),
-                  routes: [
-                    GoRoute(
-                      path: ':id',
-                      builder: (_, state) => ChordDetailScreen(
-                        chordId: state.pathParameters['id']!,
-                      ),
-                      routes: [
-                        GoRoute(
-                          path: 'explorer',
-                          builder: (_, state) => ChordExplorerScreen(
-                            chordId: state.pathParameters['id']!,
-                          ),
-                        ),
-                        GoRoute(
-                          path: 'compare',
-                          builder: (_, state) => ChordCompareScreen(
-                            chordId: state.pathParameters['id']!,
-                            selection: state.uri.queryParameters['sel'],
-                          ),
-                        ),
-                      ],
-                    ),
-                  ],
-                ),
-                GoRoute(
-                  path: 'scales',
-                  builder: (_, _) => const ScalesScreen(),
-                  routes: [
-                    GoRoute(
-                      path: 'double-stops',
-                      builder: (_, _) => const DoubleStopsScreen(),
-                    ),
-                    GoRoute(
-                      path: ':scaleId',
-                      builder: (_, state) => ScaleDetailScreen(
-                        scale: state.extra! as ScaleDefinition,
-                        initialRoot: int.tryParse(
-                              state.uri.queryParameters['root'] ?? '',
-                            ) ??
-                            0,
-                      ),
-                    ),
-                  ],
-                ),
-                GoRoute(
-                  path: 'progressions',
-                  builder: (_, _) => const ProgressionsScreen(),
-                ),
+                ..._moduleRoutes(),
               ],
             ),
           ],

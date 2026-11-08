@@ -9,6 +9,7 @@ import '../../core/constants/chord_metadata.dart';
 import '../../domain/theory/circle_of_fifths.dart';
 import '../../domain/theory/harmony.dart';
 import '../../domain/theory/notes.dart';
+import '../../ui/section_routes.dart';
 import '../../ui/theme.dart';
 import '../chords/chord_viewmodel.dart';
 import '../progressions/progressions_viewmodel.dart';
@@ -148,7 +149,7 @@ class _KeyPanel extends ConsumerWidget {
           label: Text(AppStrings.circleToProgressions(name)),
           onPressed: () {
             ref.read(progressionsViewModelProvider.notifier).setTonic(tonic);
-            context.go('/learn/progressions');
+            context.go(context.sectionPath('progressions'));
           },
         ),
         const SizedBox(height: 8),
@@ -156,7 +157,7 @@ class _KeyPanel extends ConsumerWidget {
           key: const Key('circle-open-build'),
           icon: const Icon(Icons.stairs_outlined),
           label: Text(AppStrings.circleBuildTitle),
-          onPressed: () => context.push('/learn/circle/build'),
+          onPressed: () => context.push(context.sectionPath('circle/build')),
         ),
       ],
     );
@@ -217,7 +218,7 @@ class _ChordRow extends ConsumerWidget {
               onPressed: data == null
                   ? null
                   : () => context.push(
-                      '/learn/chords/${Uri.encodeComponent(data.name)}',
+                      context.sectionPath('chords/${Uri.encodeComponent(data.name)}'),
                     ),
             ),
           ],

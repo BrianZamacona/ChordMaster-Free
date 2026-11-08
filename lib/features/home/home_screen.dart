@@ -267,16 +267,21 @@ class HomeModule {
 }
 
 /// Los accesos de Inicio. Lo que está aquí no se repite en los hubs de
-/// Aprender ni de Practicar (hay test).
+/// Aprender ni de Practicar (hay test). Sus rutas cuelgan de Inicio: atrás
+/// vuelve aquí.
 List<HomeModule> get homeModules => [
   HomeModule(
       label: AppStrings.moduleChords,
       icon: Icons.piano,
-      route: '/learn/chords'),
+      route: '/chords'),
   HomeModule(
       label: AppStrings.moduleScales,
       icon: Icons.music_note,
-      route: '/learn/scales'),
+      route: '/scales'),
+  HomeModule(
+      label: AppStrings.moduleFinder,
+      icon: Icons.search,
+      route: '/finder'),
   HomeModule(
       label: AppStrings.moduleTuner,
       icon: Icons.graphic_eq,
@@ -288,11 +293,11 @@ List<HomeModule> get homeModules => [
   HomeModule(
       label: AppStrings.moduleProgressions,
       icon: Icons.queue_music,
-      route: '/learn/progressions'),
+      route: '/progressions'),
   HomeModule(
       label: AppStrings.circleTitle,
       icon: Icons.donut_large,
-      route: '/learn/circle'),
+      route: '/circle'),
   HomeModule(
       label: AppStrings.moduleHealth,
       icon: Icons.favorite,

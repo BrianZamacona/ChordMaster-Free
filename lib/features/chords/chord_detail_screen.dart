@@ -24,6 +24,7 @@ import '../../services/achievement_service.dart';
 import '../../services/audio_service.dart';
 import '../../ui/animations.dart';
 import '../../ui/palette.dart';
+import '../../ui/section_routes.dart';
 import 'chord_viewmodel.dart';
 
 /// Detail screen for a single chord identified by [chordId] (URL-encoded name).
@@ -118,7 +119,7 @@ class _ChordDetailScreenState extends ConsumerState<ChordDetailScreen> {
             tooltip: AppStrings.chordExplorer,
             onPressed: () {
               final encoded = Uri.encodeComponent(chord.name);
-              context.go('/learn/chords/$encoded/explorer');
+              context.go(context.sectionPath('chords/$encoded/explorer'));
             },
             icon: const Icon(Icons.explore_outlined),
           ),
@@ -317,7 +318,7 @@ class _ChordDetailScreenState extends ConsumerState<ChordDetailScreen> {
                           ),
                           onTap: () {
                             final encoded = Uri.encodeComponent(related.name);
-                            context.go('/learn/chords/$encoded');
+                            context.go(context.sectionPath('chords/$encoded'));
                           },
                         );
                       },
@@ -344,7 +345,7 @@ class _ChordDetailScreenState extends ConsumerState<ChordDetailScreen> {
                             ),
                             onTap: () {
                               final encoded = Uri.encodeComponent(related.name);
-                              context.go('/learn/chords/$encoded');
+                              context.go(context.sectionPath('chords/$encoded'));
                             },
                           ),
                         )
@@ -413,7 +414,7 @@ class _RelatedScales extends ConsumerWidget {
               style: const TextStyle(fontSize: 12),
             ),
             onPressed: () => context.go(
-              '/learn/scales/$id?root=${root < 0 ? 0 : root}',
+              context.sectionPath('scales/$id?root=${root < 0 ? 0 : root}'),
               extra: byId[id],
             ),
           ),

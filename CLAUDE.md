@@ -396,6 +396,22 @@ Objetivo: código legible y mantenible antes que ingenioso. Capas (puertos y ada
   painter del diapasón, parámetro `links`).
 - Todo texto nuevo de teoría: bilingüe y con test que verifique lo que afirma.
 
+## Buscador por notas (Inicio)
+- Ruta `/finder`, en la pestaña Inicio (atrás vuelve a Inicio); sus resultados abren la ficha
+  en `/chords/:id` y `/scales/:scaleId`, también de Inicio. Mástil vacío (`FretboardNeck` con `onTapCell`; el
+  toque se ubica con `FretGridGeometry.cellAt`, el inverso de `noteOffset`) y dos secciones,
+  cada una con sus notas (`noteFinderProvider`):
+  - Acordes: una nota por cuerda (tocar otra vez la apaga; el nombre de la cuerda = al aire).
+    `chordsFor` (`lib/domain/theory/note_finder.dart`) busca con las fórmulas de `chords.json`
+    los acordes con exactamente esas notas o sin alguna omitible (5ª, 9ª, 11ª, salvo la nota
+    más alta que da el nombre); el bajo es la nota más grave y, si no es la tónica, sale
+    slash (C/E). Orden: completos, tónica en el bajo, menos omitidas. Test: la digitación
+    principal de cada acorde de `chords.json` se reconoce como él.
+  - Escalas: notas sueltas. `scalesFor` da las escalas y modos de `scales_master.json` (12
+    tónicas) que las contienen todas: primero las que menos notas agregan, luego la de
+    tónica en la nota más grave. Misma tónica y mismas notas (mayor = jónica) sale una vez.
+- Cada resultado abre su ficha con `push` (atrás vuelve al buscador con las notas, y de ahí a Inicio).
+
 ## Círculo de quintas
 - `lib/domain/theory/circle_of_fifths.dart`: todo por regla, sin tablas. Orden sumando 7 semitonos
   desde C, armadura por posición, ventana diatónica, distancia, formas en el mástil y la matemática
@@ -446,9 +462,13 @@ Objetivo: código legible y mantenible antes que ingenioso. Capas (puertos y ada
   Inicio `/`, Aprender `/learn/...`, Practicar `/practice/...`, Afinar `/tools/tuner|metronome`,
   Progreso `/progress/...` (incluye ajustes). Tocar una pestaña abre siempre su inicio.
   Inicio no repite módulos de Aprender ni de Practicar (decisión del usuario, hay test): Acordes, Escalas,
-  Progresiones y el Círculo de quintas se abren desde Inicio (`homeModules`); el hub de
-  Aprender (`LearnHubScreen.entries`) tiene Lecciones, Guías y capo. Las rutas siguen en
-  `/learn/...`. Lo mismo con Practicar: Oído, Ritmo y Canciones se abren solo desde Practicar
+  Progresiones, el Círculo de quintas y el Buscador se abren desde Inicio (`homeModules`); el hub de
+  Aprender (`LearnHubScreen.entries`) tiene Lecciones, Guías y capo. Esos cuatro módulos
+  cuelgan de las dos pestañas (`_moduleRoutes()` en `navigation.dart`): `/chords`, `/scales`,
+  `/progressions`, `/circle` en Inicio (atrás vuelve a Inicio) y `/learn/...` en Aprender (los
+  abren lecciones y guías). Sus enlaces internos usan `context.sectionPath('chords/...')`
+  (`lib/ui/section_routes.dart`) para no saltar de pestaña: nada de `'/learn/chords...'` fijo
+  dentro de esas pantallas. `/chords`, `/scales` y `/progressions` dejaron de ser rutas viejas. Lo mismo con Practicar: Oído, Ritmo y Canciones se abren solo desde Practicar
   (`PracticeHubScreen.entries`), no desde Inicio. El detalle de acorde dice "Acordes" en la barra (el nombre va debajo). Componer vive dentro de Progresiones ("Mi
   progresión", por grados) e Improvisación dentro del detalle de cada escala; sus rutas viejas
   redirigen. El detalle de escala acepta `?root=` (tónica inicial). Toda pantalla nueva cuelga de su hub para que el

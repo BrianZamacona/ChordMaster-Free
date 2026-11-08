@@ -7,6 +7,7 @@ import '../../core/constants/scale_names.dart';
 import '../../data/models/scale_definition.dart';
 import '../../data/repository/scale_repository.dart';
 import '../../domain/theory/scale_insights.dart';
+import '../section_routes.dart';
 
 /// Escalas por categoría, los modos de la mayor y el acceso a double stops.
 class ScalesScreen extends ConsumerWidget {
@@ -30,7 +31,7 @@ class ScalesScreen extends ConsumerWidget {
                 leading: const Icon(Icons.straighten),
                 title: Text(AppStrings.dsTitle),
                 subtitle: Text(AppStrings.dsSub),
-                onTap: () => context.go('/learn/scales/double-stops'),
+                onTap: () => context.go(context.sectionPath('scales/double-stops')),
               ),
             ),
             Padding(
@@ -79,7 +80,7 @@ class _Section extends StatelessWidget {
                   '${scale.intervals.length} ${AppStrings.scaleNotesCount} · '
                   '${stepPatternLabel(scale.intervals)}',
                 ),
-                onTap: () => context.go('/learn/scales/${scale.id}', extra: scale),
+                onTap: () => context.go(context.sectionPath('scales/${scale.id}'), extra: scale),
               ),
             )),
         const SizedBox(height: 12),
