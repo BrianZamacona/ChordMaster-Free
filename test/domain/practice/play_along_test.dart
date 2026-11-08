@@ -10,6 +10,7 @@ import 'package:chordmaster_free/domain/melodies/basics_course.dart';
 import 'package:chordmaster_free/domain/melodies/melody_course.dart';
 import 'package:chordmaster_free/domain/practice/play_along.dart';
 import 'package:chordmaster_free/domain/practice/tab_playback.dart';
+import 'package:chordmaster_free/domain/practice/technique_exercises.dart';
 import 'package:flutter_test/flutter_test.dart';
 
 const _rate = synthSampleRate ~/ 2;
@@ -174,35 +175,35 @@ void main() {
   group('PlayAlongResult', () {
     test('tempo por la distancia típica entre notas (corcheas)', () {
       // 0.375 s entre corcheas = 80 BPM.
-      final r = PlayAlongResult.from([0, 0.375, 0.75, 1.125, 1.5], mistakes: 0);
+      final r = PlayAlongResult.from([0, 0.375, 0.75, 1.125, 1.5]);
       expect(r.bpm, closeTo(80, 1e-9));
       expect(r.clean, isTrue);
       expect(r.cleanBpm, 80);
     });
 
     test('el récord se redondea hacia abajo al paso del tempo', () {
-      final r = PlayAlongResult.from([0, 0.37, 0.74, 1.11], mistakes: 0);
+      final r = PlayAlongResult.from([0, 0.37, 0.74, 1.11]);
       expect(r.bpm, closeTo(81.1, 0.1));
       expect(r.cleanBpm, 80);
     });
 
     test('con errores, con una pausa larga o con una sola nota no es limpia', () {
-      expect(PlayAlongResult.from([0, 0.375, 0.75], mistakes: 1).cleanBpm, isNull);
-      final paused = PlayAlongResult.from([0, 0.375, 0.75, 2.5, 2.875], mistakes: 0);
+      expect(PlayAlongResult.from([0, 0.375, 0.75], mistakesAt: [1]).cleanBpm, isNull);
+      final paused = PlayAlongResult.from([0, 0.375, 0.75, 2.5, 2.875]);
       expect(paused.paused, isTrue);
       expect(paused.cleanBpm, isNull);
-      expect(PlayAlongResult.from([0], mistakes: 0).bpm, isNull);
+      expect(PlayAlongResult.from([0]).bpm, isNull);
     });
 
     test('con el margen de la medida, 99.6 BPM cuenta como 100', () {
       // 0.3012 s entre corcheas = 99.6 BPM.
-      final r = PlayAlongResult.from([0, 0.3012, 0.6024, 0.9036], mistakes: 0);
+      final r = PlayAlongResult.from([0, 0.3012, 0.6024, 0.9036]);
       expect(r.bpm, closeTo(99.6, 0.05));
       expect(r.cleanBpm, 100);
     });
 
     test('más lenta que el mínimo del selector: sin récord', () {
-      expect(PlayAlongResult.from([0, 1, 2, 3], mistakes: 0).cleanBpm, isNull);
+      expect(PlayAlongResult.from([0, 1, 2, 3]).cleanBpm, isNull);
     });
   });
 
@@ -219,6 +220,51 @@ void main() {
       final attack = attackLevelOf(Float64List.sublistView(half, 0, _hop));
       final later = attackLevelOf(Float64List.sublistView(half, 4000, 4000 + _hop));
       expect(attack / later, greaterThan(2));
+    });
+  });
+
+  group('repetir un renglón y más lento', () {
+    test('renglones de 8 notas', () {
+      expect(tabLineCount(0), 0);
+      expect(tabLineCount(8), 1);
+      expect(tabLineCount(9), 2);
+      expect(tabLineOf(7), 0);
+      expect(tabLineOf(8), 1);
+      expect(tabLineRange(20, 0), (start: 0, end: 8));
+      expect(tabLineRange(20, 2), (start: 16, end: 20));
+    });
+
+    test('el seguidor anota dónde fue cada error', () {
+      const tab = [TabNote(3, 0), TabNote(3, 2), TabNote(3, 4)];
+      final f = NoteFollower(tab)
+        ..hear((midi: 55, at: 0, plucked: true))
+        ..hear((midi: 58, at: 0.2, plucked: true))
+        ..hear((midi: 60, at: 0.3, plucked: true))
+        ..hear((midi: 57, at: 0.4, plucked: true));
+      expect(f.mistakes, 2);
+      expect(f.result.mistakesAt, [1, 1]);
+    });
+
+    test('se repite el renglón con más errores; si empatan, el primero', () {
+      const times = [0.0, 0.375, 0.75];
+      expect(PlayAlongResult.from(times, mistakesAt: [3, 9, 10]).lineToPractice, 1);
+      expect(PlayAlongResult.from(times, mistakesAt: [9, 2]).lineToPractice, 0);
+    });
+
+    test('sin errores, el renglón de la pausa; limpia, ninguno', () {
+      final times = [for (var i = 0; i < 12; i++) i * 0.375]..[10] += 3;
+      for (var i = 11; i < 12; i++) {
+        times[i] += 3;
+      }
+      final paused = PlayAlongResult.from(times);
+      expect(paused.pauseAt, 10);
+      expect(paused.lineToPractice, 1);
+      expect(PlayAlongResult.from([0, 0.375, 0.75]).lineToPractice, isNull);
+    });
+
+    test('más lento baja 10 BPM sin pasar del mínimo', () {
+      expect(slowerBpm(80), 70);
+      expect(slowerBpm(45), techniqueMinBpm);
     });
   });
 }

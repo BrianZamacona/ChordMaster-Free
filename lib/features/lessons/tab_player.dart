@@ -24,9 +24,12 @@ final tabPlaybackProvider = Provider<ValueNotifier<Object?>>((ref) {
 
 /// Una tablatura que se puede escuchar: ▶ la toca con el sintetizador al tempo
 /// [bpm] y resalta la nota que suena, con los mismos instantes del audio
-/// ([tabEvents]). Con [onPlayed], además se puede tocar con el micrófono
-/// ("Tocar yo"): resalta la nota que toca, marca las que salieron y, al
-/// terminar, entrega el resultado.
+/// ([tabEvents]). Se puede practicar un renglón suelto y repetirlo en bucle.
+///
+/// Con [onPlayed], además se puede tocar con el micrófono ("Tocar yo"):
+/// resalta la nota que toca, marca las que salieron y, al terminar la
+/// tablatura entera, entrega el resultado. Si hubo errores o una pausa,
+/// propone repetir ese renglón en bucle y, con [onBpmChanged], más lento.
 class TabPlayer extends ConsumerStatefulWidget {
   const TabPlayer({
     super.key,
@@ -34,6 +37,7 @@ class TabPlayer extends ConsumerStatefulWidget {
     required this.bpm,
     this.onPlay,
     this.onPlayed,
+    this.onBpmChanged,
   });
 
   final List<TabNote> notes;
@@ -42,8 +46,11 @@ class TabPlayer extends ConsumerStatefulWidget {
   /// Se llama al empezar a sonar (las rutinas lo anotan como día de práctica).
   final VoidCallback? onPlay;
 
-  /// Se llama al terminar de tocarla con el micrófono.
+  /// Se llama al terminar de tocar la tablatura entera con el micrófono.
   final ValueChanged<PlayAlongResult>? onPlayed;
+
+  /// Cambia el tempo (lo guarda la pantalla): "más lento" lo usa.
+  final ValueChanged<int>? onBpmChanged;
 
   @override
   ConsumerState<TabPlayer> createState() => _TabPlayerState();
@@ -53,19 +60,41 @@ class _TabPlayerState extends ConsumerState<TabPlayer> {
   /// Cada 30 ms basta para que la marca no se atrase a la vista.
   static const _frame = Duration(milliseconds: 30);
 
+  /// Cuánto se ve el resultado antes de volver a escuchar en bucle.
+  static const _loopPause = Duration(milliseconds: 1500);
+
   final _token = Object();
   final _clock = Stopwatch();
   Timer? _timer;
+  Timer? _again;
   int? _index;
   late final ValueNotifier<Object?> _active;
+  late final AudioService _audio;
   PlayAlongViewModel? _mic;
 
+  /// "Repite el renglón": empezar a sonar cuando llegue este tempo.
+  int? _playAtBpm;
+
+  /// El renglón que se practica (`null` = toda la tablatura) y si se repite.
+  int? _line;
+  bool _loop = false;
+
+  /// Pasadas limpias seguidas con el micrófono en bucle.
+  int _streak = 0;
+
   bool get _playing => _timer != null;
+
+  ({int start, int end}) get _range => _line == null
+      ? (start: 0, end: widget.notes.length)
+      : tabLineRange(widget.notes.length, _line!);
+
+  List<TabNote> get _part => widget.notes.sublist(_range.start, _range.end);
 
   @override
   void initState() {
     super.initState();
     _active = ref.read(tabPlaybackProvider)..addListener(_onActiveChanged);
+    _audio = ref.read(audioServiceProvider);
     if (widget.onPlayed != null) _mic = ref.read(playAlongProvider.notifier);
   }
 
@@ -73,7 +102,10 @@ class _TabPlayerState extends ConsumerState<TabPlayer> {
   void didChangeDependencies() {
     super.didChangeDependencies();
     // Pestaña oculta: el micrófono no sigue escuchando por detrás.
-    if (!TickerMode.valuesOf(context).enabled) _releaseMic();
+    if (!TickerMode.valuesOf(context).enabled) {
+      _again?.cancel();
+      _releaseMic();
+    }
   }
 
   @override
@@ -82,17 +114,27 @@ class _TabPlayerState extends ConsumerState<TabPlayer> {
     // Por contenido: hay pantallas que arman la lista en cada build.
     final same = listEquals(old.notes, widget.notes);
     if (!same || old.bpm != widget.bpm) _stop();
-    if (!same) _releaseMic();
+    if (!same) {
+      _again?.cancel();
+      _line = null;
+      _playAtBpm = null;
+      _releaseMic();
+    }
+    if (_playAtBpm != null && _playAtBpm == widget.bpm) {
+      _playAtBpm = null;
+      _playAfterFrame();
+    }
   }
 
   @override
   void dispose() {
     _active.removeListener(_onActiveChanged);
     if (_playing && _active.value == _token) {
-      ref.read(audioServiceProvider).stopAll();
+      _audio.stopAll();
       _active.value = null;
     }
     _timer?.cancel();
+    _again?.cancel();
     _releaseMic();
     super.dispose();
   }
@@ -112,25 +154,38 @@ class _TabPlayerState extends ConsumerState<TabPlayer> {
   void _play() {
     _active.value = _token;
     widget.onPlay?.call();
-    ref.read(audioServiceProvider).playNotes(
-          tabEvents(widget.notes, bpm: widget.bpm),
-          seconds: tabDurationSeconds(widget.notes.length, bpm: widget.bpm),
+    _start();
+  }
+
+  /// Suena el tramo elegido desde el principio (también al volver en bucle).
+  void _start() {
+    final part = _part;
+    _audio.playNotes(
+          tabEvents(part, bpm: widget.bpm),
+          seconds: tabDurationSeconds(part.length, bpm: widget.bpm),
           ring: tabNoteRingSeconds,
         );
     _clock
       ..reset()
       ..start();
+    _timer?.cancel();
     _timer = Timer.periodic(_frame, (_) => _tick());
     setState(() => _index = 0);
   }
 
   void _tick() {
     final elapsed = _clock.elapsedMicroseconds / 1e6;
-    final index = tabIndexAt(elapsed, widget.notes.length, bpm: widget.bpm);
-    if (index == null) {
+    final count = _range.end - _range.start;
+    final index = tabIndexAt(elapsed, count, bpm: widget.bpm);
+    if (index != null) {
+      if (index != _index) setState(() => _index = index);
+      return;
+    }
+    // Terminó la última nota: en bucle, otra vez apenas deja de sonar.
+    if (_loop && elapsed >= count * tabStepSeconds(widget.bpm)) {
+      _start();
+    } else if (!_loop) {
       _stop(silence: false);
-    } else if (index != _index) {
-      setState(() => _index = index);
     }
   }
 
@@ -139,38 +194,149 @@ class _TabPlayerState extends ConsumerState<TabPlayer> {
     _timer?.cancel();
     _timer = null;
     _clock.stop();
-    if (silence) ref.read(audioServiceProvider).stopAll();
+    if (silence) _audio.stopAll();
     if (_active.value == _token) _active.value = null;
     if (mounted) setState(() => _index = null);
+  }
+
+  void _listenMic() {
+    _again?.cancel();
+    _stop();
+    _mic!.start(_token, _part);
+  }
+
+  void _stopMic() {
+    _again?.cancel();
+    _streak = 0;
+    _mic!.stop();
+  }
+
+  /// Otro tramo: se corta lo que sonaba o escuchaba.
+  void _selectLine(int? line) {
+    if (line == _line) return;
+    _again?.cancel();
+    _stop();
+    if (_mic != null && ref.read(playAlongProvider).owner == _token) _mic!.stop();
+    setState(() {
+      _line = line;
+      _streak = 0;
+    });
+  }
+
+  void _toggleLoop(bool loop) {
+    if (!loop) _again?.cancel();
+    setState(() {
+      _loop = loop;
+      _streak = 0;
+    });
+  }
+
+  /// "Repite el renglón N (más lento)": queda ese renglón en bucle, baja el
+  /// tempo si la pantalla lo permite y empieza a sonar para escucharlo.
+  void _practice(int line) {
+    _again?.cancel();
+    _mic?.stop();
+    final slower = slowerBpm(widget.bpm);
+    final changes = widget.onBpmChanged != null && slower != widget.bpm;
+    setState(() {
+      _line = line;
+      _loop = true;
+      _streak = 0;
+    });
+    if (changes) {
+      // El cambio de tempo detiene lo que suena: se escucha cuando llegue.
+      _playAtBpm = slower;
+      widget.onBpmChanged!(slower);
+    } else {
+      _playAfterFrame();
+    }
+  }
+
+  void _playAfterFrame() {
+    WidgetsBinding.instance.addPostFrameCallback((_) {
+      if (mounted && !_playing) _play();
+    });
+  }
+
+  void _onFinished(PlayAlongResult result) {
+    final whole = _line == null;
+    if (whole) widget.onPlayed?.call(result);
+    if (!_loop) return;
+    setState(() => _streak = result.clean ? _streak + 1 : 0);
+    _again = Timer(_loopPause, () {
+      if (mounted) _listenMic();
+    });
   }
 
   @override
   Widget build(BuildContext context) {
     final p = context.palette;
+    final text = Theme.of(context).textTheme;
     final onPlayed = widget.onPlayed;
     // Solo los reproductores con micrófono miran su estado.
     final mic = onPlayed == null ? null : ref.watch(playAlongProvider);
     final mine = mic != null && mic.owner == _token ? mic : null;
     final listening = mine?.listening ?? false;
+    final finished = mine?.status == PlayAlongStatus.finished;
     if (onPlayed != null) {
       ref.listen(playAlongProvider, (prev, next) {
         if (next.owner == _token &&
             next.status == PlayAlongStatus.finished &&
             prev?.status != PlayAlongStatus.finished) {
-          onPlayed(next.result!);
+          _onFinished(next.result!);
         }
       });
     }
+    final range = _range;
+    final lines = tabLineCount(widget.notes.length);
+    final practice = finished && _line == null ? mine!.result!.lineToPractice : null;
+    final slower = widget.onBpmChanged == null ? null : slowerBpm(widget.bpm);
 
     return Column(
       crossAxisAlignment: CrossAxisAlignment.stretch,
       children: [
         LessonTabView(
           notes: widget.notes,
-          highlight: listening ? mine!.position : _index,
-          played: listening || mine?.status == PlayAlongStatus.finished
-              ? mine!.position
-              : 0,
+          focusLine: _line,
+          highlight: listening
+              ? range.start + mine!.position
+              : (_index == null ? null : range.start + _index!),
+          playedFrom: range.start,
+          played: listening || finished ? range.start + mine!.position : 0,
+        ),
+        const SizedBox(height: 6),
+        Wrap(
+          key: const Key('tab-sections'),
+          spacing: 6,
+          runSpacing: 4,
+          crossAxisAlignment: WrapCrossAlignment.center,
+          children: [
+            if (lines > 1) ...[
+              Text(AppStrings.tabSection, style: text.labelLarge),
+              ChoiceChip(
+                key: const Key('tab-line-all'),
+                label: Text(AppStrings.tabAll),
+                selected: _line == null,
+                onSelected: (_) => _selectLine(null),
+              ),
+              for (var i = 0; i < lines; i++)
+                ChoiceChip(
+                  key: Key('tab-line-$i'),
+                  label: Text('${i + 1}', semanticsLabel: AppStrings.tabLine(i + 1)),
+                  selected: _line == i,
+                  onSelected: (_) => _selectLine(i),
+                ),
+            ],
+            FilterChip(
+              key: const Key('tab-loop'),
+              // Encendido, el fondo del chip es claro: el ícono va en el texto.
+              avatar: Icon(Icons.repeat, size: 18, color: _loop ? p.textPrimary : p.textSecondary),
+              label: Text(AppStrings.tabLoop),
+              selected: _loop,
+              showCheckmark: false,
+              onSelected: _toggleLoop,
+            ),
+          ],
         ),
         const SizedBox(height: 8),
         Wrap(
@@ -187,12 +353,7 @@ class _TabPlayerState extends ConsumerState<TabPlayer> {
             if (onPlayed != null)
               OutlinedButton.icon(
                 key: const Key('tab-mic'),
-                onPressed: listening
-                    ? _mic!.stop
-                    : () {
-                        _stop();
-                        _mic!.start(_token, widget.notes);
-                      },
+                onPressed: listening ? _stopMic : _listenMic,
                 icon: Icon(listening ? Icons.stop : Icons.mic),
                 label: Text(listening ? AppStrings.tabStop : AppStrings.tabPlayMic),
               ),
@@ -206,9 +367,37 @@ class _TabPlayerState extends ConsumerState<TabPlayer> {
           const SizedBox(height: 6),
           _MicStatus(
             state: mine,
-            notes: widget.notes,
+            notes: _part,
             onOpenSettings: _mic!.openSettings,
           ),
+          if (finished && _line != null && mine!.result!.clean) ...[
+            const SizedBox(height: 4),
+            Text(
+              AppStrings.tabLineNoRecord,
+              key: const Key('tab-line-no-record'),
+              style: text.bodySmall?.copyWith(color: p.textSecondary),
+            ),
+          ],
+          if (_loop && _streak > 0) ...[
+            const SizedBox(height: 4),
+            Text(
+              AppStrings.tabCleanStreak(_streak),
+              key: const Key('tab-streak'),
+              style: musicMono(fontSize: 13, fontWeight: FontWeight.w600, color: p.success),
+            ),
+          ],
+          if (practice != null) ...[
+            const SizedBox(height: 6),
+            Align(
+              alignment: Alignment.centerLeft,
+              child: FilledButton.icon(
+                key: const Key('tab-practice-line'),
+                icon: const Icon(Icons.slow_motion_video),
+                label: Text(AppStrings.tabPracticeLine(practice + 1, slower)),
+                onPressed: () => _practice(practice),
+              ),
+            ),
+          ],
         ],
       ],
     );
@@ -225,6 +414,8 @@ class _MicStatus extends StatelessWidget {
   });
 
   final PlayAlongState? state;
+
+  /// Las notas que se están tocando (el tramo elegido).
   final List<TabNote> notes;
   final VoidCallback onOpenSettings;
 
@@ -292,7 +483,7 @@ class _MicStatus extends StatelessWidget {
         );
       case PlayAlongStatus.finished:
         final r = s!.result!;
-        if (r.cleanBpm != null) {
+        if (r.clean && r.cleanBpm != null) {
           return line(
             AppStrings.tabMicClean(r.bpm!.round()),
             color: p.success,

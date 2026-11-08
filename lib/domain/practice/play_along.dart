@@ -35,6 +35,12 @@ const playAlongPauseFactor = 2.5;
 /// Margen del tempo medido al redondearlo para el récord (2 %).
 const playAlongTempoMargin = 0.02;
 
+/// Cuánto baja "Más lento": dos pasos del selector de tempo.
+const playAlongSlowerBy = 2 * techniqueBpmStep;
+
+/// El tempo de "Más lento": [playAlongSlowerBy] menos, sin bajar del mínimo.
+int slowerBpm(int bpm) => math.max(techniqueMinBpm, bpm - playAlongSlowerBy);
+
 /// Sigue una tablatura nota por nota.
 class NoteFollower {
   NoteFollower(List<TabNote> tab) : expected = [for (final n in tab) tabMidi(n)];
@@ -43,12 +49,12 @@ class NoteFollower {
   final List<int> expected;
 
   int _position = 0;
-  int _mistakes = 0;
+  final _mistakesAt = <int>[];
   final _times = <double>[];
 
   /// Índice de la nota que se espera (= cuántas van bien).
   int get position => _position;
-  int get mistakes => _mistakes;
+  int get mistakes => _mistakesAt.length;
   bool get done => _position >= expected.length;
 
   /// Instantes en que salió bien cada nota.
@@ -64,12 +70,12 @@ class NoteFollower {
     if (!note.plucked || (_position > 0 && note.midi == expected[_position - 1])) {
       return HeardKind.echo;
     }
-    _mistakes++;
+    _mistakesAt.add(_position);
     return HeardKind.wrong;
   }
 
   /// Cómo salió (solo tiene sentido al terminar).
-  PlayAlongResult get result => PlayAlongResult.from(_times, mistakes: _mistakes);
+  PlayAlongResult get result => PlayAlongResult.from(_times, mistakesAt: _mistakesAt);
 }
 
 /// Una tablatura tocada con el micrófono: cada ventana se analiza buscando la
@@ -117,43 +123,53 @@ class PlayAlongSession {
 /// Lo que se mide al terminar.
 class PlayAlongResult {
   const PlayAlongResult({
-    required this.mistakes,
+    required this.mistakesAt,
     required this.bpm,
-    required this.paused,
+    required this.pauseAt,
   });
 
-  /// [times]: instante de cada nota correcta, en orden.
+  /// [times]: instante de cada nota correcta, en orden; [mistakesAt]: la nota
+  /// que se esperaba (índice) cuando sonó cada error.
   factory PlayAlongResult.from(
     List<double> times, {
-    required int mistakes,
+    List<int> mistakesAt = const [],
     int notesPerBeat = defaultNotesPerBeat,
   }) {
     final gaps = [
       for (var i = 1; i < times.length; i++) times[i] - times[i - 1],
     ];
+    final errors = List<int>.unmodifiable(mistakesAt);
     if (gaps.isEmpty) {
-      return PlayAlongResult(mistakes: mistakes, bpm: null, paused: false);
+      return PlayAlongResult(mistakesAt: errors, bpm: null, pauseAt: null);
     }
     // El tempo, por la distancia media de la primera a la última: el
     // micrófono ubica cada nota en cuadros de ~46 ms, y en el promedio de
     // toda la pasada ese redondeo se diluye. Las pausas, contra la típica.
     final average = (times.last - times.first) / gaps.length;
     final typical = _median(gaps);
+    final pause = gaps.indexWhere((g) => g > typical * playAlongPauseFactor);
     return PlayAlongResult(
-      mistakes: mistakes,
+      mistakesAt: errors,
       bpm: average <= 0 ? null : 60 / (average * notesPerBeat),
-      paused: gaps.any((g) => g > typical * playAlongPauseFactor),
+      // La pausa es antes de la nota que tardó en llegar.
+      pauseAt: pause < 0 ? null : pause + 1,
     );
   }
 
-  final int mistakes;
+  /// Dónde sonó cada error: el índice de la nota que se esperaba.
+  final List<int> mistakesAt;
+
+  int get mistakes => mistakesAt.length;
 
   /// Tempo medio al que se tocó, contando cada nota como corchea (como el
   /// reproductor); `null` con menos de dos notas.
   final double? bpm;
 
+  /// La primera nota que llegó tras una pausa larga, o `null` si no hubo.
+  final int? pauseAt;
+
   /// Hubo una pausa larga en medio.
-  final bool paused;
+  bool get paused => pauseAt != null;
 
   /// Limpia = sin errores, sin detenerse y con tempo medible.
   bool get clean => mistakes == 0 && !paused && bpm != null;
@@ -169,8 +185,23 @@ class PlayAlongResult {
     if (floored < techniqueMinBpm) return null;
     return math.min(floored, techniqueMaxBpm);
   }
-}
 
+  /// El renglón (desde 0, de [tabNotesPerLine] notas) que conviene repetir:
+  /// el de más errores (si empatan, el primero) o, sin errores, el de la
+  /// pausa. `null` si salió limpia.
+  int? get lineToPractice {
+    if (mistakesAt.isNotEmpty) {
+      final perLine = <int, int>{};
+      for (final i in mistakesAt) {
+        perLine.update(tabLineOf(i), (n) => n + 1, ifAbsent: () => 1);
+      }
+      final most = perLine.values.reduce(math.max);
+      return perLine.keys.where((l) => perLine[l] == most).reduce(math.min);
+    }
+    final pause = pauseAt;
+    return pause == null ? null : tabLineOf(pause);
+  }
+}
 double _median(List<double> xs) {
   final s = [...xs]..sort();
   final m = s.length ~/ 2;

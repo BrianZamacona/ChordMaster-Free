@@ -36,8 +36,12 @@ class MelodyStepScreen extends StatelessWidget {
               levels: levels,
               step: step,
               body: Text(step.body.text, style: Theme.of(context).textTheme.bodyLarge),
-              player: (bpm, onPlayed) =>
-                  TabPlayer(notes: step.tab, bpm: bpm, onPlayed: onPlayed),
+              player: (bpm, onPlayed, onBpm) => TabPlayer(
+                notes: step.tab,
+                bpm: bpm,
+                onPlayed: onPlayed,
+                onBpmChanged: onBpm,
+              ),
               playerNote: AppStrings.melodiesEvenRhythm,
               routeOf: course.stepRoute,
             ),

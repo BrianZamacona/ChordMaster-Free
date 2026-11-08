@@ -139,6 +139,14 @@ cada nota pertenezca a la escala. No bajar la tolerancia de 0.
   conocido (test): cuerdas al aire graves acumuladas sonando al mismo nivel (3 de 39 pasos con
   las cuerdas sonando). Un solo micrófono para la app (`playAlongProvider`): se suelta al sonar
   un reproductor, al salir o al ocultar la pestaña.
+- Tramo y bucle (inspirado en el "Loop"/"Slow Down" de Gibson): `TabPlayer` deja elegir un
+  renglón (`tabNotesPerLine` = 8, en `tab_playback.dart`) y repetirlo en bucle, al escuchar y
+  con el micrófono (vuelve a escuchar 1.5 s después y cuenta las pasadas limpias seguidas). Un
+  renglón suelto nunca da récord: solo la tablatura entera llama a `onPlayed`. Tras una pasada
+  entera con errores o pausa, `PlayAlongResult.lineToPractice` (el renglón de más errores; si
+  empatan, el primero; sin errores, el de la pausa) propone "Repite el renglón N a X BPM":
+  lo deja en bucle, baja `slowerBpm` (−10, mínimo 40) con `onBpmChanged` y empieza a sonar
+  cuando llega el tempo nuevo.
 
 ## Módulos de práctica (decisiones)
 - Salud: el aviso de pausa sale SOLO durante la sesión de práctica, al cumplirse cada intervalo
