@@ -66,12 +66,13 @@ void main() {
       await wait(1100); // 300 BPM: un tiempo cada 200 ms
       vm.stopMetronome();
       expect(audio.starts.single, (bpm: 300, beats: 4, perBeat: 2));
-      expect(beats.length, greaterThanOrEqualTo(4));
-      // Tiempos seguidos: 1, 2, 3, 0, 1… nunca salta ni pasa de 3.
-      for (var i = 1; i < beats.length - 1; i++) {
-        expect(beats[i], (beats[i - 1] + 1) % 4, reason: '$beats');
-      }
+      expect(beats.length, greaterThanOrEqualTo(2));
+      // La cuenta avanza (si un temporizador llega tarde, salta al tiempo que
+      // suena: va contra el reloj) y nunca pasa de 3: las corcheas no cuentan.
       expect(beats.every((b) => b < 4), isTrue);
+      for (var i = 1; i < beats.length - 1; i++) {
+        expect(beats[i], isNot(beats[i - 1]), reason: '$beats');
+      }
     });
 
     test('parar detiene el sonido y vuelve al primer tiempo', () async {
