@@ -1,5 +1,6 @@
 import 'dart:math' as math;
 
+import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
 
 import '../../core/constants/app_strings.dart';
@@ -16,7 +17,9 @@ List<String> get tabStringNames => [
 ];
 
 /// Tablatura de una lección: seis líneas (la 1ª cuerda arriba) y el traste de
-/// cada nota, de izquierda a derecha, en renglones de [tabNotesPerLine].
+/// cada nota, de izquierda a derecha, en renglones de [tabNotesPerLine]. Con
+/// [showFingers], debajo va el dedo de cada nota ([tabFingers]) si la regla de
+/// un dedo por traste alcanza.
 class LessonTabView extends StatelessWidget {
   const LessonTabView({
     super.key,
@@ -25,9 +28,13 @@ class LessonTabView extends StatelessWidget {
     this.playedFrom = 0,
     this.played = 0,
     this.focusLine,
+    this.showFingers = false,
   });
 
   final List<TabNote> notes;
+
+  /// Muestra el dedo de cada nota (si la mano no se mueve).
+  final bool showFingers;
 
   /// Nota que está sonando o que toca tocar (índice en [notes]); va resaltada.
   final int? highlight;
@@ -47,13 +54,17 @@ class LessonTabView extends StatelessWidget {
       for (var i = 0; i < notes.length; i += tabNotesPerLine)
         notes.sublist(i, math.min(i + tabNotesPerLine, notes.length)),
     ];
+    final all = showFingers ? tabFingers(notes) : null;
+    final fingers = all != null && all.any((f) => f != null) ? all : null;
     return Column(
       crossAxisAlignment: CrossAxisAlignment.stretch,
       children: [
         Semantics(
           label: AppStrings.lessonTabLabel(
-            [for (final n in notes) AppStrings.lessonTabNote(n.string, n.fret)]
-                .join(', '),
+            [
+              for (final (i, n) in notes.indexed)
+                AppStrings.lessonTabNote(n.string, n.fret, finger: fingers?[i]),
+            ].join(', '),
           ),
           excludeSemantics: true,
           child: Column(
@@ -64,7 +75,7 @@ class LessonTabView extends StatelessWidget {
                   opacity: focusLine == null || focusLine == i ? 1 : 0.35,
                   child: SizedBox(
                     key: Key('lesson-tab-line-$i'),
-                    height: _TabPainter.height,
+                    height: _TabPainter.height + (fingers == null ? 0 : _TabPainter.fingerRow),
                     width: double.infinity,
                     child: CustomPaint(
                       painter: _TabPainter(
@@ -75,6 +86,10 @@ class LessonTabView extends StatelessWidget {
                             : highlight! - i * tabNotesPerLine,
                         playedFrom: playedFrom - i * tabNotesPerLine,
                         played: played - i * tabNotesPerLine,
+                        fingers: fingers?.sublist(
+                          i * tabNotesPerLine,
+                          math.min((i + 1) * tabNotesPerLine, notes.length),
+                        ),
                       ),
                     ),
                   ),
@@ -85,7 +100,10 @@ class LessonTabView extends StatelessWidget {
         ),
         const SizedBox(height: 8),
         Text(
-          AppStrings.lessonTabHint,
+          fingers == null
+              ? AppStrings.lessonTabHint
+              : '${AppStrings.lessonTabHint} ${AppStrings.lessonTabFingersHint}',
+          key: const Key('lesson-tab-hint'),
           style: Theme.of(context)
               .textTheme
               .bodySmall
@@ -103,9 +121,13 @@ class _TabPainter extends CustomPainter {
     this.highlight,
     this.playedFrom = 0,
     this.played = 0,
+    this.fingers,
   });
 
   static const lineGap = 14.0;
+
+  /// Alto de la fila de dedos, debajo de la 6ª cuerda.
+  static const fingerRow = 16.0;
   static const top = 8.0;
   static const height = top * 2 + lineGap * 5;
   static const labelWidth = 18.0;
@@ -119,6 +141,9 @@ class _TabPainter extends CustomPainter {
   /// Notas de este renglón ya tocadas bien: de [playedFrom] a [played].
   final int playedFrom;
   final int played;
+
+  /// Dedo de cada nota de este renglón (`null` = al aire), o sin fila.
+  final List<int?>? fingers;
 
   double _y(int string) => top + (string - 1) * lineGap;
 
@@ -173,6 +198,17 @@ class _TabPainter extends CustomPainter {
             ..strokeWidth = 2,
         );
       }
+      // El dedo, debajo de la 6ª cuerda, en la columna de su nota.
+      if (fingers?[i] case final finger?) {
+        _text(
+          canvas,
+          '$finger',
+          Offset(_x(i, size.width), _y(6) + fingerRow - 2),
+          playing ? palette.accent : palette.textSecondary,
+          11,
+          bold: playing,
+        );
+      }
     }
   }
 
@@ -204,5 +240,6 @@ class _TabPainter extends CustomPainter {
       old.palette != palette ||
       old.highlight != highlight ||
       old.playedFrom != playedFrom ||
-      old.played != played;
+      old.played != played ||
+      !listEquals(old.fingers, fingers);
 }

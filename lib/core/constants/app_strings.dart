@@ -754,9 +754,15 @@ class AppStrings {
   );
   static String lessonTabLabel(String notes) =>
       tr(es: 'Tablatura: $notes', en: 'Tablature: $notes');
-  static String lessonTabNote(int string, int fret) => tr(
-    es: 'cuerda $string, traste $fret',
-    en: 'string $string, fret $fret',
+  static String lessonTabNote(int string, int fret, {int? finger}) => finger == null
+      ? tr(es: 'cuerda $string, traste $fret', en: 'string $string, fret $fret')
+      : tr(
+          es: 'cuerda $string, traste $fret, dedo $finger',
+          en: 'string $string, fret $fret, finger $finger',
+        );
+  static String get lessonTabFingersHint => tr(
+    es: 'Debajo, el dedo: 1 índice, 2 medio, 3 anular, 4 meñique.',
+    en: 'Below, the finger: 1 index, 2 middle, 3 ring, 4 pinky.',
   );
   static String get lessonOpenProgressions =>
       tr(es: 'Abrir Progresiones', en: 'Open Progressions');

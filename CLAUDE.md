@@ -345,6 +345,11 @@ cada nota pertenezca a la escala. No bajar la tolerancia de 0.
   pantalla marca la nota con los mismos instantes (`tabIndexAt`). Se sintetiza la frase entera
   en un WAV (`playNotes` con `ring`: cada nota suena 1.2 s, así el costo no crece con el
   cuadrado). Claves de archivo largas pasan por `stableKey` (FNV-1a).
+- Dedos en la tablatura (idea de Gibson, que colorea por dedo; aquí número, nunca solo color):
+  `tabFingers` (`tab_playback.dart`) por la regla de un dedo por traste. Si todo lo pisado cabe
+  en los trastes 1–4, el dedo es el traste; si no, el índice va en el traste más bajo; si no
+  cabe en 4 trastes (la mano se mueve), no hay fila. `TabPlayer` la muestra debajo de la 6ª
+  cuerda y la pista lo explica. Test: coincide con lo que dicen Primeros pasos y Melodías.
 - `TabPlayer` (`features/lessons/tab_player.dart`) es el único reproductor: lecciones con tab y
   rutinas. Al empezar uno, el anterior se detiene (`tabPlaybackProvider`).
 - Tests de pantallas que leen `scales_master.json`: inyectar `ScaleRepository` con un bundle de
