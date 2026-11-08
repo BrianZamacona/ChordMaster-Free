@@ -10,12 +10,14 @@ import '../../domain/practice/multi_day_challenges.dart';
 import '../../domain/practice/technique_exercises.dart';
 import '../../domain/theory/notes.dart';
 import '../../services/activity_log.dart';
+import '../../services/session_log.dart';
 import '../../ui/theme.dart';
 import '../lessons/lesson_widgets.dart';
 import '../lessons/lessons_viewmodel.dart';
 
 /// "Práctica de hoy": la siguiente lección, la rutina y la técnica del día,
-/// con su marca de hecho, y el avance de los retos de la semana.
+/// con su marca de hecho, el resumen de la sesión y el avance de los retos de
+/// la semana.
 class TodayPlanCard extends ConsumerWidget {
   const TodayPlanCard({super.key});
 
@@ -24,6 +26,8 @@ class TodayPlanCard extends ConsumerWidget {
     final p = context.palette;
     final text = Theme.of(context).textTheme;
     final log = ref.watch(activityLogProvider);
+    ref.watch(sessionLogProvider);
+    final runs = ref.read(sessionLogProvider.notifier).summary.runs;
     final next = ref.watch(learningPathProvider.select((p) => p.next));
     final today = DateTime.now();
     bool doneToday(PracticeActivity a) => log[a]?.contains(dayKey(today)) ?? false;
@@ -121,6 +125,13 @@ class TodayPlanCard extends ConsumerWidget {
               onTap: () => context.go('/practice/technique'),
             ),
             const Divider(height: 8),
+            TextButton.icon(
+              key: const Key('today-session'),
+              style: TextButton.styleFrom(alignment: Alignment.centerLeft),
+              icon: const Icon(Icons.insights),
+              label: Text(AppStrings.todaySession(runs)),
+              onPressed: () => context.go('/session'),
+            ),
             TextButton.icon(
               key: const Key('today-challenges'),
               style: TextButton.styleFrom(alignment: Alignment.centerLeft),

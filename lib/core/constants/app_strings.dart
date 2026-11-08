@@ -567,6 +567,38 @@ class AppStrings {
     es: 'Pasadas limpias seguidas: $n',
     en: 'Clean runs in a row: $n',
   );
+  static String get sessionTitle => tr(es: 'Tu sesión de hoy', en: "Today's session");
+  static String todaySession(int runs) => runs == 0
+      ? tr(es: 'Resumen de hoy', en: "Today's summary")
+      : tr(
+          es: 'Resumen de hoy · ${runs == 1 ? '1 pasada' : '$runs pasadas'}',
+          en: "Today's summary · ${runs == 1 ? '1 run' : '$runs runs'}",
+        );
+  static String get sessionEmpty => tr(
+    es: 'Todavía no tocaste con el micrófono hoy. Usa «Tocar yo» en un paso de '
+        'Primeros pasos o Melodías, o en Técnica, y aquí verás cómo salió.',
+    en: 'You have not played with the microphone today. Use "Play it myself" in '
+        'a First steps or Melodies step, or in Technique, and you will see here how it went.',
+  );
+  static String get sessionRuns => tr(es: 'pasadas', en: 'runs');
+  static String get sessionCleanRuns => tr(es: 'limpias', en: 'clean');
+  static String get sessionRecords => tr(es: 'récords', en: 'records');
+  static String get sessionToRepeat => tr(es: 'Para repetir', en: 'To repeat');
+  static String get sessionCleanToday => tr(es: 'Salió limpio', en: 'Came out clean');
+  static String sessionRepeatDetail(int? line, int mistakes, int bpm) {
+    final where = line == null ? null : tabLine(line + 1);
+    final what = mistakes > 0 ? tabMicMistakes(mistakes) : tr(es: 'una pausa', en: 'a pause');
+    final tempo = tr(es: 'prueba a $bpm BPM', en: 'try $bpm BPM');
+    return [?where, what, tempo].join(' · ');
+  }
+  static String sessionBest(int bpm) =>
+      tr(es: 'Mejor pasada: $bpm BPM', en: 'Best run: $bpm BPM');
+  static String sessionNewRecord(int bpm) =>
+      tr(es: 'récord nuevo: $bpm BPM', en: 'new record: $bpm BPM');
+  static String sessionTechniqueFrom(int fret) => tr(
+    es: 'Técnica · desde el traste $fret',
+    en: 'Technique · from fret $fret',
+  );
   static String get tabLineNoRecord => tr(
     es: 'Un renglón suelto no cuenta para el récord: al final, tócala entera.',
     en: 'A single line does not count for the record: in the end, play it all.',
