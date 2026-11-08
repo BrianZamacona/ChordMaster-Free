@@ -128,6 +128,17 @@ cada nota pertenezca a la escala. No bajar la tolerancia de 0.
   una simulación: no volver a eso. La pantalla se actualiza a lo sumo cada 80 ms (throttle,
   NUNCA debounce: con una nota sonando las lecturas no paran y la aguja no se movía).
   Arranques y paradas del micrófono van en fila.
+- Tocar con el micrófono ("Tocar yo" en `TabPlayer`, solo donde se pasa `onPlayed`: Primeros
+  pasos, Melodías y Técnica): `PitchService.windowStream` da las ventanas y
+  `PlayAlongSession` (`lib/domain/practice/play_along.dart`) espera cada nota sin apuro. Ataque
+  = salto del nivel de agudos (`attackLevelOf`); la nota esperada se busca con
+  `periodicityAt` aunque otra cuerda siga sonando, y se rechaza si YIN oye una vecina (±2
+  semitonos). Una nota sin ataque no cuenta como error. Tempo = distancia media primera→última
+  (no depende del retraso del micrófono); récord = sin errores ni pausas (> 2.5× la típica),
+  redondeado al paso de 5 con 2 % de margen. Una nota a la vez, nada de acordes. Límite
+  conocido (test): cuerdas al aire graves acumuladas sonando al mismo nivel (3 de 39 pasos con
+  las cuerdas sonando). Un solo micrófono para la app (`playAlongProvider`): se suelta al sonar
+  un reproductor, al salir o al ocultar la pestaña.
 
 ## Módulos de práctica (decisiones)
 - Salud: el aviso de pausa sale SOLO durante la sesión de práctica, al cumplirse cada intervalo

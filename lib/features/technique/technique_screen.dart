@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 
 import '../../core/constants/app_strings.dart';
+import '../../domain/practice/play_along.dart';
 import '../../domain/practice/technique_exercises.dart';
 import '../../ui/theme.dart';
 import '../lessons/tab_player.dart';
@@ -54,6 +55,7 @@ class TechniqueScreen extends ConsumerWidget {
               bpm: state.bpm,
               record: state.records[e],
               onClean: () => vm.saveRecord(e),
+              onPlayed: (r) => _savePlayed(context, vm, e, state.records[e], r),
             ),
         ],
       ),
@@ -99,6 +101,22 @@ class _TempoRow extends StatelessWidget {
   }
 }
 
+/// Tocado con el micrófono: una pasada limpia que supera el récord se guarda.
+void _savePlayed(
+  BuildContext context,
+  TechniqueViewModel vm,
+  TechniqueExercise exercise,
+  int? record,
+  PlayAlongResult result,
+) {
+  final bpm = result.cleanBpm;
+  if (bpm == null || (record != null && record >= bpm)) return;
+  vm.saveRecord(exercise, bpm: bpm);
+  ScaffoldMessenger.of(context)
+    ..hideCurrentSnackBar()
+    ..showSnackBar(SnackBar(content: Text(AppStrings.tabMicSaved(bpm))));
+}
+
 class _ExerciseCard extends StatelessWidget {
   const _ExerciseCard({
     super.key,
@@ -107,6 +125,7 @@ class _ExerciseCard extends StatelessWidget {
     required this.bpm,
     required this.record,
     required this.onClean,
+    required this.onPlayed,
   });
 
   final TechniqueExercise exercise;
@@ -114,6 +133,7 @@ class _ExerciseCard extends StatelessWidget {
   final int bpm;
   final int? record;
   final VoidCallback onClean;
+  final ValueChanged<PlayAlongResult> onPlayed;
 
   @override
   Widget build(BuildContext context) {
@@ -139,7 +159,7 @@ class _ExerciseCard extends StatelessWidget {
               style: musicMono(fontSize: 12, color: p.textSecondary),
             ),
             const SizedBox(height: 10),
-            TabPlayer(notes: notes, bpm: bpm),
+            TabPlayer(notes: notes, bpm: bpm, onPlayed: onPlayed),
             const SizedBox(height: 8),
             Row(
               children: [

@@ -14,6 +14,16 @@ class TabNote {
 
   final int string;
   final int fret;
+
+  @override
+  bool operator ==(Object other) =>
+      other is TabNote && other.string == string && other.fret == fret;
+
+  @override
+  int get hashCode => Object.hash(string, fret);
+
+  @override
+  String toString() => 'TabNote($string, $fret)';
 }
 
 /// Escala que una lección enseña: id de `scales_master.json` y tónica

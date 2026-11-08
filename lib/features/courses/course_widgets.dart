@@ -4,6 +4,7 @@ import 'package:go_router/go_router.dart';
 
 import '../../core/constants/app_strings.dart';
 import '../../domain/courses/course.dart';
+import '../../domain/practice/play_along.dart';
 import '../../domain/practice/technique_exercises.dart';
 import '../../ui/theme.dart';
 import '../lessons/lesson_widgets.dart';
@@ -292,8 +293,10 @@ class CourseStepView<S extends CourseStep> extends ConsumerStatefulWidget {
   final S step;
   final Widget body;
 
-  /// El reproductor del paso al tempo dado (no se usa en teoría).
-  final Widget Function(int bpm) player;
+  /// El reproductor del paso al tempo dado (no se usa en teoría). Si deja tocar
+  /// con el micrófono, avisa el resultado con onPlayed: una pasada limpia
+  /// guarda su tempo como récord.
+  final Widget Function(int bpm, ValueChanged<PlayAlongResult> onPlayed) player;
   final String Function(String stepId) routeOf;
 
   /// Aclaración bajo el reproductor.
@@ -305,6 +308,16 @@ class CourseStepView<S extends CourseStep> extends ConsumerStatefulWidget {
 
 class _CourseStepViewState<S extends CourseStep> extends ConsumerState<CourseStepView<S>> {
   int? _bpm;
+
+  /// Tocada con el micrófono: si salió limpia y supera el récord, se guarda.
+  void _onPlayed(PlayAlongResult result, int? best) {
+    final bpm = result.cleanBpm;
+    if (bpm == null || (best != null && best >= bpm)) return;
+    ref.read(courseProgressProvider(widget.course).notifier).saveClean(widget.step.id, bpm);
+    ScaffoldMessenger.of(context)
+      ..hideCurrentSnackBar()
+      ..showSnackBar(SnackBar(content: Text(AppStrings.tabMicSaved(bpm))));
+  }
 
   @override
   Widget build(BuildContext context) {
@@ -385,7 +398,7 @@ class _CourseStepViewState<S extends CourseStep> extends ConsumerState<CourseSte
                     onChanged: (v) => setState(() => _bpm = v),
                   ),
                   const SizedBox(height: 10),
-                  widget.player(bpm),
+                  widget.player(bpm, (r) => _onPlayed(r, best)),
                   if (widget.playerNote case final note?) ...[
                     const SizedBox(height: 6),
                     Text(note, style: text.bodySmall?.copyWith(color: p.textSecondary)),

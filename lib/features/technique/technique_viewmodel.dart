@@ -79,12 +79,14 @@ class TechniqueViewModel extends Notifier<TechniqueState> {
         .clamp(techniqueMinBpm, techniqueMaxBpm),
   );
 
-  /// "Me salió limpio": guarda el tempo actual si supera el récord.
-  Future<void> saveRecord(TechniqueExercise exercise) async {
+  /// "Me salió limpio": guarda el tempo actual (o [bpm], el medido al tocar
+  /// con el micrófono) si supera el récord.
+  Future<void> saveRecord(TechniqueExercise exercise, {int? bpm}) async {
+    final tempo = bpm ?? state.bpm;
     unawaited(ref.read(activityLogProvider.notifier).record(PracticeActivity.technique));
     final current = state.records[exercise];
-    if (current != null && current >= state.bpm) return;
-    final records = {...state.records, exercise: state.bpm};
+    if (current != null && current >= tempo) return;
+    final records = {...state.records, exercise: tempo};
     state = state.copyWith(records: records);
     try {
       await _storage.save(StorageBoxes.userProgress, keyRecords, {

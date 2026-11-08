@@ -30,29 +30,10 @@ double? detectPitchHz(
   final tauMin = math.max(2, (sampleRate / maxHz).floor());
   final window = samples.length - tauMax;
   if (window < tauMax) return null;
-
-  var energy = 0.0;
-  for (var i = 0; i < samples.length; i++) {
-    energy += samples[i] * samples[i];
-  }
-  if (math.sqrt(energy / samples.length) < minRms) return null;
+  if (rmsOf(samples) < minRms) return null;
 
   // 1-2. Diferencia y diferencia media normalizada acumulada (CMNDF).
-  final d = Float64List(tauMax + 1);
-  for (var tau = 1; tau <= tauMax; tau++) {
-    var sum = 0.0;
-    for (var i = 0; i < window; i++) {
-      final delta = samples[i] - samples[i + tau];
-      sum += delta * delta;
-    }
-    d[tau] = sum;
-  }
-  final cmnd = Float64List(tauMax + 1)..[0] = 1;
-  var running = 0.0;
-  for (var tau = 1; tau <= tauMax; tau++) {
-    running += d[tau];
-    cmnd[tau] = running == 0 ? 1 : d[tau] * tau / running;
-  }
+  final cmnd = _cmndf(samples, window, tauMax);
 
   // 3. Primer mínimo por debajo del umbral (evita errores de octava).
   var tau = -1;
@@ -74,6 +55,48 @@ double? detectPitchHz(
   return sampleRate / refined;
 }
 
+/// Qué tan periódica es [samples] con la frecuencia [hz]: el mínimo de la
+/// diferencia normalizada de YIN cerca de ese periodo (±2 %, unos 34 cents). Cerca de 0 =
+/// esa nota suena clara; cerca de 1 = no está. Sirve cuando se sabe qué nota
+/// esperar: la encuentra aunque otra cuerda siga sonando, donde YIN solo no
+/// da una altura clara. Usa la misma ventana que [detectPitchHz] con
+/// [minHz] (para comparar sus valores).
+double periodicityAt(
+  Float64List samples,
+  int sampleRate,
+  double hz, {
+  double minHz = 60,
+}) {
+  final window = samples.length - (sampleRate / minHz).ceil();
+  final center = sampleRate / hz;
+  final lo = math.max(1, (center * 0.98).floor());
+  final hi = (center * 1.02).ceil();
+  if (window <= 0 || hi + window > samples.length) return 1;
+  final cmnd = _cmndf(samples, window, hi);
+  var best = 1.0;
+  for (var t = lo; t <= hi; t++) {
+    best = math.min(best, cmnd[t]);
+  }
+  return best;
+}
+
+/// Diferencia media normalizada acumulada de YIN, de 0 a [tauMax], sobre las
+/// primeras [window] muestras.
+Float64List _cmndf(Float64List samples, int window, int tauMax) {
+  final cmnd = Float64List(tauMax + 1)..[0] = 1;
+  var running = 0.0;
+  for (var tau = 1; tau <= tauMax; tau++) {
+    var sum = 0.0;
+    for (var i = 0; i < window; i++) {
+      final delta = samples[i] - samples[i + tau];
+      sum += delta * delta;
+    }
+    running += sum;
+    cmnd[tau] = running == 0 ? 1 : sum * tau / running;
+  }
+  return cmnd;
+}
+
 /// Nota temperada más cercana a [hz] con La4 = [a4] Hz: nombre con
 /// sostenidos y octava ("E2", "A#3"), número MIDI y desvío en cents
 /// (positivo = alto).
@@ -81,10 +104,34 @@ double? detectPitchHz(
   final exact = 69 + 12 * math.log(hz / a4) / math.ln2;
   final midi = exact.round();
   return (
-    name: '${pitchClassName(midi)}${midi ~/ 12 - 1}',
+    name: pitchName(midi),
     midi: midi,
     cents: (exact - midi) * 100,
   );
+}
+
+/// Nivel (raíz cuadrática media) de [x] desde la muestra [from].
+double rmsOf(Float64List x, {int from = 0}) {
+  if (from >= x.length) return 0;
+  var energy = 0.0;
+  for (var i = from; i < x.length; i++) {
+    energy += x[i] * x[i];
+  }
+  return math.sqrt(energy / (x.length - from));
+}
+
+/// Nivel de los agudos de [x] desde la muestra [from]: el de la diferencia
+/// entre muestras seguidas (un paso alto simple). El ataque de una púa es
+/// sobre todo agudo, así que salta aunque otras cuerdas sigan sonando.
+double attackLevelOf(Float64List x, {int from = 0}) {
+  final start = from < 1 ? 1 : from;
+  if (start >= x.length) return 0;
+  var energy = 0.0;
+  for (var i = start; i < x.length; i++) {
+    final d = x[i] - x[i - 1];
+    energy += d * d;
+  }
+  return math.sqrt(energy / (x.length - start));
 }
 
 /// Reduce a la mitad la frecuencia de muestreo promediando pares de
