@@ -27,6 +27,7 @@ import '../features/lessons/lessons_screen.dart';
 import '../features/metronome/metronome_screen.dart';
 import '../features/progressions/progressions_screen.dart';
 import '../features/rhythm_games/rhythm_game_screen.dart';
+import '../features/session/session_screen.dart';
 import '../features/songs/song_detail_screen.dart';
 import '../features/songs/songs_screen.dart';
 import '../features/technique/technique_screen.dart';
@@ -168,6 +169,11 @@ final GoRouter appRouter = GoRouter(
                 GoRoute(
                   path: 'finder',
                   builder: (_, _) => const NoteFinderScreen(),
+                ),
+                // Resumen de la sesión de hoy (desde Práctica de hoy).
+                GoRoute(
+                  path: 'session',
+                  builder: (_, _) => const SessionScreen(),
                 ),
                 // Los módulos que se abren desde Inicio viven también aquí, para
                 // que atrás vuelva a Inicio sin cambiar de pestaña.

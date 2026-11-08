@@ -3,7 +3,9 @@ import 'package:flutter_riverpod/flutter_riverpod.dart';
 
 import '../../core/constants/app_strings.dart';
 import '../../domain/practice/play_along.dart';
+import '../../domain/practice/session_summary.dart';
 import '../../domain/practice/technique_exercises.dart';
+import '../../services/session_log.dart';
 import '../../ui/theme.dart';
 import '../lessons/tab_player.dart';
 import 'technique_viewmodel.dart';
@@ -55,7 +57,7 @@ class TechniqueScreen extends ConsumerWidget {
               bpm: state.bpm,
               record: state.records[e],
               onClean: () => vm.saveRecord(e),
-              onPlayed: (r) => _savePlayed(context, vm, e, state.records[e], r),
+              onPlayed: (r) => _savePlayed(context, ref, e, state, r),
               onBpmChanged: vm.setBpm,
             ),
         ],
@@ -102,22 +104,32 @@ class _TempoRow extends StatelessWidget {
   }
 }
 
-/// Tocado con el micrófono: una pasada limpia que supera el récord se guarda.
+/// Tocado con el micrófono: va al resumen de la sesión y, si salió limpio y
+/// supera el récord, se guarda.
 void _savePlayed(
   BuildContext context,
-  TechniqueViewModel vm,
+  WidgetRef ref,
   TechniqueExercise exercise,
-  int? record,
+  TechniqueState state,
   PlayAlongResult result,
 ) {
   final bpm = result.cleanBpm;
-  if (bpm == null || (record != null && record >= bpm)) return;
-  vm.saveRecord(exercise, bpm: bpm);
+  final best = state.records[exercise];
+  final record = bpm != null && (best == null || bpm > best) ? bpm : null;
+  ref.read(sessionLogProvider.notifier).record(
+    PracticeRun.from(
+      TechniqueTarget(exercise, state.startFret),
+      result,
+      tempo: state.bpm,
+      newRecord: record,
+    ),
+  );
+  if (record == null) return;
+  ref.read(techniqueViewModelProvider.notifier).saveRecord(exercise, bpm: record);
   ScaffoldMessenger.of(context)
     ..hideCurrentSnackBar()
-    ..showSnackBar(SnackBar(content: Text(AppStrings.tabMicSaved(bpm))));
+    ..showSnackBar(SnackBar(content: Text(AppStrings.tabMicSaved(record))));
 }
-
 class _ExerciseCard extends StatelessWidget {
   const _ExerciseCard({
     super.key,

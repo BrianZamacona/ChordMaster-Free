@@ -1,12 +1,6 @@
-import 'dart:async';
-import 'dart:typed_data';
-
 import 'package:chordmaster_free/app.dart';
 import 'package:chordmaster_free/core/constants/app_strings.dart';
-import 'package:chordmaster_free/core/errors/failures.dart';
 import 'package:chordmaster_free/core/i18n/tr.dart';
-import 'package:chordmaster_free/domain/audio/pitch_detection.dart';
-import 'package:chordmaster_free/domain/audio/pluck_synth.dart';
 import 'package:chordmaster_free/domain/lessons/lesson.dart';
 import 'package:chordmaster_free/domain/melodies/melody_course.dart';
 import 'package:chordmaster_free/domain/practice/tab_playback.dart';
@@ -23,63 +17,7 @@ import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:flutter_test/flutter_test.dart';
 
 import '../support/in_memory_store.dart';
-
-class _FakeAudio extends AudioService {
-  _FakeAudio() : super.forTesting();
-
-  int stops = 0;
-  final played = <List<NoteEvent>>[];
-
-  @override
-  Future<void> playNotes(List<NoteEvent> events, {double seconds = 2.5, double? ring}) async =>
-      played.add(events);
-
-  @override
-  Future<void> stopAll() async => stops++;
-}
-
-/// Un micrófono de mentira: las ventanas las pone el test.
-class _FakeMic extends PitchService {
-  _FakeMic({this.deny = false}) : super.forTesting();
-
-  final bool deny;
-  bool listening = false;
-  // Lo cierra cada test con addTearDown.
-  // ignore: close_sinks
-  final windows = StreamController<MicWindow>.broadcast();
-
-  @override
-  Stream<MicWindow> get windowStream => windows.stream;
-
-  @override
-  Future<void> startListening() async {
-    if (deny) throw const PermissionFailure(message: 'denied');
-    listening = true;
-  }
-
-  @override
-  Future<void> stopListening() async => listening = false;
-}
-
-/// Las ventanas que daría el micrófono con [tab] tocada a [bpm] (cada nota se
-/// corta con la siguiente), como las arma [PitchService].
-List<MicWindow> _windows(List<TabNote> tab, int bpm) {
-  final step = tabStepSeconds(bpm);
-  final audio = renderNotes(
-    [for (final (i, n) in tab.indexed) (midi: tabMidi(n), at: 0.3 + i * step)],
-    seconds: 0.3 + tab.length * step + 0.6,
-    ring: step,
-  );
-  final half = decimateByTwo(audio);
-  const size = 2048;
-  return [
-    for (var start = 0; start + size <= half.length; start += PitchService.hop)
-      (
-        samples: Float64List.sublistView(half, start, start + size),
-        at: (start + size) / PitchService.sampleRate,
-      ),
-  ];
-}
+import '../support/play_along_fakes.dart';
 
 void main() {
   tearDown(() => CurrentLanguage.value = AppLanguage.es);
@@ -90,7 +28,7 @@ void main() {
     }
   }
 
-  Future<(InMemoryStore, _FakeMic, _FakeAudio)> open(
+  Future<(InMemoryStore, FakeMic, FakeAudio)> open(
     WidgetTester tester,
     String location, {
     String code = 'es',
@@ -101,9 +39,9 @@ void main() {
     tester.view.physicalSize = size;
     addTearDown(tester.view.reset);
     final store = InMemoryStore(settings: {'localeCode': code});
-    final mic = _FakeMic(deny: deny);
+    final mic = FakeMic(deny: deny);
     addTearDown(mic.windows.close);
-    final audio = _FakeAudio();
+    final audio = FakeAudio();
     await tester.pumpWidget(
       ProviderScope(
         overrides: [
@@ -128,7 +66,7 @@ void main() {
     await tester.pump();
   }
 
-  Future<void> feed(WidgetTester tester, _FakeMic mic, List<MicWindow> windows) async {
+  Future<void> feed(WidgetTester tester, FakeMic mic, List<MicWindow> windows) async {
     for (final w in windows) {
       mic.windows.add(w);
       await tester.pump();
@@ -158,7 +96,7 @@ void main() {
     expect(audio.stops, greaterThan(0), reason: 'nada suena mientras escucha');
     expect(status(tester), AppStrings.tabMicProgress(1, step.tab.length));
 
-    await feed(tester, mic, _windows(step.tab, 80));
+    await feed(tester, mic, micWindows(step.tab, 80));
     expect(mic.listening, isFalse, reason: 'al terminar suelta el micrófono');
     expect(status(tester), AppStrings.tabMicClean(80));
     expect(find.text(AppStrings.tabMicSaved(80)), findsOneWidget);
@@ -178,7 +116,7 @@ void main() {
 
     // Sonó la equivocada: se nombra mientras se espera la correcta.
     String? shown;
-    for (final w in _windows([tab[0], wrong, ...tab.skip(1)], 80)) {
+    for (final w in micWindows([tab[0], wrong, ...tab.skip(1)], 80)) {
       mic.windows.add(w);
       await tester.pump();
       final message = find.byKey(const Key('tab-mic-wrong'));
@@ -232,7 +170,7 @@ void main() {
     await tester.tap(button);
     await tester.pump();
     final notes = techniqueNotes(TechniqueExercise.chromatic, startFret: techniqueStartFrets.first);
-    await feed(tester, mic, _windows(notes, 100));
+    await feed(tester, mic, micWindows(notes, 100));
     expect(
       tester.widget<Text>(find.byKey(const Key('technique-record-chromatic'))).data,
       startsWith(AppStrings.techniqueRecord(100)),
@@ -281,7 +219,7 @@ void main() {
       await tapKey(tester, 'tab-line-1');
       await tapKey(tester, 'tab-mic');
       expect(status(tester), AppStrings.tabMicProgress(1, 8));
-      await feed(tester, mic, _windows(tab.sublist(8, 16), 80));
+      await feed(tester, mic, micWindows(tab.sublist(8, 16), 80));
       // Con 8 notas la medida da 80 u 81.
       expect(status(tester), anyOf(AppStrings.tabMicClean(80), AppStrings.tabMicClean(81)));
       expect(find.byKey(const Key('tab-line-no-record')), findsOneWidget);
@@ -295,7 +233,7 @@ void main() {
       final tab = melodyStepsById['mo_first']!.tab;
       final wrong = TabNote(tab[9].string, tab[9].fret + 1);
       await tapKey(tester, 'tab-mic');
-      await feed(tester, mic, _windows([...tab.take(9), wrong, tab[9]], 80));
+      await feed(tester, mic, micWindows([...tab.take(9), wrong, tab[9]], 80));
       final practice = find.byKey(const Key('tab-practice-line'));
       expect(find.descendant(of: practice, matching: find.text(AppStrings.tabPracticeLine(2, 50))),
           findsOneWidget);
@@ -319,7 +257,7 @@ void main() {
       await tapKey(tester, 'tab-line-0');
       await tapKey(tester, 'tab-loop');
       await tapKey(tester, 'tab-mic');
-      await feed(tester, mic, _windows(tab.sublist(0, 8), 80));
+      await feed(tester, mic, micWindows(tab.sublist(0, 8), 80));
       expect(find.text(AppStrings.tabCleanStreak(1)), findsOneWidget);
       expect(mic.listening, isFalse);
       await tester.pump(const Duration(milliseconds: 1600));
@@ -338,7 +276,7 @@ void main() {
       await tester.tap(inCard('tab-mic'));
       await tester.pump();
       final wrong = TabNote(notes[0].string, notes[0].fret + 1);
-      await feed(tester, mic, _windows([wrong, ...notes], 100));
+      await feed(tester, mic, micWindows([wrong, ...notes], 100));
       await tester.ensureVisible(inCard('tab-practice-line'));
       await tester.pump();
       await tester.tap(inCard('tab-practice-line'));
@@ -367,7 +305,7 @@ void main() {
       await tester.tap(button);
       await tester.pump();
       final wrong = TabNote(tab[20].string, tab[20].fret + 1);
-      await feed(tester, mic, _windows([...tab.take(20), wrong, ...tab.skip(20)], 80));
+      await feed(tester, mic, micWindows([...tab.take(20), wrong, ...tab.skip(20)], 80));
       expect(tester.takeException(), isNull);
       for (final key in ['tab-sections', 'tab-loop', 'tab-line-3', 'tab-practice-line']) {
         final rect = tester.getRect(find.byKey(Key(key)));
@@ -386,7 +324,7 @@ void main() {
       );
       final tab = melodyStepsById['mo_first']!.tab;
       await tapMic(tester);
-      await feed(tester, mic, _windows([tab[0], TabNote(tab[1].string, tab[1].fret + 1)], 80));
+      await feed(tester, mic, micWindows([tab[0], TabNote(tab[1].string, tab[1].fret + 1)], 80));
       expect(tester.takeException(), isNull);
       for (final key in ['tab-play', 'tab-mic', 'tab-mic-status', 'tab-mic-wrong']) {
         final rect = tester.getRect(find.byKey(Key(key)));

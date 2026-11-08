@@ -147,6 +147,13 @@ cada nota pertenezca a la escala. No bajar la tolerancia de 0.
   empatan, el primero; sin errores, el de la pausa) propone "Repite el renglón N a X BPM":
   lo deja en bucle, baja `slowerBpm` (−10, mínimo 40) con `onBpmChanged` y empieza a sonar
   cuando llega el tempo nuevo.
+- Resumen de la sesión (inspirado en el "AI Feedback" de Gibson, pero por reglas, sin IA): cada
+  pasada entera con el micrófono (cursos de melodía y Técnica) se anota en `SessionLog`
+  (`lib/services/session_log.dart`, `session_runs` = `{day, runs}`, solo hoy; anotar espera a
+  la lectura del disco). `summarizeSession` (`lib/domain/practice/session_summary.dart`): por
+  cosa tocada manda la última pasada; limpia → "Salió limpio" con el mejor tempo y el récord
+  nuevo; si no → "Para repetir" con renglón, errores y 10 BPM menos. Pantalla `/session`
+  (pestaña Inicio), enlazada desde Práctica de hoy; cada fila abre su paso o Técnica.
 
 ## Módulos de práctica (decisiones)
 - Salud: el aviso de pausa sale SOLO durante la sesión de práctica, al cumplirse cada intervalo

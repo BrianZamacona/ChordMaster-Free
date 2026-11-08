@@ -4,11 +4,15 @@ import 'package:go_router/go_router.dart';
 
 import '../../core/constants/app_strings.dart';
 import '../../domain/courses/course.dart';
+import '../../domain/lessons/lesson.dart';
 import '../../domain/practice/play_along.dart';
+import '../../domain/practice/session_summary.dart';
 import '../../domain/practice/technique_exercises.dart';
+import '../../services/session_log.dart';
 import '../../ui/theme.dart';
 import '../lessons/lesson_widgets.dart';
 import 'course_progress.dart';
+import 'course_registry.dart';
 
 /// Etiqueta del tipo de paso.
 String courseKindName(CourseStepKind kind) => switch (kind) {
@@ -313,14 +317,25 @@ class CourseStepView<S extends CourseStep> extends ConsumerStatefulWidget {
 class _CourseStepViewState<S extends CourseStep> extends ConsumerState<CourseStepView<S>> {
   int? _bpm;
 
-  /// Tocada con el micrófono: si salió limpia y supera el récord, se guarda.
-  void _onPlayed(PlayAlongResult result, int? best) {
+  /// Tocada con el micrófono: va al resumen de la sesión y, si salió limpia y
+  /// supera el récord, se guarda.
+  void _onPlayed(PlayAlongResult result, int? best, int tempo) {
     final bpm = result.cleanBpm;
-    if (bpm == null || (best != null && best >= bpm)) return;
-    ref.read(courseProgressProvider(widget.course).notifier).saveClean(widget.step.id, bpm);
+    final record = bpm != null && (best == null || bpm > best) ? bpm : null;
+    final course = LessonCourse.values.firstWhere((c) => c.progressId == widget.course);
+    ref.read(sessionLogProvider.notifier).record(
+      PracticeRun.from(
+        CourseStepTarget(course.name, widget.step.id),
+        result,
+        tempo: tempo,
+        newRecord: record,
+      ),
+    );
+    if (record == null) return;
+    ref.read(courseProgressProvider(widget.course).notifier).saveClean(widget.step.id, record);
     ScaffoldMessenger.of(context)
       ..hideCurrentSnackBar()
-      ..showSnackBar(SnackBar(content: Text(AppStrings.tabMicSaved(bpm))));
+      ..showSnackBar(SnackBar(content: Text(AppStrings.tabMicSaved(record))));
   }
 
   @override
@@ -404,7 +419,7 @@ class _CourseStepViewState<S extends CourseStep> extends ConsumerState<CourseSte
                   const SizedBox(height: 10),
                   widget.player(
                     bpm,
-                    (r) => _onPlayed(r, best),
+                    (r) => _onPlayed(r, best, bpm),
                     (v) => setState(() => _bpm = v),
                   ),
                   if (widget.playerNote case final note?) ...[
