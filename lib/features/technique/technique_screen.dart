@@ -56,6 +56,7 @@ class TechniqueScreen extends ConsumerWidget {
               record: state.records[e],
               onClean: () => vm.saveRecord(e),
               onPlayed: (r) => _savePlayed(context, vm, e, state.records[e], r),
+              onBpmChanged: vm.setBpm,
             ),
         ],
       ),
@@ -126,6 +127,7 @@ class _ExerciseCard extends StatelessWidget {
     required this.record,
     required this.onClean,
     required this.onPlayed,
+    required this.onBpmChanged,
   });
 
   final TechniqueExercise exercise;
@@ -134,6 +136,7 @@ class _ExerciseCard extends StatelessWidget {
   final int? record;
   final VoidCallback onClean;
   final ValueChanged<PlayAlongResult> onPlayed;
+  final ValueChanged<int> onBpmChanged;
 
   @override
   Widget build(BuildContext context) {
@@ -159,7 +162,12 @@ class _ExerciseCard extends StatelessWidget {
               style: musicMono(fontSize: 12, color: p.textSecondary),
             ),
             const SizedBox(height: 10),
-            TabPlayer(notes: notes, bpm: bpm, onPlayed: onPlayed),
+            TabPlayer(
+              notes: notes,
+              bpm: bpm,
+              onPlayed: onPlayed,
+              onBpmChanged: onBpmChanged,
+            ),
             const SizedBox(height: 8),
             Row(
               children: [

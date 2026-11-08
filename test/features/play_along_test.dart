@@ -28,9 +28,11 @@ class _FakeAudio extends AudioService {
   _FakeAudio() : super.forTesting();
 
   int stops = 0;
+  final played = <List<NoteEvent>>[];
 
   @override
-  Future<void> playNotes(List<NoteEvent> events, {double seconds = 2.5, double? ring}) async {}
+  Future<void> playNotes(List<NoteEvent> events, {double seconds = 2.5, double? ring}) async =>
+      played.add(events);
 
   @override
   Future<void> stopAll() async => stops++;
@@ -238,6 +240,142 @@ void main() {
     expect(store.progress['technique_best_bpm'], {'chromatic': 100});
   });
 
+  group('tramo, bucle y más lento', () {
+    Future<void> tapKey(WidgetTester tester, String key) async {
+      final f = find.byKey(Key(key));
+      await tester.ensureVisible(f);
+      await tester.pump();
+      await tester.tap(f);
+      await tester.pump();
+    }
+
+    testWidgets('un renglón suena solo: sus notas y nada más', (tester) async {
+      final (_, _, audio) = await open(tester, '/learn/lessons/course/melodies/mo_ode');
+      final tab = melodyStepsById['mo_ode']!.tab;
+      expect(tabLineCount(tab.length), 4);
+      for (var i = 0; i < 4; i++) {
+        expect(find.byKey(Key('tab-line-$i')), findsOneWidget);
+      }
+      await tapKey(tester, 'tab-line-1');
+      await tapKey(tester, 'tab-play');
+      expect(audio.played.single.map((e) => e.midi), [for (final n in tab.sublist(8, 16)) tabMidi(n)]);
+      await tapKey(tester, 'tab-play');
+    });
+
+    testWidgets('en bucle vuelve a sonar al terminar el tramo', (tester) async {
+      final (_, _, audio) = await open(tester, '/learn/lessons/course/melodies/mo_first');
+      await tapKey(tester, 'tab-line-1');
+      await tapKey(tester, 'tab-loop');
+      await tapKey(tester, 'tab-play');
+      // El renglón 2 de mo_first tiene 2 notas: a 60 BPM, 1 s. El reloj del
+      // reproductor es real.
+      await tester.runAsync(() => Future<void>.delayed(const Duration(milliseconds: 1100)));
+      await tester.pump(const Duration(milliseconds: 40));
+      expect(audio.played, hasLength(2));
+      await tapKey(tester, 'tab-play');
+    });
+
+    testWidgets('un renglón tocado con el micrófono no da récord', (tester) async {
+      final (store, mic, _) = await open(tester, '/learn/lessons/course/melodies/mo_ode');
+      final tab = melodyStepsById['mo_ode']!.tab;
+      await tapKey(tester, 'tab-line-1');
+      await tapKey(tester, 'tab-mic');
+      expect(status(tester), AppStrings.tabMicProgress(1, 8));
+      await feed(tester, mic, _windows(tab.sublist(8, 16), 80));
+      // Con 8 notas la medida da 80 u 81.
+      expect(status(tester), anyOf(AppStrings.tabMicClean(80), AppStrings.tabMicClean(81)));
+      expect(find.byKey(const Key('tab-line-no-record')), findsOneWidget);
+      expect(store.progress[CourseId.melodies.keyBest], isNull);
+    });
+
+    testWidgets('con errores propone repetir ese renglón más lento, y lo deja en bucle', (
+      tester,
+    ) async {
+      final (_, mic, audio) = await open(tester, '/learn/lessons/course/melodies/mo_first');
+      final tab = melodyStepsById['mo_first']!.tab;
+      final wrong = TabNote(tab[9].string, tab[9].fret + 1);
+      await tapKey(tester, 'tab-mic');
+      await feed(tester, mic, _windows([...tab.take(9), wrong, tab[9]], 80));
+      final practice = find.byKey(const Key('tab-practice-line'));
+      expect(find.descendant(of: practice, matching: find.text(AppStrings.tabPracticeLine(2, 50))),
+          findsOneWidget);
+      await tapKey(tester, 'tab-practice-line');
+      await tester.pump();
+      expect(
+        tester.widget<Text>(find.byKey(const Key('course-bpm'))).data,
+        AppStrings.techniqueBpm(50),
+      );
+      expect(tester.widget<ChoiceChip>(find.byKey(const Key('tab-line-1'))).selected, isTrue);
+      expect(tester.widget<FilterChip>(find.byKey(const Key('tab-loop'))).selected, isTrue);
+      expect(audio.played.last.map((e) => e.midi), [for (final n in tab.sublist(8)) tabMidi(n)]);
+      await tapKey(tester, 'tab-play');
+    });
+
+    testWidgets('en bucle con el micrófono vuelve a escuchar y cuenta las pasadas limpias', (
+      tester,
+    ) async {
+      final (_, mic, _) = await open(tester, '/learn/lessons/course/melodies/mo_first');
+      final tab = melodyStepsById['mo_first']!.tab;
+      await tapKey(tester, 'tab-line-0');
+      await tapKey(tester, 'tab-loop');
+      await tapKey(tester, 'tab-mic');
+      await feed(tester, mic, _windows(tab.sublist(0, 8), 80));
+      expect(find.text(AppStrings.tabCleanStreak(1)), findsOneWidget);
+      expect(mic.listening, isFalse);
+      await tester.pump(const Duration(milliseconds: 1600));
+      expect(mic.listening, isTrue, reason: 'vuelve a escuchar solo');
+      expect(status(tester), AppStrings.tabMicProgress(1, 8));
+      await tapKey(tester, 'tab-mic');
+    });
+
+    testWidgets('Técnica: "más lento" baja el tempo del ejercicio', (tester) async {
+      final (_, mic, _) = await open(tester, '/practice/technique', size: const Size(500, 4000));
+      final card = find.byKey(const Key('technique-chromatic'));
+      Finder inCard(String key) => find.descendant(of: card, matching: find.byKey(Key(key)));
+      final notes = techniqueNotes(TechniqueExercise.chromatic, startFret: techniqueStartFrets.first);
+      await tester.ensureVisible(inCard('tab-mic'));
+      await tester.pump();
+      await tester.tap(inCard('tab-mic'));
+      await tester.pump();
+      final wrong = TabNote(notes[0].string, notes[0].fret + 1);
+      await feed(tester, mic, _windows([wrong, ...notes], 100));
+      await tester.ensureVisible(inCard('tab-practice-line'));
+      await tester.pump();
+      await tester.tap(inCard('tab-practice-line'));
+      await tester.pump();
+      expect(
+        find.descendant(of: card, matching: find.text(AppStrings.tabAtBpm(techniqueDefaultBpm - 10))),
+        findsOneWidget,
+      );
+      await tester.tap(inCard('tab-play'));
+      await tester.pump();
+    });
+  });
+
+  for (final code in ['es', 'en']) {
+    testWidgets('a 360 dp ($code) el tramo, el bucle y "repite el renglón" caben', (tester) async {
+      final (_, mic, _) = await open(
+        tester,
+        '/learn/lessons/course/melodies/mo_ode',
+        code: code,
+        size: const Size(360, 3000),
+      );
+      final tab = melodyStepsById['mo_ode']!.tab;
+      final button = find.byKey(const Key('tab-mic'));
+      await tester.ensureVisible(button);
+      await tester.pump();
+      await tester.tap(button);
+      await tester.pump();
+      final wrong = TabNote(tab[20].string, tab[20].fret + 1);
+      await feed(tester, mic, _windows([...tab.take(20), wrong, ...tab.skip(20)], 80));
+      expect(tester.takeException(), isNull);
+      for (final key in ['tab-sections', 'tab-loop', 'tab-line-3', 'tab-practice-line']) {
+        final rect = tester.getRect(find.byKey(Key(key)));
+        expect(rect.left, greaterThanOrEqualTo(0), reason: key);
+        expect(rect.right, lessThanOrEqualTo(360), reason: key);
+      }
+    });
+  }
   for (final code in ['es', 'en']) {
     testWidgets('a 360 dp ($code) los botones y el estado caben', (tester) async {
       final (_, mic, _) = await open(

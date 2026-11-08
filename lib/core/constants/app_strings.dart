@@ -556,6 +556,21 @@ class AppStrings {
   );
   static String tabMicSaved(int bpm) =>
       tr(es: 'Récord guardado: $bpm BPM', en: 'Record saved: $bpm BPM');
+  static String get tabSection => tr(es: 'Tramo', en: 'Section');
+  static String get tabAll => tr(es: 'Todo', en: 'All');
+  static String tabLine(int n) => tr(es: 'Renglón $n', en: 'Line $n');
+  static String get tabLoop => tr(es: 'Bucle', en: 'Loop');
+  static String tabPracticeLine(int line, int? bpm) => bpm == null
+      ? tr(es: 'Repite el renglón $line', en: 'Repeat line $line')
+      : tr(es: 'Repite el renglón $line a $bpm BPM', en: 'Repeat line $line at $bpm BPM');
+  static String tabCleanStreak(int n) => tr(
+    es: 'Pasadas limpias seguidas: $n',
+    en: 'Clean runs in a row: $n',
+  );
+  static String get tabLineNoRecord => tr(
+    es: 'Un renglón suelto no cuenta para el récord: al final, tócala entera.',
+    en: 'A single line does not count for the record: in the end, play it all.',
+  );
   static String guideOpenWorkout(String scale) =>
       tr(es: 'Rutinas de $scale', en: '$scale workouts');
   static String get hubEar => tr(es: 'Oído', en: 'Ear');

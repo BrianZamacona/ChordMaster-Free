@@ -79,6 +79,10 @@ class TechniqueViewModel extends Notifier<TechniqueState> {
         .clamp(techniqueMinBpm, techniqueMaxBpm),
   );
 
+  /// Pone el tempo (dentro de sus límites): "más lento" lo usa.
+  void setBpm(int bpm) =>
+      state = state.copyWith(bpm: bpm.clamp(techniqueMinBpm, techniqueMaxBpm));
+
   /// "Me salió limpio": guarda el tempo actual (o [bpm], el medido al tocar
   /// con el micrófono) si supera el récord.
   Future<void> saveRecord(TechniqueExercise exercise, {int? bpm}) async {

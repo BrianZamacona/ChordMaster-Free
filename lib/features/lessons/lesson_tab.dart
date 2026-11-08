@@ -4,11 +4,9 @@ import 'package:flutter/material.dart';
 
 import '../../core/constants/app_strings.dart';
 import '../../domain/lessons/lesson.dart';
+import '../../domain/practice/tab_playback.dart';
 import '../../domain/theory/notes.dart';
 import '../../ui/theme.dart';
-
-/// Notas por renglón: a 360 dp caben sin apretarse.
-const tabNotesPerLine = 8;
 
 /// Nombre de cada cuerda en la tablatura, de la 1ª (arriba, minúscula como es
 /// costumbre) a la 6ª. Sale de la afinación, no de una lista aparte.
@@ -24,7 +22,9 @@ class LessonTabView extends StatelessWidget {
     super.key,
     required this.notes,
     this.highlight,
+    this.playedFrom = 0,
     this.played = 0,
+    this.focusLine,
   });
 
   final List<TabNote> notes;
@@ -32,9 +32,13 @@ class LessonTabView extends StatelessWidget {
   /// Nota que está sonando o que toca tocar (índice en [notes]); va resaltada.
   final int? highlight;
 
-  /// Cuántas notas ya salieron bien al tocar con el micrófono: van en verde
-  /// y subrayadas.
+  /// Las notas de [playedFrom] a [played] (sin incluirla) ya salieron bien al
+  /// tocar con el micrófono: van en verde y subrayadas.
+  final int playedFrom;
   final int played;
+
+  /// El renglón que se practica suelto; los demás se ven atenuados.
+  final int? focusLine;
 
   @override
   Widget build(BuildContext context) {
@@ -56,18 +60,22 @@ class LessonTabView extends StatelessWidget {
             children: [
               for (final (i, line) in lines.indexed) ...[
                 if (i > 0) const SizedBox(height: 8),
-                SizedBox(
-                  key: Key('lesson-tab-line-$i'),
-                  height: _TabPainter.height,
-                  width: double.infinity,
-                  child: CustomPaint(
-                    painter: _TabPainter(
-                      notes: line,
-                      palette: p,
-                      highlight: highlight == null
-                          ? null
-                          : highlight! - i * tabNotesPerLine,
-                      played: played - i * tabNotesPerLine,
+                Opacity(
+                  opacity: focusLine == null || focusLine == i ? 1 : 0.35,
+                  child: SizedBox(
+                    key: Key('lesson-tab-line-$i'),
+                    height: _TabPainter.height,
+                    width: double.infinity,
+                    child: CustomPaint(
+                      painter: _TabPainter(
+                        notes: line,
+                        palette: p,
+                        highlight: highlight == null
+                            ? null
+                            : highlight! - i * tabNotesPerLine,
+                        playedFrom: playedFrom - i * tabNotesPerLine,
+                        played: played - i * tabNotesPerLine,
+                      ),
                     ),
                   ),
                 ),
@@ -93,6 +101,7 @@ class _TabPainter extends CustomPainter {
     required this.notes,
     required this.palette,
     this.highlight,
+    this.playedFrom = 0,
     this.played = 0,
   });
 
@@ -107,7 +116,8 @@ class _TabPainter extends CustomPainter {
   /// Índice dentro de este renglón de la nota que suena.
   final int? highlight;
 
-  /// Notas de este renglón ya tocadas bien (las primeras [played]).
+  /// Notas de este renglón ya tocadas bien: de [playedFrom] a [played].
+  final int playedFrom;
   final int played;
 
   double _y(int string) => top + (string - 1) * lineGap;
@@ -131,7 +141,7 @@ class _TabPainter extends CustomPainter {
     for (final (i, n) in notes.indexed) {
       final center = Offset(_x(i, size.width), _y(n.string));
       final playing = i == highlight;
-      final done = !playing && i < played;
+      final done = !playing && i >= playedFrom && i < played;
       // Un hueco en la línea para que el número se lea; la nota que suena va
       // sobre el acento, y además más grande (no solo por color).
       canvas.drawRRect(
@@ -193,5 +203,6 @@ class _TabPainter extends CustomPainter {
       !identical(old.notes, notes) ||
       old.palette != palette ||
       old.highlight != highlight ||
+      old.playedFrom != playedFrom ||
       old.played != played;
 }

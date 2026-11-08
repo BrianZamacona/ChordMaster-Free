@@ -294,9 +294,13 @@ class CourseStepView<S extends CourseStep> extends ConsumerStatefulWidget {
   final Widget body;
 
   /// El reproductor del paso al tempo dado (no se usa en teoría). Si deja tocar
-  /// con el micrófono, avisa el resultado con onPlayed: una pasada limpia
-  /// guarda su tempo como récord.
-  final Widget Function(int bpm, ValueChanged<PlayAlongResult> onPlayed) player;
+  /// con el micrófono, avisa el resultado con `onPlayed` (una pasada limpia
+  /// guarda su tempo como récord) y puede cambiar el tempo con `onBpm`.
+  final Widget Function(
+    int bpm,
+    ValueChanged<PlayAlongResult> onPlayed,
+    ValueChanged<int> onBpm,
+  ) player;
   final String Function(String stepId) routeOf;
 
   /// Aclaración bajo el reproductor.
@@ -398,7 +402,11 @@ class _CourseStepViewState<S extends CourseStep> extends ConsumerState<CourseSte
                     onChanged: (v) => setState(() => _bpm = v),
                   ),
                   const SizedBox(height: 10),
-                  widget.player(bpm, (r) => _onPlayed(r, best)),
+                  widget.player(
+                    bpm,
+                    (r) => _onPlayed(r, best),
+                    (v) => setState(() => _bpm = v),
+                  ),
                   if (widget.playerNote case final note?) ...[
                     const SizedBox(height: 6),
                     Text(note, style: text.bodySmall?.copyWith(color: p.textSecondary)),

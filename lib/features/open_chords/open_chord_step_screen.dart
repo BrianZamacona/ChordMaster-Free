@@ -34,7 +34,7 @@ class OpenChordStepScreen extends ConsumerWidget {
           levels: levels,
           step: step,
           body: _StepBody(step: step),
-          player: (bpm, _) => StrumPlayer(
+          player: (bpm, _, _) => StrumPlayer(
             slots: step.slots,
             bpm: bpm,
             beatsPerSlot: step.beatsPerSlot,
