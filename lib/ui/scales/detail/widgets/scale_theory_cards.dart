@@ -12,6 +12,7 @@ import '../../../../domain/theory/notes.dart';
 import '../../../../domain/theory/octaves.dart';
 import '../../../../domain/theory/scale_insights.dart';
 import '../../../../features/chords/chord_viewmodel.dart';
+import '../../../section_routes.dart';
 import '../../../theme.dart';
 import '../../../widgets/fretboard_diagram.dart';
 
@@ -214,7 +215,7 @@ class ScaleHarmonyCard extends ConsumerWidget {
         },
         onTap: chord == null
             ? null
-            : () => context.push('/learn/chords/${Uri.encodeComponent(chord.name)}'),
+            : () => context.push(context.sectionPath('chords/${Uri.encodeComponent(chord.name)}')),
       );
     }
 

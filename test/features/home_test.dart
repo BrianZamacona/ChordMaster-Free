@@ -28,13 +28,10 @@ void main() {
     final practice = {for (final e in PracticeHubScreen.entries) e.route};
     expect(home.intersection(learn), isEmpty);
     expect(home.intersection(practice), isEmpty);
-    expect(home, contains('/learn/circle'));
-    // Y nada de Aprender queda sin acceso: cada módulo suyo está en uno de los dos.
-    expect(
-      home.union(learn),
-      containsAll(['/learn/lessons', '/learn/guides', '/learn/chords', '/learn/scales',
-        '/learn/progressions', '/learn/circle', '/learn/capo', '/finder']),
-    );
+    // Y nada queda sin acceso: Lecciones, Guías y capo en Aprender; el resto,
+    // desde Inicio.
+    expect(learn, containsAll(['/learn/lessons', '/learn/guides', '/learn/capo']));
+    expect(home, containsAll(['/chords', '/scales', '/progressions', '/circle', '/finder']));
     // Oído, Ritmo y Canciones se abren desde Practicar.
     expect(practice, containsAll(['/practice/ear-training', '/practice/rhythm', '/practice/songs']));
   });

@@ -1,7 +1,10 @@
 import 'package:chordmaster_free/app.dart';
+import 'package:chordmaster_free/features/chords/chord_library_screen.dart';
+import 'package:chordmaster_free/features/home/home_screen.dart';
 import 'package:chordmaster_free/features/hubs/hubs.dart';
 import 'package:chordmaster_free/services/key_value_store.dart';
 import 'package:chordmaster_free/ui/navigation.dart';
+import 'package:chordmaster_free/ui/section_routes.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:flutter_test/flutter_test.dart';
@@ -11,12 +14,6 @@ import '../support/in_memory_store.dart';
 void main() {
   group('redirectLegacyRoute', () {
     test('rutas viejas a su sección', () {
-      expect(redirectLegacyRoute('/chords'), '/learn/chords');
-      expect(
-        redirectLegacyRoute('/chords/C%20Major/compare?sel=caged:0,caged:1'),
-        '/learn/chords/C%20Major/compare?sel=caged:0,caged:1',
-      );
-      expect(redirectLegacyRoute('/scales/double-stops'), '/learn/scales/double-stops');
       expect(redirectLegacyRoute('/tuner'), '/tools/tuner');
       expect(redirectLegacyRoute('/rhythm-game'), '/practice/rhythm');
       expect(redirectLegacyRoute('/community'), '/progress');
@@ -28,8 +25,11 @@ void main() {
 
     test('rutas actuales y prefijos parecidos no se tocan', () {
       expect(redirectLegacyRoute('/learn/chords'), isNull);
+      // /chords, /scales y /progressions ya no son viejas: son los módulos en Inicio.
+      expect(redirectLegacyRoute('/chords'), isNull);
+      expect(redirectLegacyRoute('/scales/double-stops'), isNull);
+      expect(redirectLegacyRoute('/progressions'), isNull);
       expect(redirectLegacyRoute('/'), isNull);
-      expect(redirectLegacyRoute('/chordsx'), isNull);
     });
   });
 
@@ -70,12 +70,36 @@ void main() {
     });
   }
 
-  testWidgets('la ruta vieja /chords abre Acordes dentro de Aprender', (tester) async {
+  testWidgets('/chords abre Acordes dentro de Inicio', (tester) async {
     await open(tester, '/chords');
     final bar = tester.widget<NavigationBar>(find.byType(NavigationBar));
-    expect(bar.selectedIndex, 1);
+    expect(bar.selectedIndex, 0);
     expect(find.byType(BackButton), findsOneWidget);
   });
+
+  for (final (label, route, module) in [
+    ('Acordes', '/chords', 'chords'),
+    ('Escalas', '/scales', 'scales'),
+    ('Progresiones', '/progressions', 'progressions'),
+    ('Círculo de quintas', '/circle', 'circle'),
+  ]) {
+    testWidgets('$label desde Inicio: atrás vuelve a Inicio', (tester) async {
+      await open(tester, '/');
+      appRouter.go(route);
+      for (var i = 0; i < 5; i++) {
+        await tester.pump(const Duration(milliseconds: 300));
+      }
+      expect(tester.widget<NavigationBar>(find.byType(NavigationBar)).selectedIndex, 0);
+      await tester.tap(find.byType(BackButton));
+      await tester.pump(const Duration(seconds: 1));
+      expect(find.byType(HomeScreen), findsOneWidget);
+      expect(appRouter.routerDelegate.currentConfiguration.uri.path, '/');
+      // En Aprender, el mismo módulo vuelve a Aprender.
+      appRouter.go('/learn/$module');
+      await tester.pump(const Duration(seconds: 1));
+      expect(tester.widget<NavigationBar>(find.byType(NavigationBar)).selectedIndex, 1);
+    });
+  }
 
   testWidgets('tocar Aprender desde otra pestaña abre el inicio de Aprender', (tester) async {
     await open(tester, '/learn/chords');
@@ -86,5 +110,17 @@ void main() {
     await tester.pump(const Duration(seconds: 1));
     expect(find.byType(LearnHubScreen), findsOneWidget);
     expect(find.byType(BackButton), findsNothing);
+  });
+
+  testWidgets('los enlaces internos de un módulo se quedan en su pestaña', (tester) async {
+    await open(tester, '/chords');
+    var context = tester.element(find.byType(ChordLibraryScreen));
+    expect(context.sectionPath('chords/C%20Major'), '/chords/C%20Major');
+    appRouter.go('/learn/chords');
+    for (var i = 0; i < 3; i++) {
+      await tester.pump(const Duration(milliseconds: 300));
+    }
+    context = tester.element(find.byType(ChordLibraryScreen));
+    expect(context.sectionPath('chords/C%20Major'), '/learn/chords/C%20Major');
   });
 }

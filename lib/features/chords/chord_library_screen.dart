@@ -9,6 +9,7 @@ import '../../core/widgets/chord_diagram.dart';
 import '../../models/chord.dart';
 import '../../ui/animations.dart';
 import '../../ui/palette.dart';
+import '../../ui/section_routes.dart';
 import 'chord_filters.dart';
 import 'chord_viewmodel.dart';
 import 'fingering_selection.dart';
@@ -225,7 +226,7 @@ class _ChordCard extends StatelessWidget {
     return GestureDetector(
       onTap: () {
         final encoded = Uri.encodeComponent(chord.name);
-        context.go('/learn/chords/$encoded');
+        context.go(context.sectionPath('chords/$encoded'));
       },
       child: Card(
         child: Padding(
@@ -332,13 +333,13 @@ class _SingleChordPositions extends StatelessWidget {
               runSpacing: 8,
               children: [
                 OutlinedButton.icon(
-                  onPressed: () => context.go('/learn/chords/$encoded'),
+                  onPressed: () => context.go(context.sectionPath('chords/$encoded')),
                   icon: const Icon(Icons.info_outline, size: 18),
                   label: Text(AppStrings.openDetail),
                 ),
                 OutlinedButton.icon(
                   key: const Key('open-explorer'),
-                  onPressed: () => context.go('/learn/chords/$encoded/explorer'),
+                  onPressed: () => context.go(context.sectionPath('chords/$encoded/explorer')),
                   icon: const Icon(Icons.compare_arrows, size: 18),
                   label: Text(AppStrings.openExplorerToCompare),
                 ),
@@ -364,7 +365,7 @@ class _SingleChordPositions extends StatelessWidget {
                           margin: EdgeInsets.zero,
                           clipBehavior: Clip.antiAlias,
                           child: InkWell(
-                            onTap: () => context.go('/learn/chords/$encoded/explorer'),
+                            onTap: () => context.go(context.sectionPath('chords/$encoded/explorer')),
                             child: Padding(
                               padding: const EdgeInsets.all(8),
                               child: Column(

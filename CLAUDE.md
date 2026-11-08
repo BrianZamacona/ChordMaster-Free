@@ -398,7 +398,7 @@ Objetivo: código legible y mantenible antes que ingenioso. Capas (puertos y ada
 
 ## Buscador por notas (Inicio)
 - Ruta `/finder`, en la pestaña Inicio (atrás vuelve a Inicio); sus resultados abren la ficha
-  en `/finder/chord/:id` y `/finder/scale/:scaleId` (mismas pantallas, sin cambiar de pestaña). Mástil vacío (`FretboardNeck` con `onTapCell`; el
+  en `/chords/:id` y `/scales/:scaleId`, también de Inicio. Mástil vacío (`FretboardNeck` con `onTapCell`; el
   toque se ubica con `FretGridGeometry.cellAt`, el inverso de `noteOffset`) y dos secciones,
   cada una con sus notas (`noteFinderProvider`):
   - Acordes: una nota por cuerda (tocar otra vez la apaga; el nombre de la cuerda = al aire).
@@ -463,8 +463,12 @@ Objetivo: código legible y mantenible antes que ingenioso. Capas (puertos y ada
   Progreso `/progress/...` (incluye ajustes). Tocar una pestaña abre siempre su inicio.
   Inicio no repite módulos de Aprender ni de Practicar (decisión del usuario, hay test): Acordes, Escalas,
   Progresiones, el Círculo de quintas y el Buscador se abren desde Inicio (`homeModules`); el hub de
-  Aprender (`LearnHubScreen.entries`) tiene Lecciones, Guías y capo. Las rutas siguen en
-  `/learn/...`. Lo mismo con Practicar: Oído, Ritmo y Canciones se abren solo desde Practicar
+  Aprender (`LearnHubScreen.entries`) tiene Lecciones, Guías y capo. Esos cuatro módulos
+  cuelgan de las dos pestañas (`_moduleRoutes()` en `navigation.dart`): `/chords`, `/scales`,
+  `/progressions`, `/circle` en Inicio (atrás vuelve a Inicio) y `/learn/...` en Aprender (los
+  abren lecciones y guías). Sus enlaces internos usan `context.sectionPath('chords/...')`
+  (`lib/ui/section_routes.dart`) para no saltar de pestaña: nada de `'/learn/chords...'` fijo
+  dentro de esas pantallas. `/chords`, `/scales` y `/progressions` dejaron de ser rutas viejas. Lo mismo con Practicar: Oído, Ritmo y Canciones se abren solo desde Practicar
   (`PracticeHubScreen.entries`), no desde Inicio. El detalle de acorde dice "Acordes" en la barra (el nombre va debajo). Componer vive dentro de Progresiones ("Mi
   progresión", por grados) e Improvisación dentro del detalle de cada escala; sus rutas viejas
   redirigen. El detalle de escala acepta `?root=` (tónica inicial). Toda pantalla nueva cuelga de su hub para que el

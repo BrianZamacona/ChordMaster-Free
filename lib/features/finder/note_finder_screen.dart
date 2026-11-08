@@ -160,7 +160,7 @@ class _ChordResults extends ConsumerWidget {
             if (match.omitted.isNotEmpty)
               AppStrings.finderOmitted([for (final i in match.omitted) _degreeName(i)]),
           ].join(' · '),
-          onTap: () => context.push('/finder/chord/${Uri.encodeComponent(chord.name)}'),
+          onTap: () => context.push('/chords/${Uri.encodeComponent(chord.name)}'),
         );
       },
     );
@@ -207,7 +207,7 @@ class _ScaleResults extends ConsumerWidget {
               ? AppStrings.finderExact
               : AppStrings.finderAdds(extra.join(', ')),
           onTap: () => context.push(
-            '/finder/scale/${def.id}?root=${match.root}',
+            '/scales/${def.id}?root=${match.root}',
             extra: def,
           ),
         );

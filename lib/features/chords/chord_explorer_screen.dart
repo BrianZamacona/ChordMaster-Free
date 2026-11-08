@@ -8,6 +8,7 @@ import '../../core/widgets/chord_diagram.dart';
 import '../../core/widgets/fingering_theory_card.dart';
 import '../../models/chord.dart';
 import '../../ui/palette.dart';
+import '../../ui/section_routes.dart';
 import 'chord_viewmodel.dart';
 import 'fingering_selection.dart';
 
@@ -40,7 +41,7 @@ class _ChordExplorerScreenState extends ConsumerState<ChordExplorerScreen> {
   void _openCompare(Chord chord) {
     final encoded = Uri.encodeComponent(chord.name);
     final sel = _selected.map((r) => r.key).join(',');
-    context.go('/learn/chords/$encoded/compare?sel=$sel');
+    context.go(context.sectionPath('chords/$encoded/compare?sel=$sel'));
   }
 
   @override
