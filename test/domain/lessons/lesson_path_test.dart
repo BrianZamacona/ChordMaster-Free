@@ -13,6 +13,7 @@ void main() {
     LessonCourse.melodies: (30, 30),
     LessonCourse.openChords: (50, 50),
     LessonCourse.strumming: (50, 50),
+    LessonCourse.openChords2: (50, 50),
   };
   const foundationsDone = {
     LessonCourse.basics: (20, 20),
@@ -99,9 +100,9 @@ void main() {
     expect(path.completed, {curriculum.first.id});
   });
 
-  test('etiquetas R1…R17 y L1…L18', () {
+  test('etiquetas R1…R14 y L1…L18', () {
     expect(LessonPath.labelOf(lessonsOf(LessonTrack.rhythm).first), 'R1');
-    expect(LessonPath.labelOf(lessonsOf(LessonTrack.rhythm).last), 'R17');
+    expect(LessonPath.labelOf(lessonsOf(LessonTrack.rhythm).last), 'R14');
     expect(LessonPath.labelOf(lessonsOf(LessonTrack.lead).last), 'L18');
     expect(LessonPath.labelOf(lessonsOf(LessonTrack.lead)[2]), 'L3');
   });

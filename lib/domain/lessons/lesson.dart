@@ -66,7 +66,7 @@ class NotesArt extends UnitArt {
 }
 
 /// Curso por niveles que ocupa un nodo del mapa en lugar de lecciones.
-enum LessonCourse { basics, melodies, openChords, strumming }
+enum LessonCourse { basics, melodies, openChords, strumming, openChords2 }
 
 /// Grupo de lecciones, o un curso por niveles ([course]): un nodo del mapa.
 class LessonUnit {

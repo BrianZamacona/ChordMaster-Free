@@ -178,7 +178,7 @@ cada nota pertenezca a la escala. No bajar la tolerancia de 0.
 ## Lecciones
 - Currículo en `lib/domain/lessons/curriculum.dart` (fuente única): Fundamentos (dos cursos:
   Primeros pasos y Melodías, sin lecciones sueltas) y, al terminarlo, dos caminos: rítmica
-  (R1–R17, empieza por los cursos de Acordes abiertos y Rasgueo; su rasgueo de corcheas, pop y G–D–Em–C vive en el curso, no en lecciones) y líder (L1–L18), cada uno en
+  (R1–R14, empieza por los cursos de Acordes abiertos 1, Rasgueo 1 y Acordes abiertos 2; su rasgueo de corcheas, pop y G–D–Em–C vive en el curso, no en lecciones) y líder (L1–L18), cada uno en
   dos niveles
   (`LessonUnit.level`; Fundamentos solo tiene el 1). Las lecciones se agrupan en unidades
   (`LessonUnit`, nodos del mapa, con un `summary` que la pantalla de la unidad muestra como
@@ -189,8 +189,9 @@ cada nota pertenezca a la escala. No bajar la tolerancia de 0.
   chords y boogie); líder = Licks, Mayor y menor (escala mayor, relativa menor, círculo) y
   Double stops (terceras y sextas). Nada de riffs ni melodías con derechos de autor.
 - Fundamentos (decisión del usuario, inspirado en "Basic Skills" y "Melodies"): conocer el
-  instrumento y moverse con ganas de seguir, no acordes. Am, A y E (antes en Fundamentos) son la
-  unidad "Más acordes abiertos" de rítmica; sus lecciones conservan su id (f3, f4, f5).
+  instrumento y moverse con ganas de seguir, no acordes. Am, A y E van en el curso Acordes
+  abiertos – Parte 2 (las lecciones f3–f5 y su unidad "Más acordes abiertos" se borraron al
+  crearlo, decisión del usuario).
 - Tablatura en `Lesson.tab` (`TabNote`: cuerda 1 = mi aguda, traste). Toda lección con tab
   declara `scale` y un test exige que cada nota pertenezca a ella; las notas que el texto nombra
   se verifican una por una. Se dibuja en `lesson_tab.dart`, en renglones de 8 notas.
@@ -266,7 +267,15 @@ cada nota pertenezca a la escala. No bajar la tolerancia de 0.
   en `userProgress` (`melodies_*`, `open_chords_*`). Curso nuevo = un `CourseId` más, sin
   copiar pantallas.
 
-## Curso de acordes abiertos (Parte 1)
+## Cursos de acordes abiertos (Partes 1 y 2)
+- Una parte = `OpenChordsPart` (`open_chords_course.dart`): acordes nuevos, los que ya se saben,
+  cambios con canciones y final (vueltas y canciones); `buildOpenChordsPart` arma los niveles.
+  `idPrefix` va delante de cada id: `oc` en la Parte 1 (sus ids no cambian) y `oc2` en la 2.
+- Parte 2 (unidad `r_open_chords_part_2`, detrás de Rasgueo – Parte 1; inspirada en "Open Chords
+  – Part 2"): Am, E y A, con los cambios Am–C, Am–Em, Am–G, E–Am, E–D, A–D, A–E; canciones
+  Greensleeves, He's Got the Whole World y Down in the Valley; final con A–D–E–A y Am–G–C–E.
+  Curso `LessonCourse.openChords2` (`/learn/lessons/course/open-chords-2/…`, progreso
+  `open_chords_2_*`). Test: `open_chords_part2_test.dart`.
 - `lib/domain/open_chords/`, unidad `r_open_chords_1` del mapa (primera de rítmica). Em, G, D y C
   (`openChordsCourseChords`); detrás de cada acorde nuevo, sus cambios con los anteriores
   (Em–G, D–G, D–Em, C–Em, C–G, C–D) y un final. Inspirado en cursos tipo "Open Chords – Part 1",

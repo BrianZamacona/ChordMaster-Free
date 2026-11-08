@@ -10,3 +10,9 @@ final openChordsCourseProvider = NotifierProvider<
   CourseFromShapes<List<CourseLevel<OpenChordStep>>>,
   List<CourseLevel<OpenChordStep>>?
 >(() => CourseFromShapes(openChordsCourseChords, buildOpenChordsCourse));
+
+/// La Parte 2 (Am, E y A, con los de la Parte 1); `null` mientras cargan.
+final openChords2CourseProvider = NotifierProvider<
+  CourseFromShapes<List<CourseLevel<OpenChordStep>>>,
+  List<CourseLevel<OpenChordStep>>?
+>(() => CourseFromShapes(openChordsPart2.chords, buildOpenChordsCourse2));

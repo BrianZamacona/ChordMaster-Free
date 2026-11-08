@@ -19,6 +19,7 @@ extension LessonCourseInfo on LessonCourse {
     LessonCourse.melodies => CourseId.melodies,
     LessonCourse.openChords => CourseId.openChords,
     LessonCourse.strumming => CourseId.strumming,
+    LessonCourse.openChords2 => CourseId.openChords2,
   };
 
   /// Tramo de la ruta: `/learn/lessons/course/<slug>/<paso>`.
@@ -27,6 +28,7 @@ extension LessonCourseInfo on LessonCourse {
     LessonCourse.melodies => 'melodies',
     LessonCourse.openChords => 'open-chords',
     LessonCourse.strumming => 'strumming',
+    LessonCourse.openChords2 => 'open-chords-2',
   };
 
   String get intro => switch (this) {
@@ -34,6 +36,7 @@ extension LessonCourseInfo on LessonCourse {
     LessonCourse.melodies => AppStrings.melodiesIntro,
     LessonCourse.openChords => AppStrings.openChordsIntro,
     LessonCourse.strumming => AppStrings.strummingIntro,
+    LessonCourse.openChords2 => AppStrings.openChords2Intro,
   };
 
   String stepRoute(String stepId) => '/learn/lessons/course/$slug/$stepId';
@@ -50,6 +53,7 @@ List<CourseLevel<CourseStep>>? watchCourseLevels(WidgetRef ref, LessonCourse cou
       LessonCourse.melodies => melodyCourse,
       LessonCourse.openChords => ref.watch(openChordsCourseProvider),
       LessonCourse.strumming => ref.watch(strummingCourseProvider),
+      LessonCourse.openChords2 => ref.watch(openChords2CourseProvider),
     };
 
 /// Lee un proveedor: `ref.watch` o `ref.read`.
@@ -62,6 +66,7 @@ typedef ProviderGet = T Function<T>(ProviderListenable<T> provider);
     LessonCourse.melodies => melodyCourse,
     LessonCourse.openChords => get(openChordsCourseProvider),
     LessonCourse.strumming => get(strummingCourseProvider),
+    LessonCourse.openChords2 => get(openChords2CourseProvider),
   };
   if (levels == null) return null;
   final progress = get(courseProgressProvider(course.progressId));
@@ -74,4 +79,5 @@ List<ProviderListenable<Object?>> courseSources(LessonCourse course) => [
   courseProgressProvider(course.progressId),
   if (course == LessonCourse.openChords) openChordsCourseProvider,
   if (course == LessonCourse.strumming) strummingCourseProvider,
+  if (course == LessonCourse.openChords2) openChords2CourseProvider,
 ];

@@ -201,7 +201,7 @@ const List<Guide> guides = [
           es: 'De Em a Am los dedos 2 y 3 bajan juntos una cuerda.',
           en: 'From Em to Am fingers 2 and 3 move down one string together.',
         ),
-        target: LessonLink('f4_em_am_change'),
+        target: CourseLink(LessonCourse.openChords2, 'oc2_am_em_howto'),
       ),
       GuideChapter(
         title: LocalizedText(es: 'Preparar el siguiente', en: 'Get the next one ready'),

@@ -3,34 +3,36 @@ import 'package:flutter_riverpod/flutter_riverpod.dart';
 
 import '../../core/constants/app_strings.dart';
 import '../../domain/courses/course.dart';
+import '../../domain/lessons/curriculum.dart';
 import '../../domain/lessons/lesson.dart';
 import '../../domain/open_chords/open_chords_course.dart';
 import '../courses/chord_shape_diagrams.dart';
-import '../courses/course_progress.dart';
 import '../courses/course_registry.dart';
 import '../courses/course_widgets.dart';
 import '../courses/strum_player.dart';
-import 'open_chords_course_provider.dart';
 
-/// Un paso del curso de acordes abiertos: su texto, los diagramas (enteros o
-/// a medio armar) y, si se toca, los compases que suenan al tempo elegido.
+/// Un paso de un curso de acordes abiertos (Parte 1 o 2): su texto, los
+/// diagramas (enteros o a medio armar) y, si se toca, los compases que suenan
+/// al tempo elegido.
 class OpenChordStepScreen extends ConsumerWidget {
-  const OpenChordStepScreen({super.key, required this.stepId});
+  const OpenChordStepScreen({super.key, required this.course, required this.stepId});
 
+  /// `LessonCourse.openChords` o `LessonCourse.openChords2`.
+  final LessonCourse course;
   final String stepId;
 
   @override
   Widget build(BuildContext context, WidgetRef ref) {
-    final levels = ref.watch(openChordsCourseProvider);
+    final levels = watchCourseLevels(ref, course)?.cast<CourseLevel<OpenChordStep>>();
     final step = levels == null
         ? null
         : courseSteps(levels).where((s) => s.id == stepId).firstOrNull;
     return Scaffold(
-      appBar: AppBar(title: Text(step?.title.text ?? AppStrings.hubOpenChords)),
+      appBar: AppBar(title: Text(step?.title.text ?? unitOfCourse(course).title.text)),
       body: switch ((levels, step)) {
         (null, _) => const Center(child: CircularProgressIndicator()),
         (final levels?, final step?) => CourseStepView(
-          course: CourseId.openChords,
+          course: course.progressId,
           levels: levels,
           step: step,
           body: _StepBody(step: step),
@@ -41,7 +43,7 @@ class OpenChordStepScreen extends ConsumerWidget {
             beatsPerBar: step.beatsPerBar,
           ),
           playerNote: AppStrings.openChordsStrumNote,
-          routeOf: LessonCourse.openChords.stepRoute,
+          routeOf: course.stepRoute,
         ),
         _ => Center(child: Text(AppStrings.guideNotFound)),
       },

@@ -461,14 +461,14 @@ void main() {
     });
 
     testWidgets('los acordes de la lección enlazan a la biblioteca', (tester) async {
-      await open(tester, '/learn/lessons/f3_em_am');
+      await open(tester, '/learn/lessons/r11_d_dm');
       // chords.json se decodifica en otro isolate: hace falta tiempo real.
       await tester.runAsync(
         () => Future<void>.delayed(const Duration(seconds: 2)),
       );
       await tester.pump(const Duration(milliseconds: 300));
-      expect(find.byKey(const Key('lesson-chord-Em')), findsOneWidget);
-      expect(find.byKey(const Key('lesson-chord-Am')), findsOneWidget);
+      expect(find.byKey(const Key('lesson-chord-D')), findsOneWidget);
+      expect(find.byKey(const Key('lesson-chord-Dm')), findsOneWidget);
     });
 
     testWidgets('una lección que no existe muestra un aviso', (tester) async {

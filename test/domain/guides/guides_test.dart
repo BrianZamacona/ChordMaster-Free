@@ -40,6 +40,12 @@ void main() {
       )))
         s.id,
     },
+    LessonCourse.openChords2: {
+      for (final s in courseSteps(buildOpenChordsCourse2(
+        {for (final n in openChordsPart2.chords) n: shapeOf(n)},
+      )))
+        s.id,
+    },
   };
   final scalesJson =
       jsonDecode(File('assets/data/scales_master.json').readAsStringSync())

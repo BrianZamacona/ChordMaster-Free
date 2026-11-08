@@ -110,7 +110,7 @@ void main() {
   testWidgets('terminar una lección cuenta el día', (
     tester,
   ) async {
-    final store = await open(tester, '/learn/lessons/f3_em_am');
+    final store = await open(tester, '/learn/lessons/r11_d_dm');
     final button = find.byKey(const Key('lesson-toggle-done'));
     await tester.ensureVisible(button);
     await tester.tap(button);

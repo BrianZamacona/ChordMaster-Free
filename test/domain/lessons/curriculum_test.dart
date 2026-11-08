@@ -52,13 +52,20 @@ void main() {
       expect(ids.toSet().length, ids.length);
     });
 
-    test('Fundamentos son dos cursos; rítmica con 17 lecciones y líder con 18', () {
+    test('"Parte N" lleva espacio duro: el número no queda solo en un renglón', () {
+      final plain = RegExp(r'\bPart(e)? \d');
+      for (final u in lessonUnits) {
+        expect(u.title.es, isNot(matches(plain)), reason: u.id);
+        expect(u.title.en, isNot(matches(plain)), reason: u.id);
+      }
+    });
+    test('Fundamentos son dos cursos; rítmica con 14 lecciones y líder con 18', () {
       expect(lessonsOf(LessonTrack.foundations), isEmpty);
       expect(
         [for (final u in unitsOf(LessonTrack.foundations)) u.course],
         [LessonCourse.basics, LessonCourse.melodies],
       );
-      expect(lessonsOf(LessonTrack.rhythm), hasLength(17));
+      expect(lessonsOf(LessonTrack.rhythm), hasLength(14));
       expect(lessonsOf(LessonTrack.lead), hasLength(18));
     });
 
