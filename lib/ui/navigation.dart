@@ -51,8 +51,6 @@ const legacyRoutePrefixes = {
   // Improvisación se fusionó con el detalle de cada escala.
   '/improvisation': '/learn/scales',
   '/practice/improvisation': '/learn/scales',
-  '/tuner': '/tools/tuner',
-  '/metronome': '/tools/metronome',
   '/achievements': '/progress/achievements',
   '/health': '/progress/health',
   '/community': '/progress',
@@ -71,6 +69,14 @@ String? redirectLegacyRoute(String location) {
   }
   return null;
 }
+
+/// Afinador y metrónomo apilados sobre la pantalla que los abre (Inicio, una
+/// lección o una guía): la flecha de atrás vuelve ahí. En la pestaña Afinar
+/// son la raíz y no la tienen.
+List<RouteBase> _toolRoutes() => [
+      GoRoute(path: 'tuner', builder: (_, _) => const TunerScreen()),
+      GoRoute(path: 'metronome', builder: (_, _) => const MetronomeScreen()),
+    ];
 
 /// Acordes, Escalas, Progresiones y Círculo de quintas: cuelgan de Aprender
 /// (lecciones y guías los abren ahí) y de Inicio (sus accesos), con las
@@ -179,6 +185,7 @@ final GoRouter appRouter = GoRouter(
                 // Los módulos que se abren desde Inicio viven también aquí, para
                 // que atrás vuelva a Inicio sin cambiar de pestaña.
                 ..._moduleRoutes(),
+                ..._toolRoutes(),
               ],
             ),
           ],
@@ -245,6 +252,7 @@ final GoRouter appRouter = GoRouter(
                   builder: (_, _) => const CapoScreen(),
                 ),
                 ..._moduleRoutes(),
+                ..._toolRoutes(),
               ],
             ),
           ],

@@ -122,9 +122,8 @@ class LessonDetailScreen extends ConsumerWidget {
   }
 }
 
-/// Abre la herramienta o el módulo que pide la lección. Afinador y metrónomo
-/// están en otra pestaña (`go`); los módulos de Aprender se apilan (`push`)
-/// para que atrás vuelva a la lección.
+/// Abre la herramienta o el módulo que pide la lección. Todo se apila en
+/// Aprender (`push`), también afinador y metrónomo: atrás vuelve a la lección.
 class _ToolButton extends ConsumerWidget {
   const _ToolButton({required this.tool, required this.bpm});
 
@@ -137,14 +136,14 @@ class _ToolButton extends ConsumerWidget {
       LessonTool.tuner => (
           Icons.tune,
           AppStrings.lessonOpenTuner,
-          '/tools/tuner',
-          false,
+          '/learn/tuner',
+          true,
         ),
       LessonTool.metronome => (
           Icons.av_timer,
           AppStrings.lessonOpenMetronome(bpm),
-          '/tools/metronome',
-          false,
+          '/learn/metronome',
+          true,
         ),
       LessonTool.progressions => (
           Icons.queue_music,

@@ -5,7 +5,9 @@ import '../constants/app_strings.dart';
 
 enum AppTool { tuner, metronome }
 
-/// Selector Afinador | Metrónomo bajo la `AppBar` de la pestaña Herramientas.
+/// Selector Afinador | Metrónomo bajo la `AppBar`. En la pestaña Afinar cambia
+/// de ruta ahí; abierto sobre otra pantalla (Inicio, una lección) reemplaza esta
+/// por la otra herramienta, así atrás sigue volviendo a donde se abrió.
 class ToolSwitcher extends StatelessWidget implements PreferredSizeWidget {
   const ToolSwitcher({super.key, required this.current});
 
@@ -35,10 +37,18 @@ class ToolSwitcher extends StatelessWidget implements PreferredSizeWidget {
               ),
             ],
             selected: {current},
-            onSelectionChanged: (s) => context.go(
-              s.first == AppTool.tuner ? '/tools/tuner' : '/tools/metronome',
-            ),
+            onSelectionChanged: (s) => _open(context, s.first),
           ),
         ),
       );
+
+  void _open(BuildContext context, AppTool tool) {
+    final name = tool == AppTool.tuner ? 'tuner' : 'metronome';
+    final path = GoRouterState.of(context).uri.path;
+    if (path.startsWith('/tools/')) {
+      context.go('/tools/$name');
+    } else {
+      context.pushReplacement(path.replaceFirst(RegExp(r'(tuner|metronome)$'), name));
+    }
+  }
 }

@@ -12,8 +12,8 @@ import '../courses/course_registry.dart';
 /// Ruta de un módulo y si vive en otra pestaña (`go`) o se apila en Aprender
 /// (`push`, para que atrás vuelva a la guía).
 (String route, bool stacked) moduleRoute(GuideModule module) => switch (module) {
-  GuideModule.tuner => ('/tools/tuner', false),
-  GuideModule.metronome => ('/tools/metronome', false),
+  GuideModule.tuner => ('/learn/tuner', true),
+  GuideModule.metronome => ('/learn/metronome', true),
   GuideModule.earTraining => ('/practice/ear-training', false),
   GuideModule.rhythmGame => ('/practice/rhythm', false),
   GuideModule.songs => ('/practice/songs', false),
