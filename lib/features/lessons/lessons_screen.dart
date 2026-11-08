@@ -190,9 +190,10 @@ class _NextCard extends StatelessWidget {
   }
 }
 
-/// Los dos caminos, fila por fila y nivel por nivel: cada fila tiene un nodo
-/// de cada camino a la misma altura (si un camino tiene más unidades en un
-/// nivel, el otro deja la celda vacía) y cada nivel cierra con un reto.
+/// Los dos caminos: encabezados a la misma altura y, debajo, una columna por
+/// camino, cada una seguida sin huecos (decisión del usuario: la rítmica
+/// puede ser más larga que la líder). Cada nivel cierra con su reto y el
+/// nivel 2 se marca en cada columna.
 class _TrackRows extends StatelessWidget {
   const _TrackRows({
     required this.highlighted,
@@ -208,108 +209,103 @@ class _TrackRows extends StatelessWidget {
   /// Orden de dibujo del primer tramo de estas filas.
   final int firstOrder;
 
-  /// Filas de unidades del nivel: las del camino que tenga más.
-  static int _rowsIn(int level) => [
-    for (final t in [LessonTrack.rhythm, LessonTrack.lead]) unitsOf(t, level: level).length,
-  ].reduce((a, b) => a > b ? a : b);
-
-  /// Una fila con una celda por camino, ambas de la altura de la mayor.
-  Widget _row(Widget Function(LessonTrack track) cell) => IntrinsicHeight(
-        child: Row(
-          crossAxisAlignment: CrossAxisAlignment.stretch,
-          children: [
-            Expanded(child: cell(LessonTrack.rhythm)),
-            const SizedBox(width: _columnGap),
-            Expanded(child: cell(LessonTrack.lead)),
-          ],
-        ),
-      );
-
-  @override
-  Widget build(BuildContext context) {
+  Widget _column(LessonTrack track) {
+    // Cada columna se dibuja con su propio orden: las dos bajan a la vez.
     var order = firstOrder;
-    Widget segments() {
-      final animation = _revealAt(reveal, order++);
-      return _row(
-        (track) => _StringSegment(
+    Widget segment() => _StringSegment(
           active: track == highlighted,
-          reveal: animation,
-        ),
-      );
-    }
-
+          reveal: _revealAt(reveal, order++),
+        );
     return Column(
+      key: Key('lessons-column-${track.name}'),
+      crossAxisAlignment: CrossAxisAlignment.stretch,
       children: [
-        _row(
-          (track) => _TrackHeader(
-            track: track,
-            path: path,
-            active: track == highlighted,
-          ),
-        ),
-        for (final level in levelsOf(LessonTrack.rhythm)) ...[
-          if (level > 1) ...[segments(), _LevelHeader(level: level)],
-          for (var i = 0; i < _rowsIn(level); i++) ...[
-            segments(),
-            _row((track) {
-              final units = unitsOf(track, level: level);
-              return i < units.length
-                  ? _UnitNode(unit: units[i], path: path)
-                  : const SizedBox.shrink();
-            }),
+        for (final level in levelsOf(track)) ...[
+          if (level > 1) ...[segment(), _LevelHeader(level: level, track: track)],
+          for (final unit in unitsOf(track, level: level)) ...[
+            segment(),
+            _UnitNode(unit: unit, path: path),
           ],
-          for (var i = 0;
-              i < challengesOf(LessonTrack.rhythm, level: level).length;
-              i++) ...[
-            segments(),
-            _row(
-              (track) => _ChallengeNode(
-                challenge: challengesOf(track, level: level)[i],
-              ),
-            ),
+          for (final challenge in challengesOf(track, level: level)) ...[
+            segment(),
+            _ChallengeNode(challenge: challenge),
           ],
         ],
       ],
     );
   }
-}
 
-/// Separa los niveles de los dos caminos, a todo lo ancho.
+  @override
+  Widget build(BuildContext context) => Column(
+        children: [
+          IntrinsicHeight(
+            child: Row(
+              crossAxisAlignment: CrossAxisAlignment.stretch,
+              children: [
+                Expanded(
+                  child: _TrackHeader(
+                    track: LessonTrack.rhythm,
+                    path: path,
+                    active: highlighted == LessonTrack.rhythm,
+                  ),
+                ),
+                const SizedBox(width: _columnGap),
+                Expanded(
+                  child: _TrackHeader(
+                    track: LessonTrack.lead,
+                    path: path,
+                    active: highlighted == LessonTrack.lead,
+                  ),
+                ),
+              ],
+            ),
+          ),
+          Row(
+            crossAxisAlignment: CrossAxisAlignment.start,
+            children: [
+              Expanded(child: _column(LessonTrack.rhythm)),
+              const SizedBox(width: _columnGap),
+              Expanded(child: _column(LessonTrack.lead)),
+            ],
+          ),
+        ],
+      );
+}
+/// Marca dónde empieza un nivel dentro de la columna de un camino.
 class _LevelHeader extends StatelessWidget {
-  const _LevelHeader({required this.level});
+  const _LevelHeader({required this.level, required this.track});
 
   final int level;
+  final LessonTrack track;
 
   @override
   Widget build(BuildContext context) {
     final p = context.palette;
     final text = Theme.of(context).textTheme;
     return Padding(
-      key: Key('lessons-level-$level'),
+      key: Key('lessons-level-$level-${track.name}'),
       padding: const EdgeInsets.symmetric(vertical: 8),
-      child: Row(
+      // Media columna: el título entre dos rayas y la pista debajo.
+      child: Column(
         children: [
-          Expanded(child: Divider(color: p.outline)),
-          Flexible(
-            flex: 4,
-            child: Padding(
-              padding: const EdgeInsets.symmetric(horizontal: 12),
-              child: Column(
-                children: [
-                  Text(
-                    AppStrings.lessonsLevel(level),
-                    style: text.titleMedium?.copyWith(color: p.accent),
-                  ),
-                  Text(
-                    AppStrings.lessonsLevelHint,
-                    textAlign: TextAlign.center,
-                    style: text.bodySmall?.copyWith(color: p.textSecondary),
-                  ),
-                ],
+          Row(
+            children: [
+              Expanded(child: Divider(color: p.outline)),
+              Padding(
+                padding: const EdgeInsets.symmetric(horizontal: 8),
+                child: Text(
+                  AppStrings.lessonsLevel(level),
+                  style: text.titleMedium?.copyWith(color: p.accent),
+                ),
               ),
-            ),
+              Expanded(child: Divider(color: p.outline)),
+            ],
           ),
-          Expanded(child: Divider(color: p.outline)),
+          Text(
+            AppStrings.lessonsLevelHint,
+            textAlign: TextAlign.center,
+            style: text.bodySmall?.copyWith(color: p.textSecondary),
+          ),
         ],
       ),
     );

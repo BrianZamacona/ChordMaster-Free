@@ -185,7 +185,7 @@ void main() {
     ) async {
       await open(tester, '/learn/lessons');
       expect(find.byKey(const Key('lessons-start-next')), findsOneWidget);
-      for (final track in LessonTrack.values) {
+      for (final track in [LessonTrack.rhythm, LessonTrack.lead]) {
         for (final unit in unitsOf(track)) {
           expect(find.byKey(Key('unit-${unit.id}'), skipOffstage: false), findsOneWidget);
         }
@@ -234,19 +234,21 @@ void main() {
       tester,
     ) async {
       await open(tester, '/learn/lessons');
-      final header = find.byKey(const Key('lessons-level-2'), skipOffstage: false);
-      expect(header, findsOneWidget);
       double top(Finder f) => tester.getRect(f).top;
-      final challenge1 = find.byKey(
-        Key('challenge-${challengesOf(LessonTrack.rhythm, level: 1).single.id}'),
-        skipOffstage: false,
-      );
-      final firstLevel2 = find.byKey(
-        Key('unit-${unitsOf(LessonTrack.rhythm, level: 2).first.id}'),
-        skipOffstage: false,
-      );
-      expect(top(challenge1), lessThan(top(header)));
-      expect(top(header), lessThan(top(firstLevel2)));
+      for (final track in [LessonTrack.rhythm, LessonTrack.lead]) {
+        final header = find.byKey(Key('lessons-level-2-${track.name}'), skipOffstage: false);
+        expect(header, findsOneWidget, reason: track.name);
+        final challenge1 = find.byKey(
+          Key('challenge-${challengesOf(track, level: 1).single.id}'),
+          skipOffstage: false,
+        );
+        final firstLevel2 = find.byKey(
+          Key('unit-${unitsOf(track, level: 2).first.id}'),
+          skipOffstage: false,
+        );
+        expect(top(challenge1), lessThan(top(header)), reason: track.name);
+        expect(top(header), lessThan(top(firstLevel2)), reason: track.name);
+      }
     });
 
     testWidgets('las cuerdas del mapa se dibujan al abrir y terminan completas', (
@@ -517,38 +519,35 @@ void main() {
         expect(CurrentLanguage.value, appLanguageFor(code));
       }
 
-      testWidgets('el mapa alinea los dos caminos fila por fila', (tester) async {
+      testWidgets('cada camino es una columna sin huecos', (tester) async {
         await open(tester, '/learn/lessons');
-        final rhythm = unitsOf(LessonTrack.rhythm);
-        final lead = unitsOf(LessonTrack.lead);
-        void expectAligned(Key a, Key b) {
-          final ra = tester.getRect(find.byKey(a));
-          final rb = tester.getRect(find.byKey(b));
-          expect(ra.top, rb.top);
-          expect(ra.height, rb.height);
-        }
-
-        expectAligned(
-          const Key('lessons-track-rhythm'),
-          const Key('lessons-track-lead'),
-        );
-        // Nivel por nivel, la fila i de un camino va a la altura de la del
-        // otro; si un camino tiene más unidades, el otro deja la celda vacía.
-        for (final level in levelsOf(LessonTrack.rhythm)) {
-          final r = unitsOf(LessonTrack.rhythm, level: level);
-          final l = unitsOf(LessonTrack.lead, level: level);
-          for (var i = 0; i < r.length && i < l.length; i++) {
-            expectAligned(Key('unit-${r[i].id}'), Key('unit-${l[i].id}'));
+        final a = tester.getRect(find.byKey(const Key('lessons-track-rhythm')));
+        final b = tester.getRect(find.byKey(const Key('lessons-track-lead')));
+        expect(a.top, b.top);
+        expect(a.height, b.height);
+        // Entre dos nodos seguidos del mismo nivel queda siempre el mismo
+        // tramo de cuerda, en los dos caminos: la columna corta no deja
+        // celdas vacías para esperar a la otra.
+        final gaps = <double>{};
+        for (final track in [LessonTrack.rhythm, LessonTrack.lead]) {
+          for (final level in levelsOf(track)) {
+            final keys = [
+              for (final u in unitsOf(track, level: level)) Key('unit-${u.id}'),
+              for (final c in challengesOf(track, level: level)) Key('challenge-${c.id}'),
+            ];
+            for (var i = 1; i < keys.length; i++) {
+              final prev = tester.getRect(find.byKey(keys[i - 1], skipOffstage: false));
+              final next = tester.getRect(find.byKey(keys[i], skipOffstage: false));
+              gaps.add((next.top - prev.bottom).roundToDouble());
+            }
           }
         }
-        expect(rhythm, isNotEmpty);
-        expect(lead, isNotEmpty);
-        for (final level in levelsOf(LessonTrack.rhythm)) {
-          expectAligned(
-            Key('challenge-${challengesOf(LessonTrack.rhythm, level: level).single.id}'),
-            Key('challenge-${challengesOf(LessonTrack.lead, level: level).single.id}'),
-          );
-        }
+        expect(gaps, hasLength(1), reason: '$gaps');
+        // La líder es más corta: su nivel 2 empieza antes que el de rítmica.
+        double top(String track) => tester
+            .getRect(find.byKey(Key('lessons-level-2-$track'), skipOffstage: false))
+            .top;
+        expect(top('lead'), lessThan(top('rhythm')));
       });
 
       testWidgets('ninguna lección se desborda, con tablatura o sin ella', (
@@ -571,9 +570,13 @@ void main() {
 
       testWidgets('el separador del nivel 2 cabe a lo ancho', (tester) async {
         await open(tester, '/learn/lessons');
-        final header = tester.getRect(find.byKey(const Key('lessons-level-2')));
-        expect(header.left, greaterThanOrEqualTo(0));
-        expect(header.right, lessThanOrEqualTo(360));
+        for (final track in [LessonTrack.rhythm, LessonTrack.lead]) {
+          final header = tester.getRect(
+            find.byKey(Key('lessons-level-2-${track.name}'), skipOffstage: false),
+          );
+          expect(header.left, greaterThanOrEqualTo(0), reason: track.name);
+          expect(header.right, lessThanOrEqualTo(360), reason: track.name);
+        }
         expect(tester.takeException(), isNull);
       });
 
@@ -611,7 +614,7 @@ void main() {
         tester,
       ) async {
         await open(tester, '/learn/lessons');
-        for (final track in LessonTrack.values) {
+        for (final track in [LessonTrack.rhythm, LessonTrack.lead]) {
           for (final unit in unitsOf(track)) {
             appRouter.go('/learn/lessons/unit/${unit.id}');
             for (var i = 0; i < 5; i++) {
