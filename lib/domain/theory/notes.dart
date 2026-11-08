@@ -16,3 +16,6 @@ int noteIndex(String note) => noteNames.indexOf(note);
 /// Nombre de la nota que está [semitones] por encima de C; acepta cualquier
 /// entero (MIDI, sumas de intervalos, negativos) y lo reduce módulo 12.
 String pitchClassName(int semitones) => noteNames[semitones % 12];
+
+/// Nombre con octava de una nota MIDI: 60 = "C4", 55 = "G3", 73 = "C#5".
+String pitchName(int midi) => '${pitchClassName(midi)}${midi ~/ 12 - 1}';

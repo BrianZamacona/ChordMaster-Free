@@ -17,9 +17,6 @@ int pitchMidi(String pitch) {
   return (octave + 1) * 12 + noteIndex(pitch.substring(0, pitch.length - 1));
 }
 
-/// MIDI de una nota de tablatura (cuerda 1 = mi aguda).
-int tabMidi(TabNote n) => standardOpenStringMidi[n.string - 1] + n.fret;
-
 /// Tablatura de [pitches] dentro de la ventana de trastes [minFret]–[maxFret]
 /// y, si se dan, solo en las cuerdas [strings]: cada nota va en la cuerda
 /// donde cae en la ventana; si cabe en dos, en la del traste más bajo. Lanza

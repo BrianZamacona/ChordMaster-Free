@@ -6,6 +6,7 @@ import 'package:chordmaster_free/domain/lessons/lesson.dart';
 import 'package:chordmaster_free/domain/melodies/basics_course.dart';
 import 'package:chordmaster_free/domain/melodies/melody_course.dart';
 import 'package:chordmaster_free/domain/practice/scale_workouts.dart';
+import 'package:chordmaster_free/domain/practice/tab_playback.dart';
 import 'package:chordmaster_free/domain/practice/technique_exercises.dart';
 import 'package:chordmaster_free/domain/theory/notes.dart';
 import 'package:flutter_test/flutter_test.dart';
