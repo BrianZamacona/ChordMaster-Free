@@ -1,4 +1,5 @@
 import 'package:chordmaster_free/app.dart';
+import 'package:chordmaster_free/features/hubs/hubs.dart';
 import 'package:chordmaster_free/services/key_value_store.dart';
 import 'package:chordmaster_free/ui/navigation.dart';
 import 'package:flutter/material.dart';
@@ -74,5 +75,16 @@ void main() {
     final bar = tester.widget<NavigationBar>(find.byType(NavigationBar));
     expect(bar.selectedIndex, 1);
     expect(find.byType(BackButton), findsOneWidget);
+  });
+
+  testWidgets('tocar Aprender desde otra pestaña abre el inicio de Aprender', (tester) async {
+    await open(tester, '/learn/chords');
+    expect(find.byType(LearnHubScreen), findsNothing);
+    await tester.tap(find.byIcon(Icons.home_outlined));
+    await tester.pump(const Duration(seconds: 1));
+    await tester.tap(find.byIcon(Icons.menu_book_outlined));
+    await tester.pump(const Duration(seconds: 1));
+    expect(find.byType(LearnHubScreen), findsOneWidget);
+    expect(find.byType(BackButton), findsNothing);
   });
 }

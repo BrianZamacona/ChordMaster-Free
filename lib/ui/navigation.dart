@@ -77,7 +77,8 @@ String? redirectLegacyRoute(String location) {
 ///
 /// Todas las pantallas viven dentro de un único [StatefulShellRoute] con cinco
 /// pestañas (Inicio, Aprender, Practicar, Herramientas, Progreso), así la
-/// barra inferior está siempre visible y cada pestaña recuerda su pila. Las
+/// barra inferior está siempre visible. Tocar una pestaña abre su pantalla
+/// de inicio (no la última que se vio dentro de ella). Las
 /// pantallas de una sección cuelgan de su hub, por eso el botón de atrás
 /// automático vuelve a la pantalla anterior real.
 final GoRouter appRouter = GoRouter(
@@ -88,10 +89,7 @@ final GoRouter appRouter = GoRouter(
       builder: (context, state, shell) => AppScaffold(
         body: shell,
         currentIndex: shell.currentIndex,
-        onIndexChange: (index) => shell.goBranch(
-          index,
-          initialLocation: index == shell.currentIndex,
-        ),
+        onIndexChange: (index) => shell.goBranch(index, initialLocation: true),
       ),
       branches: [
         StatefulShellBranch(
