@@ -279,6 +279,10 @@ List<HomeModule> get homeModules => [
       icon: Icons.music_note,
       route: '/scales'),
   HomeModule(
+      label: AppStrings.moduleLicks,
+      icon: Icons.bolt,
+      route: '/licks'),
+  HomeModule(
       label: AppStrings.moduleFinder,
       icon: Icons.search,
       route: '/finder'),

@@ -300,6 +300,29 @@ cada nota pertenezca a la escala. No bajar la tolerancia de 0.
   (`lesson_widgets.dart`, el mismo de las lecciones) resalta la corchea que suena.
 - Digitaciones por `courseChordShapesProvider` (una lectura para todos los cursos).
 
+## Licks y riffs (Inicio)
+- Biblioteca de frases cortas y originales por estilo (decisión del usuario: un módulo como
+  Acordes y Escalas, fuente única de las tablaturas de estilo; las guías no traen trastes propios y
+  enlazarán aquí). Inspirada en las guías "In the Style Of" de Gibson, pero sin artistas: los
+  estilos se nombran por lo que se toca (`LickStyle`: hard rock de estadio, clásico, heavy/doom,
+  thrash, rock latino, sinfónico, psicodélico, hard rock virtuoso, atmosférico, metal progresivo,
+  folk de autor). Nada de riffs reconocibles: se enseña la técnica del estilo. Solo afinación
+  estándar por ahora (decisión del usuario; las abiertas o graves, después).
+- Datos en `lib/domain/licks/licks.dart` (fuente única; se componen, no salen de una regla). Cada
+  estilo (`lickStyleInfo`) declara nombre, resumen y `traits` (técnicas que lo distinguen); cada
+  frase (`Lick`) su tipo (riff o lick), nivel (`GuideLevel`), escala y tónica, tempo, swing y
+  tablatura con la notación de la fase 1. Una sola nota a la vez: los power chords no se pueden
+  escribir todavía.
+- `test/domain/licks/licks_test.dart`: cada nota y la nota a la que llega un bend son de su escala
+  (lee `scales_master.json`), la tablatura está bien escrita y dura pulsos enteros, la mano no se
+  estira más de 5 trastes ni sube del 15, cada estilo tiene riff y lick (el riff primero) y usa sus
+  `traits`, y lo que afirma cada texto se verifica nota por nota. Frase nueva = test de lo que dice.
+- Pantallas en `lib/features/licks/`: lista por estilo con filtros de nivel y tipo (los estilos
+  vacíos se ocultan) y detalle con `TabPlayer` (▶, bucle, "Tocar yo"), el estilo y su escala en el
+  diapasón. El mejor tempo limpio con el micrófono se guarda en `licks_best_bpm` (`{id: bpm}`) y
+  cuenta como día de técnica (`ActivityLog`); "más lento" cambia el tempo solo en la sesión. Los
+  ids son permanentes. Rutas `/licks/:id` y `/learn/licks/:id`.
+
 ## Guías y capo
 - Guías (`lib/domain/guides/guides.dart`, rutas `/learn/guides` y `/learn/guides/:id`): recorridos
   por tema agrupados en filas (`GuideCategory`). No traen trastes propios: cada capítulo enlaza
@@ -522,10 +545,10 @@ Objetivo: código legible y mantenible antes que ingenioso. Capas (puertos y ada
   Inicio `/`, Aprender `/learn/...`, Practicar `/practice/...`, Afinar `/tools/tuner|metronome`,
   Progreso `/progress/...` (incluye ajustes). Tocar una pestaña abre siempre su inicio.
   Inicio no repite módulos de Aprender ni de Practicar (decisión del usuario, hay test): Acordes, Escalas,
-  Progresiones, el Círculo de quintas y el Buscador se abren desde Inicio (`homeModules`); el hub de
-  Aprender (`LearnHubScreen.entries`) tiene Lecciones, Guías y capo. Esos cuatro módulos
+  Licks y riffs, Progresiones, el Círculo de quintas y el Buscador se abren desde Inicio (`homeModules`); el hub de
+  Aprender (`LearnHubScreen.entries`) tiene Lecciones, Guías y capo. Esos cinco módulos
   cuelgan de las dos pestañas (`_moduleRoutes()` en `navigation.dart`): `/chords`, `/scales`,
-  `/progressions`, `/circle` en Inicio (atrás vuelve a Inicio) y `/learn/...` en Aprender (los
+  `/licks`, `/progressions`, `/circle` en Inicio (atrás vuelve a Inicio) y `/learn/...` en Aprender (los
   abren lecciones y guías). Sus enlaces internos usan `context.sectionPath('chords/...')`
   (`lib/ui/section_routes.dart`) para no saltar de pestaña: nada de `'/learn/chords...'` fijo
   dentro de esas pantallas. `/chords`, `/scales` y `/progressions` dejaron de ser rutas viejas. Lo mismo con Practicar: Oído, Ritmo y Canciones se abren solo desde Practicar
