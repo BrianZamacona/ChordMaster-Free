@@ -24,16 +24,34 @@ enum LickStyle {
   atmosphericRock,
   progressiveMetal,
   singerSongwriterFolk,
+
+  // Géneros (fila Géneros de Guías).
+  funk,
+  reggae,
+  punk,
+  country,
+  jazz,
+  grunge,
+  metal,
+  southernRock,
+  minorBlues,
 }
 
 /// Cómo suena un estilo: nombre, resumen y las técnicas que lo distinguen
-/// (un test exige que sus licks las usen).
+/// (un test exige que sus licks las usen). Con [genre], es un género: su guía
+/// va en la fila Géneros y no en Estilos.
 class LickStyleInfo {
-  const LickStyleInfo({required this.title, required this.summary, required this.traits});
+  const LickStyleInfo({
+    required this.title,
+    required this.summary,
+    required this.traits,
+    this.genre = false,
+  });
 
   final LocalizedText title;
   final LocalizedText summary;
   final Set<TabTechnique> traits;
+  final bool genre;
 }
 
 /// Una frase de la biblioteca. [id] es permanente (guarda el récord).

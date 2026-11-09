@@ -322,7 +322,9 @@ cada nota pertenezca a la escala. No bajar la tolerancia de 0.
   las de la fila "Estilos" enlazan aquí). Inspirada en las guías "In the Style Of" de Gibson, pero sin artistas: los
   estilos se nombran por lo que se toca (`LickStyle`: hard rock de estadio, clásico, heavy/doom,
   thrash, rock latino, sinfónico, psicodélico, hard rock virtuoso, atmosférico, metal progresivo,
-  folk de autor). Nada de riffs reconocibles: se enseña la técnica del estilo. Solo afinación
+  folk de autor) y también los géneros (`LickStyleInfo.genre`: funk, reggae, punk, country, jazz,
+  grunge, metal, rock sureño, blues menor; inspirados en la fila "Genres" de Gibson). Nada de riffs
+  reconocibles: se enseña la técnica del estilo. Solo afinación
   estándar por ahora (decisión del usuario; las abiertas o graves, después).
 - Datos en `lib/domain/licks/licks.dart` (fuente única; se componen, no salen de una regla). Cada
   estilo (`lickStyleInfo`) declara nombre, resumen y `traits` (técnicas que lo distinguen); cada
@@ -333,6 +335,8 @@ cada nota pertenezca a la escala. No bajar la tolerancia de 0.
   (lee `scales_master.json`), la tablatura está bien escrita y dura pulsos enteros, la mano no se
   estira más de 5 trastes ni sube del 15, cada estilo tiene riff y lick (el riff primero) y usa sus
   `traits`, y lo que afirma cada texto se verifica nota por nota. Frase nueva = test de lo que dice.
+  El riff y el lick de un estilo declaran la misma escala y tónica (la guía lo afirma): si sus
+  notas caben en dos, se declara la que contiene a las dos (jazz en D dórico, la escala del ii).
 - Pantallas en `lib/features/licks/`: lista por estilo con filtros de nivel y tipo (los estilos
   vacíos se ocultan) y detalle con `TabPlayer` (▶, bucle, "Tocar yo"), el estilo y su escala en el
   diapasón. El mejor tempo limpio con el micrófono se guarda en `licks_best_bpm` (`{id: bpm}`) y
@@ -346,7 +350,8 @@ cada nota pertenezca a la escala. No bajar la tolerancia de 0.
   exige que exista. Lo que afirma un capítulo se verifica en `test/domain/guides/guides_test.dart`.
 - Fila "Estilos" (`style_guides.dart`): una guía por `LickStyle`, armada desde Licks y riffs (id
   `style_<estilo>`, permanente): el riff, el lick (con el texto de cada frase) y la escala de las
-  dos; nivel = el de su frase más difícil. `guides` = las escritas a mano + `styleGuides`.
+  dos; nivel = el de su frase más difícil. Los géneros (`genre`) van en la fila Géneros, detrás de
+  las guías escritas a mano. `guides` = las escritas a mano + `styleGuides`.
 - Inspiradas en un catálogo de guías tipo "Guides", pero sin artistas reales, sin fotos y sin
   contenido de terceros: géneros genéricos (blues, rock, folk/pop) y técnica.
 - Progreso (`lib/domain/guides/guide_progress.dart`): un capítulo que enlaza una lección está

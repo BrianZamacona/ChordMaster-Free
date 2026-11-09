@@ -6,6 +6,7 @@ import 'package:chordmaster_free/domain/licks/lick.dart';
 import 'package:chordmaster_free/domain/licks/licks.dart';
 import 'package:chordmaster_free/domain/practice/tab_notation.dart';
 import 'package:chordmaster_free/domain/practice/tab_playback.dart';
+import 'package:chordmaster_free/domain/theory/notes.dart';
 import 'package:flutter_test/flutter_test.dart';
 
 void main() {
@@ -17,6 +18,7 @@ void main() {
   Set<int> pitchClasses(LessonScale s) => {for (final i in intervals[s.scaleId]!) (s.root + i) % 12};
   List<TabNote> played(Lick l) => [for (final n in l.tab) if (!n.isRest) n];
   Lick lick(String id) => licksById[id]!;
+  String pitchName(TabNote n) => pitchClassName(tabMidi(n));
 
   group('cada frase', () {
     test('ids únicos y textos en los dos idiomas', () {
@@ -193,6 +195,120 @@ void main() {
       expect(l.first.technique, TabTechnique.none);
       expect(l[1].technique, TabTechnique.slide);
       expect((l.last.string, l.last.fret, l.last.technique), (3, 0, TabTechnique.pullOff));
+    });
+  });
+
+  group('géneros: lo que dicen los textos', () {
+    int interval(Lick l, TabNote n) => (tabMidi(n) - l.scale.root) % 12;
+    List<PickStroke?> picks(Lick l) => [for (final n in played(l)) if (!n.technique.legato) n.pick];
+
+    test('son géneros y los estilos no', () {
+      for (final style in LickStyle.values) {
+        final genre = lickStyleInfo(style).genre;
+        expect(genre, style.index >= LickStyle.funk.index, reason: style.name);
+      }
+    });
+
+    test('funk: swing de semicorcheas, notas muertas y púa alterna; el lick en la 3ª cuerda', () {
+      final riff = lick('funk_riff');
+      expect(riff.swing, TabSwing.sixteenths);
+      expect(riff.tab.any((n) => n.technique == TabTechnique.dead), isTrue);
+      final p = picks(riff);
+      for (var i = 0; i < p.length; i++) {
+        expect(p[i], i.isEven ? PickStroke.down : PickStroke.up);
+      }
+      final l = lick('funk_lick');
+      expect(played(l).every((n) => n.string == 3), isTrue);
+      expect(l.tab.where((n) => n.technique == TabTechnique.dead), isNotEmpty);
+    });
+
+    test('reggae: silencio en cada pulso y nota corta con palma en cada "y"', () {
+      final riff = lick('reggae_riff').tab;
+      final pos = tabPositions(riff);
+      for (final (i, n) in riff.indexed) {
+        if (pos[i] % 4 == 0) expect(n.isRest, isTrue, reason: '$i');
+        if (pos[i] % 4 == 2) expect(n.technique, TabTechnique.palmMute, reason: '$i');
+      }
+      final l = lick('reggae_lick').tab;
+      expect(l.where((n) => !n.isRest).every((n) => n.string >= 4), isTrue);
+      expect(l.any((n) => n.technique == TabTechnique.slide), isTrue);
+      expect(l.any((n) => n.isRest), isTrue);
+    });
+
+    test('punk: corcheas en la 6ª, todas abajo; el lick son cuatro notas, todas abajo', () {
+      final riff = played(lick('punk_riff'));
+      expect(riff.every((n) => n.string == 6 && n.length == tabEighth && n.pick == PickStroke.down), isTrue);
+      final l = played(lick('punk_lick'));
+      expect({for (final n in l) tabMidi(n) % 12}, hasLength(4));
+      expect(l.every((n) => n.pick == PickStroke.down), isTrue);
+    });
+
+    test('country: sube de G a C con un hammer-on; bend de un tono en la 3ª y pull-offs al aire hasta G', () {
+      final riff = played(lick('country_riff'));
+      expect([for (final n in riff.skip(4)) pitchName(n)], ['G', 'A', 'B', 'C']);
+      expect(riff.any((n) => n.technique == TabTechnique.hammerOn), isTrue);
+      final l = played(lick('country_lick'));
+      expect((l.first.string, l.first.technique, l.first.bend), (3, TabTechnique.bend, 2));
+      final pulls = l.where((n) => n.technique == TabTechnique.pullOff);
+      expect(pulls.every((n) => n.fret == 0), isTrue);
+      expect(pitchName(l.last), 'G');
+    });
+
+    test('jazz: dórico de D que sube con swing; Dm7, notas de G7 y la 3ª de C', () {
+      final riff = lick('jazz_riff');
+      expect((riff.swing, riff.scale.scaleId, riff.scale.root), (TabSwing.eighths, 'dorian', 2));
+      final ups = played(riff).take(7).map(tabMidi).toList();
+      for (var i = 1; i < ups.length; i++) {
+        expect(ups[i], greaterThan(ups[i - 1]));
+      }
+      final l = played(lick('jazz_lick')).map(pitchName).toList();
+      expect(l.take(4), ['D', 'F', 'A', 'C']);
+      expect({'G', 'B', 'D', 'F'}, containsAll(l.sublist(4, 7)));
+      expect(l.last, 'E');
+    });
+
+    test('grunge: cuerdas graves con slides de ida y vuelta; bend de casi medio compás', () {
+      final riff = played(lick('grunge_riff'));
+      expect(riff.every((n) => n.string >= 5), isTrue);
+      expect(riff.where((n) => n.technique == TabTechnique.slide), hasLength(2));
+      final l = lick('grunge_lick');
+      final bend = l.tab.firstWhere((n) => n.technique == TabTechnique.bend);
+      expect(bend.length, 6);
+      expect(l.tab[1].technique, TabTechnique.release);
+      expect((interval(l, l.tab.last), l.tab.last.technique), (0, TabTechnique.vibrato));
+    });
+
+    test('metal: pedal con palma y púa alterna; el lick usa la 7ª mayor (D#)', () {
+      final riff = lick('metal_riff').tab;
+      for (final n in riff.where((n) => n.string == 6 && n.fret == 0)) {
+        expect(n.technique, TabTechnique.palmMute);
+      }
+      for (var i = 0; i < riff.length; i++) {
+        expect(riff[i].pick, i.isEven ? PickStroke.down : PickStroke.up);
+      }
+      final l = lick('metal_lick');
+      expect(played(l).any((n) => pitchName(n) == 'D#' && interval(l, n) == 11), isTrue);
+    });
+
+    test('rock sureño: ligados desde la 5ª al aire; bend de B a C# y cierre en A con vibrato', () {
+      final riff = played(lick('southern_riff'));
+      expect((riff.first.string, riff.first.fret), (5, 0));
+      expect(riff[1].technique, TabTechnique.hammerOn);
+      final l = played(lick('southern_lick'));
+      expect((pitchName(l.first), l.first.bend), ('B', 2));
+      expect((pitchName(l.last), l.last.technique), ('A', TabTechnique.vibrato));
+    });
+
+    test('blues menor: shuffle con la 5ª al aire con palma; baja por la b5 con pull-offs', () {
+      final riff = lick('minor_blues_riff');
+      expect(riff.swing, TabSwing.eighths);
+      for (final n in played(riff).where((n) => n.string == 5 && n.fret == 0)) {
+        expect(n.technique, TabTechnique.palmMute);
+      }
+      final l = lick('minor_blues_lick');
+      expect(played(l).any((n) => interval(l, n) == 6), isTrue);
+      expect(l.tab.where((n) => n.technique == TabTechnique.pullOff), isNotEmpty);
+      expect((pitchName(l.tab.last), l.tab.last.technique), ('A', TabTechnique.vibrato));
     });
   });
 }
