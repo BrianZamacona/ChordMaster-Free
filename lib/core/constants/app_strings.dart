@@ -623,6 +623,43 @@ class AppStrings {
   static String guideOpenWorkout(String scale) =>
       tr(es: 'Rutinas de $scale', en: '$scale workouts');
   static String get hubEar => tr(es: 'Oído', en: 'Ear');
+
+  // ── Quiz del diapasón ─────────────────────────────────────────────────────
+  static String get hubFretboard => tr(es: 'Notas del mástil', en: 'Fretboard notes');
+  static String get hubFretboardSub => tr(
+    es: 'Nombra notas y encuentra sus octavas, sin mirar la respuesta.',
+    en: 'Name notes and find their octaves, without peeking.',
+  );
+  static String get fretQuizIntro => tr(
+    es: 'Dos preguntas que se turnan: qué nota hay en un lugar del mástil y en qué traste está su octava. Cada respuesta cuenta como práctica del día.',
+    en: 'Two questions that take turns: which note is at a spot on the neck and on which fret its octave is. Every answer counts as practice for the day.',
+  );
+  static String fretQuizNameNote(int string, int fret) => tr(
+    es: '¿Qué nota es? Cuerda $string, traste $fret.',
+    en: 'Which note is it? String $string, fret $fret.',
+  );
+  static String fretQuizFindOctave(String note, int fromString, int fromFret, int toString) => tr(
+    es: 'Es $note en la cuerda $fromString, traste $fromFret. ¿En qué traste de la cuerda $toString está su octava?',
+    en: 'It is $note on string $fromString, fret $fromFret. On which fret of string $toString is its octave?',
+  );
+  static String fretQuizFret(int fret) => tr(es: 'Traste $fret', en: 'Fret $fret');
+  static String get fretQuizRight => tr(es: '¡Bien!', en: 'Right!');
+  static String fretQuizWrong(String answer) =>
+      tr(es: 'No: era $answer.', en: 'No: it was $answer.');
+  static String fretQuizOctaveHint(int shift, int octaves) => shift == 0
+      ? tr(
+          es: 'Forma de dos octavas: el mismo traste, cinco cuerdas más arriba.',
+          en: 'Two-octave shape: the same fret, five strings higher.',
+        )
+      : tr(
+          es: 'Forma de octava: ${shift > 0 ? '+' : '−'}${shift.abs()} trastes${octaves == 2 ? ', dos octavas' : ''}.',
+          en: 'Octave shape: ${shift > 0 ? '+' : '−'}${shift.abs()} frets${octaves == 2 ? ', two octaves' : ''}.',
+        );
+  static String get fretQuizNext => tr(es: 'Siguiente', en: 'Next');
+  static String fretQuizScore(int correct, int answered, int streak, int best) => tr(
+    es: 'Aciertos $correct de $answered · racha $streak · mejor $best',
+    en: 'Correct $correct of $answered · streak $streak · best $best',
+  );
   static String get hubEarSub => tr(
     es: 'Reconoce intervalos y acordes de oído.',
     en: 'Recognize intervals and chords by ear.',

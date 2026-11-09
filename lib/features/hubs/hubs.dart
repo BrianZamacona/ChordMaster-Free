@@ -51,6 +51,12 @@ class PracticeHubScreen extends StatelessWidget {
           route: '/practice/ear-training',
         ),
         HubEntry(
+          icon: Icons.grid_on,
+          title: AppStrings.hubFretboard,
+          subtitle: AppStrings.hubFretboardSub,
+          route: '/practice/fretboard',
+        ),
+        HubEntry(
           icon: Icons.fitness_center,
           title: AppStrings.hubWorkouts,
           subtitle: AppStrings.hubWorkoutsSub,

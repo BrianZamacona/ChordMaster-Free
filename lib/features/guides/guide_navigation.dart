@@ -25,6 +25,7 @@ import '../courses/course_registry.dart';
   GuideModule.circle => ('/learn/circle', true),
   GuideModule.capo => ('/learn/capo', true),
   GuideModule.scales => ('/learn/scales', true),
+  GuideModule.fretboardQuiz => ('/practice/fretboard', false),
 };
 
 /// Texto del botón de un capítulo.
@@ -55,6 +56,7 @@ String _moduleName(GuideModule module) => switch (module) {
   GuideModule.circle => AppStrings.circleTitle,
   GuideModule.capo => AppStrings.hubCapo,
   GuideModule.scales => AppStrings.hubScales,
+  GuideModule.fretboardQuiz => AppStrings.hubFretboard,
 };
 
 /// Icono del botón de un capítulo.

@@ -16,6 +16,7 @@ import '../features/courses/course_registry.dart';
 import '../features/courses/course_step_route.dart';
 import '../features/ear_training/ear_training_screen.dart';
 import '../features/finder/note_finder_screen.dart';
+import '../features/fretboard_quiz/fretboard_quiz_screen.dart';
 import '../features/guides/guide_detail_screen.dart';
 import '../features/guides/guides_screen.dart';
 import '../features/health/health_screen.dart';
@@ -278,6 +279,10 @@ final GoRouter appRouter = GoRouter(
                 GoRoute(
                   path: 'ear-training',
                   builder: (_, _) => const EarTrainingScreen(),
+                ),
+                GoRoute(
+                  path: 'fretboard',
+                  builder: (_, _) => const FretQuizScreen(),
                 ),
                 GoRoute(
                   path: 'workouts',
