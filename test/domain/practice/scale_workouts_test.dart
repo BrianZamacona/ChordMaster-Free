@@ -157,26 +157,26 @@ void main() {
     const tab = [TabNote(1, 0), TabNote(1, 1), TabNote(2, 3)];
 
     test('una nota por corchea al tempo pedido', () {
-      expect(tabEvents(tab, bpm: 60), [
-        (midi: 64, at: 0.0),
-        (midi: 65, at: 0.5),
-        (midi: 62, at: 1.0),
+      expect([for (final s in tabSounds(tab, bpm: 60)) (s.midi, s.at)], [
+        (64, 0.0),
+        (65, 0.5),
+        (62, 1.0),
       ]);
       expect(tabStepSeconds(120), 0.25);
     });
 
     test('dura hasta que se apaga la última nota', () {
-      expect(tabDurationSeconds(3, bpm: 60), closeTo(1.0 + tabNoteRingSeconds, 1e-9));
-      expect(tabDurationSeconds(0, bpm: 60), 0);
+      expect(tabDurationSeconds(tab, bpm: 60), closeTo(1.0 + tabNoteRingSeconds, 1e-9));
+      expect(tabDurationSeconds(const [], bpm: 60), 0);
     });
 
     test('la nota marcada es la que suena en ese instante', () {
-      expect(tabIndexAt(-0.1, 3, bpm: 60), isNull);
-      expect(tabIndexAt(0, 3, bpm: 60), 0);
-      expect(tabIndexAt(0.49, 3, bpm: 60), 0);
-      expect(tabIndexAt(0.5, 3, bpm: 60), 1);
-      expect(tabIndexAt(1.2, 3, bpm: 60), 2);
-      expect(tabIndexAt(1.5, 3, bpm: 60), isNull);
+      expect(tabIndexAt(-0.1, tab, bpm: 60), isNull);
+      expect(tabIndexAt(0, tab, bpm: 60), 0);
+      expect(tabIndexAt(0.49, tab, bpm: 60), 0);
+      expect(tabIndexAt(0.5, tab, bpm: 60), 1);
+      expect(tabIndexAt(1.2, tab, bpm: 60), 2);
+      expect(tabIndexAt(1.5, tab, bpm: 60), isNull);
     });
 
     test('la clave del audio es corta y estable', () {

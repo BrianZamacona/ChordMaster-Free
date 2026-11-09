@@ -36,16 +36,12 @@ class _FileBundle extends CachingAssetBundle {
 class _FakeAudio extends AudioService {
   _FakeAudio() : super.forTesting();
 
-  final played = <({List<NoteEvent> events, double seconds, double? ring})>[];
+  final played = <({List<StringSound> events, double seconds})>[];
   int stops = 0;
 
   @override
-  Future<void> playNotes(
-    List<NoteEvent> events, {
-    double seconds = 2.5,
-    double? ring,
-  }) async =>
-      played.add((events: events, seconds: seconds, ring: ring));
+  Future<void> playTab(List<StringSound> sounds, {required double seconds}) async =>
+      played.add((events: sounds, seconds: seconds));
 
   @override
   Future<void> stopAll() async => stops++;
@@ -138,8 +134,8 @@ void main() {
       final audio = await pumpPlayer(tester);
       await tester.tap(play('a'));
       await tester.pump();
-      expect(audio.played.single.events, tabEvents(notes, bpm: 60));
-      expect(audio.played.single.ring, tabNoteRingSeconds);
+      expect(audio.played.single.events, tabSounds(notes, bpm: 60));
+      expect(audio.played.single.seconds, tabDurationSeconds(notes, bpm: 60));
       expect(tab(tester, 'a').highlight, 0);
       // Los instantes los da el reloj real del reproductor.
       await tester.runAsync(() => Future<void>.delayed(const Duration(milliseconds: 600)));

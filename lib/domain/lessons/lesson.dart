@@ -7,24 +7,103 @@ enum LessonTrack { foundations, rhythm, lead }
 /// Herramienta o módulo de la app que una lección pide abrir.
 enum LessonTool { tuner, metronome, progressions, doubleStops, circle }
 
+/// Duraciones en semicorcheas (la unidad de [TabNote.length]).
+const tabSixteenth = 1, tabEighth = 2, tabQuarter = 4, tabHalf = 8;
+
+/// Cómo se toca una nota además de pulsarla. Las que siguen sonando sin volver
+/// a pulsar ([legato]) continúan la nota anterior, en la misma cuerda.
+enum TabTechnique {
+  /// Pulsada, sin más.
+  none,
+
+  /// Ligado ascendente (h): un dedo cae sobre un traste más alto.
+  hammerOn,
+
+  /// Ligado descendente (p): un dedo se suelta hacia un traste más bajo.
+  pullOff,
+
+  /// Slide (/ o \): el dedo se desliza hasta el traste nuevo.
+  slide,
+
+  /// Bend (b): se pulsa y la cuerda se empuja [TabNote.bend] semitonos.
+  bend,
+
+  /// Release (r): la cuerda empujada vuelve a su traste, sin pulsar.
+  release,
+
+  /// Vibrato (~): la altura oscila un poco mientras la nota suena.
+  vibrato,
+
+  /// Apagado con la palma (PM): suena corta y sorda.
+  palmMute,
+
+  /// Nota muerta (x): la mano izquierda apaga la cuerda; solo se oye el golpe.
+  dead;
+
+  /// Sigue sonando la nota anterior: no se vuelve a pulsar.
+  bool get legato => this == hammerOn || this == pullOff || this == slide || this == release;
+}
+
+/// Dirección de la púa: ⊓ abajo, V arriba.
+enum PickStroke { down, up }
+
 /// Una nota de tablatura: cuerda (1 = mi aguda, como en `scales_master.json`)
-/// y traste (0 = al aire).
+/// y traste (0 = al aire), cuánto dura ([length], en semicorcheas: hasta la
+/// nota siguiente), cómo se toca ([technique], con [bend] semitonos si es un
+/// bend) y, si importa, con qué golpe de púa ([pick]). [TabNote.rest] es un
+/// silencio: dura, pero no suena.
 class TabNote {
-  const TabNote(this.string, this.fret);
+  const TabNote(
+    this.string,
+    this.fret, {
+    this.length = tabEighth,
+    this.technique = TabTechnique.none,
+    this.bend = 0,
+    this.pick,
+  });
+
+  const TabNote.rest(this.length)
+      : string = 0,
+        fret = 0,
+        technique = TabTechnique.none,
+        bend = 0,
+        pick = null;
 
   final int string;
   final int fret;
+  final int length;
+  final TabTechnique technique;
+
+  /// Semitonos que sube un bend (1 = medio tono, 2 = un tono).
+  final int bend;
+  final PickStroke? pick;
+
+  bool get isRest => string == 0;
 
   @override
   bool operator ==(Object other) =>
-      other is TabNote && other.string == string && other.fret == fret;
+      other is TabNote &&
+      other.string == string &&
+      other.fret == fret &&
+      other.length == length &&
+      other.technique == technique &&
+      other.bend == bend &&
+      other.pick == pick;
 
   @override
-  int get hashCode => Object.hash(string, fret);
+  int get hashCode => Object.hash(string, fret, length, technique, bend, pick);
 
   @override
-  String toString() => 'TabNote($string, $fret)';
+  String toString() => isRest
+      ? 'TabNote.rest($length)'
+      : 'TabNote($string, $fret${length == tabEighth ? '' : ', length: $length'}'
+          '${technique == TabTechnique.none ? '' : ', $technique'}'
+          '${bend == 0 ? '' : ', bend: $bend'}${pick == null ? '' : ', $pick'})';
 }
+
+/// Swing: el contratiempo llega tarde, a dos tercios del pulso (corcheas) o
+/// de la corchea (semicorcheas), como en un tresillo.
+enum TabSwing { none, eighths, sixteenths }
 
 /// Escala que una lección enseña: id de `scales_master.json` y tónica
 /// (semitono, 0 = C, como `noteIndex`).

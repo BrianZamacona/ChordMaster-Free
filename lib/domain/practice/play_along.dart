@@ -41,48 +41,71 @@ const playAlongSlowerBy = 2 * techniqueBpmStep;
 /// El tempo de "Más lento": [playAlongSlowerBy] menos, sin bajar del mínimo.
 int slowerBpm(int bpm) => math.max(techniqueMinBpm, bpm - playAlongSlowerBy);
 
-/// Sigue una tablatura nota por nota.
+/// Sigue una tablatura nota por nota. Los silencios y las notas muertas no
+/// tienen altura: no se esperan (la nota muerta es solo un golpe).
 class NoteFollower {
-  NoteFollower(List<TabNote> tab) : expected = [for (final n in tab) tabMidi(n)];
+  NoteFollower(List<TabNote> tab, {TabSwing swing = TabSwing.none}) : length = tab.length {
+    final positions = tabPositions(tab);
+    for (final (i, n) in tab.indexed) {
+      if (n.isRest || n.technique == TabTechnique.dead) continue;
+      _indices.add(i);
+      expected.add(tabMidi(n));
+      _beats.add(tabSwungBeats(positions[i], swing));
+    }
+  }
 
-  /// MIDI esperado de cada nota.
-  final List<int> expected;
+  /// Notas de la tablatura (con silencios y notas muertas).
+  final int length;
 
-  int _position = 0;
+  /// MIDI esperado de cada nota que se oye (al pulsarla: un bend se espera en
+  /// su traste, y la nota empujada llega sin ataque).
+  final expected = <int>[];
+  final _indices = <int>[];
+  final _beats = <double>[];
+
+  int _next = 0;
   final _mistakesAt = <int>[];
   final _times = <double>[];
 
-  /// Índice de la nota que se espera (= cuántas van bien).
-  int get position => _position;
+  /// Índice en la tablatura de la nota que se espera ([length] al terminar):
+  /// las de antes salieron bien.
+  int get position => done ? length : _indices[_next];
   int get mistakes => _mistakesAt.length;
-  bool get done => _position >= expected.length;
+  bool get done => _next >= expected.length;
+
+  /// La nota que se espera, o `null` al terminar.
+  int? get expectedMidi => done ? null : expected[_next];
 
   /// Instantes en que salió bien cada nota.
   List<double> get times => List.unmodifiable(_times);
 
   HeardKind hear(HeardNote note) {
     if (done) return HeardKind.ignored;
-    if (note.midi == expected[_position]) {
-      _position++;
+    if (note.midi == expected[_next]) {
+      _next++;
       _times.add(note.at);
       return HeardKind.right;
     }
-    if (!note.plucked || (_position > 0 && note.midi == expected[_position - 1])) {
+    if (!note.plucked || (_next > 0 && note.midi == expected[_next - 1])) {
       return HeardKind.echo;
     }
-    _mistakesAt.add(_position);
+    _mistakesAt.add(position);
     return HeardKind.wrong;
   }
 
   /// Cómo salió (solo tiene sentido al terminar).
-  PlayAlongResult get result => PlayAlongResult.from(_times, mistakesAt: _mistakesAt);
+  PlayAlongResult get result => PlayAlongResult.from(
+    _times,
+    beats: _beats.sublist(0, _times.length),
+    mistakesAt: _mistakesAt,
+  );
 }
 
 /// Una tablatura tocada con el micrófono: cada ventana se analiza buscando la
 /// nota que toca ahora, y lo oído avanza el [follower].
 class PlayAlongSession {
-  PlayAlongSession(List<TabNote> tab, {this.a4 = 440})
-    : follower = NoteFollower(tab),
+  PlayAlongSession(List<TabNote> tab, {this.a4 = 440, TabSwing swing = TabSwing.none})
+    : follower = NoteFollower(tab, swing: swing),
       _detector = NoteOnsetDetector(a4: a4);
 
   final double a4;
@@ -93,7 +116,7 @@ class PlayAlongSession {
   int? lastHeard;
 
   /// La nota que se espera, o `null` al terminar.
-  int? get expectedMidi => follower.done ? null : follower.expected[follower.position];
+  int? get expectedMidi => follower.expectedMidi;
 
   /// Una ventana del micrófono que termina en el instante [at] (segundos);
   /// [hop] = muestras nuevas desde la anterior. Devuelve qué fue la nota que
@@ -128,29 +151,33 @@ class PlayAlongResult {
     required this.pauseAt,
   });
 
-  /// [times]: instante de cada nota correcta, en orden; [mistakesAt]: la nota
-  /// que se esperaba (índice) cuando sonó cada error.
+  /// [times]: instante de cada nota correcta, en orden, y [beats]: en qué
+  /// pulso cae cada una en la tablatura (sin darlos, corcheas seguidas);
+  /// [mistakesAt]: la nota que se esperaba (índice) cuando sonó cada error.
   factory PlayAlongResult.from(
     List<double> times, {
+    List<double>? beats,
     List<int> mistakesAt = const [],
-    int notesPerBeat = defaultNotesPerBeat,
   }) {
-    final gaps = [
-      for (var i = 1; i < times.length; i++) times[i] - times[i - 1],
-    ];
+    final at = beats ?? [for (var i = 0; i < times.length; i++) i / defaultNotesPerBeat];
     final errors = List<int>.unmodifiable(mistakesAt);
-    if (gaps.isEmpty) {
+    if (times.length < 2 || at.last <= at.first) {
       return PlayAlongResult(mistakesAt: errors, bpm: null, pauseAt: null);
     }
-    // El tempo, por la distancia media de la primera a la última: el
-    // micrófono ubica cada nota en cuadros de ~46 ms, y en el promedio de
-    // toda la pasada ese redondeo se diluye. Las pausas, contra la típica.
-    final average = (times.last - times.first) / gaps.length;
-    final typical = _median(gaps);
-    final pause = gaps.indexWhere((g) => g > typical * playAlongPauseFactor);
+    // El tempo, por la distancia de la primera a la última: el micrófono
+    // ubica cada nota en cuadros de ~46 ms, y en toda la pasada ese redondeo
+    // se diluye. Las pausas, contra la típica (segundos por pulso de cada
+    // tramo, así una nota larga no cuenta como pausa).
+    final seconds = times.last - times.first;
+    final perBeat = [
+      for (var i = 1; i < times.length; i++)
+        if (at[i] > at[i - 1]) (times[i] - times[i - 1]) / (at[i] - at[i - 1]) else double.infinity,
+    ];
+    final typical = _median(perBeat);
+    final pause = perBeat.indexWhere((g) => g > typical * playAlongPauseFactor);
     return PlayAlongResult(
       mistakesAt: errors,
-      bpm: average <= 0 ? null : 60 / (average * notesPerBeat),
+      bpm: seconds <= 0 ? null : 60 * (at.last - at.first) / seconds,
       // La pausa es antes de la nota que tardó en llegar.
       pauseAt: pause < 0 ? null : pause + 1,
     );

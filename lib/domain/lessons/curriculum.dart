@@ -808,7 +808,12 @@ const List<Lesson> curriculum = [
     scale: LessonScale(scaleId: 'pentatonic_minor', root: 9),
     tool: LessonTool.metronome,
     bpm: 70,
-    tab: [TabNote(1, 5), TabNote(2, 8), TabNote(2, 5), TabNote(3, 7)],
+    tab: [
+      TabNote(1, 5),
+      TabNote(2, 8),
+      TabNote(2, 5),
+      TabNote(3, 7, technique: TabTechnique.bend, bend: 2),
+    ],
   ),
   Lesson(
     id: 'l12_legato_lick',
@@ -836,7 +841,12 @@ const List<Lesson> curriculum = [
     scale: LessonScale(scaleId: 'pentatonic_minor', root: 9),
     tool: LessonTool.metronome,
     bpm: 70,
-    tab: [TabNote(3, 5), TabNote(3, 7), TabNote(4, 5), TabNote(4, 7)],
+    tab: [
+      TabNote(3, 5),
+      TabNote(3, 7, technique: TabTechnique.hammerOn),
+      TabNote(4, 5),
+      TabNote(4, 7, technique: TabTechnique.hammerOn),
+    ],
   ),
   Lesson(
     id: 'l13_call_response',

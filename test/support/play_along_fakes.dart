@@ -16,11 +16,11 @@ class FakeAudio extends AudioService {
   FakeAudio() : super.forTesting();
 
   int stops = 0;
-  final played = <List<NoteEvent>>[];
+  final played = <List<StringSound>>[];
 
   @override
-  Future<void> playNotes(List<NoteEvent> events, {double seconds = 2.5, double? ring}) async =>
-      played.add(events);
+  Future<void> playTab(List<StringSound> sounds, {required double seconds}) async =>
+      played.add(sounds);
 
   @override
   Future<void> stopAll() async => stops++;
@@ -50,12 +50,17 @@ class FakeMic extends PitchService {
 }
 
 /// Las ventanas que daría el micrófono con [tab] tocada a [bpm] (cada nota se
-/// corta con la siguiente), como las arma [PitchService].
+/// corta con la siguiente; los silencios no suenan), como las arma
+/// [PitchService].
 List<MicWindow> micWindows(List<TabNote> tab, int bpm) {
   final step = tabStepSeconds(bpm);
+  final onsets = tabOnsetSeconds(tab, bpm: bpm);
   final audio = renderNotes(
-    [for (final (i, n) in tab.indexed) (midi: tabMidi(n), at: 0.3 + i * step)],
-    seconds: 0.3 + tab.length * step + 0.6,
+    [
+      for (final (i, n) in tab.indexed)
+        if (!n.isRest) (midi: tabMidi(n), at: 0.3 + onsets[i]),
+    ],
+    seconds: 0.3 + tabEndSeconds(tab, bpm: bpm) + 0.6,
     ring: step,
   );
   final half = decimateByTwo(audio);

@@ -90,6 +90,184 @@ Float64List renderNotes(
   return mix;
 }
 
+/// Cómo se pulsa una cuerda.
+enum StringTouch {
+  /// Normal: suena hasta que la apaga la nota siguiente en esa cuerda.
+  open,
+
+  /// Apagada con la palma: corta y sorda ([palmMuteSeconds]).
+  palmMute,
+
+  /// Nota muerta: solo el golpe ([deadNoteSeconds]).
+  dead,
+}
+
+/// En cuánto se apaga (−60 dB) una nota con la palma.
+const palmMuteSeconds = 0.3;
+
+/// En cuánto se apaga una nota muerta.
+const deadNoteSeconds = 0.05;
+
+/// Profundidad del vibrato (semitonos, hacia cada lado) y su frecuencia.
+const vibratoDepth = 0.3;
+const vibratoHz = 5.5;
+
+/// Un cambio de altura sin volver a pulsar: desde [at] segundos después del
+/// ataque, la cuerda llega a [midi] en [seconds]. Con [excite], el dedo que
+/// cae o se suelta (ligado) le da un poco de energía a la cuerda.
+typedef Glide = ({double at, double midi, double seconds, bool excite});
+
+/// Una cuerda que suena: se pulsa en [at] (segundos) con [midi] y suena
+/// [seconds]. [glides] la llevan a otras alturas sin volver a pulsar
+/// (ligados, slides, bends); desde [vibratoFrom] (segundos tras el ataque)
+/// la altura oscila.
+class StringSound {
+  const StringSound({
+    required this.midi,
+    required this.at,
+    required this.seconds,
+    this.glides = const [],
+    this.vibratoFrom,
+    this.touch = StringTouch.open,
+  });
+
+  final int midi;
+  final double at;
+  final double seconds;
+  final List<Glide> glides;
+  final double? vibratoFrom;
+  final StringTouch touch;
+
+  /// La altura (MIDI, con decimales) a los [t] segundos del ataque.
+  double midiAt(double t) {
+    var m = midi.toDouble();
+    for (final g in glides) {
+      if (t <= g.at) break;
+      final from = m;
+      m = g.seconds <= 0 || t >= g.at + g.seconds
+          ? g.midi
+          : from + (g.midi - from) * (t - g.at) / g.seconds;
+    }
+    final v = vibratoFrom;
+    if (v != null && t > v) {
+      // Entra de a poco en 0.15 s, como la mano que empieza a moverse.
+      final double ramp = math.min(1, (t - v) / 0.15);
+      m += vibratoDepth * ramp * math.sin(2 * math.pi * vibratoHz * (t - v));
+    }
+    return m;
+  }
+
+  /// La altura cambia mientras suena.
+  bool get moves => glides.isNotEmpty || vibratoFrom != null;
+
+  @override
+  bool operator ==(Object other) => other is StringSound && other.toString() == toString();
+
+  @override
+  int get hashCode => toString().hashCode;
+
+  @override
+  String toString() =>
+      '$midi@${at.toStringAsFixed(4)}+${seconds.toStringAsFixed(3)}'
+      '${touch == StringTouch.open ? '' : ':${touch.name}'}'
+      '${[for (final g in glides) '>${g.midi}@${g.at.toStringAsFixed(3)}/${g.seconds.toStringAsFixed(3)}${g.excite ? 'x' : ''}'].join()}'
+      '${vibratoFrom == null ? '' : '~${vibratoFrom!.toStringAsFixed(3)}'}';
+}
+
+/// Coeficiente de pérdida por vuelta del lazo para que una cuerda de [hz]
+/// caiga 60 dB en [seconds].
+double decayFor(double hz, double seconds) => math.pow(0.001, 1 / (seconds * hz)).toDouble();
+
+/// Mezcla de [sounds] durante [seconds], normalizada a un pico de 0.9.
+Float64List renderStrings(List<StringSound> sounds, {required double seconds}) {
+  final total = (seconds * synthSampleRate).round();
+  final mix = Float64List(total);
+  for (final (i, s) in sounds.indexed) {
+    final start = (s.at * synthSampleRate).round();
+    if (start >= total) continue;
+    final length = math.min(total - start, (s.seconds * synthSampleRate).round());
+    if (length <= 0) continue;
+    final note = _renderString(s, length / synthSampleRate, seed: i + 1);
+    for (var t = 0; t < note.length && start + t < total; t++) {
+      mix[start + t] += note[t];
+    }
+  }
+  _normalize(mix, 0.9);
+  return mix;
+}
+
+Float64List _renderString(StringSound s, double seconds, {required int seed}) {
+  final hz = midiToHz(s.midi);
+  final decay = switch (s.touch) {
+    StringTouch.open => 0.996,
+    StringTouch.palmMute => decayFor(hz, palmMuteSeconds),
+    StringTouch.dead => decayFor(hz, deadNoteSeconds),
+  };
+  if (!s.moves) return pluck(hz, seconds, seed: seed, decay: decay);
+  return _pluckMoving(s, seconds, seed: seed, decay: decay);
+}
+
+/// Karplus-Strong con retardo variable: el periodo sigue a [StringSound.midiAt]
+/// muestra a muestra (interpolación lineal), así un ligado, un slide o un bend
+/// cambian la altura de la cuerda que ya vibra, sin volver a pulsarla.
+Float64List _pluckMoving(
+  StringSound s,
+  double seconds, {
+  required int seed,
+  required double decay,
+}) {
+  final total = (seconds * synthSampleRate).round();
+  final out = Float64List(total);
+  // El periodo más largo (la nota más grave que alcanza, con el vibrato).
+  var lowest = s.midi.toDouble();
+  for (final g in s.glides) {
+    lowest = math.min(lowest, g.midi);
+  }
+  if (s.vibratoFrom != null) lowest -= vibratoDepth;
+  final size = (synthSampleRate / (440.0 * math.pow(2, (lowest - 69) / 12))).ceil() + 4;
+  final history = Float64List(size);
+  final rng = math.Random(seed);
+
+  // Ruido suavizado: el ataque y, más débil, cada dedo que cae (ligado).
+  final bursts = <({int from, int to, double gain})>[];
+  final firstPeriod = (synthSampleRate / midiToHz(s.midi)).round();
+  bursts.add((from: 0, to: firstPeriod, gain: 1));
+  for (final g in s.glides) {
+    if (!g.excite) continue;
+    final from = ((g.at + g.seconds) * synthSampleRate).round();
+    final period = (synthSampleRate / (440.0 * math.pow(2, (g.midi - 69) / 12))).round();
+    bursts.add((from: from, to: from + period, gain: 0.3));
+  }
+  var smooth = 0.0;
+
+  double read(double delay, int t) {
+    // Muestra de hace [delay] (fraccionario) desde la muestra t.
+    final pos = t - delay;
+    final i = pos.floor();
+    final frac = pos - i;
+    double at(int k) => k < 0 || t - k > size - 1 ? 0 : history[k % size];
+    return at(i) * (1 - frac) + at(i + 1) * frac;
+  }
+
+  for (var t = 0; t < total; t++) {
+    final midi = s.midiAt(t / synthSampleRate);
+    final period = synthSampleRate / (440.0 * math.pow(2, (midi - 69) / 12));
+    // Retardo del lazo = D (lectura) + 0.5 (promedio de dos muestras) = periodo.
+    final d = period - 0.5;
+    var y = decay * 0.5 * (read(d, t) + read(d + 1, t));
+    for (final b in bursts) {
+      if (t >= b.from && t < b.to) {
+        smooth = 0.5 * smooth + 0.5 * (rng.nextDouble() * 2 - 1);
+        y += b.gain * smooth;
+      }
+    }
+    history[t % size] = y;
+    out[t] = y;
+  }
+  _fadeOut(out);
+  return out;
+}
+
 /// Segundos entre una cuerda y la siguiente al rasguear.
 const defaultStrumGap = 0.035;
 

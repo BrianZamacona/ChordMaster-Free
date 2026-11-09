@@ -189,7 +189,8 @@ class StepRail extends StatelessWidget {
 }
 
 /// Una celda por corchea: flecha y conteo ("1 y 2 y…"; en 6/8, de 1 a 6).
-/// La de [highlight] se pinta llena.
+/// Un golpe apagado lleva una x junto a la flecha. La de [highlight] se pinta
+/// llena.
 class StrumPatternView extends StatelessWidget {
   const StrumPatternView({super.key, required this.pattern, this.highlight});
 
@@ -227,6 +228,8 @@ class StrumPatternView extends StatelessWidget {
                         switch (stroke) {
                           'D' => '↓',
                           'U' => '↑',
+                          'd' => 'x↓',
+                          'u' => 'x↑',
                           _ => '—',
                         },
                         style: musicMono(
@@ -254,7 +257,9 @@ class StrumPatternView extends StatelessWidget {
         ),
         const SizedBox(height: 8),
         Text(
-          AppStrings.lessonStrumHint,
+          pattern.split('').any(isMutedStroke)
+              ? '${AppStrings.lessonStrumHint} · ${AppStrings.lessonStrumMutedHint}'
+              : AppStrings.lessonStrumHint,
           style: Theme.of(context)
               .textTheme
               .bodySmall

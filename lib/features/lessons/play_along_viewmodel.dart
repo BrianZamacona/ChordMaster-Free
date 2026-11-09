@@ -69,7 +69,7 @@ class PlayAlongViewModel extends Notifier<PlayAlongState> {
   }
 
   /// Empieza a escuchar [tab] para [owner].
-  Future<void> start(Object owner, List<TabNote> tab) async {
+  Future<void> start(Object owner, List<TabNote> tab, {TabSwing swing = TabSwing.none}) async {
     await _release();
     _wanted = owner;
     // Que no suene ningún reproductor: el micrófono lo oiría.
@@ -95,7 +95,7 @@ class PlayAlongViewModel extends Notifier<PlayAlongState> {
       await _pitch.stopListening();
       return;
     }
-    _session = PlayAlongSession(tab, a4: _pitch.referenceA4);
+    _session = PlayAlongSession(tab, a4: _pitch.referenceA4, swing: swing);
     _sub = _pitch.windowStream.listen(_onWindow, onError: (Object e) => stop());
   }
 

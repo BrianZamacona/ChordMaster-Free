@@ -7,6 +7,7 @@ import 'package:flutter_riverpod/flutter_riverpod.dart';
 import '../../core/constants/app_strings.dart';
 import '../../domain/lessons/lesson.dart';
 import '../../domain/practice/play_along.dart';
+import '../../domain/practice/tab_notation.dart';
 import '../../domain/practice/tab_playback.dart';
 import '../../domain/practice/technique_exercises.dart';
 import '../../domain/theory/notes.dart';
@@ -35,6 +36,7 @@ class TabPlayer extends ConsumerStatefulWidget {
     super.key,
     required this.notes,
     required this.bpm,
+    this.swing = TabSwing.none,
     this.onPlay,
     this.onPlayed,
     this.onBpmChanged,
@@ -42,6 +44,9 @@ class TabPlayer extends ConsumerStatefulWidget {
 
   final List<TabNote> notes;
   final int bpm;
+
+  /// Swing de la tablatura: corre el contratiempo al sonar y al marcarlo.
+  final TabSwing swing;
 
   /// Se llama al empezar a sonar (las rutinas lo anotan como día de práctica).
   final VoidCallback? onPlay;
@@ -113,7 +118,7 @@ class _TabPlayerState extends ConsumerState<TabPlayer> {
     super.didUpdateWidget(old);
     // Por contenido: hay pantallas que arman la lista en cada build.
     final same = listEquals(old.notes, widget.notes);
-    if (!same || old.bpm != widget.bpm) _stop();
+    if (!same || old.bpm != widget.bpm || old.swing != widget.swing) _stop();
     if (!same) {
       _again?.cancel();
       _line = null;
@@ -160,11 +165,10 @@ class _TabPlayerState extends ConsumerState<TabPlayer> {
   /// Suena el tramo elegido desde el principio (también al volver en bucle).
   void _start() {
     final part = _part;
-    _audio.playNotes(
-          tabEvents(part, bpm: widget.bpm),
-          seconds: tabDurationSeconds(part.length, bpm: widget.bpm),
-          ring: tabNoteRingSeconds,
-        );
+    _audio.playTab(
+      tabSounds(part, bpm: widget.bpm, swing: widget.swing),
+      seconds: tabDurationSeconds(part, bpm: widget.bpm, swing: widget.swing),
+    );
     _clock
       ..reset()
       ..start();
@@ -175,14 +179,14 @@ class _TabPlayerState extends ConsumerState<TabPlayer> {
 
   void _tick() {
     final elapsed = _clock.elapsedMicroseconds / 1e6;
-    final count = _range.end - _range.start;
-    final index = tabIndexAt(elapsed, count, bpm: widget.bpm);
+    final part = _part;
+    final index = tabIndexAt(elapsed, part, bpm: widget.bpm, swing: widget.swing);
     if (index != null) {
       if (index != _index) setState(() => _index = index);
       return;
     }
     // Terminó la última nota: en bucle, otra vez apenas deja de sonar.
-    if (_loop && elapsed >= count * tabStepSeconds(widget.bpm)) {
+    if (_loop && elapsed >= tabEndSeconds(part, bpm: widget.bpm, swing: widget.swing)) {
       _start();
     } else if (!_loop) {
       _stop(silence: false);
@@ -202,7 +206,7 @@ class _TabPlayerState extends ConsumerState<TabPlayer> {
   void _listenMic() {
     _again?.cancel();
     _stop();
-    _mic!.start(_token, _part);
+    _mic!.start(_token, _part, swing: widget.swing);
   }
 
   void _stopMic() {
@@ -297,6 +301,7 @@ class _TabPlayerState extends ConsumerState<TabPlayer> {
       children: [
         LessonTabView(
           notes: widget.notes,
+          swing: widget.swing,
           showFingers: true,
           focusLine: _line,
           highlight: listening
@@ -359,7 +364,9 @@ class _TabPlayerState extends ConsumerState<TabPlayer> {
                 label: Text(listening ? AppStrings.tabStop : AppStrings.tabPlayMic),
               ),
             Text(
-              AppStrings.tabAtBpm(widget.bpm),
+              tabHasRhythm(widget.notes, swing: widget.swing)
+                  ? AppStrings.tabAtBpmRhythm(widget.bpm)
+                  : AppStrings.tabAtBpm(widget.bpm),
               style: musicMono(fontSize: 12, color: p.textSecondary),
             ),
           ],

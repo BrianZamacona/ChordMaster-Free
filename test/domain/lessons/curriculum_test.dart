@@ -4,6 +4,7 @@ import 'dart:io';
 import 'package:chordmaster_free/core/i18n/tr.dart';
 import 'package:chordmaster_free/domain/lessons/curriculum.dart';
 import 'package:chordmaster_free/domain/lessons/lesson.dart';
+import 'package:chordmaster_free/domain/practice/tab_notation.dart';
 import 'package:chordmaster_free/domain/theory/circle_of_fifths.dart';
 import 'package:chordmaster_free/domain/theory/double_stops.dart';
 import 'package:chordmaster_free/domain/theory/notes.dart';
@@ -481,12 +482,31 @@ void main() {
       expect(tabOf('l11_bend_lick'), ['A', 'G', 'E', 'D']);
       final last = lessonsById['l11_bend_lick']!.tab.last;
       expect((last.string, last.fret), (3, 7));
+      // La tablatura lo marca: bend de un tono (2 semitonos), solo en la última.
+      expect((last.technique, last.bend), (TabTechnique.bend, 2));
+      expect(
+        lessonsById['l11_bend_lick']!.tab.where((n) => n.technique == TabTechnique.bend),
+        hasLength(1),
+      );
       expect(pitchClassName(noteIndex('D') + 2), 'E');
       expect(notesOf('pentatonic_minor', noteIndex('A')), contains('E'));
     });
 
     test('l12: ligados de 5 a 7: C a D en la 3ª, G a A en la 4ª', () {
       expect(tabOf('l12_legato_lick'), ['C', 'D', 'G', 'A']);
+      // La púa toca la primera de cada par; la segunda es un hammer-on.
+      expect([for (final n in lessonsById['l12_legato_lick']!.tab) n.technique], [
+        TabTechnique.none,
+        TabTechnique.hammerOn,
+        TabTechnique.none,
+        TabTechnique.hammerOn,
+      ]);
+    });
+
+    test('toda tablatura de lección está bien escrita (ligados, bends, silencios)', () {
+      for (final l in curriculum) {
+        expect(tabNotationProblems(l.tab), isEmpty, reason: l.id);
+      }
     });
 
     test('l13: la pregunta acaba en G y la respuesta en A, la tónica', () {

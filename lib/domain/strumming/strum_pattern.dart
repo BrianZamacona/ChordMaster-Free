@@ -1,5 +1,7 @@
 /// Patrones de rasgueo de un compás: una letra por corchea, `D` = abajo,
-/// `U` = arriba, espacio = la mano pasa sin tocar. 8 corcheas = 4/4; 6 = 6/8.
+/// `U` = arriba, espacio = la mano pasa sin tocar; en minúscula (`d`, `u`), el
+/// golpe va apagado (la mano izquierda apoya sin pisar: solo se oye el
+/// "chas"). 8 corcheas = 4/4; 6 = 6/8.
 library;
 
 /// Conteo de la corchea [index] de [pattern]: un compás de 6 corcheas es 6/8 y
@@ -12,16 +14,19 @@ String strumCountAt(String pattern, int index, String and) {
 /// Golpes que suenan en un compás de [pattern].
 int strokeCount(String pattern) => pattern.replaceAll(' ', '').length;
 
-/// Corcheas de [pattern] con golpe [stroke] (`D` o `U`).
+/// Corcheas de [pattern] con golpe [stroke] (`D` o `U`), apagado o no.
 List<int> strokesAt(String pattern, String stroke) => [
   for (var i = 0; i < pattern.length; i++)
-    if (pattern[i] == stroke) i,
+    if (pattern[i].toUpperCase() == stroke) i,
 ];
+
+/// El golpe va apagado (`d` o `u`).
+bool isMutedStroke(String stroke) => stroke == 'd' || stroke == 'u';
 
 /// Un patrón de 4/4 es "de péndulo" si cada golpe va en su lugar natural: abajo
 /// en los números y arriba en las "y". Así la mano nunca cambia de sentido a
 /// destiempo.
 bool followsPendulum(String pattern) => [
   for (var i = 0; i < pattern.length; i++)
-    pattern[i] == ' ' || pattern[i] == (i.isEven ? 'D' : 'U'),
+    pattern[i] == ' ' || pattern[i].toUpperCase() == (i.isEven ? 'D' : 'U'),
 ].every((ok) => ok);
