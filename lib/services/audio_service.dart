@@ -105,6 +105,14 @@ class AudioService {
     );
   }
 
+  /// Una tablatura ([tabSounds]): cuerdas pulsadas, ligadas, con bends o
+  /// apagadas, durante [seconds].
+  Future<void> playTab(List<StringSound> sounds, {required double seconds}) {
+    if (sounds.isEmpty) return Future.value();
+    final key = 'tab-${stableKey('${sounds.join('|')}-$seconds')}';
+    return _playVoice(key, () => renderStrings(sounds, seconds: seconds));
+  }
+
   /// Un clic suelto; [isAccent] para el primer tiempo del compás.
   Future<void> playMetronomeTick({bool isAccent = false}) async {
     try {

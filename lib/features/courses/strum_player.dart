@@ -83,7 +83,7 @@ class _StrumPlayerState extends ConsumerState<StrumPlayer> {
     final w = widget;
     ref
         .read(audioServiceProvider)
-        .playNotes(
+        .playTab(
           strumEvents(
             w.slots,
             bpm: w.bpm,
@@ -95,7 +95,6 @@ class _StrumPlayerState extends ConsumerState<StrumPlayer> {
             bpm: w.bpm,
             beatsPerSlot: w.beatsPerSlot,
           ),
-          ring: strumRingSeconds(w.bpm),
         );
     _clock
       ..reset()

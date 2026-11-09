@@ -521,6 +521,9 @@ class AppStrings {
   static String get tabStop => tr(es: 'Detener', en: 'Stop');
   static String tabAtBpm(int bpm) =>
       tr(es: 'a $bpm BPM, en corcheas', en: 'at $bpm BPM, in eighth notes');
+
+  /// Con ritmo propio no son todas corcheas: solo el tempo.
+  static String tabAtBpmRhythm(int bpm) => tr(es: 'a $bpm BPM', en: 'at $bpm BPM');
   static String get tabPlayMic => tr(es: 'Tocar yo', en: 'Play it myself');
   static String get tabMicHint => tr(
     es: 'Toca con el teléfono cerca: la app espera cada nota (sin apuro) y, '
@@ -694,6 +697,10 @@ class AppStrings {
     es: '↓ abajo · ↑ arriba · — la mano pasa sin tocar',
     en: '↓ down · ↑ up · — the hand passes without touching',
   );
+  static String get lessonStrumMutedHint => tr(
+    es: 'x = rasgueo apagado: la mano izquierda apoya sin pisar',
+    en: 'x = muted strum: the fretting hand rests without pressing',
+  );
   static String get lessonOpenScale =>
       tr(es: 'Ver la escala en el diapasón', en: 'See the scale on the fretboard');
   static String get lessonOpenTuner => tr(es: 'Abrir el afinador', en: 'Open the tuner');
@@ -770,6 +777,62 @@ class AppStrings {
           es: 'cuerda $string, traste $fret, dedo $finger',
           en: 'string $string, fret $fret, finger $finger',
         );
+  static String get lessonTabRest => tr(es: 'silencio', en: 'rest');
+
+  /// Conteo de semicorcheas: "1 e y a" / "1 e & a".
+  static String get tabCountE => tr(es: 'e', en: 'e');
+  static String get tabCountA => tr(es: 'a', en: 'a');
+
+  /// Bend de [semitones] semitonos, como se escribe: ½, 1, 1½ (tonos).
+  static String tabBendAmount(int semitones) => switch (semitones) {
+    1 => '½',
+    2 => '1',
+    _ => '1½',
+  };
+
+  // Técnicas, para leer la tablatura en voz alta.
+  static String get tabSpokenHammerOn => tr(es: 'hammer-on', en: 'hammer-on');
+  static String get tabSpokenPullOff => tr(es: 'pull-off', en: 'pull-off');
+  static String get tabSpokenSlide => tr(es: 'slide', en: 'slide');
+  static String tabSpokenBend(int semitones) => tr(
+    es: 'bend de ${tabBendAmount(semitones)} tono',
+    en: 'bend of ${tabBendAmount(semitones)} step',
+  );
+  static String get tabSpokenRelease => tr(es: 'release', en: 'release');
+  static String get tabSpokenVibrato => tr(es: 'con vibrato', en: 'with vibrato');
+  static String get tabSpokenPalmMute => tr(es: 'apagada con la palma', en: 'palm muted');
+  static String get tabSpokenDead => tr(es: 'nota muerta', en: 'dead note');
+  static String get tabSpokenDown => tr(es: 'púa abajo', en: 'downstroke');
+  static String get tabSpokenUp => tr(es: 'púa arriba', en: 'upstroke');
+
+  // Qué quiere decir cada marca que aparece en la tablatura.
+  static String get tabLegendRest => tr(es: '▬ silencio', en: '▬ rest');
+  static String get tabLegendHammerOn =>
+      tr(es: 'h hammer-on: cae otro dedo, sin púa', en: 'h hammer-on: another finger lands, no pick');
+  static String get tabLegendPullOff =>
+      tr(es: 'p pull-off: el dedo se suelta, sin púa', en: 'p pull-off: the finger lets go, no pick');
+  static String get tabLegendSlide => tr(
+    es: r'/ \ slide: el dedo se desliza sin soltar',
+    en: r'/ \ slide: the finger glides without letting go',
+  );
+  static String get tabLegendBend => tr(
+    es: 'b bend: empuja la cuerda (½ = medio tono, 1 = un tono)',
+    en: 'b bend: push the string (½ = half step, 1 = whole step)',
+  );
+  static String get tabLegendRelease =>
+      tr(es: 'r release: la cuerda vuelve a su lugar', en: 'r release: the string comes back');
+  static String get tabLegendVibrato => tr(
+    es: '~ vibrato: mueve la cuerda un poco, sin parar',
+    en: '~ vibrato: keep wiggling the string a little',
+  );
+  static String get tabLegendPalmMute =>
+      tr(es: 'PM: la palma apoyada junto al puente', en: 'PM: palm resting by the bridge');
+  static String get tabLegendDead => tr(
+    es: 'x nota muerta: la mano izquierda apaga la cuerda',
+    en: 'x dead note: the fretting hand mutes the string',
+  );
+  static String get tabLegendPick => tr(es: '⊓ púa abajo · V púa arriba', en: '⊓ downstroke · V upstroke');
+
   static String get lessonTabFingersHint => tr(
     es: 'Debajo, el dedo: 1 índice, 2 medio, 3 anular, 4 meñique.',
     en: 'Below, the finger: 1 index, 2 middle, 3 ring, 4 pinky.',

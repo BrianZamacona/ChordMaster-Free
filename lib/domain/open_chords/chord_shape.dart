@@ -5,6 +5,7 @@ library;
 
 import '../../core/i18n/tr.dart';
 import '../audio/pluck_synth.dart';
+import '../strumming/strum_pattern.dart';
 import '../theory/notes.dart';
 
 /// Trastes y dedos en el orden de `chords.json` (6ª → 1ª; `-1` = muteada,
@@ -309,12 +310,12 @@ LocalizedText changeText(ChordChange change) {
 /// roza solo la parte de abajo del rasgueo).
 const upStrumStrings = 4;
 
-/// Lo que suena en un golpe [stroke] (`D` o `U`) sobre [shape]: abajo, todas
-/// las cuerdas de grave a aguda; arriba, las [upStrumStrings] más agudas, de
-/// aguda a grave.
+/// Lo que suena en un golpe [stroke] (`D` o `U`, o apagado en minúscula)
+/// sobre [shape]: abajo, todas las cuerdas de grave a aguda; arriba, las
+/// [upStrumStrings] más agudas, de aguda a grave.
 List<int> strokeMidi(ChordShape shape, String stroke) {
   final all = shape.midi;
-  if (stroke != 'U') return all;
+  if (stroke.toUpperCase() != 'U') return all;
   final from = all.length > upStrumStrings ? all.length - upStrumStrings : 0;
   return all.sublist(from).reversed.toList();
 }
@@ -322,8 +323,9 @@ List<int> strokeMidi(ChordShape shape, String stroke) {
 /// El rasgueo de cada forma de [slots], que dura [beatsPerSlot] pulsos. Cada
 /// forma sigue su patrón de [patterns] (una letra por corchea, como en
 /// `strum_pattern.dart`); sin patrones, un golpe hacia abajo por pulso. Las
-/// cuerdas de un golpe se separan [defaultStrumGap].
-List<NoteEvent> strumEvents(
+/// cuerdas de un golpe se separan [defaultStrumGap] y suenan hasta el pulso
+/// siguiente ([strumRingSeconds]); en un golpe apagado, solo el "chas".
+List<StringSound> strumEvents(
   List<ChordShape> slots, {
   required int bpm,
   required int beatsPerSlot,
@@ -336,7 +338,12 @@ List<NoteEvent> strumEvents(
       for (final (k, stroke) in (patterns?[i] ?? 'D ' * beatsPerSlot).split('').indexed)
         if (stroke != ' ')
           for (final (j, m) in strokeMidi(shape, stroke).indexed)
-            (midi: m, at: (i * perSlot + k) * eighth + j * defaultStrumGap),
+            StringSound(
+              midi: m,
+              at: (i * perSlot + k) * eighth + j * defaultStrumGap,
+              seconds: isMutedStroke(stroke) ? deadNoteSeconds * 2 : strumRingSeconds(bpm),
+              touch: isMutedStroke(stroke) ? StringTouch.dead : StringTouch.open,
+            ),
   ];
 }
 
