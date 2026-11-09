@@ -6,6 +6,7 @@ import '../../core/constants/app_strings.dart';
 import '../../data/repository/scale_repository.dart';
 import '../../domain/guides/guides.dart';
 import '../../domain/lessons/curriculum.dart';
+import '../../domain/licks/licks.dart';
 import '../chords/chord_viewmodel.dart';
 import '../courses/course_registry.dart';
 
@@ -35,6 +36,7 @@ String guideTargetLabel(GuideTarget target) => switch (target) {
   ScaleLink() => AppStrings.lessonOpenScale,
   ChordLink(:final chord) => AppStrings.guideOpenChord(chord),
   WorkoutLink() => AppStrings.hubWorkouts,
+  LickLink(:final lickId) => AppStrings.guideOpenLick(licksById[lickId]?.title.text ?? lickId),
   // El nombre del capo es una pregunta: "Abrir ¿Qué capo uso?" no se lee.
   ModuleLink(module: GuideModule.capo) => AppStrings.guideOpenCapo,
   ModuleLink(:final module) => AppStrings.guideOpenModuleNamed(_moduleName(module)),
@@ -62,6 +64,7 @@ IconData guideTargetIcon(GuideTarget target) => switch (target) {
   ScaleLink() => Icons.linear_scale,
   ChordLink() => Icons.library_music_outlined,
   WorkoutLink() => Icons.fitness_center,
+  LickLink() => Icons.bolt,
   ModuleLink() => Icons.open_in_new,
 };
 
@@ -97,6 +100,8 @@ Future<void> openGuideTarget(
       context.go(
         '/practice/workouts?scale=${scale.scaleId}&root=${scale.root}',
       );
+    case LickLink(:final lickId):
+      await context.push('/learn/licks/$lickId');
     case ModuleLink(:final module):
       final (route, stacked) = moduleRoute(module);
       if (stacked) {
