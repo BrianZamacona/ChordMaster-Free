@@ -165,13 +165,20 @@ cada nota pertenezca a la escala. No bajar la tolerancia de 0.
 - Retos de la semana (`lib/domain/practice/multi_day_challenges.dart`, ruta `/practice/challenges`):
   se superan practicando en días distintos, sin marcar nada. `ActivityLog`
   (`lib/services/activity_log.dart`, `activity_days`, últimos 30 días) anota el día al terminar
-  una lección, escuchar una rutina, guardar un tempo limpio en Técnica, responder en Oído o
-  terminar una ronda de Ritmo con puntaje. "Semana constante" pide 7 días seguidos de cualquier
+  una lección, escuchar una rutina, guardar un tempo limpio en Técnica, responder en Oído o en
+  Notas del mástil, o terminar una ronda de Ritmo con puntaje. "Semana constante" pide 7 días seguidos de cualquier
   práctica; los demás, N días de los últimos 7. Hay test de que todos se pueden superar.
 - Práctica de hoy (Inicio, `lib/domain/practice/daily_plan.dart`): la siguiente lección del
   camino, una rutina (escala que rota por día entre `dailyWorkoutScales`) y un ejercicio de
   Técnica (rota por día). Cada paso se marca solo cuando `ActivityLog` anota su actividad hoy.
   Sin azar: `dayNumber` cuenta días de calendario, así que la hora no cambia el plan.
+- Notas del mástil (`/practice/fretboard`, en Practicar; inspirado en el "Note Finder" de Gibson,
+  por reglas): `lib/domain/theory/fretboard_quiz.dart` arma dos preguntas que se turnan, "¿qué nota
+  es?" (opciones a 1 o 2 semitonos) y "¿en qué traste está su octava?" con las formas de
+  `octaveShapes` (opciones: el traste de partida, el error típico, y los vecinos; la forma 6 → 1 de
+  dos octavas cae en el mismo traste). Trastes 0 a 12. El generador se inyecta
+  (`fretQuizRandomProvider`) para los tests; la mejor racha va en `fretboard_quiz_best_streak` y cada
+  respuesta anota `PracticeActivity.fretboard`. La guía "El mástil" (Teoría) lo enlaza.
 - Logros: todos deben poder conseguirse (test en `achievement_service_test.dart`). Comunidad
   se eliminó (no tenía ruta y solo guardaba en el teléfono).
 

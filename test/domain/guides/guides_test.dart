@@ -17,6 +17,7 @@ import 'package:chordmaster_free/domain/practice/technique_exercises.dart';
 import 'package:chordmaster_free/domain/strumming/strum_pattern.dart';
 import 'package:chordmaster_free/domain/strumming/strumming_course.dart';
 import 'package:chordmaster_free/domain/theory/notes.dart';
+import 'package:chordmaster_free/domain/theory/octaves.dart';
 import 'package:flutter_test/flutter_test.dart';
 
 import '../../support/chord_data.dart';
@@ -437,5 +438,14 @@ void main() {
       expect(searchGuides('rock latino').map((g) => g.id), contains(styleGuideId(LickStyle.latinRock)));
       expect(searchGuides('thrash').map((g) => g.id), contains(styleGuideId(LickStyle.thrashMetal)));
     });
+  });
+
+  test('El mástil: el quiz busca octavas con formas fijas, como la de la 6ª a la 4ª (+2)', () {
+    final g = guidesById['theory_fretboard']!;
+    expect(
+      octaveShapes(),
+      contains(const OctaveShape(lowString: 6, highString: 4, fretShift: 2, octaves: 1)),
+    );
+    expect((g.chapters.last.target as ModuleLink).module, GuideModule.fretboardQuiz);
   });
 }

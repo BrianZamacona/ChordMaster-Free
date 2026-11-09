@@ -55,6 +55,7 @@ enum GuideModule {
   scales,
   health,
   technique,
+  fretboardQuiz,
 }
 
 /// A dónde lleva un capítulo.
@@ -751,6 +752,14 @@ const List<Guide> _writtenGuides = [
           en: 'Fret 12 repeats the open string an octave higher.',
         ),
         target: ScaleLink(LessonScale(scaleId: 'major', root: 0)),
+      ),
+      GuideChapter(
+        title: LocalizedText(es: 'Practica sin mirar', en: 'Practice without peeking'),
+        body: LocalizedText(
+          es: 'Nombra notas y busca sus octavas con las formas fijas: de la 6ª a la 4ª, dos trastes más arriba.',
+          en: 'Name notes and find their octaves with the fixed shapes: from the 6th to the 4th, two frets higher.',
+        ),
+        target: ModuleLink(GuideModule.fretboardQuiz),
       ),
     ],
   ),

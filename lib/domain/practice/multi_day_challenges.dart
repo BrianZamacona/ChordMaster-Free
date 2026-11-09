@@ -20,6 +20,9 @@ enum PracticeActivity {
 
   /// Terminar una ronda del juego de ritmo con puntaje.
   rhythm,
+
+  /// Responder en el quiz del diapasón.
+  fretboard,
 }
 
 /// Clave de un día, sin hora: "2026-11-07".
