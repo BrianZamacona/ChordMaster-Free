@@ -1265,6 +1265,32 @@ class AppStrings {
   // ── Buscador por notas ──────────────────────────────────────────────────────
 
   static String get moduleFinder => tr(es: 'Buscador', en: 'Finder');
+
+  // ── Licks y riffs ─────────────────────────────────────────────────────────
+  static String get moduleLicks => tr(es: 'Licks y riffs', en: 'Licks & riffs');
+  static String get licksIntro => tr(
+    es: 'Frases cortas y originales que muestran cómo suena cada estilo: el riff acompaña, el lick va en el solo. Escúchalas, practícalas en bucle y tócalas con el micrófono.',
+    en: 'Short, original phrases that show how each style sounds: the riff accompanies, the lick goes in the solo. Listen, loop them and play them with the microphone.',
+  );
+  static String get licksKind => tr(es: 'Tipo', en: 'Type');
+  static String get licksKindRiff => tr(es: 'Riff', en: 'Riff');
+  static String get licksKindLick => tr(es: 'Lick', en: 'Lick');
+  static String get licksNoResults =>
+      tr(es: 'Ninguna frase con esos filtros.', en: 'No phrase matches those filters.');
+  static String get licksStyle => tr(es: 'El estilo', en: 'The style');
+  static String get licksTechniques => tr(es: 'Técnicas', en: 'Techniques');
+  static String licksScaleAt(String scale, int bpm) =>
+      tr(es: '$scale · $bpm BPM', en: '$scale · $bpm BPM');
+
+  // Nombre corto de cada técnica (filtros y etiquetas).
+  static String get techniqueNameHammerOn => tr(es: 'Hammer-on', en: 'Hammer-on');
+  static String get techniqueNamePullOff => tr(es: 'Pull-off', en: 'Pull-off');
+  static String get techniqueNameSlide => tr(es: 'Slide', en: 'Slide');
+  static String get techniqueNameBend => tr(es: 'Bend', en: 'Bend');
+  static String get techniqueNameRelease => tr(es: 'Release', en: 'Release');
+  static String get techniqueNameVibrato => tr(es: 'Vibrato', en: 'Vibrato');
+  static String get techniqueNamePalmMute => tr(es: 'Palm mute', en: 'Palm mute');
+  static String get techniqueNameDead => tr(es: 'Nota muerta', en: 'Dead note');
   static String get finderChordHint => tr(
     es: 'Toca una nota por cuerda; la que no marques no suena. Toca el nombre '
         'de una cuerda para tocarla al aire.',

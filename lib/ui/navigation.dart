@@ -24,6 +24,8 @@ import '../features/hubs/hubs.dart';
 import '../features/lessons/lesson_detail_screen.dart';
 import '../features/lessons/lesson_unit_screen.dart';
 import '../features/lessons/lessons_screen.dart';
+import '../features/licks/lick_detail_screen.dart';
+import '../features/licks/licks_screen.dart';
 import '../features/metronome/metronome_screen.dart';
 import '../features/progressions/progressions_screen.dart';
 import '../features/rhythm_games/rhythm_game_screen.dart';
@@ -78,11 +80,21 @@ List<RouteBase> _toolRoutes() => [
       GoRoute(path: 'metronome', builder: (_, _) => const MetronomeScreen()),
     ];
 
-/// Acordes, Escalas, Progresiones y Círculo de quintas: cuelgan de Aprender
+/// Acordes, Escalas, Progresiones, Círculo de quintas y Licks: cuelgan de Aprender
 /// (lecciones y guías los abren ahí) y de Inicio (sus accesos), con las
 /// mismas pantallas. Su navegación interna usa `context.sectionPath`
 /// para quedarse en la pestaña donde se abrió.
 List<RouteBase> _moduleRoutes() => [
+    GoRoute(
+      path: 'licks',
+      builder: (_, _) => const LicksScreen(),
+      routes: [
+        GoRoute(
+          path: ':id',
+          builder: (_, state) => LickDetailScreen(lickId: state.pathParameters['id']!),
+        ),
+      ],
+    ),
     GoRoute(
       path: 'circle',
       builder: (_, _) => const CircleScreen(),
