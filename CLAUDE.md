@@ -191,7 +191,8 @@ cada nota pertenezca a la escala. No bajar la tolerancia de 0.
 - Fundamentos (decisión del usuario, inspirado en "Basic Skills" y "Melodies"): conocer el
   instrumento y moverse con ganas de seguir, no acordes. Am, A y E (antes en Fundamentos) son la
   unidad "Más acordes abiertos" de rítmica; sus lecciones conservan su id (f3, f4, f5).
-- Tablatura en `Lesson.tab` (`TabNote`: cuerda 1 = mi aguda, traste). Toda lección con tab
+- Tablatura en `Lesson.tab` (`TabNote`: cuerda 1 = mi aguda, traste; ritmo y técnicas en
+  "Notación de la tablatura"). Toda lección con tab
   declara `scale` y un test exige que cada nota pertenezca a ella; las notas que el texto nombra
   se verifican una por una. Se dibuja en `lesson_tab.dart`, en renglones de 8 notas.
 - `Lesson.tool` abre afinador, metrónomo o un módulo de Aprender, siempre con `push`: atrás vuelve
@@ -287,7 +288,8 @@ cada nota pertenezca a la escala. No bajar la tolerancia de 0.
 
 ## Curso de patrones de rasgueo (Parte 1)
 - `lib/domain/strumming/`, unidad `r_strumming_patterns_1` del mapa (segunda de rítmica). Cinco patrones de
-  4/4 (`strummingPatterns`, una letra por corchea: `D`, `U` o espacio, el mismo formato que
+  4/4 (`strummingPatterns`, una letra por corchea: `D`, `U` o espacio, y `d`/`u` = golpe
+  apagado, que suena como nota muerta y se dibuja x↓/x↑; el mismo formato que
   `Lesson.strumPattern`) con Em, G, D y C. Cada patrón: aprenderlo, con uno, dos y cuatro
   acordes, consejos; luego "el patrón en canciones"; antes del 5, combinar 3 y 4; al final,
   tres partes. Inspirado en cursos tipo "Strumming Patterns – Part 1", en vertical.
@@ -344,10 +346,26 @@ cada nota pertenezca a la escala. No bajar la tolerancia de 0.
   1-2-3-4 y araña 1-3-2-4 (6ª→1ª y de vuelta), diagonal (cada cuerda un traste más arriba) y
   salto de cuerda (6 4 5 3 4 2 3 1), un dedo por traste desde el traste 1, 5 o 9. Tempo de 5 en
   5 BPM; "Me salió limpio" guarda el récord por ejercicio en `technique_best_bpm` y propone 5 más.
-- Audio de una tablatura (`lib/domain/practice/tab_playback.dart`): corcheas al tempo dado, y la
-  pantalla marca la nota con los mismos instantes (`tabIndexAt`). Se sintetiza la frase entera
-  en un WAV (`playNotes` con `ring`: cada nota suena 1.2 s, así el costo no crece con el
-  cuadrado). Claves de archivo largas pasan por `stableKey` (FNV-1a).
+- Notación de la tablatura (fase 1 de los estilos, inspirada en las guías de Gibson):
+  `TabNote` lleva `length` en semicorcheas (por defecto corchea), `technique` (h, p, slide,
+  bend con `bend` semitonos, release, vibrato, PM, nota muerta x) y `pick` (⊓ V);
+  `TabNote.rest` es un silencio. El swing (`TabSwing`, corcheas o semicorcheas) corre el
+  contratiempo a 2/3, como un tresillo, y es de la tablatura entera (`TabPlayer.swing`).
+  `tabNotationProblems` (`tab_notation.dart`) dice qué está mal escrito (un ligado sigue a la
+  nota anterior en su cuerda, el hammer-on sube, el pull-off baja, el release vuelve del bend…)
+  y un test lo corre sobre todas las lecciones. Se dibuja en `lesson_tab.dart`: letras entre
+  notas, b½/b1 y ~ en la nota, arriba la púa y PM, silencio = barrita, conteo "1 e y a" debajo
+  solo si hay ritmo propio (`tabHasRhythm`), y una leyenda con solo las marcas que aparecen.
+- Audio de una tablatura (`tab_playback.dart`): cada nota en su instante (duraciones y swing),
+  y la pantalla marca la nota con los mismos instantes (`tabIndexAt`). `tabSounds` arma las
+  cuerdas: un ligado, slide, bend o release no se vuelve a pulsar, cambia la altura de la
+  cuerda que suena (Karplus-Strong con retardo variable, `_pluckMoving`; test: el bend y el
+  hammer-on quedan a < 5 cents); volver a pulsar una cuerda la apaga; PM y nota muerta se
+  apagan solos (`decayFor`). Se sintetiza la frase entera en un WAV (`playTab`). Claves de
+  archivo largas pasan por `stableKey` (FNV-1a).
+- Micrófono y notación: los silencios y las notas muertas no se esperan; un bend se espera en
+  su traste (la nota empujada llega sin ataque y no es error); `NoteFollower.position` es el
+  índice en la tablatura. El tempo sale de los pulsos de cada nota, no de notas iguales.
 - Dedos en la tablatura (idea de Gibson, que colorea por dedo; aquí número, nunca solo color):
   `tabFingers` (`tab_playback.dart`) por la regla de un dedo por traste. Si todo lo pisado cabe
   en los trastes 1–4, el dedo es el traste; si no, el índice va en el traste más bajo; si no
