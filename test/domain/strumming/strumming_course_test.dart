@@ -1,6 +1,7 @@
 import 'dart:convert';
 import 'dart:io';
 
+import 'package:chordmaster_free/domain/audio/pluck_synth.dart';
 import 'package:chordmaster_free/domain/courses/course.dart';
 import 'package:chordmaster_free/domain/open_chords/chord_shape.dart';
 import 'package:chordmaster_free/domain/strumming/strum_pattern.dart';
@@ -166,6 +167,21 @@ void main() {
       // A 60 BPM cada corchea dura medio segundo: 0, 2, 3, 5, 6 y 7.
       expect(starts, {0, 2, 3, 5, 6, 7});
       expect(events, hasLength(3 * 6 + 3 * upStrumStrings));
+    });
+
+    test('rasgueo apagado: minúscula, mismo sentido y solo el golpe', () {
+      const pattern = 'DuduDUdU';
+      expect(followsPendulum(pattern), isTrue);
+      expect(followsPendulum('uD      '), isFalse);
+      expect(strokesAt(pattern, 'D'), [0, 2, 4, 6]);
+      expect([for (final s in pattern.split('')) isMutedStroke(s)], [false, true, true, true, false, false, true, false]);
+      final em = shapes['Em']!;
+      final events = strumEvents([em], bpm: 60, beatsPerSlot: 4, patterns: [pattern]);
+      final muted = events.where((e) => e.touch == StringTouch.dead).toList();
+      // Dos golpes apagados abajo (6 cuerdas: 2 y 6) y dos arriba (4: 1 y 3).
+      expect(muted, hasLength(2 * 6 + 2 * upStrumStrings));
+      expect(muted.every((e) => e.seconds < 0.2), isTrue);
+      expect({for (final e in muted) (e.at * 2).floor()}, {1, 2, 3, 6});
     });
 
     test('qué corchea suena', () {

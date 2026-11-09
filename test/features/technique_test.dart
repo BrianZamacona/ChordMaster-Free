@@ -18,15 +18,11 @@ import '../support/in_memory_store.dart';
 class _FakeAudio extends AudioService {
   _FakeAudio() : super.forTesting();
 
-  final played = <List<NoteEvent>>[];
+  final played = <List<StringSound>>[];
 
   @override
-  Future<void> playNotes(
-    List<NoteEvent> events, {
-    double seconds = 2.5,
-    double? ring,
-  }) async =>
-      played.add(events);
+  Future<void> playTab(List<StringSound> sounds, {required double seconds}) async =>
+      played.add(sounds);
 
   @override
   Future<void> stopAll() async {}
