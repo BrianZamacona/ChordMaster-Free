@@ -4,8 +4,11 @@ import 'dart:io';
 import 'package:chordmaster_free/core/i18n/tr.dart';
 import 'package:chordmaster_free/domain/courses/course.dart';
 import 'package:chordmaster_free/domain/guides/guides.dart';
+import 'package:chordmaster_free/domain/guides/style_guides.dart';
 import 'package:chordmaster_free/domain/lessons/curriculum.dart';
 import 'package:chordmaster_free/domain/lessons/lesson.dart';
+import 'package:chordmaster_free/domain/licks/lick.dart';
+import 'package:chordmaster_free/domain/licks/licks.dart';
 import 'package:chordmaster_free/domain/melodies/basics_course.dart';
 import 'package:chordmaster_free/domain/melodies/melody_course.dart';
 import 'package:chordmaster_free/domain/open_chords/chord_shape.dart';
@@ -107,6 +110,8 @@ void main() {
               expect(scale.root, inInclusiveRange(0, 11), reason: g.id);
             case CourseLink(:final course, :final stepId):
               expect(courseStepIds[course], contains(stepId), reason: g.id);
+            case LickLink(:final lickId):
+              expect(licksById.keys, contains(lickId), reason: g.id);
             case ModuleLink():
               break;
           }
@@ -379,6 +384,52 @@ void main() {
       }
       expect(lowest('caged_c') + 12, 12);
       expect(lowest('caged_c') + 12, lessThanOrEqualTo(highest('caged_d')));
+    });
+  });
+
+  group('estilos', () {
+    test('una guía por estilo, con id permanente, en la fila Estilos', () {
+      expect(guidesIn(GuideCategory.styles).map((g) => g.id), [
+        for (final s in LickStyle.values) styleGuideId(s),
+      ]);
+      expect(styleGuideId(LickStyle.latinRock), 'style_latinRock');
+    });
+
+    test('cada una enlaza el riff, el lick y la escala de su estilo, sin trastes propios', () {
+      for (final style in LickStyle.values) {
+        final g = guidesById[styleGuideId(style)]!;
+        final mine = licks.where((l) => l.style == style).toList();
+        final riff = mine.firstWhere((l) => l.kind == LickKind.riff);
+        final lick = mine.firstWhere((l) => l.kind == LickKind.lick);
+        final targets = [for (final c in g.chapters) c.target];
+        expect((targets[0] as LickLink).lickId, riff.id);
+        expect((targets[1] as LickLink).lickId, lick.id);
+        // "El riff y el lick salen de esta escala".
+        final scale = (targets[2] as ScaleLink).scale;
+        for (final l in [riff, lick]) {
+          expect((l.scale.scaleId, l.scale.root), (scale.scaleId, scale.root), reason: l.id);
+        }
+        // Los textos son los de cada frase (ya verificados en licks_test).
+        expect(g.chapters[0].body.es, riff.about.es);
+        expect(g.chapters[1].body.en, lick.about.en);
+        expect(g.title.es, lickStyleInfo(style).title.es);
+      }
+    });
+
+    test('el nivel es el de la frase más difícil del estilo', () {
+      for (final style in LickStyle.values) {
+        final levels = [for (final l in licks.where((l) => l.style == style)) l.level.index];
+        expect(
+          guidesById[styleGuideId(style)]!.level.index,
+          levels.reduce((a, b) => a > b ? a : b),
+          reason: style.name,
+        );
+      }
+    });
+
+    test('el buscador las encuentra por estilo', () {
+      expect(searchGuides('rock latino').map((g) => g.id), contains(styleGuideId(LickStyle.latinRock)));
+      expect(searchGuides('thrash').map((g) => g.id), contains(styleGuideId(LickStyle.thrashMetal)));
     });
   });
 }

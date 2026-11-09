@@ -1,21 +1,37 @@
+import 'dart:io';
+
 import 'package:chordmaster_free/app.dart';
 import 'package:chordmaster_free/core/constants/app_strings.dart';
 import 'package:chordmaster_free/core/i18n/tr.dart';
+import 'package:chordmaster_free/data/repository/scale_repository.dart';
 import 'package:chordmaster_free/domain/guides/guide_progress.dart';
 import 'package:chordmaster_free/domain/guides/guides.dart';
+import 'package:chordmaster_free/domain/guides/style_guides.dart';
+import 'package:chordmaster_free/domain/licks/lick.dart';
 import 'package:chordmaster_free/features/capo/capo_screen.dart';
 import 'package:chordmaster_free/features/guides/guide_detail_screen.dart';
 import 'package:chordmaster_free/features/guides/guides_viewmodel.dart';
 import 'package:chordmaster_free/features/lessons/lesson_detail_screen.dart';
 import 'package:chordmaster_free/features/lessons/lessons_viewmodel.dart';
+import 'package:chordmaster_free/features/licks/lick_detail_screen.dart';
 import 'package:chordmaster_free/features/workouts/workouts_screen.dart';
 import 'package:chordmaster_free/services/key_value_store.dart';
 import 'package:chordmaster_free/ui/navigation.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter/services.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:flutter_test/flutter_test.dart';
 
 import '../support/in_memory_store.dart';
+
+/// Lee los assets del disco: `rootBundle` ataría la lectura al primer test.
+class _FileBundle extends CachingAssetBundle {
+  @override
+  Future<ByteData> load(String key) async => throw UnimplementedError();
+
+  @override
+  Future<String> loadString(String key, {bool cache = true}) async => File(key).readAsStringSync();
+}
 
 void main() {
   tearDown(() => CurrentLanguage.value = AppLanguage.es);
@@ -42,7 +58,10 @@ void main() {
     );
     await tester.pumpWidget(
       ProviderScope(
-        overrides: [keyValueStoreProvider.overrideWithValue(store)],
+        overrides: [
+          keyValueStoreProvider.overrideWithValue(store),
+          scaleRepositoryProvider.overrideWithValue(ScaleRepository(bundle: _FileBundle())),
+        ],
         child: const ChordMasterApp(),
       ),
     );
@@ -61,7 +80,7 @@ void main() {
     });
 
     testWidgets('una fila por categoría con todas sus guías', (tester) async {
-      await open(tester, '/learn/guides');
+      await open(tester, '/learn/guides', size: const Size(500, 9000));
       for (final c in GuideCategory.values) {
         expect(
           find.byKey(Key('guides-category-${c.name}'), skipOffstage: false),
@@ -105,7 +124,7 @@ void main() {
     });
 
     testWidgets('cada tarjeta dice su nivel', (tester) async {
-      await open(tester, '/learn/guides');
+      await open(tester, '/learn/guides', size: const Size(500, 9000));
       for (final g in guides) {
         final level = tester.widget<Text>(find.byKey(Key('guide-level-${g.id}'), skipOffstage: false));
         expect(level.data, guideLevelTitle(g.level).text, reason: g.id);
@@ -177,6 +196,21 @@ void main() {
       await tester.tap(button);
       await settle(tester);
       expect(find.byType(WorkoutsScreen), findsOneWidget);
+    });
+
+    testWidgets('una guía de estilo abre su lick y atrás vuelve a la guía', (tester) async {
+      final id = styleGuideId(LickStyle.latinRock);
+      await open(tester, '/learn/guides/$id');
+      expect(find.text(AppStrings.guideOpenLick(guidesById[id]!.chapters[1].title.text.split(': ').last)), findsOneWidget);
+      final button = find.byKey(const Key('guide-open-1'));
+      await tester.ensureVisible(button);
+      await tester.pump();
+      await tester.tap(button);
+      await settle(tester);
+      expect(find.byType(LickDetailScreen), findsOneWidget);
+      await tester.tap(find.byType(BackButton));
+      await settle(tester);
+      expect(find.byType(GuideDetailScreen), findsOneWidget);
     });
 
     testWidgets('una guía que no existe muestra un aviso', (tester) async {
