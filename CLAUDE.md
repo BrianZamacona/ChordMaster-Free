@@ -531,6 +531,17 @@ Objetivo: código legible y mantenible antes que ingenioso. Capas (puertos y ada
 - "¿Cómo se arma?" responde por qué ese orden: cada paso busca la quinta y cambia una sola nota
   (la 4ª de la anterior sube un semitono y es la 7ª de la nueva; vale en los 12 pasos) mientras el
   círculo se llena (`circle_build_ring.dart`). Del lado de los ♭, ese mismo paso quita un ♭.
+- Fase 2, "Más allá de la tonalidad" (`lib/domain/theory/circle_harmony.dart`, ruta
+  `/circle/harmony` y `/learn/circle/harmony`, botón en el panel del círculo; usa la tonalidad de
+  la rueda): dominantes secundarias (el V7 de ii, iii, IV, V y vi es el vecino de la derecha de
+  cada uno, `dominantOf`), la cadena III7–VI7–II7–V7–I (un paso a la izquierda cada vez) y
+  ii7–V7–Imaj7 (tres posiciones contra reloj); modular (`modulation`: pasos, notas comunes y
+  tríadas pivote con su número en cada tonalidad; a distancia 6 no hay pivotes); intercambio modal
+  (la menor paralela está tres pasos a la izquierda, `parallelMinorIndex`; se le piden iv, ♭VI y
+  ♭VII, raíces con sostenidos: en C, Fm, G# y A#) y modos por brillo (`modesByBrightness`: lidio
+  +1 … locrio −5, cada uno cambia una sola nota). Los ▶ rasguean con las digitaciones de
+  chords.json (`playCircleChords`); un test exige que todos los acordes existan en las 12
+  tonalidades.
 - La rueda (`circle_wheel.dart`) está fuera del scroll para que un arrastre siempre la gire. La
   rotación vive en un `AnimationController` que repinta solo su `CustomPainter`; el panel se
   reconstruye únicamente al cambiar de tonalidad, y los textos del painter van ya medidos.
@@ -603,15 +614,7 @@ Objetivo: código legible y mantenible antes que ingenioso. Capas (puertos y ada
    `config.build_settings['GCC_PREPROCESSOR_DEFINITIONS'] ||= ['$(inherited)', 'PERMISSION_MICROPHONE=1', 'PERMISSION_NOTIFICATIONS=1']`;
    sin eso el micrófono queda siempre denegado. `Info.plist` ya trae
    `NSMicrophoneUsageDescription`.
-6. Círculo de quintas, fase 2:
-   - Dominantes secundarias: V7 de cada diatónico (el vecino de la derecha), cadena
-     III7–VI7–II7–V7–I y ii–V–I como 3 pasos contra reloj, con audio.
-   - Modulación: elegir tonalidad origen y destino → distancia, notas en común y acordes pivote
-     (tríadas diatónicas compartidas).
-   - Intercambio modal: menor paralela (3 pasos contra reloj) y sus prestados iv, bVI y bVII,
-     nombrados con sostenidos según la regla.
-   - Modos ordenados por brillo (lidio → locrio) como recorrido del círculo.
-7. Círculo de quintas, fase 3:
+6. Círculo de quintas, fase 3:
    - Juego/quiz: "¿cuál es el V de E?", "¿cuántos ♯ tiene A?", "¿qué acorde falta en la ventana?",
      con récord en `userProgress` y un logro nuevo que se pueda conseguir.
    - Unidad "Círculo de quintas" en Lecciones (según las reglas de esa sección), con un reto que
