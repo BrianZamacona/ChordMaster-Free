@@ -303,7 +303,7 @@ cada nota pertenezca a la escala. No bajar la tolerancia de 0.
 ## Licks y riffs (Inicio)
 - Biblioteca de frases cortas y originales por estilo (decisión del usuario: un módulo como
   Acordes y Escalas, fuente única de las tablaturas de estilo; las guías no traen trastes propios y
-  enlazarán aquí). Inspirada en las guías "In the Style Of" de Gibson, pero sin artistas: los
+  las de la fila "Estilos" enlazan aquí). Inspirada en las guías "In the Style Of" de Gibson, pero sin artistas: los
   estilos se nombran por lo que se toca (`LickStyle`: hard rock de estadio, clásico, heavy/doom,
   thrash, rock latino, sinfónico, psicodélico, hard rock virtuoso, atmosférico, metal progresivo,
   folk de autor). Nada de riffs reconocibles: se enseña la técnica del estilo. Solo afinación
@@ -326,8 +326,11 @@ cada nota pertenezca a la escala. No bajar la tolerancia de 0.
 ## Guías y capo
 - Guías (`lib/domain/guides/guides.dart`, rutas `/learn/guides` y `/learn/guides/:id`): recorridos
   por tema agrupados en filas (`GuideCategory`). No traen trastes propios: cada capítulo enlaza
-  algo que ya existe (`LessonLink`, `ScaleLink`, `ChordLink`, `ModuleLink`) y un test exige que
-  exista. Lo que afirma un capítulo se verifica en `test/domain/guides/guides_test.dart`.
+  algo que ya existe (`LessonLink`, `ScaleLink`, `ChordLink`, `LickLink`, `ModuleLink`) y un test
+  exige que exista. Lo que afirma un capítulo se verifica en `test/domain/guides/guides_test.dart`.
+- Fila "Estilos" (`style_guides.dart`): una guía por `LickStyle`, armada desde Licks y riffs (id
+  `style_<estilo>`, permanente): el riff, el lick (con el texto de cada frase) y la escala de las
+  dos; nivel = el de su frase más difícil. `guides` = las escritas a mano + `styleGuides`.
 - Inspiradas en un catálogo de guías tipo "Guides", pero sin artistas reales, sin fotos y sin
   contenido de terceros: géneros genéricos (blues, rock, folk/pop) y técnica.
 - Progreso (`lib/domain/guides/guide_progress.dart`): un capítulo que enlaza una lección está

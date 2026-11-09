@@ -286,6 +286,8 @@ class AppStrings {
       tr(es: 'Sigue donde ibas', en: 'Pick up where you left off');
   static String guideOpenLesson(String title) =>
       tr(es: 'Lección: $title', en: 'Lesson: $title');
+  static String guideOpenLick(String title) =>
+      tr(es: 'Tocar: $title', en: 'Play: $title');
   static String guideOpenChord(String chord) =>
       tr(es: 'Ver el acorde $chord', en: 'See the $chord chord');
   static String get guideOpenCapo =>

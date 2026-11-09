@@ -18,6 +18,7 @@ int chapterMinutes(GuideTarget target) => switch (target) {
   ModuleLink() => 5,
   CourseLink() => 5,
   WorkoutLink() => 10,
+  LickLink() => 5,
 };
 
 /// Minutos aproximados de toda la guía.

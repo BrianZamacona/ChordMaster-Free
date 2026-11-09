@@ -1,14 +1,15 @@
 /// Guías temáticas: recorridos cortos por un tema (un género, una técnica, una
-/// escala) que enlazan lecciones, escalas, acordes y módulos que ya existen en
-/// la app. No traen contenido propio con trastes: lo que afirman se verifica
-/// en `test/domain/guides/guides_test.dart`.
+/// escala) que enlazan lecciones, escalas, acordes, licks y módulos que ya
+/// existen en la app. No traen contenido propio con trastes: lo que afirman se
+/// verifica en `test/domain/guides/guides_test.dart`.
 library;
 
 import '../../core/i18n/tr.dart';
 import '../lessons/lesson.dart';
+import 'style_guides.dart';
 
 /// Fila del catálogo de guías.
-enum GuideCategory { acoustic, scales, genres, theory, lead }
+enum GuideCategory { acoustic, scales, genres, styles, theory, lead }
 
 /// Nombre visible de cada fila.
 LocalizedText guideCategoryTitle(GuideCategory category) => switch (category) {
@@ -21,6 +22,7 @@ LocalizedText guideCategoryTitle(GuideCategory category) => switch (category) {
     en: 'Scales and warm-ups',
   ),
   GuideCategory.genres => const LocalizedText(es: 'Géneros', en: 'Genres'),
+  GuideCategory.styles => const LocalizedText(es: 'Estilos', en: 'Styles'),
   GuideCategory.theory => const LocalizedText(es: 'Teoría', en: 'Theory'),
   GuideCategory.lead => const LocalizedText(
     es: 'Técnica solista',
@@ -93,6 +95,12 @@ class WorkoutLink extends GuideTarget {
   final LessonScale scale;
 }
 
+/// Una frase de Licks y riffs, por id.
+class LickLink extends GuideTarget {
+  const LickLink(this.lickId);
+  final String lickId;
+}
+
 /// Un módulo de la app.
 class ModuleLink extends GuideTarget {
   const ModuleLink(this.module);
@@ -136,8 +144,11 @@ class Guide {
   final List<GuideChapter> chapters;
 }
 
-/// Todas las guías, en el orden de cada fila.
-const List<Guide> guides = [
+/// Todas las guías, en el orden de cada fila: las escritas a mano y una por
+/// estilo de Licks y riffs ([styleGuides]).
+final List<Guide> guides = [..._writtenGuides, ...styleGuides];
+
+const List<Guide> _writtenGuides = [
   // ── Domina la guitarra acústica ──────────────────────────────────────────
   Guide(
     id: 'chord_variations',
