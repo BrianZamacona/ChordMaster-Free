@@ -96,6 +96,28 @@ void main() {
         expect(tester.takeException(), isNull);
       });
 
+      testWidgets('un tresillo lleva su llave arriba, su conteo y su explicación', (tester) async {
+        await _pump(
+          tester,
+          const LessonTabView(
+            notes: [
+              TabNote(1, 8, length: tabTripletEighth),
+              TabNote(1, 5, length: tabTripletEighth),
+              TabNote(2, 8, length: tabTripletEighth),
+              TabNote(2, 5, length: tabQuarter),
+            ],
+          ),
+        );
+        expect(tester.takeException(), isNull);
+        final line = tester.getRect(find.byKey(const Key('lesson-tab-line-0')));
+        // Fila de arriba (la llave) y conteo.
+        expect(line.height, 14 * 5 + 16 + 14 + 14);
+        expect(
+          find.descendant(of: find.byKey(const Key('lesson-tab-legend')), matching: find.text(AppStrings.tabLegendTriplet)),
+          findsOneWidget,
+        );
+      });
+
       testWidgets('el lector de pantalla oye la técnica y el silencio', (tester) async {
         final handle = tester.ensureSemantics();
         await _pump(

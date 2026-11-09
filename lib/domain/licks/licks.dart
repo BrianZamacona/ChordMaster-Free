@@ -613,7 +613,7 @@ const licks = <Lick>[
     scale: LessonScale(scaleId: 'pentatonic_minor', root: 11),
     bpm: 70,
     tab: [
-      TabNote(2, 10, length: 6, technique: TabTechnique.bend, bend: 2),
+      TabNote(2, 10, length: tabQuarter + tabEighth, technique: TabTechnique.bend, bend: 2),
       TabNote(2, 10, technique: TabTechnique.release),
       TabNote(2, 7),
       TabNote.rest(tabEighth),
@@ -1020,7 +1020,7 @@ const licks = <Lick>[
     scale: LessonScale(scaleId: 'pentatonic_minor', root: 4),
     bpm: 65,
     tab: [
-      TabNote(2, 15, length: 6, technique: TabTechnique.bend, bend: 2),
+      TabNote(2, 15, length: tabQuarter + tabEighth, technique: TabTechnique.bend, bend: 2),
       TabNote(2, 15, technique: TabTechnique.release),
       TabNote(3, 14),
       TabNote(3, 12),
@@ -1178,6 +1178,29 @@ const licks = <Lick>[
       TabNote(3, 7, technique: TabTechnique.pullOff),
       TabNote(3, 5, technique: TabTechnique.pullOff),
       TabNote(4, 7, length: tabQuarter, technique: TabTechnique.vibrato),
+    ],
+  ),
+  Lick(
+    id: 'minor_blues_triplets',
+    style: LickStyle.minorBlues,
+    kind: LickKind.lick,
+    level: GuideLevel.intermediate,
+    title: LocalizedText(es: 'Tresillos que bajan', en: 'Falling triplets'),
+    about: LocalizedText(
+      es: 'Dos pulsos de tresillo, tres notas parejas en cada uno, bajando por la caja de la pentatónica: cuenta "1 tri ple, 2 tri ple" y cierra en A con vibrato.',
+      en: 'Two beats of triplets, three even notes each, falling through the pentatonic box: count "1 trip let, 2 trip let" and close on A with vibrato.',
+    ),
+    scale: LessonScale(scaleId: 'blues_minor', root: 9),
+    bpm: 70,
+    tab: [
+      TabNote(1, 8, length: tabTripletEighth),
+      TabNote(1, 5, length: tabTripletEighth),
+      TabNote(2, 8, length: tabTripletEighth),
+      TabNote(2, 5, length: tabTripletEighth),
+      TabNote(3, 7, length: tabTripletEighth),
+      TabNote(3, 5, length: tabTripletEighth),
+      TabNote(4, 7, length: tabQuarter, technique: TabTechnique.vibrato),
+      TabNote.rest(tabQuarter),
     ],
   ),
 ];

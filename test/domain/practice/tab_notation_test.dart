@@ -32,32 +32,32 @@ double _rms(Float64List x, double from, double to) {
 
 void main() {
   group('ritmo', () {
-    test('cada nota empieza donde terminó la anterior (en semicorcheas)', () {
+    test('cada nota empieza donde terminó la anterior (en partes de pulso)', () {
       const tab = [
         TabNote(1, 0, length: tabQuarter),
         TabNote.rest(tabEighth),
         TabNote(1, 1, length: tabSixteenth),
         TabNote(1, 3, length: tabSixteenth),
       ];
-      expect(tabPositions(tab), [0, 4, 6, 7]);
-      expect(tabLength(tab), 8);
+      expect(tabPositions(tab), [0, 12, 18, 21]);
+      expect(tabLength(tab), 24);
       expect(tabOnsetSeconds(tab, bpm: 60), [0, 1, 1.5, 1.75]);
       expect(tabEndSeconds(tab, bpm: 60), 2);
     });
 
     test('swing de corcheas: el contratiempo cae a dos tercios del pulso', () {
-      expect(tabSwungBeats(2, TabSwing.eighths), closeTo(2 / 3, 1e-12));
-      expect(tabSwungBeats(4, TabSwing.eighths), 1);
-      expect(tabSwungBeats(6, TabSwing.eighths), closeTo(1 + 2 / 3, 1e-12));
+      expect(tabSwungBeats(tabEighth, TabSwing.eighths), closeTo(2 / 3, 1e-12));
+      expect(tabSwungBeats(tabQuarter, TabSwing.eighths), 1);
+      expect(tabSwungBeats(tabQuarter + tabEighth, TabSwing.eighths), closeTo(1 + 2 / 3, 1e-12));
       // Sin swing, igual que antes.
-      expect(tabSwungBeats(6, TabSwing.none), 1.5);
+      expect(tabSwungBeats(tabQuarter + tabEighth, TabSwing.none), 1.5);
     });
 
     test('swing de semicorcheas: cada "e" y cada "a" llegan tarde', () {
-      expect(tabSwungBeats(1, TabSwing.sixteenths), closeTo(1 / 3, 1e-12));
-      expect(tabSwungBeats(2, TabSwing.sixteenths), 0.5);
-      expect(tabSwungBeats(3, TabSwing.sixteenths), closeTo(0.5 + 1 / 3, 1e-12));
-      expect(tabSwungBeats(4, TabSwing.sixteenths), 1);
+      expect(tabSwungBeats(tabSixteenth, TabSwing.sixteenths), closeTo(1 / 3, 1e-12));
+      expect(tabSwungBeats(tabEighth, TabSwing.sixteenths), 0.5);
+      expect(tabSwungBeats(3 * tabSixteenth, TabSwing.sixteenths), closeTo(0.5 + 1 / 3, 1e-12));
+      expect(tabSwungBeats(tabQuarter, TabSwing.sixteenths), 1);
     });
 
     test('la nota marcada sigue a las duraciones, también en un silencio', () {
@@ -69,10 +69,16 @@ void main() {
     });
 
     test('se cuenta "1 e y a" y el número del pulso dentro del compás', () {
-      String count(int p) => tabCountAt(p, e: 'e', and: 'y', a: 'a');
-      expect([for (var p = 0; p < 8; p++) count(p)], ['1', 'e', 'y', 'a', '2', 'e', 'y', 'a']);
-      expect(count(16), '1');
-      expect(tabCountAt(12, e: 'e', and: 'y', a: 'a', beatsPerBar: 3), '1');
+      String count(int p, {int beats = 4}) =>
+          tabCountAt(p, e: 'e', and: 'y', a: 'a', trip: 'tri', let: 'ple', beatsPerBar: beats);
+      expect(
+        [for (var p = 0; p < 8; p++) count(p * tabSixteenth)],
+        ['1', 'e', 'y', 'a', '2', 'e', 'y', 'a'],
+      );
+      expect(count(4 * tabQuarter), '1');
+      expect(count(3 * tabQuarter, beats: 3), '1');
+      // Tresillo de corcheas: "1 tri ple".
+      expect([for (var p = 0; p < 3; p++) count(p * tabTripletEighth)], ['1', 'tri', 'ple']);
     });
 
     test('el conteo se dibuja solo si la tablatura trae ritmo propio', () {
@@ -80,6 +86,41 @@ void main() {
       expect(tabHasRhythm(const [TabNote(1, 0, length: tabQuarter)]), isTrue);
       expect(tabHasRhythm(const [TabNote.rest(tabEighth)]), isTrue);
       expect(tabHasRhythm(const [TabNote(1, 0)], swing: TabSwing.eighths), isTrue);
+    });
+  });
+
+  group('tresillos', () {
+    test('tres corcheas de tresillo ocupan un pulso, parejas', () {
+      const tab = [
+        TabNote(1, 0, length: tabTripletEighth),
+        TabNote(1, 1, length: tabTripletEighth),
+        TabNote(1, 3, length: tabTripletEighth),
+        TabNote(1, 5, length: tabQuarter),
+      ];
+      expect(tabLength(tab), 2 * tabQuarter);
+      final at = tabOnsetSeconds(tab, bpm: 60);
+      expect(at[0], 0);
+      expect(at[1], closeTo(1 / 3, 1e-12));
+      expect(at[2], closeTo(2 / 3, 1e-12));
+      expect(at[3], 1);
+      expect(tabTripletGroups(tab), [
+        [0, 1, 2],
+      ]);
+      expect(tabMarksIn(tab), contains(TabMark.triplet));
+      expect(tabHasRhythm(tab), isTrue);
+    });
+
+    test('semicorcheas de tresillo: seis por pulso; un grupo incompleto no cuenta', () {
+      final six = [for (var i = 0; i < 6; i++) const TabNote(2, 5, length: tabTripletSixteenth)];
+      expect(tabLength(six), tabQuarter);
+      expect(tabTripletGroups(six), [
+        [0, 1, 2],
+        [3, 4, 5],
+      ]);
+      expect(
+        tabTripletGroups(const [TabNote(1, 0, length: tabTripletEighth), TabNote(1, 1)]),
+        isEmpty,
+      );
     });
   });
 
@@ -98,7 +139,8 @@ void main() {
         TabNote(1, 5, technique: TabTechnique.vibrato, length: tabQuarter),
       ];
       expect(tabNotationProblems(tab), isEmpty);
-      expect(tabMarksIn(tab), TabMark.values.toSet());
+      // Todas menos el tresillo (va en el grupo de tresillos).
+      expect(tabMarksIn(tab), TabMark.values.toSet()..remove(TabMark.triplet));
     });
 
     test('cada técnica exige lo suyo de la nota anterior', () {
@@ -107,7 +149,7 @@ void main() {
       expect(tabNotationProblems(const [TabNote(3, 5), TabNote(2, 7, technique: TabTechnique.hammerOn)]), hasLength(1));
       expect(tabNotationProblems(const [TabNote(3, 0), TabNote(3, 2, technique: TabTechnique.slide)]), hasLength(1));
       expect(tabNotationProblems(const [TabNote(3, 5), TabNote(3, 5, technique: TabTechnique.release)]), hasLength(1));
-      expect(tabNotationProblems(const [TabNote.rest(2), TabNote(3, 7, technique: TabTechnique.hammerOn)]), hasLength(1));
+      expect(tabNotationProblems(const [TabNote.rest(tabEighth), TabNote(3, 7, technique: TabTechnique.hammerOn)]), hasLength(1));
       expect(tabNotationProblems(const [TabNote(3, 0, technique: TabTechnique.bend, bend: 1)]), hasLength(1));
       expect(tabNotationProblems(const [TabNote(3, 5, bend: 1)]), hasLength(1));
       expect(tabNotationProblems(const [TabNote(3, 5), TabNote(3, 7, technique: TabTechnique.hammerOn, pick: PickStroke.up)]), hasLength(1));

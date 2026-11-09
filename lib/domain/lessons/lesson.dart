@@ -7,8 +7,19 @@ enum LessonTrack { foundations, rhythm, lead }
 /// Herramienta o módulo de la app que una lección pide abrir.
 enum LessonTool { tuner, metronome, progressions, doubleStops, circle }
 
-/// Duraciones en semicorcheas (la unidad de [TabNote.length]).
-const tabSixteenth = 1, tabEighth = 2, tabQuarter = 4, tabHalf = 8;
+/// Partes de pulso (negra) de [TabNote.length]: 12 deja escribir
+/// semicorcheas, corcheas y también tresillos.
+const tabTicksPerBeat = 12;
+
+/// Duraciones en partes de pulso.
+const tabSixteenth = 3, tabEighth = 6, tabQuarter = 12, tabHalf = 24;
+
+/// Tresillos: tres notas en el lugar de dos (de corchea: tres por pulso; de
+/// semicorchea: tres por corchea).
+const tabTripletEighth = 4, tabTripletSixteenth = 2;
+
+/// La duración es de tresillo.
+bool isTripletLength(int length) => length == tabTripletEighth || length == tabTripletSixteenth;
 
 /// Cómo se toca una nota además de pulsarla. Las que siguen sonando sin volver
 /// a pulsar ([legato]) continúan la nota anterior, en la misma cuerda.
@@ -48,8 +59,8 @@ enum TabTechnique {
 enum PickStroke { down, up }
 
 /// Una nota de tablatura: cuerda (1 = mi aguda, como en `scales_master.json`)
-/// y traste (0 = al aire), cuánto dura ([length], en semicorcheas: hasta la
-/// nota siguiente), cómo se toca ([technique], con [bend] semitonos si es un
+/// y traste (0 = al aire), cuánto dura ([length], en partes de pulso
+/// ([tabTicksPerBeat]): hasta la nota siguiente), cómo se toca ([technique], con [bend] semitonos si es un
 /// bend) y, si importa, con qué golpe de púa ([pick]). [TabNote.rest] es un
 /// silencio: dura, pero no suena.
 class TabNote {
