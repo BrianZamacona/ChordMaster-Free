@@ -13,7 +13,8 @@ enum CourseId {
   basics(keyBest: 'basics_best_bpm', keyRead: 'basics_read'),
   melodies(keyBest: 'melodies_best_bpm', keyRead: 'melodies_read'),
   openChords(keyBest: 'open_chords_best_bpm', keyRead: 'open_chords_read'),
-  strumming(keyBest: 'strumming_best_bpm', keyRead: 'strumming_read');
+  strumming(keyBest: 'strumming_best_bpm', keyRead: 'strumming_read'),
+  openChords2(keyBest: 'open_chords_2_best_bpm', keyRead: 'open_chords_2_read');
 
   const CourseId({required this.keyBest, required this.keyRead});
 

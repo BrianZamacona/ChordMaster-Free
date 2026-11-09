@@ -18,7 +18,8 @@ class CourseStepRouteScreen extends StatelessWidget {
   Widget build(BuildContext context) => switch (LessonCourseInfo.fromSlug(slug)) {
     LessonCourse.basics => MelodyStepScreen(course: LessonCourse.basics, stepId: stepId),
     LessonCourse.melodies => MelodyStepScreen(course: LessonCourse.melodies, stepId: stepId),
-    LessonCourse.openChords => OpenChordStepScreen(stepId: stepId),
+    LessonCourse.openChords => OpenChordStepScreen(course: LessonCourse.openChords, stepId: stepId),
+    LessonCourse.openChords2 => OpenChordStepScreen(course: LessonCourse.openChords2, stepId: stepId),
     LessonCourse.strumming => StrumStepScreen(stepId: stepId),
     null => Scaffold(
       appBar: AppBar(title: Text(AppStrings.lessonsTitle)),

@@ -414,6 +414,16 @@ class AppStrings {
         'only those chords. Each exercise and song gives up to three stars by '
         'the tempo you can play it cleanly.',
   );
+  static String get openChords2Intro => tr(
+    es: 'Aprende Am, E y A: cada uno se arma dedo a dedo, luego se practican '
+        'sus cambios con Em, G, D y C y se tocan canciones de dominio público '
+        'con solo esos acordes. Cada ejercicio y canción da hasta tres estrellas '
+        'según el tempo al que te sale limpio.',
+    en: 'Learn Am, E and A: each one is built finger by finger, then you '
+        'practice their changes with Em, G, D and C and play public-domain '
+        'songs with only those chords. Each exercise and song gives up to three '
+        'stars by the tempo you can play it cleanly.',
+  );
   static String get openChordsStrumNote => tr(
     es: 'Suena un golpe hacia abajo por pulso: sirve para los cambios; el '
         'rasgueo de cada canción lo pones tú.',

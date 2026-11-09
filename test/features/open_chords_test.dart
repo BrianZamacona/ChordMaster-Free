@@ -1,7 +1,10 @@
 import 'package:chordmaster_free/app.dart';
+import 'package:chordmaster_free/core/constants/app_strings.dart';
 import 'package:chordmaster_free/core/i18n/tr.dart';
 import 'package:chordmaster_free/domain/audio/pluck_synth.dart';
 import 'package:chordmaster_free/domain/courses/course.dart';
+import 'package:chordmaster_free/domain/lessons/curriculum.dart';
+import 'package:chordmaster_free/domain/lessons/lesson.dart';
 import 'package:chordmaster_free/features/courses/course_progress.dart';
 import 'package:chordmaster_free/features/courses/course_widgets.dart';
 import 'package:chordmaster_free/features/open_chords/open_chords_course_provider.dart';
@@ -171,4 +174,70 @@ void main() {
       }
     });
   }
+
+  group('Parte 2', () {
+    testWidgets('el mapa la pone detrás de Rasgueo – Parte 1, con sus niveles y pasos', (tester) async {
+      final (_, _, container) = await open(tester, '/learn/lessons', size: const Size(500, 20000));
+      final strum = find.byKey(const Key('unit-r_strumming_patterns_1'));
+      final node = find.byKey(const Key('unit-r_open_chords_part_2'));
+      expect(tester.getTopLeft(node).dy, greaterThan(tester.getTopLeft(strum).dy));
+      expect(find.byKey(const Key('unit-r_more_open_chords')), findsNothing);
+      await tester.ensureVisible(node);
+      await tester.pump();
+      await tester.tap(node);
+      await settle(tester);
+      for (var i = 0; i < 5 && container.read(openChords2CourseProvider) == null; i++) {
+        await tester.runAsync(() => Future<void>.delayed(const Duration(seconds: 1)));
+        await settle(tester);
+      }
+      final levels = container.read(openChords2CourseProvider)!;
+      expect(levels, hasLength(11));
+      for (var i = 0; i < levels.length; i++) {
+        for (final s in levels[i].steps) {
+          expect(find.byKey(Key('course-step-${s.id}'), skipOffstage: false), findsOneWidget);
+        }
+      }
+    });
+
+    testWidgets('Am dedo a dedo: diagrama y "Me salió limpio" guarda en su curso', (tester) async {
+      final (store, audio, _) = await open(tester, '/learn/lessons/course/open-chords-2/oc2_am_f1');
+      expect(find.byKey(const Key('course-diagram-0')), findsOneWidget);
+      final clean = find.byKey(const Key('course-clean'));
+      await tester.ensureVisible(clean);
+      await tester.pump();
+      await tester.tap(clean);
+      await tester.pump();
+      expect(store.progress[CourseId.openChords2.keyBest], {'oc2_am_f1': 60});
+      expect(store.progress[CourseId.openChords.keyBest], isNull);
+    });
+
+    testWidgets('Greensleeves va en 3/4 y dice de dónde es', (tester) async {
+      await open(tester, '/learn/lessons/course/open-chords-2/oc2_song_greensleeves', size: const Size(360, 3000));
+      expect(find.byKey(const Key('strum-chart')), findsOneWidget);
+      expect(find.text('Tradicional (Inglaterra, s. XVI)'), findsWidgets);
+    });
+
+    testWidgets('la guía de cambios lleva al cambio Em – Am de la Parte 2', (tester) async {
+      await open(tester, '/learn/guides/chord_changes');
+      final link = find.text(AppStrings.guideOpenLesson(unitOfCourse(LessonCourse.openChords2).title.text));
+      expect(link, findsWidgets);
+    });
+
+    for (final code in ['es', 'en']) {
+      testWidgets('a 360 dp ($code) el curso y cada paso sin desbordes', (tester) async {
+        final (_, _, container) = await open(
+          tester,
+          '/learn/lessons/unit/r_open_chords_part_2',
+          code: code,
+          size: const Size(360, 6000),
+        );
+        expect(tester.takeException(), isNull);
+        for (final s in courseSteps(container.read(openChords2CourseProvider)!)) {
+          appRouter.go('/learn/lessons/course/open-chords-2/${s.id}');
+          await settle(tester);
+          expect(tester.takeException(), isNull, reason: s.id);
+        }
+      });
+    }
+  });
 }

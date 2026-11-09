@@ -95,3 +95,37 @@ const amazingGrace = CourseSong(
   ],
   beatsPerBar: 3,
 );
+
+/// Armonía simple de dos frases en 3/4: la estrofa (Am, G, Am, E) y el
+/// estribillo (C, G, Am, E), un acorde por compás.
+const greensleeves = CourseSong(
+  id: 'greensleeves',
+  title: LocalizedText(es: 'Greensleeves', en: 'Greensleeves'),
+  origin: LocalizedText(es: 'Tradicional (Inglaterra, s. XVI)', en: 'Traditional (England, 16th c.)'),
+  bars: [
+    'Am', 'G', 'Am', 'E', 'Am', 'G', 'E', 'Am', //
+    'C', 'G', 'Am', 'E', 'C', 'G', 'E', 'Am',
+  ],
+  beatsPerBar: 3,
+);
+
+const wholeWorld = CourseSong(
+  id: 'whole_world',
+  title: LocalizedText(
+    es: "He's Got the Whole World in His Hands",
+    en: "He's Got the Whole World in His Hands",
+  ),
+  origin: LocalizedText(es: 'Espiritual afroamericano (EE. UU.)', en: 'African-American spiritual (USA)'),
+  bars: ['A', 'A', 'E', 'E', 'A', 'A', 'E', 'A'],
+);
+
+const downInTheValley = CourseSong(
+  id: 'down_in_the_valley',
+  title: LocalizedText(es: 'Down in the Valley', en: 'Down in the Valley'),
+  origin: LocalizedText(es: 'Tradicional (EE. UU., Kentucky)', en: 'Traditional (USA, Kentucky)'),
+  bars: [
+    'A', 'A', 'A', 'E', 'E', 'E', 'E', 'A', //
+    'A', 'A', 'A', 'E', 'E', 'E', 'E', 'A',
+  ],
+  beatsPerBar: 3,
+);

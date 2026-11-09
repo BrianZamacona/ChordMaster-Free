@@ -10,89 +10,6 @@ import 'lesson.dart';
 /// `test/domain/lessons/curriculum_test.dart` contra `chords.json` y
 /// `scales_master.json`.
 const List<Lesson> curriculum = [
-  // ── Fundamentos ──────────────────────────────────────────────────────────
-  Lesson(
-    id: 'f3_em_am',
-    unit: _moreOpenChords,
-    title: LocalizedText(es: 'Em y Am', en: 'Em and Am'),
-    body: LocalizedText(
-      es: 'Em usa dos dedos y suenan las seis cuerdas. Am empieza en la 5ª '
-          'cuerda: la 6ª no se toca.',
-      en: 'Em uses two fingers and all six strings ring. Am starts on the 5th '
-          'string: the 6th is not played.',
-    ),
-    steps: [
-      LocalizedText(
-        es: 'Arma Em y rasguea despacio: cada cuerda debe sonar limpia.',
-        en: 'Fret Em and strum slowly: every string should ring clearly.',
-      ),
-      LocalizedText(
-        es: 'Arma Am y revisa que el dedo 1 no apague la 1ª cuerda.',
-        en: 'Fret Am and check that finger 1 does not mute the 1st string.',
-      ),
-      LocalizedText(
-        es: 'Toca cada acorde cuatro veces seguidas.',
-        en: 'Play each chord four times in a row.',
-      ),
-    ],
-    minutes: 8,
-    chords: ['Em', 'Am'],
-  ),
-  Lesson(
-    id: 'f4_em_am_change',
-    unit: _moreOpenChords,
-    title: LocalizedText(es: 'Cambio Em ↔ Am', en: 'Em ↔ Am change'),
-    body: LocalizedText(
-      es: 'Para pasar de Em a Am, los dedos 2 y 3 bajan juntos una cuerda (de '
-          'la 5ª y 4ª a la 4ª y 3ª) y el dedo 1 entra en la 2ª cuerda.',
-      en: 'To go from Em to Am, fingers 2 and 3 move down one string together '
-          '(from the 5th and 4th to the 4th and 3rd) and finger 1 goes on the '
-          '2nd string.',
-    ),
-    steps: [
-      LocalizedText(
-        es: 'Cambia sin rasguear, solo con la mano que pisa.',
-        en: 'Change without strumming, using only your fretting hand.',
-      ),
-      LocalizedText(
-        es: 'Mueve los dedos 2 y 3 como un bloque.',
-        en: 'Move fingers 2 and 3 as one block.',
-      ),
-      LocalizedText(
-        es: 'Cuando salga solo, rasguea una vez cada acorde.',
-        en: 'Once it comes easily, strum each chord once.',
-      ),
-    ],
-    minutes: 5,
-    chords: ['Em', 'Am'],
-  ),
-  Lesson(
-    id: 'f5_d_a_e',
-    unit: _moreOpenChords,
-    title: LocalizedText(es: 'D, A y E', en: 'D, A and E'),
-    body: LocalizedText(
-      es: 'Tres acordes mayores de miles de canciones. D se toca desde la 4ª '
-          'cuerda, A desde la 5ª y E con las seis.',
-      en: 'Three major chords found in thousands of songs. D is played from '
-          'the 4th string, A from the 5th and E on all six.',
-    ),
-    steps: [
-      LocalizedText(
-        es: 'En D, los dedos 1, 3 y 2 forman un triángulo.',
-        en: 'In D, fingers 1, 3 and 2 form a triangle.',
-      ),
-      LocalizedText(
-        es: 'En A, los tres dedos caben juntos en el traste 2.',
-        en: 'In A, all three fingers fit together on fret 2.',
-      ),
-      LocalizedText(
-        es: 'E tiene la forma de Am, una cuerda más arriba.',
-        en: 'E has the shape of Am, one string higher.',
-      ),
-    ],
-    minutes: 10,
-    chords: ['D', 'A', 'E'],
-  ),
   Lesson(
     id: 'r5_barre',
     unit: _beyondOpen,
@@ -1142,16 +1059,6 @@ const _basicsCourse = LessonUnit(
   art: NotesArt(['E', 'A', 'D', 'G', 'B']),
   course: LessonCourse.basics,
 );
-const _moreOpenChords = LessonUnit(
-  id: 'r_more_open_chords',
-  track: LessonTrack.rhythm,
-  title: LocalizedText(es: 'Más acordes abiertos', en: 'More open chords'),
-  summary: LocalizedText(
-    es: 'Am, A y E: los abiertos que faltan, y el cambio Em ↔ Am.',
-    en: 'Am, A and E: the remaining open chords, and the Em ↔ Am change.',
-  ),
-  art: ChordArt('Am'),
-);
 const _melodiesCourse = LessonUnit(
   id: 'f_melodies',
   track: LessonTrack.foundations,
@@ -1163,10 +1070,12 @@ const _melodiesCourse = LessonUnit(
   art: NotesArt(['G', 'A', 'B', 'C']),
   course: LessonCourse.melodies,
 );
+// En los títulos "Parte N" va un espacio duro: el número no queda solo en un
+// renglón del mapa.
 const _openChordsCourse = LessonUnit(
   id: 'r_open_chords_1',
   track: LessonTrack.rhythm,
-  title: LocalizedText(es: 'Acordes abiertos – Parte 1', en: 'Open chords – Part 1'),
+  title: LocalizedText(es: 'Acordes abiertos – Parte\u00a01', en: 'Open chords – Part\u00a01'),
   summary: LocalizedText(
     es: 'Em, G, D y C dedo a dedo, los cambios entre ellos y canciones con solo esos acordes.',
     en: 'Em, G, D and C finger by finger, the changes between them and songs with only those chords.',
@@ -1174,10 +1083,21 @@ const _openChordsCourse = LessonUnit(
   art: ChordArt('Em'),
   course: LessonCourse.openChords,
 );
+const _openChords2Course = LessonUnit(
+  id: 'r_open_chords_part_2',
+  track: LessonTrack.rhythm,
+  title: LocalizedText(es: 'Acordes abiertos – Parte\u00a02', en: 'Open chords – Part\u00a02'),
+  summary: LocalizedText(
+    es: 'Am, E y A dedo a dedo, sus cambios con los de la Parte 1 y canciones con solo esos acordes.',
+    en: 'Am, E and A finger by finger, their changes with the Part 1 chords and songs with only those chords.',
+  ),
+  art: ChordArt('Am'),
+  course: LessonCourse.openChords2,
+);
 const _strummingCourse = LessonUnit(
   id: 'r_strumming_patterns_1',
   track: LessonTrack.rhythm,
-  title: LocalizedText(es: 'Patrones de rasgueo – Parte 1', en: 'Strumming patterns – Part 1'),
+  title: LocalizedText(es: 'Patrones de rasgueo – Parte\u00a01', en: 'Strumming patterns – Part\u00a01'),
   summary: LocalizedText(
     es: 'Cinco rasgueos con Em, G, D y C: tempo, conteo, péndulo y canciones.',
     en: 'Five strums with Em, G, D and C: tempo, counting, pendulum and songs.',
@@ -1193,7 +1113,7 @@ const List<LessonUnit> lessonUnits = [
   _melodiesCourse,
   _openChordsCourse,
   _strummingCourse,
-  _moreOpenChords,
+  _openChords2Course,
   _beyondOpen,
   _fingerstyle,
   _openChords2,
