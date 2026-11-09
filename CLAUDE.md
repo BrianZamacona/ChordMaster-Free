@@ -593,8 +593,8 @@ Objetivo: código legible y mantenible antes que ingenioso. Capas (puertos y ada
 1. Revisión en un dispositivo físico: rediseño completo, versión bilingüe, "Mi progresión",
    tarjetas "¿Por qué?", notificaciones, audio y afinador con una nota real. Lecciones: reto
    superado y letra grande.
-2. Lecciones: números de dedo casi ilegibles a 64 dp, diagramas unos 2 dp descentrados y el reto
-   en inglés dice "in Ear" en vez de "Ear Training".
+2. Lecciones: el reto en inglés dice "in Ear" en vez de "Ear Training" (los números de dedo a
+   64 dp y el descentrado de los diagramas ya se corrigieron: `chordDiagramMetrics`).
 3. Sandbox TS: corregir la 7ª diatónica del grado VII (allí sigue como disminuida; aquí se
    corrigió a 7ª menor y se regeneraron solo esas filas del golden, 2005 → 1983).
 4. Berklee, si se consigue una definición verificable.
