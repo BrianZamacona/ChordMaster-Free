@@ -396,7 +396,14 @@ void main() {
   group('estilos', () {
     test('una guía por estilo, con id permanente, en la fila Estilos', () {
       expect(guidesIn(GuideCategory.styles).map((g) => g.id), [
-        for (final s in LickStyle.values) styleGuideId(s),
+        for (final s in LickStyle.values)
+          if (!lickStyleInfo(s).genre) styleGuideId(s),
+      ]);
+      // Los géneros van en su fila, detrás de las guías escritas a mano.
+      final genres = guidesIn(GuideCategory.genres).map((g) => g.id).toList();
+      expect(genres.skipWhile((id) => !id.startsWith('style_')), [
+        for (final s in LickStyle.values)
+          if (lickStyleInfo(s).genre) styleGuideId(s),
       ]);
       expect(styleGuideId(LickStyle.latinRock), 'style_latinRock');
     });

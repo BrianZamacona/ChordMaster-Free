@@ -1,4 +1,5 @@
-/// Una guía por estilo de Licks y riffs (fila "Estilos"). Se arman desde la
+/// Una guía por estilo de Licks y riffs (fila "Estilos"; los géneros, en
+/// "Géneros"). Se arman desde la
 /// biblioteca, que es la fuente única: la guía no trae trastes, enlaza el
 /// riff, el lick y la escala del estilo, y sus textos son los de cada frase.
 library;
@@ -22,7 +23,7 @@ Guide _guideFor(LickStyle style) {
   final lick = mine.firstWhere((l) => l.kind == LickKind.lick);
   return Guide(
     id: styleGuideId(style),
-    category: GuideCategory.styles,
+    category: info.genre ? GuideCategory.genres : GuideCategory.styles,
     // Para quien ya toca la frase más difícil del estilo.
     level: mine.map((l) => l.level).reduce((a, b) => a.index >= b.index ? a : b),
     title: info.title,
