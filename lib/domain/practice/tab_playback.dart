@@ -58,12 +58,12 @@ List<int?>? tabFingers(List<TabNote> notes) {
 /// Segundos de una corchea a [bpm] (sin swing).
 double tabStepSeconds(int bpm) => 60 / bpm / defaultNotesPerBeat;
 
-/// Pulsos desde el principio hasta la semicorchea [position], con [swing]:
-/// el contratiempo se corre a dos tercios de su pulso (corcheas) o de su
-/// corchea (semicorcheas), como en un tresillo. Los pulsos no se mueven.
+/// Pulsos desde el principio hasta [position] (en partes de pulso), con
+/// [swing]: el contratiempo se corre a dos tercios de su pulso (corcheas) o
+/// de su corchea (semicorcheas), como en un tresillo. Los pulsos no se mueven.
 double tabSwungBeats(int position, TabSwing swing) {
-  final fraction = (position % 4) / 4;
-  return position ~/ 4 +
+  final fraction = (position % tabTicksPerBeat) / tabTicksPerBeat;
+  return position ~/ tabTicksPerBeat +
       switch (swing) {
         TabSwing.none => fraction,
         TabSwing.eighths => _swing(fraction, 1),
@@ -82,7 +82,7 @@ double _swing(double fraction, double unit) {
           : unit * 2 / 3 + (within - unit / 2) * 2 / 3);
 }
 
-/// Semicorchea en la que empieza cada nota (y silencio) de [notes].
+/// Parte de pulso en la que empieza cada nota (y silencio) de [notes].
 List<int> tabPositions(List<TabNote> notes) {
   final positions = <int>[];
   var at = 0;
@@ -93,7 +93,7 @@ List<int> tabPositions(List<TabNote> notes) {
   return positions;
 }
 
-/// Semicorcheas que dura [notes] entera.
+/// Partes de pulso que dura [notes] entera.
 int tabLength(List<TabNote> notes) => notes.fold(0, (sum, n) => sum + n.length);
 
 /// Segundos desde el principio en que empieza cada nota de [notes].
@@ -253,20 +253,26 @@ int? tabIndexAt(
   return index;
 }
 
-/// Cómo se cuenta la semicorchea [position] de un compás de [beatsPerBar]
-/// pulsos: el número del pulso, y entre pulsos [e], [and] y [a]
-/// ("1 e y a" / "1 e & a"). Las corcheas solas se cuentan "1 y 2 y".
+/// Cómo se cuenta [position] (en partes de pulso) en un compás de
+/// [beatsPerBar] pulsos: el número del pulso, entre pulsos [e], [and] y [a]
+/// ("1 e y a" / "1 e & a") y, en un tresillo, [trip] y [let] ("1 tri ple" /
+/// "1 trip let"). Lo que no cae en esas marcas no se cuenta (cadena vacía).
 String tabCountAt(
   int position, {
   required String e,
   required String and,
   required String a,
+  required String trip,
+  required String let,
   int beatsPerBar = 4,
-}) => switch (position % 4) {
-  0 => '${position ~/ 4 % beatsPerBar + 1}',
-  1 => e,
-  2 => and,
-  _ => a,
+}) => switch (position % tabTicksPerBeat) {
+  0 => '${position ~/ tabTicksPerBeat % beatsPerBar + 1}',
+  3 => e,
+  6 => and,
+  9 => a,
+  4 => trip,
+  8 => let,
+  _ => '',
 };
 
 /// Clave corta y estable para el archivo de audio de una frase (FNV-1a de 32

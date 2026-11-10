@@ -896,6 +896,10 @@ class AppStrings {
   static String get tabCountE => tr(es: 'e', en: 'e');
   static String get tabCountA => tr(es: 'a', en: 'a');
 
+  /// Conteo de tresillo: "1 tri ple" / "1 trip let".
+  static String get tabCountTrip => tr(es: 'tri', en: 'trip');
+  static String get tabCountLet => tr(es: 'ple', en: 'let');
+
   /// Bend de [semitones] semitonos, como se escribe: ½, 1, 1½ (tonos).
   static String tabBendAmount(int semitones) => switch (semitones) {
     1 => '½',
@@ -920,6 +924,10 @@ class AppStrings {
 
   // Qué quiere decir cada marca que aparece en la tablatura.
   static String get tabLegendRest => tr(es: '▬ silencio', en: '▬ rest');
+  static String get tabLegendTriplet => tr(
+    es: '3 tresillo: tres notas en el lugar de dos ("1 tri ple")',
+    en: '3 triplet: three notes in the space of two ("1 trip let")',
+  );
   static String get tabLegendHammerOn =>
       tr(es: 'h hammer-on: cae otro dedo, sin púa', en: 'h hammer-on: another finger lands, no pick');
   static String get tabLegendPullOff =>

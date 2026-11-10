@@ -122,6 +122,22 @@ class ChordDiagramWidget extends StatelessWidget {
   }
 }
 
+/// Medidas de un diagrama de [width] desde [baseFret] (para los tests): el
+/// tamaño del número del dedo y dónde queda el centro de la rejilla.
+@visibleForTesting
+({double fingerFont, double gridCenter, double height, int frets}) chordDiagramMetrics(
+  double width, {
+  int baseFret = 1,
+}) {
+  final l = _DiagramLayout(width: width, showName: false, toneRows: 0, baseFret: baseFret);
+  return (
+    fingerFont: l.fingerFontSize('1'),
+    gridCenter: l.left + 2.5 * l.stringSpacing,
+    height: l.height,
+    frets: l.fretsShown,
+  );
+}
+
 /// Medidas del diagrama, compartidas por el widget (tamaño) y el painter.
 class _DiagramLayout {
   _DiagramLayout({
@@ -131,15 +147,29 @@ class _DiagramLayout {
     required this.baseFret,
   });
 
-  static const fretsShown = 5;
+  /// Por debajo de este ancho (miniaturas del mapa y de la unidad) los puntos
+  /// crecen para que el número del dedo se lea, y se muestran 4 trastes en vez
+  /// de 5 para que el diagrama no crezca de alto.
+  static const compactWidth = 100.0;
+
+  int get fretsShown => compact ? 4 : 5;
 
   final double width;
   final bool showName;
   final int toneRows;
   final int baseFret;
 
-  double get left => width * 0.16;
-  double get right => width * 0.08;
+  bool get compact => width < compactWidth;
+
+  /// Desde la cejuela no hay número de traste a la izquierda: los márgenes
+  /// son iguales y la rejilla queda centrada.
+  double get left => fretOffset == 0 ? right : width * 0.16;
+  double get right => width * (compact ? 0.06 : 0.08);
+
+  /// Radio de un punto pisado y tamaño del número que lleva dentro.
+  double get dotRadius => stringSpacing * (compact ? 0.47 : 0.36);
+  double fingerFontSize(String label) =>
+      dotRadius * (label.length > 1 ? 0.95 : (compact ? 1.4 : 1.15));
   double get stringSpacing => (width - left - right) / 5;
   double get fretSpacing => stringSpacing * 1.2;
   double get nameHeight => showName ? width * 0.16 : 0;
@@ -231,7 +261,7 @@ class _ChordDiagramPainter extends CustomPainter {
     final fretPaint = Paint()
       ..color = palette.fretWire
       ..strokeWidth = 1.2;
-    for (var f = 1; f <= _DiagramLayout.fretsShown; f++) {
+    for (var f = 1; f <= l.fretsShown; f++) {
       final y = l.gridTop + f * l.fretSpacing;
       canvas.drawLine(Offset(gridLeft, y), Offset(gridRight, y), fretPaint);
     }
@@ -248,7 +278,7 @@ class _ChordDiagramPainter extends CustomPainter {
       );
     }
 
-    final r = l.stringSpacing * 0.36;
+    final r = l.dotRadius;
 
     // Cejilla detrás de los puntos.
     final b = barre;
@@ -320,7 +350,7 @@ class _ChordDiagramPainter extends CustomPainter {
           canvas,
           inside,
           c,
-          size: r * (inside.length > 1 ? 0.95 : 1.15),
+          size: l.fingerFontSize(inside),
           weight: FontWeight.w600,
           color: tones == null ? palette.onAccent : palette.onInterval,
         );
@@ -357,7 +387,7 @@ class _ChordDiagramPainter extends CustomPainter {
 
   bool _visible(int fret) {
     final rel = fret - layout.fretOffset;
-    return rel >= 1 && rel <= _DiagramLayout.fretsShown;
+    return rel >= 1 && rel <= layout.fretsShown;
   }
 
   String? _finger(int jsonString) {
