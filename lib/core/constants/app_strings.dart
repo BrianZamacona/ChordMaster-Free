@@ -211,6 +211,80 @@ class AppStrings {
   );
   static String circleOpenChord(String name) =>
       tr(es: 'Abrir la ficha de $name', en: 'Open the $name chord page');
+  // ── Círculo, fase 2: más allá de la tonalidad ─────────────────────────────
+  static String get circleHarmonyTitle =>
+      tr(es: 'Más allá de la tonalidad', en: 'Beyond the key');
+  static String circleHarmonyIntro(String key) => tr(
+    es: 'Lo que se puede tocar fuera de los siete acordes de $key, leído en el círculo.',
+    en: 'What you can play beyond the seven chords of $key, read on the circle.',
+  );
+  static String get circleHarmonyKey => tr(es: 'Tonalidad', en: 'Key');
+  static String get circleSecondaryTitle =>
+      tr(es: 'Dominantes secundarias', en: 'Secondary dominants');
+  static String get circleSecondaryIntro => tr(
+    es: 'Cada acorde tiene su propio V7: el vecino de la derecha en el círculo, una quinta arriba. Suena justo antes y lo prepara.',
+    en: 'Every chord has its own V7: its neighbor to the right on the circle, a fifth above. It sounds right before and leads into it.',
+  );
+  static String circleSecondaryRow(String dominant, String target) =>
+      tr(es: '$dominant → $target', en: '$dominant → $target');
+  static String get circleChainTitle =>
+      tr(es: 'Cadena de dominantes', en: 'Chain of dominants');
+  static String get circleChainIntro => tr(
+    es: 'Cada dominante resuelve en el siguiente, un paso a la izquierda, hasta llegar a casa.',
+    en: 'Each dominant resolves to the next, one step to the left, until it gets home.',
+  );
+  static String get circleTwoFiveOneIntro => tr(
+    es: 'ii – V – I: tres posiciones seguidas del círculo, contra reloj. Es la cadencia del jazz.',
+    en: 'ii – V – I: three neighboring positions on the circle, counterclockwise. It is the jazz cadence.',
+  );
+  static String circlePlayChords(String chords) =>
+      tr(es: 'Escuchar $chords', en: 'Listen: $chords');
+  static String get circleModulationTitle => tr(es: 'Modular', en: 'Modulate');
+  static String circleModulationIntro(String from) => tr(
+    es: 'Pasar de $from a otra tonalidad: cuanto más cerca en el círculo, más notas y acordes comparten.',
+    en: 'Moving from $from to another key: the closer on the circle, the more notes and chords they share.',
+  );
+  static String get circleModulationTo => tr(es: 'Ir a', en: 'Go to');
+  static String circleModulationSteps(int steps) => steps == 0
+      ? tr(es: 'Es la misma tonalidad.', en: 'It is the same key.')
+      : tr(
+          es: '${steps.abs()} ${steps.abs() == 1 ? 'paso' : 'pasos'} ${steps > 0 ? 'a la derecha' : 'a la izquierda'} en el círculo.',
+          en: '${steps.abs()} ${steps.abs() == 1 ? 'step' : 'steps'} to the ${steps > 0 ? 'right' : 'left'} on the circle.',
+        );
+  static String circleModulationCommon(int count, String notes) => tr(
+    es: '$count notas en común: $notes',
+    en: '$count notes in common: $notes',
+  );
+  static String get circleModulationPivots => tr(
+    es: 'Acordes pivote (están en las dos):',
+    en: 'Pivot chords (in both keys):',
+  );
+  static String get circleModulationNoPivot => tr(
+    es: 'No comparten ninguna tríada: para llegar, pasa antes por una tonalidad intermedia.',
+    en: 'They share no triad: to get there, go through a key in between first.',
+  );
+  static String circlePivotRow(String chord, String inFrom, String from, String inTo, String to) => tr(
+    es: '$chord: $inFrom en $from = $inTo en $to',
+    en: '$chord: $inFrom in $from = $inTo in $to',
+  );
+  static String get circleBorrowTitle =>
+      tr(es: 'Intercambio modal', en: 'Modal interchange');
+  static String circleBorrowIntro(String key, String minorSignature) => tr(
+    es: '${key}m, la menor paralela, tiene la armadura que está tres pasos a la izquierda ($minorSignature). De ella se piden prestados estos acordes:',
+    en: '${key}m, the parallel minor, has the key signature three steps to the left ($minorSignature). These chords are borrowed from it:',
+  );
+  static String get circleModesTitle =>
+      tr(es: 'Modos por brillo', en: 'Modes by brightness');
+  static String get circleModesIntro => tr(
+    es: 'Del más brillante al más oscuro: cada modo sale de la mayor un paso a la izquierda de la anterior y cambia una sola nota.',
+    en: 'From brightest to darkest: each mode comes from the major key one step to the left of the previous one and changes a single note.',
+  );
+  static String circleModeRow(String parent, String steps, String changed) => tr(
+    es: 'notas de $parent mayor ($steps) · cambia $changed',
+    en: 'notes of $parent major ($steps) · changes $changed',
+  );
+  static String circleStepsShort(int steps) => steps == 0 ? '0' : '${steps > 0 ? '+' : '−'}${steps.abs()}';
+
   static String get circleBuildTitle =>
       tr(es: '¿Cómo se arma?', en: 'How is it built?');
   static String circleBuildProgress(int step, int total) =>
