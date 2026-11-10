@@ -1,6 +1,7 @@
 import 'dart:convert';
 import 'dart:io';
 
+import 'package:chordmaster_free/domain/guides/guides.dart';
 import 'package:chordmaster_free/domain/lessons/lesson.dart';
 import 'package:chordmaster_free/domain/licks/lick.dart';
 import 'package:chordmaster_free/domain/licks/licks.dart';
@@ -45,7 +46,7 @@ void main() {
     test('la tablatura está bien escrita y dura pulsos enteros', () {
       for (final l in licks) {
         expect(tabNotationProblems(l.tab), isEmpty, reason: l.id);
-        expect(tabLength(l.tab) % 4, 0, reason: l.id);
+        expect(tabLength(l.tab) % tabQuarter, 0, reason: l.id);
       }
     });
 
@@ -55,6 +56,19 @@ void main() {
         expect(frets.reduce((a, b) => a > b ? a : b), lessThanOrEqualTo(15), reason: l.id);
         final span = frets.reduce((a, b) => a > b ? a : b) - frets.reduce((a, b) => a < b ? a : b);
         expect(span, lessThanOrEqualTo(5), reason: l.id);
+      }
+    });
+
+    test('un tresillo nunca queda partido entre dos renglones (perdería su llave)', () {
+      for (final l in licks) {
+        for (final g in tabTripletGroups(l.tab)) {
+          expect(tabLineOf(g.first), tabLineOf(g.last), reason: l.id);
+        }
+        expect(
+          l.tab.where((n) => isTripletLength(n.length)).length,
+          3 * tabTripletGroups(l.tab).length,
+          reason: '${l.id}: tresillos completos',
+        );
       }
     });
 
@@ -190,7 +204,7 @@ void main() {
     test('folk: el hammer-on está en la segunda vuelta; el lick baja con pull-offs a la 3ª al aire', () {
       final riff = lick('folk_riff').tab;
       final hammer = riff.indexWhere((n) => n.technique == TabTechnique.hammerOn);
-      expect(tabPositions(riff)[hammer], greaterThanOrEqualTo(16));
+      expect(tabPositions(riff)[hammer], greaterThanOrEqualTo(4 * tabQuarter));
       final l = lick('folk_lick').tab;
       expect(l.first.technique, TabTechnique.none);
       expect(l[1].technique, TabTechnique.slide);
@@ -226,8 +240,8 @@ void main() {
       final riff = lick('reggae_riff').tab;
       final pos = tabPositions(riff);
       for (final (i, n) in riff.indexed) {
-        if (pos[i] % 4 == 0) expect(n.isRest, isTrue, reason: '$i');
-        if (pos[i] % 4 == 2) expect(n.technique, TabTechnique.palmMute, reason: '$i');
+        if (pos[i] % tabQuarter == 0) expect(n.isRest, isTrue, reason: '$i');
+        if (pos[i] % tabQuarter == tabEighth) expect(n.technique, TabTechnique.palmMute, reason: '$i');
       }
       final l = lick('reggae_lick').tab;
       expect(l.where((n) => !n.isRest).every((n) => n.string >= 4), isTrue);
@@ -273,7 +287,8 @@ void main() {
       expect(riff.where((n) => n.technique == TabTechnique.slide), hasLength(2));
       final l = lick('grunge_lick');
       final bend = l.tab.firstWhere((n) => n.technique == TabTechnique.bend);
-      expect(bend.length, 6);
+      // Casi medio compás: una negra con puntillo (de dos negras).
+      expect(bend.length, tabQuarter + tabEighth);
       expect(l.tab[1].technique, TabTechnique.release);
       expect((interval(l, l.tab.last), l.tab.last.technique), (0, TabTechnique.vibrato));
     });
@@ -310,5 +325,21 @@ void main() {
       expect(l.tab.where((n) => n.technique == TabTechnique.pullOff), isNotEmpty);
       expect((pitchName(l.tab.last), l.tab.last.technique), ('A', TabTechnique.vibrato));
     });
+  });
+
+  test('tresillos: dos pulsos de tres corcheas de tresillo, bajando, y cierre en A con vibrato', () {
+    final l = lick('minor_blues_triplets');
+    final triplets = l.tab.where((n) => n.length == tabTripletEighth).toList();
+    expect(triplets, hasLength(6));
+    expect(tabTripletGroups(l.tab), hasLength(2));
+    final pitches = [for (final n in triplets) tabMidi(n)];
+    for (var i = 1; i < pitches.length; i++) {
+      expect(pitches[i], lessThan(pitches[i - 1]));
+    }
+    final last = played(l).last;
+    expect((pitchName(last), last.technique), ('A', TabTechnique.vibrato));
+    // La guía de ritmo lo usa para enseñar el conteo.
+    expect(guidesById['theory_rhythm']!.chapters.map((c) => c.target).whereType<LickLink>().map((t) => t.lickId),
+        contains(l.id));
   });
 }

@@ -50,6 +50,7 @@ List<String> tabNotationProblems(List<TabNote> notes) {
 
 /// Técnicas y marcas que usa [notes], para explicar solo esas.
 Set<TabMark> tabMarksIn(List<TabNote> notes) => {
+  if (notes.any((n) => isTripletLength(n.length))) TabMark.triplet,
   for (final n in notes)
     if (n.isRest)
       TabMark.rest
@@ -72,7 +73,26 @@ TabMark? _markOf(TabNote n) => switch (n.technique) {
 };
 
 /// Lo que se explica debajo de una tablatura.
-enum TabMark { rest, hammerOn, pullOff, slide, bend, release, vibrato, palmMute, dead, pick }
+enum TabMark { rest, triplet, hammerOn, pullOff, slide, bend, release, vibrato, palmMute, dead, pick }
+
+/// Grupos de tresillo de [notes]: índices de cada tres notas seguidas con
+/// duración de tresillo (un tresillo incompleto no forma grupo).
+List<List<int>> tabTripletGroups(List<TabNote> notes) {
+  final groups = <List<int>>[];
+  var run = <int>[];
+  for (final (i, n) in notes.indexed) {
+    if (isTripletLength(n.length) && (run.isEmpty || notes[run.first].length == n.length)) {
+      run.add(i);
+      if (run.length == 3) {
+        groups.add(run);
+        run = <int>[];
+      }
+    } else {
+      run = isTripletLength(n.length) ? [i] : <int>[];
+    }
+  }
+  return groups;
+}
 
 /// La tablatura lleva ritmo propio (no son todas corcheas): se dibuja el
 /// conteo debajo.
