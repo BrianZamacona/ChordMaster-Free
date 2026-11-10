@@ -69,7 +69,9 @@ class LessonTabView extends StatelessWidget {
     final fingers = all != null && all.any((f) => f != null) ? all : null;
     final positions = tabPositions(notes);
     final layout = _TabLayout(
-      top: notes.any((n) => n.pick != null || n.technique == TabTechnique.palmMute),
+      top: notes.any(
+        (n) => n.pick != null || n.technique == TabTechnique.palmMute || isTripletLength(n.length),
+      ),
       count: tabHasRhythm(notes, swing: swing),
       fingers: fingers != null,
     );
@@ -77,7 +79,10 @@ class LessonTabView extends StatelessWidget {
       e: AppStrings.tabCountE,
       and: AppStrings.lessonStrumAnd,
       a: AppStrings.tabCountA,
+      trip: AppStrings.tabCountTrip,
+      let: AppStrings.tabCountLet,
     );
+    final triplets = tabTripletGroups(notes);
     final marks = tabMarksIn(notes);
     final secondary = Theme.of(context).textTheme.bodySmall?.copyWith(color: p.textSecondary);
     return Column(
@@ -102,6 +107,12 @@ class LessonTabView extends StatelessWidget {
                       painter: _TabPainter(
                         notes: line,
                         previous: i == 0 ? null : notes[i * tabNotesPerLine - 1],
+                        // Los tresillos de este renglón, con índices del renglón.
+                        triplets: [
+                          for (final g in triplets)
+                            if (tabLineOf(g.first) == i && tabLineOf(g.last) == i)
+                              [for (final k in g) k - i * tabNotesPerLine],
+                        ],
                         layout: layout,
                         palette: p,
                         counts: layout.count
@@ -110,7 +121,14 @@ class LessonTabView extends StatelessWidget {
                                   i * tabNotesPerLine,
                                   i * tabNotesPerLine + line.length,
                                 ))
-                                  tabCountAt(pos, e: count.e, and: count.and, a: count.a),
+                                  tabCountAt(
+                                    pos,
+                                    e: count.e,
+                                    and: count.and,
+                                    a: count.a,
+                                    trip: count.trip,
+                                    let: count.let,
+                                  ),
                               ]
                             : null,
                         highlight: highlight == null
@@ -182,6 +200,7 @@ String _spoken(TabNote n, int? finger) {
 
 String _legend(TabMark m) => switch (m) {
   TabMark.rest => AppStrings.tabLegendRest,
+  TabMark.triplet => AppStrings.tabLegendTriplet,
   TabMark.hammerOn => AppStrings.tabLegendHammerOn,
   TabMark.pullOff => AppStrings.tabLegendPullOff,
   TabMark.slide => AppStrings.tabLegendSlide,
@@ -231,6 +250,7 @@ class _TabPainter extends CustomPainter {
     required this.layout,
     required this.palette,
     this.previous,
+    this.triplets = const [],
     this.counts,
     this.highlight,
     this.playedFrom = 0,
@@ -246,6 +266,9 @@ class _TabPainter extends CustomPainter {
 
   /// La última nota del renglón anterior (para un ligado al empezar este).
   final TabNote? previous;
+
+  /// Grupos de tresillo (índices en este renglón): llevan una llave con "3".
+  final List<List<int>> triplets;
 
   /// Conteo de cada nota de este renglón, o sin fila.
   final List<String>? counts;
@@ -276,6 +299,9 @@ class _TabPainter extends CustomPainter {
       final y = _y(i + 1);
       canvas.drawLine(Offset(labelWidth, y), Offset(size.width, y), line);
       _text(canvas, name, Offset(labelWidth / 2, y), palette.textSecondary, 11);
+    }
+    for (final g in triplets) {
+      _tripletBracket(canvas, _x(g.first, size.width), _x(g.last, size.width));
     }
     for (final (i, n) in notes.indexed) {
       final x = _x(i, size.width);
@@ -386,6 +412,23 @@ class _TabPainter extends CustomPainter {
     }
   }
 
+  /// Llave de tresillo en la fila de arriba: una línea de la primera a la
+  /// última nota con un "3" en medio (si la línea cruza un tresillo con púa,
+  /// el número queda sobre la línea).
+  void _tripletBracket(Canvas canvas, double from, double to) {
+    const y = _TabLayout.topRow / 2 + 2;
+    final paint = Paint()
+      ..color = palette.textSecondary
+      ..strokeWidth = 1;
+    canvas
+      ..drawLine(Offset(from - 6, y + 4), Offset(from - 6, y), paint)
+      ..drawLine(Offset(from - 6, y), Offset(to + 6, y), paint)
+      ..drawLine(Offset(to + 6, y), Offset(to + 6, y + 4), paint);
+    final mid = (from + to) / 2;
+    canvas.drawRect(Rect.fromCenter(center: Offset(mid, y), width: 10, height: 10), Paint()..color = palette.surface);
+    _text(canvas, '3', Offset(mid, y), palette.textSecondary, 10, bold: true);
+  }
+
   /// ⊓ abajo y V arriba, dibujados (la fuente no los trae).
   void _pick(Canvas canvas, PickStroke pick, Offset c, Color color) {
     final paint = Paint()
@@ -434,6 +477,7 @@ class _TabPainter extends CustomPainter {
   bool shouldRepaint(_TabPainter old) =>
       !identical(old.notes, notes) ||
       old.previous != previous ||
+      old.triplets.length != triplets.length ||
       old.layout != layout ||
       old.palette != palette ||
       old.highlight != highlight ||

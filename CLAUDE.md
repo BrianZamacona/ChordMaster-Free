@@ -394,7 +394,9 @@ cada nota pertenezca a la escala. No bajar la tolerancia de 0.
   salto de cuerda (6 4 5 3 4 2 3 1), un dedo por traste desde el traste 1, 5 o 9. Tempo de 5 en
   5 BPM; "Me salió limpio" guarda el récord por ejercicio en `technique_best_bpm` y propone 5 más.
 - Notación de la tablatura (fase 1 de los estilos, inspirada en las guías de Gibson):
-  `TabNote` lleva `length` en semicorcheas (por defecto corchea), `technique` (h, p, slide,
+  `TabNote` lleva `length` en partes de pulso (`tabTicksPerBeat` = 12: semicorchea 3, corchea 6,
+  negra 12 y tresillos de corchea 4 y de semicorchea 2; por defecto corchea; usar siempre las
+  constantes, nunca el número), `technique` (h, p, slide,
   bend con `bend` semitonos, release, vibrato, PM, nota muerta x) y `pick` (⊓ V);
   `TabNote.rest` es un silencio. El swing (`TabSwing`, corcheas o semicorcheas) corre el
   contratiempo a 2/3, como un tresillo, y es de la tablatura entera (`TabPlayer.swing`).
@@ -402,7 +404,10 @@ cada nota pertenezca a la escala. No bajar la tolerancia de 0.
   nota anterior en su cuerda, el hammer-on sube, el pull-off baja, el release vuelve del bend…)
   y un test lo corre sobre todas las lecciones. Se dibuja en `lesson_tab.dart`: letras entre
   notas, b½/b1 y ~ en la nota, arriba la púa y PM, silencio = barrita, conteo "1 e y a" debajo
-  solo si hay ritmo propio (`tabHasRhythm`), y una leyenda con solo las marcas que aparecen.
+  solo si hay ritmo propio (`tabHasRhythm`; el tresillo se cuenta "1 tri ple"), una llave "3"
+  arriba de cada grupo de tresillo (`tabTripletGroups`: tres seguidas de la misma duración) y una
+  leyenda con solo las marcas que aparecen. "Tresillos que bajan" (blues menor) los enseña y la guía
+  Ritmo lo enlaza.
 - Audio de una tablatura (`tab_playback.dart`): cada nota en su instante (duraciones y swing),
   y la pantalla marca la nota con los mismos instantes (`tabIndexAt`). `tabSounds` arma las
   cuerdas: un ligado, slide, bend o release no se vuelve a pulsar, cambia la altura de la

@@ -836,6 +836,14 @@ const List<Guide> _writtenGuides = [
         target: LessonLink('r4_three_four'),
       ),
       GuideChapter(
+        title: LocalizedText(es: 'Tresillos', en: 'Triplets'),
+        body: LocalizedText(
+          es: 'Tres notas parejas en el lugar de dos: cuenta "1 tri ple" en cada pulso.',
+          en: 'Three even notes in the space of two: count "1 trip let" on every beat.',
+        ),
+        target: LickLink('minor_blues_triplets'),
+      ),
+      GuideChapter(
         title: LocalizedText(es: 'Pon a prueba tu pulso', en: 'Test your timing'),
         body: LocalizedText(
           es: 'El juego de ritmo mide qué tan cerca del clic tocas.',
