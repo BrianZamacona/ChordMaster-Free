@@ -88,6 +88,12 @@ cada nota pertenezca a la escala. No bajar la tolerancia de 0.
   ejecución por regla (`lib/domain/voicing/slash_chords.dart`), no van en chords.json: se pone
   el bajo en la 6ª/5ª/4ª sobre las digitaciones del acorde, que deben conservar raíz y 3ª (o la
   2ª/4ª de los sus); el bajo es la nota más grave. Orden: abiertas, más cuerdas, más cómodas.
+- Dedos (regla de `regenerate_chord_data.py`, en todas las digitaciones): un dedo pisa un solo
+  traste (cejilla = varias cuerdas en el mismo traste) y no hacen falta más de cuatro. Si una
+  digitación lo rompe, se reasignan los dedos con `assign_fingers` (un dedo por traste, de grave
+  a agudo); si aun así hacen falta cinco (la forma C menor, x42124), se apaga la cuerda de un
+  borde, primero la 1ª, solo si no quita ninguna nota (queda x4212x). Test:
+  `test/data/chord_fingers_test.dart`.
 - Berklee NO está implementado: no hay definición con trastes verificada. No inventarla.
 - Progresiones: candidatos = digitaciones de `chords.json` (principal, CAGED, voicings) sin costo ergonómico infinito;
   **formas abiertas primero** (decisión del usuario): si el acorde tiene alguna forma abierta
@@ -148,12 +154,13 @@ cada nota pertenezca a la escala. No bajar la tolerancia de 0.
   lo deja en bucle, baja `slowerBpm` (−10, mínimo 40) con `onBpmChanged` y empieza a sonar
   cuando llega el tempo nuevo.
 - Resumen de la sesión (inspirado en el "AI Feedback" de Gibson, pero por reglas, sin IA): cada
-  pasada entera con el micrófono (cursos de melodía y Técnica) se anota en `SessionLog`
+  pasada entera con el micrófono (cursos de melodía, Técnica y Licks y riffs) se anota en `SessionLog`
   (`lib/services/session_log.dart`, `session_runs` = `{day, runs}`, solo hoy; anotar espera a
   la lectura del disco). `summarizeSession` (`lib/domain/practice/session_summary.dart`): por
   cosa tocada manda la última pasada; limpia → "Salió limpio" con el mejor tempo y el récord
   nuevo; si no → "Para repetir" con renglón, errores y 10 BPM menos. Pantalla `/session`
-  (pestaña Inicio), enlazada desde Práctica de hoy; cada fila abre su paso o Técnica.
+  (pestaña Inicio), enlazada desde Práctica de hoy; cada fila abre su paso, Técnica o su lick
+  (`LickTarget`, clave `lick:<id>`, con el estilo debajo del nombre).
 
 ## Módulos de práctica (decisiones)
 - Salud: el aviso de pausa sale SOLO durante la sesión de práctica, al cumplirse cada intervalo
@@ -466,6 +473,10 @@ cada nota pertenezca a la escala. No bajar la tolerancia de 0.
     (no `animator_duration_scale`); al terminar, volver a 1.
 
 ## Dependencias y herramientas
+- JDK para compilar Android: `android/gradle.properties` no fija ninguno (era una ruta de una sola
+  máquina). Gradle usa `JAVA_HOME`; en esta máquina: `gradlew assembleRelease
+  -Ptarget-platform=android-x64 -Dorg.gradle.java.home="C:/Program Files/Android/openjdk/jdk-21.0.8"
+  -Porg.gradle.java.installations.paths="C:/Program Files/Android/openjdk/jdk-21.0.8"`.
 - `pubspec.yaml` fija versiones exactas. La versión de Flutter va en `ci.yml` y `release.yml`.
 - Un PR de Dependabot en rojo puede venir de una rama vieja: leer su log antes de culpar al
   paquete. Si son varios, actualizar todo junto en un PR; Dependabot cierra los suyos al fusionar.
@@ -607,25 +618,17 @@ Objetivo: código legible y mantenible antes que ingenioso. Capas (puertos y ada
   ocultas siguen montadas: lo que use micrófono/audio debe pausarse con `TickerMode`.
 
 ## Pendiente (en orden)
-0. Compilar en esta máquina: `android/gradle.properties` fija `org.gradle.java.home` a
-   `C:/Program Files/Android/Android Studio/jbr`, que quedó roto al reinstalar Android Studio.
-   Mientras tanto: `gradlew assembleRelease` con `-Dorg.gradle.java.home=` y
-   `-Porg.gradle.java.installations.paths=` apuntando a `C:/Program Files/Android/openjdk/jdk-21.0.8`.
-   Decidir si esa línea debe salir del repo (es una ruta de una sola máquina).
-   `chords.json`: Dm marca el dedo 1 en la 3ª y en la 1ª cuerda; revisar en el generador.
 1. Revisión en un dispositivo físico: rediseño completo, versión bilingüe, "Mi progresión",
    tarjetas "¿Por qué?", notificaciones, audio y afinador con una nota real. Lecciones: reto
    superado y letra grande.
-2. Lecciones: el reto en inglés dice "in Ear" en vez de "Ear Training" (los números de dedo a
-   64 dp y el descentrado de los diagramas ya se corrigieron: `chordDiagramMetrics`).
-3. Sandbox TS: corregir la 7ª diatónica del grado VII (allí sigue como disminuida; aquí se
+2. Sandbox TS: corregir la 7ª diatónica del grado VII (allí sigue como disminuida; aquí se
    corrigió a 7ª menor y se regeneraron solo esas filas del golden, 2005 → 1983).
-4. Berklee, si se consigue una definición verificable.
-5. iOS (al compilar por primera vez en una Mac): `permission_handler` necesita en el
+3. Berklee, si se consigue una definición verificable.
+4. iOS (al compilar por primera vez en una Mac): `permission_handler` necesita en el
    `post_install` del `ios/Podfile` que genere Flutter
    `config.build_settings['GCC_PREPROCESSOR_DEFINITIONS'] ||= ['$(inherited)', 'PERMISSION_MICROPHONE=1', 'PERMISSION_NOTIFICATIONS=1']`;
    sin eso el micrófono queda siempre denegado. `Info.plist` ya trae
    `NSMicrophoneUsageDescription`.
-6. Círculo de quintas, fase 3:
+5. Círculo de quintas, fase 3:
    - Unidad "Círculo de quintas" en Lecciones (según las reglas de esa sección), con un reto que
      se supere con el récord del quiz.
