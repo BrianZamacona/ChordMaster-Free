@@ -145,6 +145,9 @@ cada nota pertenezca a la escala. No bajar la tolerancia de 0.
   más grave (decisión del usuario), buscada con el periodo del acorde entero
   (`tabChordPeriodDivisor`: la quinta lo hace dos veces el de la raíz y borra el de la raíz
   sola); si YIN oye clara una sola nota, tiene que ser la del bajo (la quinta sola no cuenta).
+  Un acorde que no es de quintas (los golpes de la pompe) no se espera (`tabMicHears`): se sigue
+  el bajo, y la pista lo dice (`tabMicHint`). Por eso un bajo no repite la nota que sigue sonando:
+  el golpe siguiente traería su ataque y la nota contaría antes de tiempo.
   Notas con palma (PM), sueltas o en acorde: se apagan antes de que termine el ataque, así que
   en su cola (el nivel de agudos ya baja) el periodo de la esperada sí cuenta; y como una
   cuerda que sigue sonando las tapa, para una nota con palma se busca también sin las dos
@@ -346,7 +349,10 @@ cada nota pertenezca a la escala. No bajar la tolerancia de 0.
   estilos se nombran por lo que se toca (`LickStyle`: hard rock de estadio, clásico, heavy/doom,
   thrash, rock latino, sinfónico, psicodélico, hard rock virtuoso, atmosférico, metal progresivo,
   folk de autor) y también los géneros (`LickStyleInfo.genre`: funk, reggae, punk, country, jazz,
-  grunge, metal, rock sureño, blues menor; inspirados en la fila "Genres" de Gibson). Nada de riffs
+  grunge, metal, rock sureño, blues menor, jazz gitano; inspirados en la fila "Genres" de Gibson;
+  el jazz gitano, decisión del usuario tras revisar las apps de licks: la pompe con bajo que
+  alterna fundamental y quinta y golpes de dos notas con palma, y un arpegio de m6 sobre la menor
+  melódica; test en `gypsy_jazz_test.dart`). Nada de riffs
   reconocibles: se enseña la técnica del estilo. Solo afinación
   estándar por ahora (decisión del usuario; las abiertas o graves, después).
 - Datos en `lib/domain/licks/licks.dart` (fuente única; se componen, no salen de una regla). Cada

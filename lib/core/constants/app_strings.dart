@@ -631,6 +631,12 @@ class AppStrings {
   /// Con ritmo propio no son todas corcheas: solo el tempo.
   static String tabAtBpmRhythm(int bpm) => tr(es: 'a $bpm BPM', en: 'at $bpm BPM');
   static String get tabPlayMic => tr(es: 'Tocar yo', en: 'Play it myself');
+  static String get tabMicHintChordHits => tr(
+    es: 'Toca con el teléfono cerca: la app espera cada nota (sin apuro) y, '
+        'al terminar, mide tu tempo. Los golpes de acorde no se esperan: sigue el bajo.',
+    en: 'Play near the phone: the app waits for each note (no rush) and '
+        'measures your tempo at the end. Chord hits are not awaited: it follows the bass.',
+  );
   static String get tabMicHintChords => tr(
     es: 'Toca con el teléfono cerca: la app espera cada nota (sin apuro) y, '
         'al terminar, mide tu tempo. En un acorde escucha la nota más grave.',
@@ -963,8 +969,8 @@ class AppStrings {
   // Qué quiere decir cada marca que aparece en la tablatura.
   static String get tabLegendRest => tr(es: '▬ silencio', en: '▬ rest');
   static String get tabLegendChord => tr(
-    es: 'Números uno encima del otro: suenan a la vez, de un golpe (power chord)',
-    en: 'Numbers stacked on top of each other: they sound together, in one stroke (power chord)',
+    es: 'Números uno encima del otro: suenan a la vez, de un golpe (un acorde)',
+    en: 'Numbers stacked on top of each other: they sound together, in one stroke (a chord)',
   );
   static String get tabSpokenChordJoin => tr(es: ' y ', en: ' and ');
   static String get tabLegendTriplet => tr(

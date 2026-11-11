@@ -105,7 +105,7 @@ void main() {
         '(70 y 110 BPM)', () {
       // Se apagan antes de que el ataque termine y, en classic_riff, bajo la
       // 4ª cuerda que sigue sonando.
-      for (final id in ['punk_riff', 'stadium_riff', 'classic_riff', 'punk_power_riff']) {
+      for (final id in ['punk_riff', 'stadium_riff', 'classic_riff', 'punk_power_riff', 'gypsy_pompe_riff']) {
         final tab = licksById[id]!.tab;
         expect(tab.where((n) => n.technique == TabTechnique.palmMute), isNotEmpty, reason: id);
         for (final bpm in [70, 110]) {

@@ -417,6 +417,14 @@ class _TabPlayerState extends ConsumerState<TabPlayer> {
   }
 }
 
+/// Cómo usar el micrófono con [notes]: si hay golpes de acorde que no espera
+/// (`tabMicHears`), lo dice; si espera power chords, que escucha la más grave.
+String tabMicHint(List<TabNote> notes) {
+  if (notes.any((n) => !tabMicHears(n))) return AppStrings.tabMicHintChordHits;
+  if (notes.any((n) => n.isChord)) return AppStrings.tabMicHintChords;
+  return AppStrings.tabMicHint;
+}
+
 /// Qué pasa con el micrófono: cómo se usa, por qué nota va, la nota
 /// equivocada que sonó o cómo salió.
 class _MicStatus extends StatelessWidget {
@@ -459,7 +467,7 @@ class _MicStatus extends StatelessWidget {
     switch (s?.status) {
       case null || PlayAlongStatus.idle:
         return Text(
-          notes.any((n) => n.isChord) ? AppStrings.tabMicHintChords : AppStrings.tabMicHint,
+          tabMicHint(notes),
           key: const Key('tab-mic-status'),
           style: secondary,
         );

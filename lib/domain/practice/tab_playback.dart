@@ -37,6 +37,11 @@ int tabChordPeriodDivisor(TabNote note) {
 
 const perfectFifthSemitones = 7, perfectFourthSemitones = 5;
 
+/// El micrófono separa un acorde por su periodo solo si es de quintas (power
+/// chord: [tabChordPeriodDivisor] mayor que 1). Otro acorde, como el golpe con
+/// palma de la pompe, no se espera: se siguen las notas de alrededor.
+bool tabMicHears(TabNote note) => !note.isChord || tabChordPeriodDivisor(note) > 1;
+
 /// Notas por renglón: la pantalla dibuja la tablatura de a tantas notas (a 360
 /// dp caben sin apretarse) y cada renglón se puede practicar suelto.
 const tabNotesPerLine = 8;
