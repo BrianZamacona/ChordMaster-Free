@@ -47,6 +47,9 @@ class _ScaleFretboardFullscreenState
   static const _toolbarWidthShare = 0.72;
 
   var _label = FretboardLabel.interval;
+
+  /// Resalta las notas que comparten las formas vecinas del sistema elegido.
+  var _shared = false;
   var _landscapeRequested = false;
 
   @override
@@ -118,6 +121,23 @@ class _ScaleFretboardFullscreenState
       selected: {_label},
       onSelectionChanged: (v) => setState(() => _label = v.first),
     );
+    // Las formas del sistema elegido; sin sistema no hay vecinas que comparar.
+    final shapes = state.selectedSystemId == null
+        ? null
+        : [
+            for (final p in state.visiblePatterns)
+              if (p.systemId == state.selectedSystemId) p.coordinates,
+          ];
+    final canShare = shapes != null && shapes.length > 1 && selected != null;
+    final sharedToggle = IconButton(
+      key: const Key('neck-shared'),
+      tooltip: canShare ? AppStrings.neckShared : AppStrings.neckSharedNeedsSystem,
+      isSelected: _shared && canShare,
+      icon: const Icon(Icons.layers_outlined),
+      selectedIcon: const Icon(Icons.layers),
+      onPressed: canShare ? () => setState(() => _shared = !_shared) : null,
+    );
+    final shared = _shared && canShare ? sharedWithNext(shapes, selected.coordinates) : null;
     final screenWidth = MediaQuery.sizeOf(context).width;
     final inline = screenWidth >= _toolbarInlineWidth;
 
@@ -150,6 +170,7 @@ class _ScaleFretboardFullscreenState
                             Flexible(child: patternPill),
                             const SizedBox(width: 8),
                             labelToggle,
+                            sharedToggle,
                           ],
                         ),
                       ),
@@ -173,7 +194,7 @@ class _ScaleFretboardFullscreenState
                               ],
                             ),
                             const SizedBox(height: 8),
-                            labelToggle,
+                            Row(children: [labelToggle, const SizedBox(width: 8), sharedToggle]),
                           ],
                         ),
                       ),
@@ -187,9 +208,11 @@ class _ScaleFretboardFullscreenState
                   rootSemitone: state.rootSemitone,
                   intervals: scale.intervals,
                 ),
-                highlighted: selected == null
-                    ? null
-                    : patternAcrossNeck(selected.coordinates).toSet(),
+                highlighted:
+                    shared ??
+                    (selected == null
+                        ? null
+                        : patternAcrossNeck(selected.coordinates).toSet()),
                 focus: selected == null
                     ? null
                     : (start: selected.startingFret, end: selected.endFret),

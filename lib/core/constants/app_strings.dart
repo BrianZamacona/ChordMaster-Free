@@ -1101,6 +1101,14 @@ class AppStrings {
       tr(es: 'Ampliar diapasón', en: 'Expand fretboard');
   static String get neckIntervals => tr(es: 'Intervalos', en: 'Intervals');
   static String get neckNotes => tr(es: 'Notas', en: 'Notes');
+  static String get neckShared => tr(
+    es: 'Partes comunes: lo que esta forma comparte con la siguiente',
+    en: 'Shared notes: what this shape shares with the next one',
+  );
+  static String get neckSharedNeedsSystem => tr(
+    es: 'Elige un sistema y una forma para ver qué comparte con la siguiente',
+    en: 'Choose a system and a shape to see what it shares with the next one',
+  );
   static String get scaleShapeOrder => tr(es: 'Orden', en: 'Order');
   static String get cagedPositions =>
       tr(es: 'Posiciones CAGED', en: 'CAGED positions');
