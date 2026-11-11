@@ -357,13 +357,18 @@ cada nota pertenezca a la escala. No bajar la tolerancia de 0.
   los riffs que ya había no cambian).
 - `test/domain/licks/licks_test.dart`: cada nota y la nota a la que llega un bend son de su escala
   (lee `scales_master.json`), la tablatura está bien escrita y dura pulsos enteros, la mano no se
-  estira más de 5 trastes ni sube del 15, cada estilo tiene riff y lick (el riff primero) y usa sus
+  estira más de 5 trastes ni sube del 20, cada estilo tiene riff y lick (el riff primero) y usa sus
   `traits`, y lo que afirma cada texto se verifica nota por nota. Frase nueva = test de lo que dice.
   El riff y el lick de un estilo declaran la misma escala y tónica (la guía lo afirma): si sus
   notas caben en dos, se declara la que contiene a las dos (jazz en D dórico, la escala del ii).
 - Pantallas en `lib/features/licks/`: lista por estilo con filtros de nivel y tipo (los estilos
   vacíos se ocultan) y detalle con `TabPlayer` (▶, bucle, "Tocar yo"), el estilo y su escala en el
-  diapasón. El mejor tempo limpio con el micrófono se guarda en `licks_best_bpm` (`{id: bpm}`) y
+  diapasón. Recorrer (`lib/domain/licks/lick_browse.dart`, decisión del usuario tras revisar apps de
+  licks): filtros por nivel, tipo, escala, tónica y técnica (`LickFilter`; los menús solo ofrecen lo
+  que usa la biblioteca), "Velocidad 50 / 75 / 100 %" (`lickTempoAt`, de 5 en 5 y desde 40) y
+  anterior / siguiente dentro del estilo (`lickNeighbors`, reemplaza la pantalla). El test de licks
+  admite tempos de 50 a 160 BPM y trastes hasta el 20.
+  El mejor tempo limpio con el micrófono se guarda en `licks_best_bpm` (`{id: bpm}`) y
   cuenta como día de técnica (`ActivityLog`); "más lento" cambia el tempo solo en la sesión. Los
   ids son permanentes. Rutas `/licks/:id` y `/learn/licks/:id`.
 
