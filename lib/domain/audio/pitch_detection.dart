@@ -80,6 +80,25 @@ double periodicityAt(
   return best;
 }
 
+/// [samples] sin la nota de frecuencia [hz]: a cada muestra se le resta la
+/// de un periodo antes (filtro peine, con el periodo interpolado). Lo que se
+/// repite con ese periodo (la cuerda que sigue sonando) casi desaparece y lo
+/// demás conserva su periodo. Sale un periodo más corta.
+Float64List withoutPeriod(Float64List samples, int sampleRate, double hz) {
+  final period = sampleRate / hz;
+  final whole = period.floor();
+  final frac = period - whole;
+  final skip = whole + 1;
+  if (skip >= samples.length) return Float64List(0);
+  final out = Float64List(samples.length - skip);
+  for (var i = 0; i < out.length; i++) {
+    final n = i + skip;
+    final delayed = samples[n - whole] * (1 - frac) + samples[n - whole - 1] * frac;
+    out[i] = samples[n] - delayed;
+  }
+  return out;
+}
+
 /// Diferencia media normalizada acumulada de YIN, de 0 a [tauMax], sobre las
 /// primeras [window] muestras.
 Float64List _cmndf(Float64List samples, int window, int tauMax) {

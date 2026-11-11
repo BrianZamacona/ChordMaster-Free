@@ -139,9 +139,14 @@ cada nota pertenezca a la escala. No bajar la tolerancia de 0.
   más grave (decisión del usuario), buscada con el periodo del acorde entero
   (`tabChordPeriodDivisor`: la quinta lo hace dos veces el de la raíz y borra el de la raíz
   sola); si YIN oye clara una sola nota, tiene que ser la del bajo (la quinta sola no cuenta).
-  Límites conocidos (tests): cuerdas al aire graves acumuladas sonando al mismo nivel (3 de 39
-  pasos con las cuerdas sonando) y las notas con palma (PM), sueltas o en acorde: se apagan
-  antes de que se confirmen y el micrófono no las sigue. Un solo micrófono para la app (`playAlongProvider`): se suelta al sonar
+  Notas con palma (PM), sueltas o en acorde: se apagan antes de que termine el ataque, así que
+  en su cola (el nivel de agudos ya baja) el periodo de la esperada sí cuenta; y como una
+  cuerda que sigue sonando las tapa, para una nota con palma se busca también sin las dos
+  últimas notas oídas (`withoutPeriod`, filtro peine; solo con palma porque deja la medida más
+  permisiva). Test: `punk_riff`, `stadium_riff`, `classic_riff` y `punk_power_riff` enteros y
+  sin errores a 70 y 110 BPM, y una nota con palma equivocada no cuenta. Límite conocido
+  (test): cuerdas al aire graves acumuladas sonando al mismo nivel (3 de 39 pasos con las
+  cuerdas sonando). Un solo micrófono para la app (`playAlongProvider`): se suelta al sonar
   un reproductor, al salir o al ocultar la pestaña.
 - Tramo y bucle (inspirado en el "Loop"/"Slow Down" de Gibson): `TabPlayer` deja elegir un
   renglón (`tabNotesPerLine` = 8, en `tab_playback.dart`) y repetirlo en bucle, al escuchar y

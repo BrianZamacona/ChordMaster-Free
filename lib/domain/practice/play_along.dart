@@ -51,6 +51,7 @@ class NoteFollower {
       _indices.add(i);
       expected.add(tabMidi(n));
       _divisors.add(tabChordPeriodDivisor(n));
+      _muted.add(n.technique == TabTechnique.palmMute);
       _beats.add(tabSwungBeats(positions[i], swing));
     }
   }
@@ -63,6 +64,7 @@ class NoteFollower {
   final expected = <int>[];
   final _indices = <int>[];
   final _divisors = <int>[];
+  final _muted = <bool>[];
   final _beats = <double>[];
 
   int _next = 0;
@@ -81,6 +83,9 @@ class NoteFollower {
   /// En un acorde, cuántos periodos de la nota esperada dura el del acorde
   /// ([tabChordPeriodDivisor]); 1 en una nota sola.
   int get expectedPeriodDivisor => done ? 1 : _divisors[_next];
+
+  /// La nota esperada va apagada con la palma: se apaga enseguida.
+  bool get expectedMuted => !done && _muted[_next];
 
   /// Instantes en que salió bien cada nota.
   List<double> get times => List.unmodifiable(_times);
@@ -121,6 +126,13 @@ class PlayAlongSession {
   /// La última nota que empezó (MIDI), acertada o no.
   int? lastHeard;
 
+  /// Cuántas de las últimas notas oídas (distintas) se quitan al buscar una
+  /// nota apagada con la palma: pueden seguir sonando más fuerte que ella
+  /// ([analyzeFrame]). Solo con la palma: el filtro deja la medida más
+  /// permisiva, y una nota que suena entera no lo necesita.
+  static const _recentKept = 2;
+  final _recent = <int>[];
+
   /// La nota que se espera, o `null` al terminar.
   int? get expectedMidi => follower.expectedMidi;
 
@@ -141,6 +153,7 @@ class PlayAlongSession {
       hop: hop,
       expectedMidi: expected,
       periodDivisor: follower.expectedPeriodDivisor,
+      sounding: follower.expectedMuted ? _recent : const [],
       a4: a4,
     );
     final note = _detector.feed(
@@ -150,6 +163,10 @@ class PlayAlongSession {
     );
     if (note == null) return null;
     lastHeard = note.midi;
+    _recent
+      ..remove(note.midi)
+      ..insert(0, note.midi);
+    if (_recent.length > _recentKept) _recent.removeLast();
     return follower.hear(note);
   }
 }

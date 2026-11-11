@@ -40,6 +40,13 @@ Float64List _played(List<TabNote> tab, int bpm, {double? ring}) {
   return mix;
 }
 
+/// [tab] como suena en la app ([tabSounds]: rasgueada, con la palma y las
+/// cuerdas que siguen sonando) a [bpm], tras [_lead] de silencio.
+Float64List _rendered(List<TabNote> tab, int bpm) => Float64List.fromList([
+  ...Float64List((synthSampleRate * _lead).round()),
+  ...renderStrings(tabSounds(tab, bpm: bpm), seconds: tabDurationSeconds(tab, bpm: bpm)),
+]);
+
 /// Lo que hace la pantalla con el micrófono: bajar a 22.05 kHz y pasar una
 /// ventana cada [_hop] muestras a la sesión.
 PlayAlongSession _listen(List<TabNote> expected, Float64List audio) {
@@ -94,25 +101,36 @@ void main() {
       expect(failed.length, lessThanOrEqualTo(steps.length ~/ 10), reason: '$failed');
     });
 
-    test('power chords: se espera la nota más grave y el riff se sigue entero, sin errores', () {
-      // Sin la palma: una nota apagada se apaga antes de que el micrófono la
-      // confirme (límite conocido, también con notas sueltas).
-      final tab = [
-        for (final n in licksById['punk_power_riff']!.tab)
-          TabNote(n.string, n.fret, pick: n.pick, chord: n.chord),
-      ];
-      for (final bpm in [70, 110]) {
-        // Como suena en la app: rasgueado y con las cuerdas que siguen sonando.
-        final audio = Float64List.fromList([
-          ...Float64List((synthSampleRate * _lead).round()),
-          ...renderStrings(tabSounds(tab, bpm: bpm), seconds: tabDurationSeconds(tab, bpm: bpm)),
-        ]);
-        final f = _listen(tab, audio).follower;
-        expect(f.done, isTrue, reason: '$bpm BPM: se quedó en ${f.position}');
-        expect(f.mistakes, 0, reason: '$bpm BPM');
-        expect(f.result.bpm, closeTo(bpm, bpm * 0.03), reason: '$bpm BPM');
+    test('las notas con palma, sueltas y en acorde, se siguen enteras, sin errores '
+        '(70 y 110 BPM)', () {
+      // Se apagan antes de que el ataque termine y, en classic_riff, bajo la
+      // 4ª cuerda que sigue sonando.
+      for (final id in ['punk_riff', 'stadium_riff', 'classic_riff', 'punk_power_riff']) {
+        final tab = licksById[id]!.tab;
+        expect(tab.where((n) => n.technique == TabTechnique.palmMute), isNotEmpty, reason: id);
+        for (final bpm in [70, 110]) {
+          final f = _listen(tab, _rendered(tab, bpm)).follower;
+          final why = '$id a $bpm BPM';
+          expect(f.done, isTrue, reason: '$why: se quedó en la nota ${f.position}');
+          expect(f.mistakes, 0, reason: why);
+          expect(f.result.bpm, closeTo(bpm, bpm * 0.03), reason: why);
+        }
       }
-      // Tocar solo la quinta del acorde (B en vez de E5) no lo da por bueno.
+    });
+
+    test('una nota con palma equivocada no se da por buena', () {
+      // classic_riff: A2 con palma mientras suena el E3 de la 4ª cuerda.
+      final tab = licksById['classic_riff']!.tab.take(4).toList();
+      for (final (string, fret) in [(6, 0), (6, 1), (5, 3)]) {
+        final wrong = TabNote(string, fret, technique: TabTechnique.palmMute, pick: PickStroke.down);
+        final f = _listen(tab, _rendered([...tab.take(3), wrong], 90)).follower;
+        expect(f.position, 3, reason: '$string/$fret');
+        expect(f.done, isFalse, reason: '$string/$fret');
+      }
+    });
+
+    test('power chords: tocar solo la quinta no da el acorde por bueno', () {
+      final tab = licksById['punk_power_riff']!.tab;
       final wrong = renderStrings(
         tabSounds(const [TabNote(5, 2, length: tabHalf)], bpm: 60),
         seconds: 2,
@@ -240,6 +258,37 @@ void main() {
       final w = Float64List.sublistView(half, 3000, 3000 + _window);
       expect(periodicityAt(w, _rate, midiToHz(57)), lessThan(0.1));
       expect(periodicityAt(w, _rate, midiToHz(60)), greaterThan(0.8));
+    });
+
+    test('withoutPeriod: quita la cuerda que suena y deja clara la nota de abajo', () {
+      final loud = pluck(midiToHz(52), 0.5);
+      final quiet = pluck(midiToHz(45), 0.5, seed: 2);
+      final mix = decimateByTwo(Float64List.fromList([
+        for (var i = 0; i < loud.length; i++) loud[i] + 0.15 * quiet[i],
+      ]));
+      final w = Float64List.sublistView(mix, 3000, 3000 + _window);
+      final a2 = midiToHz(45);
+      expect(periodicityAt(w, _rate, a2), greaterThan(0.3));
+      expect(periodicityAt(withoutPeriod(w, _rate, midiToHz(52)), _rate, a2), lessThan(0.1));
+    });
+
+    test('una nota con palma tras un silencio se oye, aunque se apague durante el ataque', () {
+      const note = TabNote(6, 0, technique: TabTechnique.palmMute);
+      final half = decimateByTwo(_rendered(const [note], 70));
+      final detector = NoteOnsetDetector();
+      final heard = <HeardNote>[];
+      for (var start = 0; start + _window <= half.length; start += _hop) {
+        final frame = analyzeFrame(
+          Float64List.sublistView(half, start, start + _window),
+          _rate,
+          at: (start + _window) / _rate,
+          hop: _hop,
+          expectedMidi: 40,
+        );
+        if (detector.feed(frame, expected: 40) case final n?) heard.add(n);
+      }
+      expect(heard.map((n) => (n.midi, n.plucked)), [(40, true)]);
+      expect(heard.single.at, closeTo(_lead, 0.05));
     });
 
     test('attackLevelOf: el ataque es más agudo que lo que sigue sonando', () {
