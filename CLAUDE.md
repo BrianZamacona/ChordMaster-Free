@@ -702,6 +702,12 @@ Objetivo: código legible y mantenible antes que ingenioso. Capas (puertos y ada
     `scaleDetailProvider` con el detalle. `FretboardNeck` da la columna de aire fija y los trastes
     1–24 con scroll; las notas salen de `scaleNotesOnNeck` y una digitación se resalta en todas las
     octavas donde cabe completa (`patternAcrossNeck`), ambas en `lib/domain/theory/neck_notes.dart`.
+    «Partes comunes» (decisión del usuario tras revisar las apps CAGED; botón de capas en la barra):
+    con un sistema y una forma elegidos, resalta en todo el mástil lo que esa forma comparte con la
+    siguiente subiendo por el mástil (`sharedWithNext`, en `neck_notes.dart`; la última sigue en la
+    primera, una octava arriba): por dónde se pasa de una a otra. Sin forma, el botón queda apagado
+    (en CAGED las formas se enciman tanto con la anterior y la siguiente que «lo compartido con
+    todas» era la forma entera). El mástil completo ya muestra todas las formas juntas («unir»).
     Solo Android e iOS piden horizontal, y al salir se devuelve con la lista vacía: la app no fija
     orientación y así respeta el bloqueo de rotación.
   - Con nombres de nota, una nota al aire reemplaza el nombre de su cuerda para no decirlo dos

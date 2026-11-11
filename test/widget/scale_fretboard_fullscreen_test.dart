@@ -283,6 +283,37 @@ void main() {
       );
     });
 
+    testWidgets('partes comunes: hace falta sistema y forma; resalta lo que la forma comparte con la siguiente', (
+      tester,
+    ) async {
+      await pump(tester);
+      await expand(tester);
+      final toggle = find.byKey(const Key('neck-shared'));
+      expect(tester.widget<IconButton>(toggle).onPressed, isNull);
+      ProviderScope.containerOf(tester.element(find.byType(FretboardNeck)))
+          .read(scaleDetailProvider(args).notifier)
+          .changeSystem('caged');
+      await settle(tester);
+      // Con sistema pero sin forma, todavía no.
+      expect(tester.widget<IconButton>(toggle).onPressed, isNull);
+      await chooseInNeck(tester, 1);
+      final state = stateOf(tester);
+      final shapes = [
+        for (final p in state.visiblePatterns)
+          if (p.systemId == 'caged') p.coordinates,
+      ];
+      final chosen = state.currentPattern!.coordinates;
+      await tester.tap(toggle);
+      await tester.pumpAndSettle();
+      final shared = sharedWithNext(shapes, chosen);
+      expect(shared, isNotEmpty);
+      expect(neck(tester).highlighted, shared);
+      // Apagado, vuelve a resaltar la forma entera.
+      await tester.tap(toggle);
+      await tester.pumpAndSettle();
+      expect(neck(tester).highlighted, patternAcrossNeck(chosen).toSet());
+    });
+
     testWidgets('el botón de etiquetas cambia entre intervalo y nota', (
       tester,
     ) async {

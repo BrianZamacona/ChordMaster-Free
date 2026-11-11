@@ -61,3 +61,23 @@ List<NoteCoordinate> scaleNotesOnNeck({
           ),
   ];
 }
+
+/// Lo que la forma [selected] comparte con la siguiente de [patterns] subiendo
+/// por el mástil (por su primer traste; la última sigue en la primera, una
+/// octava arriba): por dónde se pasa de una forma a la otra. Las dos en todas
+/// sus octavas ([patternAcrossNeck]). Vacío si [selected] no está en la lista
+/// o es la única.
+Set<NoteCoordinate> sharedWithNext(
+  List<List<NoteCoordinate>> patterns,
+  List<NoteCoordinate> selected, {
+  int maxFret = 24,
+}) {
+  int lowest(List<NoteCoordinate> p) => p.map((c) => c.fret).reduce((a, b) => a < b ? a : b);
+  final ordered = [...patterns.where((p) => p.isNotEmpty)]..sort((a, b) => lowest(a).compareTo(lowest(b)));
+  final index = ordered.indexWhere((p) => p.toSet().containsAll(selected) && selected.toSet().containsAll(p));
+  if (index < 0 || ordered.length < 2) return const {};
+  final next = ordered[(index + 1) % ordered.length];
+  return patternAcrossNeck(selected, maxFret: maxFret).toSet().intersection(
+    patternAcrossNeck(next, maxFret: maxFret).toSet(),
+  );
+}
