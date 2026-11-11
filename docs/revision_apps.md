@@ -357,8 +357,83 @@ y escala".
 
 | App | Estado | Fecha |
 |---|---|---|
-| CAGED Companion | pendiente | |
-| CAGEDapp | pendiente | |
+| CAGED Companion | revisada | 2026-11-11 |
+| CAGEDapp | revisada | 2026-11-11 |
+
+### CAGED Companion (caged) — 2026-11-11
+
+Es una caja de herramientas del sistema CAGED, con muchas pestañas: escalas, arpegios,
+«verticales», acordes, tríadas, navegar, práctica, octavas, teoría y notas. Arriba hay siempre un
+metrónomo, un temporizador de práctica y un ajuste de mano. Todo gira alrededor del
+**ancla**: la raíz en la 6ª o la 5ª cuerda, desde la que se arma cada forma. Algunas funciones
+llevan el sello PRO.
+
+| Idea | Estado | Dónde encaja | Esfuerzo | Notas |
+|---|---|---|---|---|
+| Escala por forma (C A G E D), con filtro de forma y mástil completo | ya está | detalle de escala (sistema CAGED, vista ampliada) | — | Nuestro mástil completo resalta la forma en cada octava (`patternAcrossNeck`). |
+| Arpegio de una forma sobre su escala, con «ocultar escala» | nueva | detalle de escala / acorde | M | Las notas del acorde de la forma, resaltadas dentro de la forma de escala. «CAGED: acorde y escala» ya une forma de acorde y de escala en C; esto lo haría en cualquier tónica y en la pantalla. |
+| «Autopistas» (verticales): la escala o el arpegio a lo largo del mástil desde un ancla | nueva | detalle de escala | M | Recorrer las cinco formas seguidas, por la misma cuerda raíz. |
+| Navegar paso a paso: encontrar el ancla y armar la forma desde ella (5 pasos) | parcial | guía «CAGED: acorde y escala», Notas del mástil | M | Tenemos las formas de octava y el quiz del mástil; falta un recorrido guiado «ancla → forma». |
+| Rutina de práctica: tonalidad y forma al azar, por fases (escala, arpegio…) | nueva | Practicar | M | Parecida a Práctica de hoy, pero sorteando tónica y forma CAGED. |
+| Tríadas por forma CAGED, en una tabla con sus juegos de cuerdas e inversiones | parcial | `triadInversions` de chords.json | M | Las tenemos por grupo de cuerdas; faltaría agruparlas por la forma CAGED en la que caen. |
+| Cambios de acorde cerca de un ancla (I–vi–IV–V con formas E y A en la misma zona) | parcial | Progresiones | S | El camino óptimo ya minimiza el movimiento; faltaría poder fijar la zona del mástil. |
+| Entrenador de octavas | ya está | Notas del mástil, tarjeta «Octavas de la tónica» | — | |
+| Ajuste de mano (zurdo) | ya está | modo zurdo (#142) | — | |
+| Metrónomo y temporizador siempre arriba | parcial | Afinar → Metrónomo, Salud | S | Lo tenemos, en otras pantallas. |
+
+Lo que hacemos mejor: cada forma y cada nota salen de un generador auditado, solo sostenidos, la
+teoría verificada y el audio de cada diagrama.
+
+Sin ver: lo marcado como PRO.
+
+### CAGEDapp (caged) — 2026-11-11
+
+«CAGED Unchained», en italiano, inglés y español. Enseña cinco **cajas** que valen a la vez para
+la mayor y para su relativa menor («C Major / A minor»).
+- Cada caja resalta su tríada.
+- Una pantalla une cada caja con su forma de acorde. Tiene «partes comunes», que colorea lo que
+  comparten dos cajas vecinas, y «unir», que las junta en un solo mástil encimando esas partes.
+- Otra muestra cada caja como escala completa, pentatónica o con la blue note, y marca que todo se
+  repite a los 12 trastes.
+- «Tonalidad» elige tónica (con bemol y sostenido: «Bb A#») y modo mayor o menor.
+
+| Idea | Estado | Dónde encaja | Esfuerzo | Notas |
+|---|---|---|---|---|
+| Partes comunes entre formas vecinas y «unir / expandir» | nueva | vista ampliada del mástil | M | Colorear las notas que comparten dos formas seguidas y verlas encimadas. Explica por qué las cinco formas cubren el mástil. Se calcula de las posiciones de `scales_master.json`. |
+| Una caja, dos escalas: la mayor y su relativa menor | parcial | lección de la relativa menor, detalle de escala | S | La lección lo enseña; en el detalle de escala no se dice que la forma es la misma. |
+| Tríada dentro de la caja | parcial | ver «arpegio de una forma» en la ficha anterior | — | Es la misma idea. |
+| Escala completa, pentatónica y blue note sobre la misma caja | parcial | detalle de escala | S | Cambiar de escala sin perder la forma; hoy cambiar de escala limpia la digitación. |
+| Se repite a los 12 trastes | ya está | mástil completo (todas las octavas) | — | |
+
+Lo que hacemos mejor: solo sostenidos (ellos escriben «Bb A#»), digitaciones auditadas y más
+escalas y sistemas.
+
+## Resumen de la familia caged
+
+Lo que se repite, ordenado por valor:
+1. **El arpegio o la tríada dentro de su forma de escala**, en cualquier tónica (las dos apps): ver
+   qué notas de la forma son del acorde. Une Acordes y Escalas.
+2. **Partes comunes y «unir»** (CAGEDapp): por qué las cinco formas encajan y cubren el mástil.
+3. **Recorrido guiado desde el ancla** (CAGED Companion): encontrar la raíz y armar la forma.
+4. **Práctica sorteada** (tónica y forma al azar), y las tríadas agrupadas por forma CAGED.
+5. Cosas pequeñas: decir en el detalle que la forma vale para la relativa menor, y cambiar de
+   escala sin perder la forma.
+
+Para decidir:
+- ¿Arpegio y tríada dentro de la forma, en el detalle de escala (o en el de acorde)?
+- ¿Partes comunes y «unir» en la vista ampliada?
+- ¿Recorrido guiado del ancla y práctica sorteada de tónica y forma?
+- ¿Tríadas agrupadas por forma CAGED en el detalle de acorde?
+
+Decidido por el usuario (2026-11-11):
+- **Arpegio dentro de la forma**: en el detalle de escala; un botón resalta las notas del acorde
+  de la forma, en cualquier tónica, y deja ocultar el resto.
+- **Aprobado**: partes comunes y «unir» en la vista ampliada, recorrido guiado desde el ancla,
+  práctica sorteada de tónica y forma, y tríadas agrupadas por forma CAGED en el detalle de
+  acorde.
+
+Orden de trabajo (un PR por punto): arpegio en el detalle de escala → partes comunes y unir →
+tríadas por forma → recorrido desde el ancla → práctica sorteada.
 
 ## 4. Familia mastil: mástil y escalas
 
