@@ -1,3 +1,5 @@
+import 'dart:async';
+
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:go_router/go_router.dart';
@@ -8,6 +10,8 @@ import '../../domain/guides/guides.dart';
 import '../../domain/licks/lick.dart';
 import '../../domain/licks/licks.dart';
 import '../../domain/practice/play_along.dart';
+import '../../domain/practice/session_summary.dart';
+import '../../services/session_log.dart';
 import '../../ui/section_routes.dart';
 import '../../ui/theme.dart';
 import '../lessons/tab_player.dart';
@@ -120,10 +124,16 @@ class LickDetailScreen extends ConsumerWidget {
     );
   }
 
-  /// Tocada con el micrófono: si salió limpia, cuenta como práctica y, si
-  /// supera el récord, se guarda y se avisa.
+  /// Tocada con el micrófono: va al resumen de la sesión y, si salió limpia,
+  /// cuenta como práctica y, si supera el récord, se guarda y se avisa.
   Future<void> _played(BuildContext context, WidgetRef ref, Lick lick, PlayAlongResult r) async {
+    final state = ref.read(licksViewModelProvider);
     final bpm = r.cleanBpm;
+    final best = state.records[lick.id];
+    final record = bpm != null && (best == null || bpm > best) ? bpm : null;
+    unawaited(ref.read(sessionLogProvider.notifier).record(
+      PracticeRun.from(LickTarget(lick.id), r, tempo: state.tempoOf(lick.id), newRecord: record),
+    ));
     if (bpm == null) return;
     final saved = await ref.read(licksViewModelProvider.notifier).saveClean(lick.id, bpm);
     if (!saved || !context.mounted) return;
