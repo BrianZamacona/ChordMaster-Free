@@ -13,6 +13,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:flutter_test/flutter_test.dart';
+import 'package:go_router/go_router.dart';
 
 import '../../support/in_memory_store.dart';
 import '../../support/play_along_fakes.dart';
@@ -34,6 +35,11 @@ void main() {
       await tester.pump(const Duration(milliseconds: 300));
     }
   }
+
+  String location() => switch (appRouter.routerDelegate.currentConfiguration.last) {
+    final ImperativeRouteMatch m => m.matches.uri.path,
+    _ => appRouter.routerDelegate.currentConfiguration.uri.path,
+  };
 
   Future<void> open(WidgetTester tester, String code) async {
     tester.view.devicePixelRatio = 1;
@@ -111,6 +117,28 @@ void main() {
       expect(find.textContaining(name), findsOneWidget);
       // En C: siete compases de C7, tres de F7 y dos de G7.
       expect(find.text('C7'), findsNWidgets(7));
+    });
+
+    testWidgets('a 360 dp ($code): «qué tocar encima» abre la escala en la tónica y atrás vuelve', (tester) async {
+      await open(tester, code);
+      final card = find.byKey(const Key('progression-play-over'));
+      await tester.scrollUntilVisible(card, 300, scrollable: find.byType(Scrollable).first);
+      await tester.runAsync(() => Future<void>.delayed(const Duration(milliseconds: 500)));
+      await settle(tester);
+      expect(tester.getRect(card).right, lessThanOrEqualTo(360));
+      final major = find.byKey(const Key('play-over-major'));
+      expect(major, findsOneWidget);
+      expect(find.byKey(const Key('play-over-pentatonic_major')), findsOneWidget);
+      // I–V–vi–IV en C: el V es G B D.
+      expect(tester.widget<Text>(find.byKey(const Key('play-over-arpeggio-V'))).data, startsWith('G: G B D'));
+      await tester.ensureVisible(major);
+      await tester.pump();
+      await tester.tap(major);
+      await settle(tester);
+      expect(location(), '/scales/major');
+      await tester.tap(find.byType(BackButton));
+      await settle(tester);
+      expect(location(), '/progressions');
     });
 }
 }
