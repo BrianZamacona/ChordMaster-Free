@@ -115,7 +115,7 @@ void main() {
       '(mini $mini, grande $grande), imposibles: ${impossible.length}',
     );
     expect(total, 1816); // 1144 + 624 tríadas y Drop 3 + 48 power chords 5-R-5
-    expect(mini, 645); // + tríadas, Drop 3 y power chords 5-R-5 (mini cejilla del índice)
+    expect(mini, 655); // + tríadas, Drop 3 y power chords 5-R-5 (mini cejilla del índice); +10 al corregir los dedos imposibles (formas A con la cejilla del índice)
     expect(grande, 229); // los 12 power chords viejos (índice de la 5ª a la 1ª) ya no existen
     // Deuda de datos en chords.json (dedos repetidos con cuerdas muteadas, al aire
     // o más bajas entre medias); el conteo exacto evita que crezca en silencio.
@@ -149,4 +149,5 @@ void main() {
 }
 
 // 27 -> 15: los 12 power chords viejos (índice sobre una cuerda muteada) se regeneraron.
-const _knownImpossibleBarres = 15;
+// 15 -> 14: al corregir los dedos imposibles (un dedo en dos trastes) se fue uno más.
+const _knownImpossibleBarres = 14;

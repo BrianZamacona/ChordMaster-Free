@@ -1145,7 +1145,7 @@ const List<LessonChallenge> challenges = [
     title: LocalizedText(es: 'Reto: oído afinado', en: 'Challenge: sharp ear'),
     body: LocalizedText(
       es: 'Reconoce 5 intervalos seguidos sin fallar en Oído.',
-      en: 'Recognize 5 intervals in a row without a miss in Ear.',
+      en: 'Recognize 5 intervals in a row without a miss in Ear Training.',
     ),
     kind: ChallengeKind.earStreak,
     goal: 5,
@@ -1169,7 +1169,7 @@ const List<LessonChallenge> challenges = [
     title: LocalizedText(es: 'Reto: oído de solista', en: 'Challenge: soloist ear'),
     body: LocalizedText(
       es: 'Reconoce 10 intervalos seguidos sin fallar en Oído.',
-      en: 'Recognize 10 intervals in a row without a miss in Ear.',
+      en: 'Recognize 10 intervals in a row without a miss in Ear Training.',
     ),
     kind: ChallengeKind.earStreak,
     goal: 10,

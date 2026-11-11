@@ -1,6 +1,7 @@
 import 'dart:convert';
 import 'dart:io';
 
+import 'package:chordmaster_free/core/constants/app_strings.dart';
 import 'package:chordmaster_free/core/i18n/tr.dart';
 import 'package:chordmaster_free/domain/lessons/curriculum.dart';
 import 'package:chordmaster_free/domain/lessons/lesson.dart';
@@ -133,6 +134,17 @@ void main() {
       )) {
         expect(c.goal, lessThanOrEqualTo(100), reason: c.id);
       }
+    });
+
+    test('los retos de oído nombran el módulo como se llama (en inglés, Ear Training)', () {
+      for (final c in challenges.where((c) => c.kind == ChallengeKind.earStreak)) {
+        CurrentLanguage.value = AppLanguage.es;
+        expect(c.body.es, contains(AppStrings.hubEar), reason: c.id);
+        CurrentLanguage.value = AppLanguage.en;
+        expect(c.body.en, contains(AppStrings.hubEar), reason: c.id);
+        expect(c.body.en, isNot(endsWith('in Ear.')), reason: c.id);
+      }
+      CurrentLanguage.value = AppLanguage.es;
     });
 
     test('cada unidad tiene resumen en los dos idiomas', () {

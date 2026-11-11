@@ -55,6 +55,19 @@ def assign_fingers(frets):
         for s in strings: fingers[s] = n
     return fingers, len(actions)
 
+def playable_without_edge(frets):
+    """Si [frets] necesita más de cuatro dedos, la misma forma sin la cuerda de
+    un borde (1ª o la más grave que suena) que conserve todas sus notas:
+    (frets, dedos, nº de dedos), o None."""
+    played = [i for i, f in enumerate(frets) if f >= 0]
+    classes = lambda fs: {(OPEN[i] + f) % 12 for i, f in enumerate(fs) if f >= 0}
+    for edge in (played[-1], played[0]):          # índice 5 = 1ª cuerda, primero
+        trial = list(frets); trial[edge] = -1
+        if classes(trial) != classes(frets): continue
+        got = assign_fingers(trial)
+        if got is not None: return (trial,) + got
+    return None
+
 # ---------- inversiones de 7ª en las cuerdas A-D-G-B ----------
 def generate_inversion(root, intervals, inv, need=None):
     bass = intervals[INV_IDX[inv]]
@@ -206,7 +219,7 @@ def drop3(root, string, others, third, fifth, seventh):
 
 def main(path):
     data = json.load(open(path, encoding='utf-8'))
-    changed = {'sus2': 0, 'F': 0, 'Edim': 0, 'TopSet': 0, 'inversiones': 0, 'principiante': 0}
+    changed = {'sus2': 0, 'F': 0, 'Edim': 0, 'TopSet': 0, 'inversiones': 0, 'principiante': 0, 'dedos': 0}
     E_SHAPE_F = {  # forma E en cejilla al traste 1 (raíz F en la 6ª cuerda)
         'major':     ([1,3,3,2,1,1], [1,3,4,2,1,1]),
         'minor':     ([1,3,3,1,1,1], [1,3,4,1,1,1]),
@@ -228,6 +241,27 @@ def main(path):
                 c['fretPositions'], c['fingerPositions'] = map(list, E_SHAPE_F[t]); c['baseFret'] = 1; changed['F'] += 1
             elif t == 'diminished' and c['root'] == 'E':
                 c['fretPositions'], c['fingerPositions'], c['baseFret'] = [0,1,2,0,-1,-1], [0,1,2,0,0,0], 1; changed['Edim'] += 1
+        # 3b. dedos imposibles: un mismo dedo en dos trastes distintos (Dm traía
+        # el 1 en la 3ª cuerda, traste 2, y en la 1ª, traste 1). Se reasignan
+        # por la regla de assign_fingers, que da un dedo por traste.
+        # Vale para la principal y para cada digitación de cada sección.
+        shapes = [c] + [p for sec in ('cagedPositions', 'voicings', 'triadInversions', 'advancedInversions')
+                        for p in (c.get(sec) or []) if 'fingerPositions' in p]
+        for shape in shapes:
+            frets_by_finger = {}
+            for f, n in zip(shape['fretPositions'], shape['fingerPositions']):
+                if n > 0 and f > 0: frets_by_finger.setdefault(n, set()).add(f)
+            if any(len(fs) > 1 for fs in frets_by_finger.values()):
+                fixed = assign_fingers(shape['fretPositions'])
+                if fixed is None:
+                    # Cinco dedos (la forma C menor, x42124): se apaga la cuerda
+                    # de un borde, primero la 1ª, si no quita ninguna nota.
+                    fixed = playable_without_edge(shape['fretPositions'])
+                    if fixed is not None:
+                        shape['fretPositions'] = fixed[0]
+                        fixed = fixed[1:]
+                if fixed is not None:
+                    shape['fingerPositions'] = fixed[0]; changed['dedos'] += 1
         # 4. Top-Set Tension
         for p in c.get('voicings', []):
             if p['title'] == 'Top-Set Tension' and t == 'dominant7':
