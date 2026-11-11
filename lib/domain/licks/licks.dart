@@ -195,6 +195,7 @@ const licks = <Lick>[
       en: 'The palm-muted open 6th string keeps the pulse and the single notes ring open: the contrast is the riff.',
     ),
     scale: LessonScale(scaleId: 'pentatonic_minor', root: 4),
+    chords: [LickChord(0, 'power5')],
     bpm: 90,
     tab: [
       TabNote(6, 0, length: tabSixteenth, technique: TabTechnique.palmMute, pick: PickStroke.down),
@@ -219,6 +220,7 @@ const licks = <Lick>[
       en: 'Push until the upper note sounds, let it down without picking again and end with a wide vibrato.',
     ),
     scale: LessonScale(scaleId: 'pentatonic_minor', root: 4),
+    chords: [LickChord(0, 'minor')],
     bpm: 70,
     tab: [
       TabNote(2, 15, length: tabQuarter, technique: TabTechnique.bend, bend: 2),
@@ -240,6 +242,7 @@ const licks = <Lick>[
       en: 'All downstrokes: it sounds firmer that way. The open 5th string is palm muted and comes back between every note.',
     ),
     scale: LessonScale(scaleId: 'pentatonic_minor', root: 9),
+    chords: [LickChord(0, 'power5')],
     bpm: 100,
     tab: [
       TabNote(5, 0, technique: TabTechnique.palmMute, pick: PickStroke.down),
@@ -263,6 +266,7 @@ const licks = <Lick>[
       en: 'Go down the box with pull-offs, push a whole step on the 3rd string and close on the root with vibrato.',
     ),
     scale: LessonScale(scaleId: 'pentatonic_minor', root: 9),
+    chords: [LickChord(0, 'minor')],
     bpm: 75,
     tab: [
       TabNote(1, 8),
@@ -285,6 +289,7 @@ const licks = <Lick>[
       en: 'Slow and on the 6th string: the slide reaches the blues scale b5, the darkest note, and comes back.',
     ),
     scale: LessonScale(scaleId: 'blues_minor', root: 4),
+    chords: [LickChord(0, 'power5')],
     bpm: 60,
     tab: [
       TabNote(6, 0, length: tabQuarter),
@@ -306,6 +311,7 @@ const licks = <Lick>[
       en: 'A whole-step bend, then legato around the b5: no hurry, let every note weigh.',
     ),
     scale: LessonScale(scaleId: 'blues_minor', root: 4),
+    chords: [LickChord(0, 'minor')],
     bpm: 60,
     tab: [
       TabNote(2, 15, length: tabQuarter, technique: TabTechnique.bend, bend: 2),
@@ -327,6 +333,7 @@ const licks = <Lick>[
       en: 'An eighth and two sixteenths, always palm muted: the gallop. The Phrygian minor 2nd gives it the tension.',
     ),
     scale: LessonScale(scaleId: 'phrygian', root: 4),
+    chords: [LickChord(0, 'power5')],
     bpm: 110,
     tab: [
       TabNote(6, 0, technique: TabTechnique.palmMute, pick: PickStroke.down),
@@ -353,6 +360,7 @@ const licks = <Lick>[
       en: 'Straight sixteenths, picking down and up without stopping. Slow at first: the picking hand never changes direction off the beat.',
     ),
     scale: LessonScale(scaleId: 'phrygian', root: 4),
+    chords: [LickChord(0, 'minor')],
     bpm: 90,
     tab: [
       TabNote(1, 0, length: tabSixteenth, pick: PickStroke.down),
@@ -384,6 +392,7 @@ const licks = <Lick>[
       en: 'There is a rest where you expect a note and a note where you don\'t: that syncopation is the dance. Count "1 e & a" out loud.',
     ),
     scale: LessonScale(scaleId: 'dorian', root: 9),
+    chords: [LickChord(0, 'minor7')],
     bpm: 90,
     tab: [
       TabNote(4, 7),
@@ -407,6 +416,7 @@ const licks = <Lick>[
       en: 'The slide reaches the Dorian major 6th, the note that sets it apart from natural minor. End with vibrato on the root.',
     ),
     scale: LessonScale(scaleId: 'dorian', root: 9),
+    chords: [LickChord(5, 'major', length: tabQuarter * 3), LickChord(0, 'minor7', length: tabQuarter)],
     bpm: 80,
     tab: [
       TabNote(3, 7),
@@ -429,6 +439,7 @@ const licks = <Lick>[
       en: 'Two triads played note by note on the 3rd, 2nd and 1st strings: let each ring, like a string-section arpeggio.',
     ),
     scale: LessonScale(scaleId: 'major', root: 7),
+    chords: [LickChord(0, 'major', length: tabQuarter * 2), LickChord(5, 'major', length: tabQuarter * 2)],
     bpm: 80,
     tab: [
       TabNote(3, 4),
@@ -452,6 +463,7 @@ const licks = <Lick>[
       en: 'Climb the major scale with hammer-ons, come down with pull-offs and arrive with a slide: make it sound like a voice.',
     ),
     scale: LessonScale(scaleId: 'major', root: 7),
+    chords: [LickChord(7, 'major', length: tabQuarter * 3), LickChord(0, 'major', length: tabQuarter)],
     bpm: 70,
     tab: [
       TabNote(2, 3),
@@ -474,6 +486,7 @@ const licks = <Lick>[
       en: 'Each pull-off lets the open string ring: release the finger with a small downward flick so the note does not die.',
     ),
     scale: LessonScale(scaleId: 'pentatonic_minor', root: 4),
+    chords: [LickChord(0, 'power5')],
     bpm: 80,
     tab: [
       TabNote(6, 0),
@@ -497,6 +510,7 @@ const licks = <Lick>[
       en: 'Push up a whole step, come down slowly without picking again and finish on the 6th string with lots of vibrato.',
     ),
     scale: LessonScale(scaleId: 'pentatonic_minor', root: 4),
+    chords: [LickChord(0, 'minor')],
     bpm: 65,
     tab: [
       TabNote(3, 14, length: tabQuarter, technique: TabTechnique.bend, bend: 2),
@@ -518,6 +532,7 @@ const licks = <Lick>[
       en: 'The muted open 5th string works as a pedal between the melody notes: pick down and up without stopping.',
     ),
     scale: LessonScale(scaleId: 'natural_minor', root: 9),
+    chords: [LickChord(0, 'minor')],
     bpm: 70,
     tab: [
       TabNote(5, 0, length: tabSixteenth, technique: TabTechnique.palmMute, pick: PickStroke.down),
@@ -549,6 +564,7 @@ const licks = <Lick>[
       en: 'One pick stroke per string and the rest with legato: the fretting hand does the work. Make them all equally loud.',
     ),
     scale: LessonScale(scaleId: 'natural_minor', root: 9),
+    chords: [LickChord(0, 'minor')],
     bpm: 70,
     tab: [
       TabNote(1, 5, length: tabSixteenth),
@@ -580,6 +596,7 @@ const licks = <Lick>[
       en: 'String by string, without muting any: the notes add up in the air.',
     ),
     scale: LessonScale(scaleId: 'pentatonic_minor', root: 11),
+    chords: [LickChord(0, 'minor'), LickChord(3, 'major')],
     bpm: 60,
     tab: [
       TabNote(5, 2),
@@ -611,6 +628,7 @@ const licks = <Lick>[
       en: 'A bend that takes its time, one note and a rest before the last: space is part of the solo too.',
     ),
     scale: LessonScale(scaleId: 'pentatonic_minor', root: 11),
+    chords: [LickChord(0, 'sus4')],
     bpm: 70,
     tab: [
       TabNote(2, 10, length: tabQuarter + tabEighth, technique: TabTechnique.bend, bend: 2),
@@ -631,6 +649,7 @@ const licks = <Lick>[
       en: 'Groups of three sixteenths over a bar of four: the accent lands somewhere new each time until it comes back to 1.',
     ),
     scale: LessonScale(scaleId: 'phrygian', root: 4),
+    chords: [LickChord(0, 'power5')],
     bpm: 90,
     tab: [
       TabNote(6, 0, length: tabSixteenth, technique: TabTechnique.palmMute),
@@ -662,6 +681,7 @@ const licks = <Lick>[
       en: 'Fast legato on the 1st string around the Phrygian minor 2nd. Slow and even first.',
     ),
     scale: LessonScale(scaleId: 'phrygian', root: 4),
+    chords: [LickChord(0, 'minor7')],
     bpm: 70,
     tab: [
       TabNote(1, 0, length: tabSixteenth),
@@ -693,6 +713,7 @@ const licks = <Lick>[
       en: 'The thumb plays the bass and the other fingers the trebles; on the second pass, a hammer-on decorates the bass.',
     ),
     scale: LessonScale(scaleId: 'major', root: 7),
+    chords: [LickChord(0, 'major'), LickChord(5, 'major')],
     bpm: 80,
     tab: [
       TabNote(6, 3),
@@ -725,6 +746,7 @@ const licks = <Lick>[
       en: 'A gentle slide to begin and pull-offs that come down to the open 3rd string.',
     ),
     scale: LessonScale(scaleId: 'major', root: 7),
+    chords: [LickChord(0, 'major')],
     bpm: 75,
     tab: [
       TabNote(2, 3),
@@ -748,6 +770,7 @@ const licks = <Lick>[
       en: 'The x marks are dead notes: the fretting hand rests without pressing and the pick never stops, down and up. The swing makes every "e" and "a" land late.',
     ),
     scale: LessonScale(scaleId: 'dorian', root: 4),
+    chords: [LickChord(0, 'minor7')],
     bpm: 80,
     swing: TabSwing.sixteenths,
     tab: [
@@ -780,6 +803,7 @@ const licks = <Lick>[
       en: 'All on the 3rd string: a few Dorian notes and lots of muted hits. The groove comes from the picking hand.',
     ),
     scale: LessonScale(scaleId: 'dorian', root: 4),
+    chords: [LickChord(0, 'minor7')],
     bpm: 80,
     swing: TabSwing.sixteenths,
     tab: [
@@ -812,6 +836,7 @@ const licks = <Lick>[
       en: 'Silence on every beat and a short, palm-muted note on every "&": that is how reggae keeps time.',
     ),
     scale: LessonScale(scaleId: 'natural_minor', root: 9),
+    chords: [LickChord(0, 'minor')],
     bpm: 75,
     tab: [
       TabNote.rest(tabEighth),
@@ -835,6 +860,7 @@ const licks = <Lick>[
       en: 'A line on the low strings, like a bass, with a slide and a rest that lets it breathe.',
     ),
     scale: LessonScale(scaleId: 'natural_minor', root: 9),
+    chords: [LickChord(0, 'minor')],
     bpm: 75,
     tab: [
       TabNote(5, 0, length: tabQuarter),
@@ -857,6 +883,7 @@ const licks = <Lick>[
       en: 'Even eighths on the 6th string, all downstrokes: punk energy comes from never letting the hand relax.',
     ),
     scale: LessonScale(scaleId: 'major', root: 4),
+    chords: [LickChord(0, 'power5')],
     bpm: 120,
     tab: [
       TabNote(6, 0, technique: TabTechnique.palmMute, pick: PickStroke.down),
@@ -880,6 +907,7 @@ const licks = <Lick>[
       en: 'Four notes of the major scale, up and back, always with downstrokes.',
     ),
     scale: LessonScale(scaleId: 'major', root: 4),
+    chords: [LickChord(0, 'power5')],
     bpm: 110,
     tab: [
       TabNote(2, 5, pick: PickStroke.down),
@@ -902,6 +930,7 @@ const licks = <Lick>[
       en: 'Three-note power chords (root, fifth and octave): E5, A5 and B5, every eighth a downstroke. E5 is palm muted; A5 and B5 ring open and push into the next bar.',
     ),
     scale: LessonScale(scaleId: 'major', root: 4),
+    chords: [LickChord(0, 'power5', length: tabQuarter * 2), LickChord(5, 'power5', length: tabQuarter), LickChord(7, 'power5', length: tabQuarter), LickChord(0, 'power5', length: tabQuarter * 2), LickChord(7, 'power5', length: tabQuarter), LickChord(5, 'power5', length: tabQuarter)],
     bpm: 110,
     tab: [
       TabNote(6, 0, technique: TabTechnique.palmMute, pick: PickStroke.down, chord: [(5, 2), (4, 2)]),
@@ -933,6 +962,7 @@ const licks = <Lick>[
       en: 'The bass alternates with the middle strings and at the end climbs from G to C, with a hammer-on on the way.',
     ),
     scale: LessonScale(scaleId: 'major', root: 7),
+    chords: [LickChord(0, 'major')],
     bpm: 90,
     tab: [
       TabNote(6, 3),
@@ -956,6 +986,7 @@ const licks = <Lick>[
       en: 'A whole-step bend on the 3rd string that imitates a pedal steel, and pull-offs to open strings to come down to G.',
     ),
     scale: LessonScale(scaleId: 'major', root: 7),
+    chords: [LickChord(0, 'major')],
     bpm: 75,
     tab: [
       TabNote(3, 2, length: tabQuarter, technique: TabTechnique.bend, bend: 2),
@@ -978,6 +1009,7 @@ const licks = <Lick>[
       en: 'The D Dorian scale, note by note, with swing: the first eighth of each beat is long and the second short.',
     ),
     scale: LessonScale(scaleId: 'dorian', root: 2),
+    chords: [LickChord(0, 'minor7')],
     bpm: 100,
     swing: TabSwing.eighths,
     tab: [
@@ -1002,6 +1034,7 @@ const licks = <Lick>[
       en: 'Climb the Dm7 arpeggio (D F A C), come down through G7 notes and land on the 3rd of C: that is a ii–V–I.',
     ),
     scale: LessonScale(scaleId: 'dorian', root: 2),
+    chords: [LickChord(0, 'minor7', length: tabQuarter * 2), LickChord(5, 'dominant7', length: tabQuarter + tabEighth), LickChord(10, 'major7', length: tabEighth)],
     bpm: 90,
     swing: TabSwing.eighths,
     tab: [
@@ -1026,6 +1059,7 @@ const licks = <Lick>[
       en: 'All on the low strings, with slides up and back: it sounds dirty on purpose.',
     ),
     scale: LessonScale(scaleId: 'pentatonic_minor', root: 4),
+    chords: [LickChord(0, 'power5')],
     bpm: 80,
     tab: [
       TabNote(6, 0),
@@ -1049,6 +1083,7 @@ const licks = <Lick>[
       en: 'A bend that lasts almost half a bar, the release and a fall to the root with vibrato.',
     ),
     scale: LessonScale(scaleId: 'pentatonic_minor', root: 4),
+    chords: [LickChord(0, 'power5')],
     bpm: 65,
     tab: [
       TabNote(2, 15, length: tabQuarter + tabEighth, technique: TabTechnique.bend, bend: 2),
@@ -1069,6 +1104,7 @@ const licks = <Lick>[
       en: 'The palm-muted open 6th string never stops and minor-scale notes appear in between. Alternate picking.',
     ),
     scale: LessonScale(scaleId: 'harmonic_minor', root: 4),
+    chords: [LickChord(0, 'power5')],
     bpm: 90,
     tab: [
       TabNote(6, 0, length: tabSixteenth, technique: TabTechnique.palmMute, pick: PickStroke.down),
@@ -1100,6 +1136,7 @@ const licks = <Lick>[
       en: 'Fast legato with the harmonic minor major 7th ({R+11}), the note that gives it its dark, exotic color.',
     ),
     scale: LessonScale(scaleId: 'harmonic_minor', root: 4),
+    chords: [LickChord(0, 'minor', length: tabQuarter * 3), LickChord(7, 'dominant7', length: tabQuarter)],
     bpm: 70,
     tab: [
       TabNote(1, 7, length: tabSixteenth),
@@ -1131,6 +1168,7 @@ const licks = <Lick>[
       en: 'Hammer-ons and pull-offs from the open 5th string, over the A major pentatonic.',
     ),
     scale: LessonScale(scaleId: 'pentatonic_major', root: 9),
+    chords: [LickChord(0, 'major')],
     bpm: 90,
     tab: [
       TabNote(5, 0),
@@ -1154,6 +1192,7 @@ const licks = <Lick>[
       en: 'Push the 2nd of the scale ({R+2}) up to the major 3rd ({R+4}): that bend gives it the bright feel. Close on {R} with vibrato.',
     ),
     scale: LessonScale(scaleId: 'pentatonic_major', root: 9),
+    chords: [LickChord(0, 'major')],
     bpm: 70,
     tab: [
       TabNote(3, 4, length: tabQuarter, technique: TabTechnique.bend, bend: 2),
@@ -1175,6 +1214,7 @@ const licks = <Lick>[
       en: 'Swung eighths over the palm-muted open 5th string: the minor blues shuffle.',
     ),
     scale: LessonScale(scaleId: 'blues_minor', root: 9),
+    chords: [LickChord(0, 'minor7')],
     bpm: 85,
     swing: TabSwing.eighths,
     tab: [
@@ -1199,6 +1239,7 @@ const licks = <Lick>[
       en: 'Come down the blues scale through the b5 ({R+6}) with pull-offs and end on {R} with vibrato.',
     ),
     scale: LessonScale(scaleId: 'blues_minor', root: 9),
+    chords: [LickChord(0, 'minor7')],
     bpm: 75,
     swing: TabSwing.eighths,
     tab: [
@@ -1222,6 +1263,7 @@ const licks = <Lick>[
       en: 'Two beats of triplets, three even notes each, falling through the pentatonic box: count "1 trip let, 2 trip let" and close on {R} with vibrato.',
     ),
     scale: LessonScale(scaleId: 'blues_minor', root: 9),
+    chords: [LickChord(0, 'minor7')],
     bpm: 70,
     tab: [
       TabNote(1, 8, length: tabTripletEighth),

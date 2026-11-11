@@ -67,6 +67,7 @@ class Lick {
     required this.scale,
     required this.bpm,
     required this.tab,
+    required this.chords,
     this.swing = TabSwing.none,
   });
 
@@ -96,11 +97,52 @@ class Lick {
   final List<TabNote> tab;
   final TabSwing swing;
 
+  /// Lo que suena debajo, en orden: cada acorde dura su [LickChord.length] y
+  /// entre todos duran lo que la tablatura. Un test exige que existan en
+  /// chords.json, que sus notas sean de la escala y que la frase caiga en
+  /// ellos (ver `licks_test.dart`).
+  final List<LickChord> chords;
+
+  /// [chords] con la tónica [root]: la raíz de cada uno y en qué parte de
+  /// pulso empieza.
+  List<({int root, LickChord chord, int start})> chordsIn(int root) {
+    final out = <({int root, LickChord chord, int start})>[];
+    var at = 0;
+    for (final c in chords) {
+      out.add((root: (root + c.degree) % 12, chord: c, start: at));
+      at += c.length;
+    }
+    return out;
+  }
+
+  /// Cómo suena la parte rítmica: un golpe hacia abajo al entrar cada acorde
+  /// y en cada pulso mientras dura. [chord] es el índice en [chords] y [beat],
+  /// el pulso del golpe desde el principio.
+  List<({int chord, double beat})> get chordStrokes => [
+    for (final (i, c) in chordsIn(scale.root).indexed)
+      for (var t = c.start; t < c.start + c.chord.length; t = (t ~/ tabQuarter + 1) * tabQuarter)
+        (chord: i, beat: t / tabQuarter),
+  ];
+
   /// Técnicas que usa, en el orden en que aparecen.
   List<TabTechnique> get techniques => {
     for (final n in tab)
       if (!n.isRest && n.technique != TabTechnique.none) n.technique,
   }.toList();
+}
+
+/// Un compás de 4/4, en partes de pulso.
+const lickBar = 4 * tabQuarter;
+
+/// Un acorde de fondo de una frase: a [degree] semitonos de la tónica (así se
+/// transpone con ella), del tipo [type] de chords.json (`minor7`, `power5`…)
+/// y que dura [length] partes de pulso (un compás si no se dice).
+class LickChord {
+  const LickChord(this.degree, this.type, {this.length = lickBar});
+
+  final int degree;
+  final String type;
+  final int length;
 }
 
 /// `{R+n}` en [template] = la nota a n semitonos de [root] (con sostenidos),

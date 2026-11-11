@@ -36,6 +36,7 @@ class TabPlayer extends ConsumerStatefulWidget {
     super.key,
     required this.notes,
     required this.bpm,
+    this.chordLabels = const {},
     this.swing = TabSwing.none,
     this.onPlay,
     this.onPlayed,
@@ -44,6 +45,9 @@ class TabPlayer extends ConsumerStatefulWidget {
 
   final List<TabNote> notes;
   final int bpm;
+
+  /// El acorde que entra en cada nota, escrito encima de la tablatura.
+  final Map<int, String> chordLabels;
 
   /// Swing de la tablatura: corre el contratiempo al sonar y al marcarlo.
   final TabSwing swing;
@@ -303,6 +307,7 @@ class _TabPlayerState extends ConsumerState<TabPlayer> {
           notes: widget.notes,
           swing: widget.swing,
           showFingers: true,
+          chordLabels: widget.chordLabels,
           focusLine: _line,
           highlight: listening
               ? range.start + mine!.position
