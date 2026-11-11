@@ -1,17 +1,23 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
+import 'package:go_router/go_router.dart';
 
 import '../../core/constants/app_strings.dart';
 import '../../core/constants/chord_metadata.dart';
+import '../../core/constants/scale_names.dart';
+import '../../core/i18n/tr.dart';
 import '../../core/widgets/chord_diagram.dart';
 import '../../core/widgets/feature_module_scaffold.dart';
 import '../../core/widgets/selector_pill.dart';
+import '../../data/repository/scale_repository.dart';
 import '../../domain/practice/technique_exercises.dart';
 import '../../domain/progressions/progression_data.dart';
 import '../../domain/strumming/strumming_course.dart';
 import '../../domain/theory/harmony.dart';
 import '../../domain/theory/notes.dart';
+import '../../domain/theory/play_over.dart';
 import '../../domain/voicing/barre_detection.dart';
+import '../../ui/section_routes.dart';
 import '../../ui/theme.dart';
 import '../chords/chord_viewmodel.dart';
 import '../chords/fingering_selection.dart';
@@ -106,6 +112,8 @@ class ProgressionsContent extends ConsumerWidget {
         if (current.degrees.isNotEmpty) ...[
           const SizedBox(height: 16),
           _WhyCard(progression: current, tonic: state.tonic),
+          const SizedBox(height: 16),
+          _PlayOverCard(progression: current, tonic: state.tonic),
         ],
       ],
     );
@@ -679,6 +687,103 @@ class _CustomBuilder extends ConsumerWidget {
                       onDeleted: () => vm.removeCustomDegree(i),
                     ),
                 ],
+              ),
+          ],
+        ),
+      ),
+    );
+  }
+}
+
+/// «¿Qué tocar encima?» (`domain/theory/play_over`): las escalas que caben en
+/// toda la progresión, sus pentatónicas, las del blues y las notas de cada
+/// acorde. Cada escala abre su detalle en la tónica de la progresión.
+class _PlayOverCard extends ConsumerWidget {
+  const _PlayOverCard({required this.progression, required this.tonic});
+
+  final Progression progression;
+  final int tonic;
+
+  @override
+  Widget build(BuildContext context, WidgetRef ref) {
+    final p = context.palette;
+    final text = Theme.of(context).textTheme;
+    final all = [...?ref.watch(allScalesProvider).value, ...?ref.watch(allModesProvider).value];
+    final byId = {for (final s in all) s.id: s};
+    final r = playOverScales(progression, {for (final s in all) s.id: s.intervals});
+    final degrees = <String, ProgressionDegree>{for (final d in progression.degrees) d.numeral: d};
+
+    Widget chips(List<String> ids) => Wrap(
+      spacing: 8,
+      runSpacing: 4,
+      children: [
+        for (final id in ids)
+          ActionChip(
+            key: Key('play-over-$id'),
+            label: Text('${pitchClassName(tonic)} ${scaleDisplayName(id, byId[id]!.intervals, fallback: byId[id]!.name)}'),
+            onPressed: () => context.push(context.sectionPath('scales/$id?root=$tonic'), extra: byId[id]),
+          ),
+      ],
+    );
+
+    return Card(
+      key: const Key('progression-play-over'),
+      margin: EdgeInsets.zero,
+      child: Padding(
+        padding: const EdgeInsets.all(16),
+        child: Column(
+          crossAxisAlignment: CrossAxisAlignment.start,
+          children: [
+            Row(
+              children: [
+                Icon(Icons.queue_music, color: p.accent),
+                const SizedBox(width: 12),
+                Expanded(child: Text(AppStrings.playOverTitle, style: text.titleMedium)),
+              ],
+            ),
+            const SizedBox(height: 12),
+            if (all.isNotEmpty) ...[
+              if (r.fit.isNotEmpty) ...[
+                Text(AppStrings.playOverFit, style: text.labelLarge),
+                const SizedBox(height: 4),
+                chips(r.fit),
+                const SizedBox(height: 8),
+              ],
+              if (r.pentatonic.isNotEmpty) ...[
+                Text(AppStrings.playOverPentatonic, style: text.labelLarge),
+                const SizedBox(height: 4),
+                chips(r.pentatonic),
+                const SizedBox(height: 8),
+              ],
+              if (r.blues.isNotEmpty) ...[
+                Text(AppStrings.playOverBlues, style: text.labelLarge),
+                const SizedBox(height: 4),
+                chips(r.blues),
+                const SizedBox(height: 4),
+                for (final id in r.blues)
+                  Text(
+                    '${scaleDisplayName(id, byId[id]!.intervals, fallback: byId[id]!.name)}: ${tr(es: bluesScaleRole(id).es, en: bluesScaleRole(id).en)}.',
+                    style: text.bodySmall?.copyWith(color: p.textSecondary),
+                  ),
+                const SizedBox(height: 8),
+              ],
+              if (r.fit.isEmpty && r.blues.isEmpty) ...[
+                Text(AppStrings.playOverNone, style: text.bodySmall),
+                const SizedBox(height: 8),
+              ],
+            ],
+            Text(AppStrings.playOverArpeggios, style: text.labelLarge),
+            const SizedBox(height: 4),
+            for (final d in degrees.values)
+              Padding(
+                padding: const EdgeInsets.only(bottom: 2),
+                child: Text(
+                  '${ProgressionsContent._chordIn(d, tonic)}: '
+                  '${[for (final n in degreeArpeggio(d)) pitchClassName(tonic + n.semitones)].join(' ')}'
+                  '  (${[for (final n in degreeArpeggio(d)) n.label].join(' ')})',
+                  key: Key('play-over-arpeggio-${d.numeral}'),
+                  style: musicMono(fontSize: 13, color: p.textPrimary),
+                ),
               ),
           ],
         ),
