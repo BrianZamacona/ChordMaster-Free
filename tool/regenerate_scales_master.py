@@ -17,6 +17,14 @@ Reglas
            añade la b5 en las cuerdas que ya tienen 4ª y 5ª separadas por 2 trastes.
   4NPS   : sólo escalas de 7 notas y modos. Cada posición 3NPS + la nota siguiente en cada cuerda
            (la repetida en el cambio de cuerda). Berklee NO se genera: no hay definición verificable.
+  Pentatónica del modo (decisión del usuario): la pentatónica de su calidad (mayor si la 3ª
+           es mayor, menor si es menor) en la que cada nota característica del modo (la que no
+           tiene la mayor o la menor natural más cercana) reemplaza a la nota más cercana, sin
+           tocar la raíz, la 3ª ni la 5ª justa (si el modo la tiene); en un empate, la de arriba.
+           Se agregan como escalas (`pentatonic_<modo>`) para dórico, frigio, lidio y mixolidio,
+           con CAGED y la caja de 2 notas por cuerda. El jónico y el eólico son la mayor y la
+           menor natural, sin nota propia; el locrio daría 1 b2 b3 4 b5, con un tritón de la b5 a
+           la octava que no cabe en una caja ni llena las 6 cuerdas en una ventana CAGED.
 Corrige además los `intervals` de los 7 modos (eran los de Jónico para todos) y el id/nombre
 de las dos disminuidas, que estaban cruzados: el id sale de los intervalos (empieza por
 semitono -> `diminished_hw`, semitono-tono; por tono -> `diminished_wh`, tono-semitono).
@@ -97,10 +105,10 @@ def nps_positions(intervals):            # 3NPS
 def linear4_positions(intervals):        # 4NPS = cada posición 3NPS + 1 nota extra por cuerda
     return make_positions(intervals, 'linear_four_notes', 'lin4', 3, 1, 9)
 
-def pentatonic_box_positions(intervals):  # 2 notas por cuerda; blues: añade la b5 entre 4ª y 5ª
-    base = [i for i in intervals if i != 6]
+def pentatonic_box_positions(intervals, blues=False):  # 2 notas por cuerda; blues: añade la b5 entre 4ª y 5ª
+    base = [i for i in intervals if not (blues and i == 6)]
     out = make_positions(base, 'pentatonic_two_notes', 'box', 2, 0, 5)
-    if 6 in intervals:
+    if blues:
         for p in out:
             by = {}
             for c in p['coordinates']: by.setdefault(c['string'], []).append(c['fret_offset'])
@@ -116,6 +124,47 @@ def pentatonic_box_positions(intervals):  # 2 notas por cuerda; blues: añade la
             p['starting_fret'], p['fret_span'] = min(fr), max(fr) - min(fr) + 1
     return out
 
+MINOR = [0, 2, 3, 5, 7, 8, 10]
+PENTA_MAJOR = [0, 2, 4, 7, 9]
+PENTA_MINOR = [0, 3, 5, 7, 10]
+MODAL_PENTATONICS = ['dorian', 'phrygian', 'lydian', 'mixolydian']
+MODE_NAMES = {'dorian': 'Dorian', 'phrygian': 'Phrygian', 'lydian': 'Lydian', 'mixolydian': 'Mixolydian'}
+
+def mode_intervals(mode):
+    return sorted({(m - MAJOR[MODE_ROT[mode]]) % 12 for m in MAJOR})
+
+def characteristic_notes(mode):
+    # Como compareScale (scale_insights.dart): frente a la mayor o la menor natural, la que
+    # menos notas agregue (en empate, la mayor).
+    iv = set(mode_intervals(mode))
+    vs_major = sorted(iv - set(MAJOR)); vs_minor = sorted(iv - set(MINOR))
+    return vs_major if len(vs_major) <= len(vs_minor) else vs_minor
+
+def modal_pentatonic(mode):
+    iv = mode_intervals(mode)
+    third = 4 if 4 in iv else 3
+    base = list(PENTA_MAJOR if third == 4 else PENTA_MINOR)
+    keep = {0, third} | ({7} if 7 in iv else set())
+    for note in characteristic_notes(mode):
+        if note in base: continue
+        free = [b for b in base if b not in keep]
+        dist = lambda b: (min((b - note) % 12, (note - b) % 12), -((b - note) % 12 <= 6))
+        target = min(free, key=dist)
+        base[base.index(target)] = note
+        keep.add(note)
+    return sorted(base)
+
+def add_modal_pentatonics(data):
+    by_id = {s['id']: s for s in data['scales']}
+    for mode in MODAL_PENTATONICS:
+        sid = 'pentatonic_' + mode
+        entry = by_id.get(sid)
+        if entry is None:
+            entry = {'id': sid, 'name': MODE_NAMES[mode] + ' Pentatonic', 'category': 'Pentatónica',
+                     'description': ''}
+            data['scales'].append(entry)
+        entry['intervals'] = modal_pentatonic(mode)
+
 def main(path):
     data = json.loads(Path(path).read_text(encoding='utf-8'))
     for s in data['modes']:
@@ -125,14 +174,17 @@ def main(path):
             half_first = s['intervals'][1] == 1
             s['id'] = 'diminished_hw' if half_first else 'diminished_wh'
             s['name'] = 'Diminished Half-Whole' if half_first else 'Diminished Whole-Half'
+    add_modal_pentatonics(data)
     for s in data['scales'] + data['modes']:
         iv = s['intervals']; pos = []; systems = []
         if s in data['scales']:
             systems.append({'id': 'caged', 'name': 'CAGED'}); pos += caged_positions(iv)
         if len(iv) == 7:
             systems.append({'id': 'three_nps', 'name': '3NPS'}); pos += nps_positions(iv)
-        if s in data['scales'] and s['id'] in ('pentatonic_minor', 'pentatonic_major', 'blues_minor'):
-            systems.append({'id': 'pentatonic_two_notes', 'name': 'Pentatonic Box (2NPS)'}); pos += pentatonic_box_positions(iv)
+        if s in data['scales'] and (s['id'] in ('pentatonic_minor', 'pentatonic_major', 'blues_minor')
+                                    or s['id'].startswith('pentatonic_') and len(iv) == 5):
+            systems.append({'id': 'pentatonic_two_notes', 'name': 'Pentatonic Box (2NPS)'})
+            pos += pentatonic_box_positions(iv, blues=s['id'] == 'blues_minor')
         if len(iv) == 7:
             systems.append({'id': 'linear_four_notes', 'name': 'Linear (4NPS)'}); pos += linear4_positions(iv)
         s['systems'], s['positions'] = systems, pos

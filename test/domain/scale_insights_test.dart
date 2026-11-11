@@ -25,6 +25,9 @@ void main() {
     expect(stepPattern(majorScale), [2, 2, 1, 2, 2, 2, 1]);
     expect(stepPatternLabel(majorScale), 'T T S T T T S');
     expect(stepPatternLabel(harmonicMinor), 'T S T T S T+S S');
+    // Los saltos de las pentatónicas de los modos: 4 = 2T y 5 = 2T+S.
+    expect(stepPatternLabel([0, 1, 3, 5, 7]), 'S T T T 2T+S');
+    expect(stepPatternLabel([0, 4, 7]), '2T T+S 2T+S');
     CurrentLanguage.value = AppLanguage.en;
     expect(stepPatternLabel(majorScale), 'W W H W W W H');
   });

@@ -76,6 +76,13 @@ cada nota pertenezca a la escala. No bajar la tolerancia de 0.
   3NPS = escalera de 3 notas por cuerda (solo 7 notas); 4NPS = 3NPS + 1 nota por cuerda;
   2NPS = cajas pentatónicas (blues añade la b5 entre 4ª y 5ª). Los modos tienen sus propios
   `intervals` (rotaciones de la mayor).
+- Pentatónica de cada modo (decisión del usuario tras revisar las apps jam; regla en
+  `regenerate_scales_master.py`): la pentatónica de su calidad (mayor o menor por su 3ª) en la que
+  la nota característica del modo reemplaza a la más cercana, sin tocar raíz, 3ª ni 5ª justa (en
+  empate, la de arriba). Escalas `pentatonic_dorian` (1 b3 4 5 6), `_phrygian` (1 b2 b3 4 5),
+  `_lydian` (1 2 3 #4 5) y `_mixolydian` (1 2 3 5 b7), con CAGED y caja de 2 notas. El locrio no
+  tiene: daría un tritón de la b5 a la octava que no cabe en una caja ni llena las 6 cuerdas. La
+  caja quita la b5 solo en la escala de blues. Test: `test/data/modal_pentatonics_test.dart`.
 - Disminuidas: el id sale de los intervalos (`diminished_hw` = empieza por semitono,
   semitono-tono; `diminished_wh` = por tono). Lo fija `regenerate_scales_master.py`.
 - Formas de principiante ('Beginner Grip' en `voicings`): F xx3211, B xx4442, Bm xx4432,

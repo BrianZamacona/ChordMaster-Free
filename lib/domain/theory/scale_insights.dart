@@ -20,16 +20,24 @@ List<int> stepPattern(List<int> scale) {
   return [for (var i = 0; i < s.length; i++) (i + 1 < s.length ? s[i + 1] : 12) - s[i]];
 }
 
-/// Pasos como texto: T = tono, S = semitono (W/H en inglés); 3 = T+S.
+/// Pasos como texto: T = tono, S = semitono (W/H en inglés); 3 = T+S, y
+/// los saltos de las pentatónicas de los modos, 4 = 2T y 5 = 2T+S.
 String stepPatternLabel(List<int> scale) => [
-  for (final step in stepPattern(scale))
-    switch (step) {
-      1 => tr(es: 'S', en: 'H'),
-      2 => tr(es: 'T', en: 'W'),
-      3 => tr(es: 'T+S', en: 'W+H'),
-      _ => '$step',
-    },
+  for (final step in stepPattern(scale)) _stepLabel(step),
 ].join(' ');
+
+String _stepLabel(int step) {
+  final tone = tr(es: 'T', en: 'W');
+  final half = tr(es: 'S', en: 'H');
+  final tones = step ~/ 2;
+  final whole = switch (tones) {
+    0 => '',
+    1 => tone,
+    _ => '$tones$tone',
+  };
+  if (step.isEven) return whole;
+  return whole.isEmpty ? half : '$whole+$half';
+}
 
 /// Qué distingue a la escala, comparada con la referencia más cercana.
 class ScaleComparison {
@@ -282,6 +290,46 @@ ImprovisationTip? improvisationTips(String scaleId, List<int> scale) {
           );
   }
   return switch (scaleId) {
+    'pentatonic_dorian' => const ImprovisationTip(
+      style: LocalizedText(
+        es: 'Funk, rock latino y jazz modal, sobre un vamp dórico (i–IV).',
+        en: 'Funk, Latin rock and modal jazz, over a Dorian vamp (i–IV).',
+      ),
+      idea: LocalizedText(
+        es: 'Es la pentatónica menor con la 6 en lugar de la b7: esa 6 es la nota del dórico; apóyala sobre el IV mayor.',
+        en: 'It is the minor pentatonic with the 6 instead of the b7: that 6 is the Dorian note; lean on it over the major IV.',
+      ),
+    ),
+    'pentatonic_phrygian' => const ImprovisationTip(
+      style: LocalizedText(
+        es: 'Metal y rock oscuro, sobre un vamp frigio (i–♭II).',
+        en: 'Metal and dark rock, over a Phrygian vamp (i–♭II).',
+      ),
+      idea: LocalizedText(
+        es: 'Es la pentatónica menor con la b2 en lugar de la b7: la b2, medio tono sobre la tónica, es el color frigio.',
+        en: 'It is the minor pentatonic with the b2 instead of the b7: the b2, a half step above the tonic, is the Phrygian color.',
+      ),
+    ),
+    'pentatonic_lydian' => const ImprovisationTip(
+      style: LocalizedText(
+        es: 'Música de cine y fusión, sobre un vamp lidio (I–II).',
+        en: 'Film music and fusion, over a Lydian vamp (I–II).',
+      ),
+      idea: LocalizedText(
+        es: 'Es la pentatónica mayor con la #4 en lugar de la 6: apoya la #4 sobre el II mayor, que la tiene de 3ª.',
+        en: 'It is the major pentatonic with the #4 instead of the 6: lean on the #4 over the major II, which has it as its 3rd.',
+      ),
+    ),
+    'pentatonic_mixolydian' => const ImprovisationTip(
+      style: LocalizedText(
+        es: 'Rock clásico, blues-rock y country, sobre un vamp I–♭VII o un acorde 7.',
+        en: 'Classic rock, blues-rock and country, over a I–♭VII vamp or a 7 chord.',
+      ),
+      idea: LocalizedText(
+        es: 'Es la pentatónica mayor con la b7 en lugar de la 6: 1 2 3 5 b7, las notas del acorde 7 más la 2.',
+        en: 'It is the major pentatonic with the b7 instead of the 6: 1 2 3 5 b7, the notes of the 7 chord plus the 2.',
+      ),
+    ),
     'major' || 'ionian' => const ImprovisationTip(
       style: LocalizedText(
         es: 'Pop, folk, country y melodías cantables sobre acordes mayores.',
