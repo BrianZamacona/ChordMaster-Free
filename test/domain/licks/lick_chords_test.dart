@@ -51,7 +51,7 @@ void main() {
     }
   });
 
-  test('la frase cae en sus acordes: la primera nota de cada uno, y en los licks las largas y la última', () {
+  test('la frase cae en sus acordes: la primera nota de cada uno y, salvo en los riffs, las largas y la última', () {
     for (final l in licks) {
       final spans = l.chordsIn(l.scale.root);
       final positions = tabPositions(l.tab);
@@ -64,7 +64,7 @@ void main() {
         final first = sounding.firstWhere((x) => x.at >= s.start);
         expect(chordTones(s.root, s.chord), containsAll(heard(first.note)), reason: '${l.id}: entra ${s.chord.type}');
       }
-      if (l.kind != LickKind.lick) continue;
+      if (l.kind == LickKind.riff) continue;
       for (final x in sounding) {
         final last = identical(x, sounding.last);
         if (x.note.length < tabQuarter && !last) continue;

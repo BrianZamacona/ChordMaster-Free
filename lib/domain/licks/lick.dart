@@ -9,8 +9,10 @@ import '../lessons/lesson.dart';
 import '../theory/notes.dart';
 
 /// Riff = frase de acompañamiento que se repite (suele ir en las cuerdas
-/// graves); lick = frase de solo.
-enum LickKind { riff, lick }
+/// graves); lick = frase corta de solo; relleno = lo que se toca entre los
+/// golpes de la parte rítmica para unir acordes; solo = varios compases, de
+/// varios renglones.
+enum LickKind { riff, lick, fill, solo }
 
 /// Estilos de la biblioteca.
 enum LickStyle {

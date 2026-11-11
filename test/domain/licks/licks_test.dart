@@ -85,7 +85,7 @@ void main() {
     test('cada estilo tiene un riff y un lick, el riff primero', () {
       for (final style in LickStyle.values) {
         final mine = licks.where((l) => l.style == style).toList();
-        expect(mine.map((l) => l.kind), containsAll(LickKind.values), reason: style.name);
+        expect(mine.map((l) => l.kind), containsAll([LickKind.riff, LickKind.lick]), reason: style.name);
         expect(mine.first.kind, LickKind.riff, reason: style.name);
       }
     });

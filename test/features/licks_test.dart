@@ -97,7 +97,7 @@ void main() {
   for (final code in ['es', 'en']) {
     group('a 360 dp en $code', () {
       testWidgets('la biblioteca muestra cada estilo con sus frases, sin desbordar', (tester) async {
-        await open(tester, '/licks', code: code, size: const Size(360, 6000));
+        await open(tester, '/licks', code: code, size: const Size(360, 8000));
         expect(tester.takeException(), isNull);
         for (final style in LickStyle.values) {
           expect(find.byKey(Key('licks-style-${style.name}')), findsOneWidget, reason: style.name);
@@ -192,6 +192,23 @@ void main() {
     // Un estilo sin riffs avanzados se oculta.
     expect(find.byKey(const Key('licks-style-classicHardRock')), findsNothing);
   });
+
+  for (final code in ['es', 'en']) {
+    testWidgets('tipos solo y relleno: sus chips caben a 360 dp ($code) y filtran', (tester) async {
+      await open(tester, '/licks', code: code, size: const Size(360, 6000));
+      for (final k in LickKind.values) {
+        final chip = find.byKey(Key('licks-kind-${k.name}'));
+        expect(chip, findsOneWidget, reason: k.name);
+        expect(tester.getRect(chip).right, lessThanOrEqualTo(360), reason: k.name);
+      }
+      await tester.tap(find.byKey(const Key('licks-kind-solo')));
+      await tester.pump();
+      for (final l in licks) {
+        expect(find.byKey(Key('lick-${l.id}')), l.kind == LickKind.solo ? findsOneWidget : findsNothing, reason: l.id);
+      }
+      expect(find.text(lickKindLabel(LickKind.solo)), findsWidgets);
+    });
+  }
 
   testWidgets('▶ toca la frase con sus técnicas al tempo del lick', (tester) async {
     final lick = licksById['stadium_lick']!;
