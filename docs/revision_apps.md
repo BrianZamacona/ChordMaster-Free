@@ -189,14 +189,19 @@ Lo que ya hacemos mejor:
 - los dedos debajo de la tablatura;
 - que cada texto se verifica contra las notas.
 
-Para decidir:
-- ¿Transponer las frases? Falta decidir cómo tratar las que usan cuerdas al aire (no ofrecerlo, o desplazar
-  ±12) y si los textos que nombran notas se generan.
-- ¿Favoritos? ¿Dónde se verían?
-- ¿Tipos nuevos de frase: el «solo» largo y el «relleno» rítmico?
-- ¿Agregar el gypsy jazz como estilo?
-- ¿Subir los límites del test de licks (tempo de presentación hasta 120, traste hasta 15)?
-- ¿El acompañamiento espera a la revisión de la familia jam?
+Decidido por el usuario (2026-11-11):
+- **Transponer**: sí, solo las frases movibles (las que, al moverlas, quedan enteras dentro del
+  mástil sin depender de una cuerda al aire). Los textos que nombran notas se generan por regla.
+- **Favoritos**: sí, con una estrella en el detalle y un filtro «Favoritos» en la lista.
+- **Tipos nuevos de frase**: «solo» largo (varios renglones, por nivel) y «relleno» rítmico,
+  además de riff y lick.
+- **Aprobado**: acordes encima de la tablatura con la vista de la parte rítmica; ▶ al 50 / 75 %,
+  anterior / siguiente y filtros por escala, tónica y técnica; el gypsy jazz como estilo; y
+  subir los límites del test (tempo de presentación hasta 160 BPM y traste hasta 20).
+- **Acompañamiento** debajo del lick: se decide con la familia jam.
+
+Orden de trabajo (un PR por punto): mejoras pequeñas y límites del test → favoritos →
+transponer → acordes sobre la tablatura → tipos nuevos → gypsy jazz.
 
 ## 2. Familia jam: pistas de acompañamiento
 
