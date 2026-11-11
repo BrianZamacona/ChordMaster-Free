@@ -78,7 +78,7 @@ void main() {
     ];
 
     test('I – V – vi – IV en A con la forma de G en el 2: G D Em C suena A E F#m D', () {
-      final p = progressions.firstWhere((p) => p.label == 'I - V - vi - IV');
+      final p = majorProgressions.firstWhere((p) => p.label == 'I - V - vi - IV');
       expect(chordsInKey(degreesOf(p), noteIndex('A')), ['A', 'E', 'F#m', 'D']);
       final t = capoTransposition(
         degreesOf(p),
@@ -89,7 +89,7 @@ void main() {
     });
 
     test('con cada forma y en cada tonalidad suena la progresión pedida', () {
-      for (final p in progressions) {
+      for (final p in majorProgressions) {
         for (var key = 0; key < 12; key++) {
           for (final o in capoOptions(key)) {
             final t = capoTransposition(degreesOf(p), o);

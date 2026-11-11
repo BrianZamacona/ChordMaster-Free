@@ -6,6 +6,7 @@ library;
 import '../audio/pluck_synth.dart';
 import '../open_chords/chord_shape.dart';
 import '../practice/technique_exercises.dart';
+import 'progression_data.dart';
 
 /// Pulsos que dura cada acorde: un compás de 4/4.
 const progressionBeatsPerChord = 4;
@@ -17,9 +18,26 @@ const progressionDefaultBpm = 80;
 int progressionTempo(int bpm) =>
     ((bpm / techniqueBpmStep).round() * techniqueBpmStep).clamp(techniqueMinBpm, techniqueMaxBpm);
 
-/// Los golpes de [shapes], uno tras otro.
-List<StringSound> progressionStrum(List<ChordShape> shapes, {required int bpm}) =>
-    strumEvents(shapes, bpm: bpm, beatsPerSlot: progressionBeatsPerChord);
+/// Golpes por pulso: uno, o tres en 12/8.
+int strokesPerBeat(ProgressionFeel feel) => feel == ProgressionFeel.triplet ? 3 : 1;
+
+/// Los golpes de [shapes], uno tras otro: un golpe hacia abajo por pulso, o
+/// tres parejos (como un tresillo) en 12/8.
+List<StringSound> progressionStrum(
+  List<ChordShape> shapes, {
+  required int bpm,
+  ProgressionFeel feel = ProgressionFeel.straight,
+}) {
+  if (feel == ProgressionFeel.straight) {
+    return strumEvents(shapes, bpm: bpm, beatsPerSlot: progressionBeatsPerChord);
+  }
+  final per = strokesPerBeat(feel);
+  return strumStrokes([
+    for (final (i, shape) in shapes.indexed)
+      for (var k = 0; k < progressionBeatsPerChord * per; k++)
+        (shape: shape, beat: i * progressionBeatsPerChord + k / per),
+  ], bpm: bpm);
+}
 
 /// Segundos de una vuelta entera de [count] acordes.
 double progressionLapSeconds(int count, {required int bpm}) =>
