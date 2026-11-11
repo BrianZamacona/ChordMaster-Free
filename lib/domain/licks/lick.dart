@@ -38,6 +38,7 @@ enum LickStyle {
   metal,
   southernRock,
   minorBlues,
+  gypsyJazz,
 }
 
 /// Cómo suena un estilo: nombre, resumen y las técnicas que lo distinguen

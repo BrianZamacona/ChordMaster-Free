@@ -42,12 +42,13 @@ const playAlongSlowerBy = 2 * techniqueBpmStep;
 int slowerBpm(int bpm) => math.max(techniqueMinBpm, bpm - playAlongSlowerBy);
 
 /// Sigue una tablatura nota por nota. Los silencios y las notas muertas no
-/// tienen altura: no se esperan (la nota muerta es solo un golpe).
+/// tienen altura: no se esperan (la nota muerta es solo un golpe). Tampoco un
+/// acorde que no es de quintas ([tabMicHears]).
 class NoteFollower {
   NoteFollower(List<TabNote> tab, {TabSwing swing = TabSwing.none}) : length = tab.length {
     final positions = tabPositions(tab);
     for (final (i, n) in tab.indexed) {
-      if (n.isRest || n.technique == TabTechnique.dead) continue;
+      if (n.isRest || n.technique == TabTechnique.dead || !tabMicHears(n)) continue;
       _indices.add(i);
       expected.add(tabMidi(n));
       _divisors.add(tabChordPeriodDivisor(n));

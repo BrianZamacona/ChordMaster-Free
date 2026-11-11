@@ -14,6 +14,7 @@ import 'package:chordmaster_free/domain/open_chords/chord_shape.dart';
 import 'package:chordmaster_free/domain/practice/tab_playback.dart';
 import 'package:chordmaster_free/domain/theory/notes.dart';
 import 'package:chordmaster_free/features/lessons/lesson_tab.dart';
+import 'package:chordmaster_free/features/lessons/tab_player.dart';
 import 'package:chordmaster_free/features/licks/lick_rhythm_part.dart';
 import 'package:chordmaster_free/features/licks/lick_texts.dart';
 import 'package:chordmaster_free/features/licks/licks_viewmodel.dart';
@@ -146,7 +147,7 @@ void main() {
           // Con acordes, el micrófono dice que escucha la nota más grave.
           expect(
             tester.widget<Text>(find.byKey(const Key('tab-mic-status'))).data,
-            l.tab.any((n) => n.isChord) ? AppStrings.tabMicHintChords : AppStrings.tabMicHint,
+            tabMicHint(l.tab),
             reason: l.id,
           );
           // La parte rítmica: un diagrama por acorde distinto, dentro de la pantalla.
