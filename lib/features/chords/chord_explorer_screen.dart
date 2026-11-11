@@ -6,6 +6,7 @@ import '../../core/constants/app_strings.dart';
 import '../../core/constants/chord_texts.dart';
 import '../../core/widgets/chord_diagram.dart';
 import '../../core/widgets/fingering_theory_card.dart';
+import '../../domain/voicing/triads_by_shape.dart';
 import '../../models/chord.dart';
 import '../../ui/palette.dart';
 import '../../ui/section_routes.dart';
@@ -107,13 +108,10 @@ class _ChordExplorerScreenState extends ConsumerState<ChordExplorerScreen> {
               root: chord.root,
             ),
             const SizedBox(height: 16),
-            _ExplorerSection(
-              title: AppStrings.triadInversions,
-              sectionId: 'triadInversions',
-              items: chord.triadInversions,
+            _TriadsSection(
+              chord: chord,
               selected: _selected,
               onToggle: _toggle,
-              root: chord.root,
             ),
             const SizedBox(height: 16),
             _ExplorerSection(
@@ -220,22 +218,123 @@ class _ExplorerSection extends StatelessWidget {
   }
 }
 
+/// Las tríadas, por grupo de cuerdas (como vienen) o por la forma CAGED en la
+/// que caen (`triadsByShape`).
+class _TriadsSection extends StatefulWidget {
+  const _TriadsSection({required this.chord, required this.selected, required this.onToggle});
+
+  final Chord chord;
+  final List<FingeringRef> selected;
+  final ValueChanged<FingeringRef> onToggle;
+
+  @override
+  State<_TriadsSection> createState() => _TriadsSectionState();
+}
+
+class _TriadsSectionState extends State<_TriadsSection> {
+  var _byShape = false;
+
+  @override
+  Widget build(BuildContext context) {
+    final chord = widget.chord;
+    final shapes = [
+      for (final p in chord.cagedPositions)
+        if (p.shape != null) (shape: p.shape!, frets: p.fretPositions),
+    ];
+    final canGroup = shapes.isNotEmpty && chord.triadInversions.isNotEmpty;
+    final byStrings = _ExplorerSection(
+      title: AppStrings.triadInversions,
+      sectionId: 'triadInversions',
+      items: chord.triadInversions,
+      selected: widget.selected,
+      onToggle: widget.onToggle,
+      root: chord.root,
+      header: canGroup ? _toggle() : null,
+    );
+    if (!canGroup || !_byShape) return byStrings;
+
+    final triads = [for (final t in chord.triadInversions) t.fretPositions];
+    final groups = triadsByShape(shapes, triads);
+    final between = triadsBetweenShapes(shapes, triads);
+    final text = Theme.of(context).textTheme;
+    Widget card(ChordExplorerItem item, List<int> frets) => _ExplorerItemCard(
+      item: ChordExplorerItem(
+        title: item.title,
+        fretPositions: frets,
+        fingerPositions: item.fingerPositions,
+        description: item.description,
+      ),
+      root: chord.root,
+    );
+    return _SectionCard(
+      title: AppStrings.triadInversions,
+      child: Column(
+        crossAxisAlignment: CrossAxisAlignment.start,
+        children: [
+          _toggle(),
+          const SizedBox(height: 8),
+          Text(AppStrings.triadsByShapeHint, style: text.bodySmall?.copyWith(color: context.palette.textSecondary)),
+          for (final g in groups) ...[
+            const SizedBox(height: 12),
+            Text(
+              AppStrings.triadsInShape(chordDataText(g.window.shape), g.window.lowest, g.window.highest),
+              key: Key('triads-shape-${g.window.shape}'),
+              style: text.titleSmall,
+            ),
+            const SizedBox(height: 6),
+            if (g.triads.isEmpty)
+              Text(AppStrings.triadsNoneInShape, style: text.bodySmall)
+            else
+              for (final t in g.triads) ...[
+                card(chord.triadInversions[t.index], t.frets),
+                const SizedBox(height: 8),
+              ],
+          ],
+          if (between.isNotEmpty) ...[
+            const SizedBox(height: 12),
+            Text(AppStrings.triadsBetweenShapes, key: const Key('triads-between'), style: text.titleSmall),
+            const SizedBox(height: 6),
+            for (final i in between) ...[
+              card(chord.triadInversions[i], chord.triadInversions[i].fretPositions),
+              const SizedBox(height: 8),
+            ],
+          ],
+        ],
+      ),
+    );
+  }
+
+  Widget _toggle() => SegmentedButton<bool>(
+    key: const Key('triads-view'),
+    showSelectedIcon: false,
+    segments: [
+      ButtonSegment(value: false, label: Text(AppStrings.triadsByStrings)),
+      ButtonSegment(value: true, label: Text(AppStrings.triadsByShape)),
+    ],
+    selected: {_byShape},
+    onSelectionChanged: (v) => setState(() => _byShape = v.first),
+  );
+}
+
 class _ExplorerItemCard extends StatelessWidget {
   const _ExplorerItemCard({
     required this.item,
-    required this.fingering,
-    required this.selected,
-    required this.onToggle,
     required this.root,
+    this.fingering,
+    this.selected = const [],
+    this.onToggle,
     this.titleOverride,
   });
 
   final String root;
 
   final ChordExplorerItem item;
-  final FingeringRef fingering;
+
+  /// Sin ella, la tarjeta no se puede comparar (las tríadas corridas a su
+  /// forma no son las de chords.json).
+  final FingeringRef? fingering;
   final List<FingeringRef> selected;
-  final ValueChanged<FingeringRef> onToggle;
+  final ValueChanged<FingeringRef>? onToggle;
   final String? titleOverride;
 
   String _buildSubtitle() {
@@ -288,11 +387,12 @@ class _ExplorerItemCard extends StatelessWidget {
                 size: 150,
               ),
             ),
-            _CompareCheckbox(
-              fingering: fingering,
-              selected: selected,
-              onToggle: onToggle,
-            ),
+            if (fingering case final f?)
+              _CompareCheckbox(
+                fingering: f,
+                selected: selected,
+                onToggle: onToggle!,
+              ),
           ],
         ),
       );
