@@ -97,6 +97,9 @@ class CircleViewModel extends Notifier<CircleState> {
     return ref.read(audioServiceProvider).playFingering(jsonFrets);
   }
 
+  /// Segundos que suena cada acorde de la cadencia.
+  static const cadenceStepSeconds = 1.6;
+
   /// Toca I – IV – V – I de la tonalidad elegida, con el mismo camino de
   /// digitaciones que Progresiones. Llamarla mientras suena la detiene.
   Future<void> listenCadence() async {
@@ -115,8 +118,7 @@ class CircleViewModel extends Notifier<CircleState> {
       await audio.playFingering(step.voicing.jsonFrets);
       await Future<void>.delayed(
         Duration(
-          milliseconds: (ProgressionsViewModel.listenStepSeconds * 1000)
-              .round(),
+          milliseconds: (cadenceStepSeconds * 1000).round(),
         ),
       );
     }
