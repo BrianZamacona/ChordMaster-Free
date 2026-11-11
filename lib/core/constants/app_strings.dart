@@ -1118,11 +1118,11 @@ class AppStrings {
   );
   static String get scaleStepsLegend => tr(
     es: 'Pasos entre notas: S = semitono (1 traste) · T = tono (2 trastes) · '
-        'T+S = tono y medio (3 trastes). Solo algunas escalas tienen saltos de '
-        'tono y medio.',
+        'T+S = tono y medio (3 trastes) · 2T+S = dos tonos y medio (5 trastes). Solo '
+        'algunas escalas tienen saltos de más de un tono.',
     en: 'Steps between notes: H = half step (1 fret) · W = whole step (2 frets) · '
-        'W+H = step and a half (3 frets). Only some scales have step-and-a-half '
-        'leaps.',
+        'W+H = step and a half (3 frets) · 2W+H = two and a half steps (5 frets). Only '
+        'some scales have leaps bigger than a whole step.',
   );
   static String get progressionListen =>
       tr(es: 'Escuchar progresión', en: 'Listen to the progression');

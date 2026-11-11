@@ -149,12 +149,12 @@ void main() {
 
     // 3NPS en las de 7 notas, la caja en pentatónicas y blues, CAGED en las
     // simétricas; siempre la primera posición que declara ese sistema.
-    String expectedSystem(ScaleDefinition scale) => switch (scale.id) {
-      'pentatonic_minor' ||
-      'pentatonic_major' ||
-      'blues_minor' => 'pentatonic_two_notes',
-      _ => scale.intervals.length == 7 ? 'three_nps' : 'caged',
-    };
+    // Pentatónicas = las de 5 notas (también las de cada modo) y el blues.
+    String expectedSystem(ScaleDefinition scale) => scale.intervals.length == 5 || scale.id == 'blues_minor'
+        ? 'pentatonic_two_notes'
+        : scale.intervals.length == 7
+        ? 'three_nps'
+        : 'caged';
 
     for (final scale in scales) {
       testWidgets('${scale.id}: vista previa de su sistema predeterminado', (
