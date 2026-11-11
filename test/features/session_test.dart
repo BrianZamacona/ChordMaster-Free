@@ -2,6 +2,7 @@ import 'package:chordmaster_free/app.dart';
 import 'package:chordmaster_free/core/constants/app_strings.dart';
 import 'package:chordmaster_free/core/i18n/tr.dart';
 import 'package:chordmaster_free/domain/lessons/lesson.dart';
+import 'package:chordmaster_free/domain/licks/licks.dart';
 import 'package:chordmaster_free/domain/melodies/melody_course.dart';
 import 'package:chordmaster_free/domain/practice/multi_day_challenges.dart';
 import 'package:chordmaster_free/domain/practice/session_summary.dart';
@@ -175,6 +176,25 @@ void main() {
       SessionLog.keyRuns: {'day': dayKey(today), 'runs': [run.toJson()]},
     });
     expect(find.byKey(const Key('session-repeat-$odeKey')), findsOneWidget);
+  });
+
+  testWidgets('una pasada de un lick sale con su nombre y su estilo', (tester) async {
+    const run = PracticeRun(
+      target: LickTarget('folk_lick'),
+      mistakes: 1,
+      bpm: 70,
+      clean: false,
+      lineToPractice: 0,
+      tempo: 75,
+    );
+    await open(tester, '/session', progress: {
+      SessionLog.keyRuns: {'day': dayKey(today), 'runs': [run.toJson()]},
+    });
+    final row = find.byKey(const Key('session-repeat-lick:folk_lick'));
+    expect(row, findsOneWidget);
+    final lick = licksById['folk_lick']!;
+    expect(find.descendant(of: row, matching: find.text(lick.title.text)), findsOneWidget);
+    expect(find.descendant(of: row, matching: find.text(lickStyleInfo(lick.style).title.text)), findsOneWidget);
   });
 
   for (final code in ['es', 'en']) {

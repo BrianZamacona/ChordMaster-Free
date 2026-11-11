@@ -6,7 +6,8 @@ library;
 import 'play_along.dart';
 import 'technique_exercises.dart';
 
-/// Qué se tocó: un paso de curso o un ejercicio de Técnica.
+/// Qué se tocó: un paso de curso, un ejercicio de Técnica o una frase de
+/// Licks y riffs.
 sealed class RunTarget {
   const RunTarget();
 
@@ -24,6 +25,7 @@ sealed class RunTarget {
         (final e?, final f?) => TechniqueTarget(e, f),
         _ => null,
       },
+      ['lick', final id] => LickTarget(id),
       _ => null,
     };
   }
@@ -48,6 +50,16 @@ class TechniqueTarget extends RunTarget {
 
   @override
   String get key => 'technique:${exercise.name}:$startFret';
+}
+
+/// Una frase de Licks y riffs, por id.
+class LickTarget extends RunTarget {
+  const LickTarget(this.lickId);
+
+  final String lickId;
+
+  @override
+  String get key => 'lick:$lickId';
 }
 
 /// Una pasada entera tocada con el micrófono.
