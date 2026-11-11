@@ -259,6 +259,21 @@ void main() {
       expect(l.every((n) => n.pick == PickStroke.down), isTrue);
     });
 
+    test('punk, power chords: E5 A5 B5 de raíz, quinta y octava, todo abajo; solo E5 con palma', () {
+      final riff = played(lick('punk_power_riff'));
+      expect(riff.every((n) => n.isChord && n.length == tabEighth && n.pick == PickStroke.down), isTrue);
+      for (final n in riff) {
+        // Tres notas: raíz (la más grave), quinta y octava.
+        expect([for (final t in n.tones) tabMidi(t) - tabMidi(n)], [0, 7, 12], reason: '$n');
+        final name = pitchName(n);
+        expect(name, isIn(['E', 'A', 'B']));
+        expect(n.technique, name == 'E' ? TabTechnique.palmMute : TabTechnique.none, reason: '$n');
+      }
+      expect({for (final n in riff) pitchName(n)}, {'E', 'A', 'B'});
+      // La guía del punk sigue con su primer riff, de una nota a la vez.
+      expect(licks.firstWhere((l) => l.style == LickStyle.punk).id, 'punk_riff');
+    });
+
     test('country: sube de G a C con un hammer-on; bend de un tono en la 3ª y pull-offs al aire hasta G', () {
       final riff = played(lick('country_riff'));
       expect([for (final n in riff.skip(4)) pitchName(n)], ['G', 'A', 'B', 'C']);

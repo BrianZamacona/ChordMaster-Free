@@ -135,9 +135,13 @@ cada nota pertenezca a la escala. No bajar la tolerancia de 0.
   `periodicityAt` aunque otra cuerda siga sonando, y se rechaza si YIN oye una vecina (±2
   semitonos). Una nota sin ataque no cuenta como error. Tempo = distancia media primera→última
   (no depende del retraso del micrófono); récord = sin errores ni pausas (> 2.5× la típica),
-  redondeado al paso de 5 con 2 % de margen. Una nota a la vez, nada de acordes. Límite
-  conocido (test): cuerdas al aire graves acumuladas sonando al mismo nivel (3 de 39 pasos con
-  las cuerdas sonando). Un solo micrófono para la app (`playAlongProvider`): se suelta al sonar
+  redondeado al paso de 5 con 2 % de margen. Un acorde (power chord) se espera por su nota
+  más grave (decisión del usuario), buscada con el periodo del acorde entero
+  (`tabChordPeriodDivisor`: la quinta lo hace dos veces el de la raíz y borra el de la raíz
+  sola); si YIN oye clara una sola nota, tiene que ser la del bajo (la quinta sola no cuenta).
+  Límites conocidos (tests): cuerdas al aire graves acumuladas sonando al mismo nivel (3 de 39
+  pasos con las cuerdas sonando) y las notas con palma (PM), sueltas o en acorde: se apagan
+  antes de que se confirmen y el micrófono no las sigue. Un solo micrófono para la app (`playAlongProvider`): se suelta al sonar
   un reproductor, al salir o al ocultar la pestaña.
 - Tramo y bucle (inspirado en el "Loop"/"Slow Down" de Gibson): `TabPlayer` deja elegir un
   renglón (`tabNotesPerLine` = 8, en `tab_playback.dart`) y repetirlo en bucle, al escuchar y
@@ -336,8 +340,9 @@ cada nota pertenezca a la escala. No bajar la tolerancia de 0.
 - Datos en `lib/domain/licks/licks.dart` (fuente única; se componen, no salen de una regla). Cada
   estilo (`lickStyleInfo`) declara nombre, resumen y `traits` (técnicas que lo distinguen); cada
   frase (`Lick`) su tipo (riff o lick), nivel (`GuideLevel`), escala y tónica, tempo, swing y
-  tablatura con la notación de la fase 1. Una sola nota a la vez: los power chords no se pueden
-  escribir todavía.
+  tablatura con la notación de la fase 1. Los power chords se escriben con `TabNote.chord`
+  (decisión del usuario: solo el motor y un riff nuevo, "Power chords en corcheas" del punk;
+  los riffs que ya había no cambian).
 - `test/domain/licks/licks_test.dart`: cada nota y la nota a la que llega un bend son de su escala
   (lee `scales_master.json`), la tablatura está bien escrita y dura pulsos enteros, la mano no se
   estira más de 5 trastes ni sube del 15, cada estilo tiene riff y lick (el riff primero) y usa sus
@@ -405,6 +410,11 @@ cada nota pertenezca a la escala. No bajar la tolerancia de 0.
   negra 12 y tresillos de corchea 4 y de semicorchea 2; por defecto corchea; usar siempre las
   constantes, nunca el número), `technique` (h, p, slide,
   bend con `bend` semitonos, release, vibrato, PM, nota muerta x) y `pick` (⊓ V);
+  `chord` = otras notas a la vez, (cuerda, traste), 2 o 3 en total, en cuerdas distintas y más
+  agudas que la principal, que es la más grave (`TabNote.tones` las da todas); un acorde se
+  pulsa abierto o con palma, no se liga ni se empuja. Se dibuja con los números apilados en la
+  columna y suena rasgueado (`chordStrumSeconds` por cuerda, de grave a aguda; con púa arriba,
+  al revés);
   `TabNote.rest` es un silencio. El swing (`TabSwing`, corcheas o semicorcheas) corre el
   contratiempo a 2/3, como un tresillo, y es de la tablatura entera (`TabPlayer.swing`).
   `tabNotationProblems` (`tab_notation.dart`) dice qué está mal escrito (un ligado sigue a la
@@ -428,7 +438,7 @@ cada nota pertenezca a la escala. No bajar la tolerancia de 0.
 - Dedos en la tablatura (idea de Gibson, que colorea por dedo; aquí número, nunca solo color):
   `tabFingers` (`tab_playback.dart`) por la regla de un dedo por traste. Si todo lo pisado cabe
   en los trastes 1–4, el dedo es el traste; si no, el índice va en el traste más bajo; si no
-  cabe en 4 trastes (la mano se mueve), no hay fila. `TabPlayer` la muestra debajo de la 6ª
+  cabe en 4 trastes (la mano se mueve) o hay acordes, no hay fila. `TabPlayer` la muestra debajo de la 6ª
   cuerda y la pista lo explica. Test: coincide con lo que dicen Primeros pasos y Melodías.
 - `TabPlayer` (`features/lessons/tab_player.dart`) es el único reproductor: lecciones con tab y
   rutinas. Al empezar uno, el anterior se detiene (`tabPlaybackProvider`).
