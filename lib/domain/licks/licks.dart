@@ -1096,8 +1096,8 @@ const licks = <Lick>[
     level: GuideLevel.advanced,
     title: LocalizedText(es: 'Menor armónica', en: 'Harmonic minor'),
     about: LocalizedText(
-      es: 'Ligados rápidos con la 7ª mayor de la menor armónica (D#), la nota que le da su color oscuro y exótico.',
-      en: 'Fast legato with the harmonic minor major 7th (D#), the note that gives it its dark, exotic color.',
+      es: 'Ligados rápidos con la 7ª mayor de la menor armónica ({R+11}), la nota que le da su color oscuro y exótico.',
+      en: 'Fast legato with the harmonic minor major 7th ({R+11}), the note that gives it its dark, exotic color.',
     ),
     scale: LessonScale(scaleId: 'harmonic_minor', root: 4),
     bpm: 70,
@@ -1150,8 +1150,8 @@ const licks = <Lick>[
     level: GuideLevel.intermediate,
     title: LocalizedText(es: 'Bend a la 3ª mayor', en: 'Bend to the major 3rd'),
     about: LocalizedText(
-      es: 'Empuja la 2ª de la escala (B) hasta la 3ª mayor (C#): ese bend le da el aire alegre. Cierra en A con vibrato.',
-      en: 'Push the 2nd of the scale (B) up to the major 3rd (C#): that bend gives it the bright feel. Close on A with vibrato.',
+      es: 'Empuja la 2ª de la escala ({R+2}) hasta la 3ª mayor ({R+4}): ese bend le da el aire alegre. Cierra en {R} con vibrato.',
+      en: 'Push the 2nd of the scale ({R+2}) up to the major 3rd ({R+4}): that bend gives it the bright feel. Close on {R} with vibrato.',
     ),
     scale: LessonScale(scaleId: 'pentatonic_major', root: 9),
     bpm: 70,
@@ -1195,8 +1195,8 @@ const licks = <Lick>[
     level: GuideLevel.intermediate,
     title: LocalizedText(es: 'La b5 que baja', en: 'The falling b5'),
     about: LocalizedText(
-      es: 'Baja por la escala de blues pasando por la b5 (D#) con pull-offs y termina en A con vibrato.',
-      en: 'Come down the blues scale through the b5 (D#) with pull-offs and end on A with vibrato.',
+      es: 'Baja por la escala de blues pasando por la b5 ({R+6}) con pull-offs y termina en {R} con vibrato.',
+      en: 'Come down the blues scale through the b5 ({R+6}) with pull-offs and end on {R} with vibrato.',
     ),
     scale: LessonScale(scaleId: 'blues_minor', root: 9),
     bpm: 75,
@@ -1218,8 +1218,8 @@ const licks = <Lick>[
     level: GuideLevel.intermediate,
     title: LocalizedText(es: 'Tresillos que bajan', en: 'Falling triplets'),
     about: LocalizedText(
-      es: 'Dos pulsos de tresillo, tres notas parejas en cada uno, bajando por la caja de la pentatónica: cuenta "1 tri ple, 2 tri ple" y cierra en A con vibrato.',
-      en: 'Two beats of triplets, three even notes each, falling through the pentatonic box: count "1 trip let, 2 trip let" and close on A with vibrato.',
+      es: 'Dos pulsos de tresillo, tres notas parejas en cada uno, bajando por la caja de la pentatónica: cuenta "1 tri ple, 2 tri ple" y cierra en {R} con vibrato.',
+      en: 'Two beats of triplets, three even notes each, falling through the pentatonic box: count "1 trip let, 2 trip let" and close on {R} with vibrato.',
     ),
     scale: LessonScale(scaleId: 'blues_minor', root: 9),
     bpm: 70,

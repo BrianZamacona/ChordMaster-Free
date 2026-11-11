@@ -7,8 +7,10 @@ import 'package:chordmaster_free/data/repository/scale_repository.dart';
 import 'package:chordmaster_free/domain/lessons/lesson.dart';
 import 'package:chordmaster_free/domain/licks/lick.dart';
 import 'package:chordmaster_free/domain/licks/lick_browse.dart';
+import 'package:chordmaster_free/domain/licks/lick_transpose.dart';
 import 'package:chordmaster_free/domain/licks/licks.dart';
 import 'package:chordmaster_free/domain/practice/tab_playback.dart';
+import 'package:chordmaster_free/domain/theory/notes.dart';
 import 'package:chordmaster_free/features/licks/lick_texts.dart';
 import 'package:chordmaster_free/features/licks/licks_viewmodel.dart';
 import 'package:chordmaster_free/services/audio_service.dart';
@@ -106,7 +108,8 @@ void main() {
         appRouter.go('/licks/${mine[1].id}');
         await settle(tester);
         expect(tester.takeException(), isNull);
-        for (final k in ['lick-speed-50', 'lick-speed-100', 'lick-previous', 'lick-next']) {
+        expect(isMovable(mine[1]), isTrue);
+        for (final k in ['lick-key-down', 'lick-key-up', 'lick-speed-50', 'lick-speed-100', 'lick-previous', 'lick-next']) {
           final f = find.byKey(Key(k));
           await tester.ensureVisible(f);
           await tester.pump();
@@ -209,6 +212,32 @@ void main() {
     expect(audio.played.single, tabSounds(lick.tab, bpm: lickTempoAt(lick, 50)));
     await tester.tap(play);
     await tester.pump();
+  });
+
+  testWidgets('+ transpone la frase: tónica, texto y lo que suena', (tester) async {
+    final lick = licksById['minor_blues_lick']!;
+    final roots = transposableRoots(lick);
+    final next = roots[(roots.indexOf(lick.scale.root) + 1) % roots.length];
+    final (audio, _) = await open(tester, '/licks/${lick.id}');
+    expect(tester.widget<Text>(find.byKey(const Key('lick-key'))).data, pitchClassName(lick.scale.root));
+    await tester.tap(find.byKey(const Key('lick-key-up')));
+    await tester.pump();
+    expect(tester.widget<Text>(find.byKey(const Key('lick-key'))).data, pitchClassName(next));
+    expect(tester.widget<Text>(find.byKey(const Key('lick-about'))).data, lick.aboutIn(next).text);
+    final play = find.byKey(const Key('tab-play'));
+    await tester.ensureVisible(play);
+    await tester.pump();
+    await tester.tap(play);
+    await tester.pump();
+    expect(audio.played.single, tabSounds(transposedLick(lick, next)!.tab, bpm: lick.bpm, swing: lick.swing));
+    await tester.tap(play);
+    await tester.pump();
+  });
+
+  testWidgets('una frase con cuerdas al aire no ofrece transponer y lo dice', (tester) async {
+    await open(tester, '/licks/punk_riff');
+    expect(find.byKey(const Key('lick-key-up')), findsNothing);
+    expect(find.byKey(const Key('lick-key-fixed')), findsOneWidget);
   });
 
   testWidgets('siguiente reemplaza la frase y atrás vuelve a la lista', (tester) async {

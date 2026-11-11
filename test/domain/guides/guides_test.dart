@@ -424,8 +424,8 @@ void main() {
           expect((l.scale.scaleId, l.scale.root), (scale.scaleId, scale.root), reason: l.id);
         }
         // Los textos son los de cada frase (ya verificados en licks_test).
-        expect(g.chapters[0].body.es, riff.about.es);
-        expect(g.chapters[1].body.en, lick.about.en);
+        expect(g.chapters[0].body.es, riff.aboutText.es);
+        expect(g.chapters[1].body.en, lick.aboutText.en);
         expect(g.title.es, lickStyleInfo(style).title.es);
       }
     });

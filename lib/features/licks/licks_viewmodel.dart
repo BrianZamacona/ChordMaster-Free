@@ -3,6 +3,7 @@ import 'dart:async';
 import 'package:flutter/foundation.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 
+import '../../domain/licks/lick_transpose.dart';
 import '../../domain/licks/licks.dart';
 import '../../domain/practice/multi_day_challenges.dart';
 import '../../domain/practice/technique_exercises.dart';
@@ -11,7 +12,12 @@ import '../../services/key_value_store.dart';
 
 /// Récords y tempo de cada frase de la biblioteca.
 class LicksState {
-  const LicksState({this.records = const {}, this.tempos = const {}, this.favorites = const {}});
+  const LicksState({
+    this.records = const {},
+    this.tempos = const {},
+    this.favorites = const {},
+    this.roots = const {},
+  });
 
   /// Mejor tempo tocado limpio con el micrófono, por id.
   final Map<String, int> records;
@@ -22,16 +28,22 @@ class LicksState {
   /// Frases marcadas con la estrella.
   final Set<String> favorites;
 
+  /// Tónica elegida en esta sesión (transponer), por id; sin ella, la suya.
+  final Map<String, int> roots;
+
   int tempoOf(String id) => tempos[id] ?? licksById[id]!.bpm;
+  int rootOf(String id) => roots[id] ?? licksById[id]!.scale.root;
 
   LicksState copyWith({
     Map<String, int>? records,
     Map<String, int>? tempos,
     Set<String>? favorites,
+    Map<String, int>? roots,
   }) => LicksState(
     records: records ?? this.records,
     tempos: tempos ?? this.tempos,
     favorites: favorites ?? this.favorites,
+    roots: roots ?? this.roots,
   );
 }
 
@@ -85,6 +97,12 @@ class LicksViewModel extends Notifier<LicksState> {
     } catch (e, st) {
       debugPrint('LicksViewModel.toggleFavorite error: $e\n$st');
     }
+  }
+
+  /// Tónica de [id] para esta sesión (solo si la frase se puede llevar ahí).
+  void setRoot(String id, int root) {
+    if (transposeShift(licksById[id]!, root) == null) return;
+    state = state.copyWith(roots: {...state.roots, id: root % 12});
   }
 
   /// Tempo de [id] para esta sesión (dentro de los límites de Técnica).

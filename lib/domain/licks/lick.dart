@@ -6,6 +6,7 @@ library;
 import '../../core/i18n/tr.dart';
 import '../guides/guides.dart';
 import '../lessons/lesson.dart';
+import '../theory/notes.dart';
 
 /// Riff = frase de acompañamiento que se repite (suele ir en las cuerdas
 /// graves); lick = frase de solo.
@@ -75,8 +76,17 @@ class Lick {
   final GuideLevel level;
   final LocalizedText title;
 
-  /// Qué escuchar o qué cuidar al tocarla.
+  /// Qué escuchar o qué cuidar al tocarla. Las notas se escriben relativas a
+  /// la tónica (`{R}` = la tónica, `{R+11}` = 11 semitonos arriba) para que
+  /// el texto siga siendo cierto al transponer: se lee con [aboutIn].
   final LocalizedText about;
+
+  /// [about] en la tónica [root].
+  LocalizedText aboutIn(int root) =>
+      LocalizedText(es: renderNoteTemplate(about.es, root), en: renderNoteTemplate(about.en, root));
+
+  /// [about] en su tonalidad.
+  LocalizedText get aboutText => aboutIn(scale.root);
 
   /// La escala de todas sus notas (también la nota a la que llega un bend).
   final LessonScale scale;
@@ -92,3 +102,13 @@ class Lick {
       if (!n.isRest && n.technique != TabTechnique.none) n.technique,
   }.toList();
 }
+
+/// `{R+n}` en [template] = la nota a n semitonos de [root] (con sostenidos),
+/// `{R}` = [root].
+String renderNoteTemplate(String template, int root) => template.replaceAllMapped(
+  noteTemplatePattern,
+  (m) => pitchClassName((root + int.parse(m.group(1) ?? '0')) % 12),
+);
+
+/// `{R}` o `{R+n}`.
+final noteTemplatePattern = RegExp(r'\{R(?:\+(\d+))?\}');
