@@ -45,6 +45,13 @@ cada nota pertenezca a la escala. No bajar la tolerancia de 0.
 - Las posiciones de `scales_master.json` solo suben desde su `fret_offset` en C: fuera de C casi
   nunca traen notas al aire (E menor pentatónica empieza en el traste 4, no en el 0). Las cuerdas
   al aire de otra tónica se ven en el mástil completo.
+- Modo zurdo (decisión del usuario tras revisar las apps jam; ajuste en Progreso → Ajustes,
+  `leftHanded` en la caja de ajustes): `Handedness` en la raíz de la app y `HandedFlip`
+  (`lib/ui/handedness.dart`) espejan de izquierda a derecha el dibujo del diapasón, el mástil
+  completo (con su columna fija y el scroll), los double stops y los diagramas de acorde; los
+  textos del painter se enderezan con `paintUpright`. Toques y scroll pasan por la misma
+  transformación. La tablatura NO se espeja (se lee igual con cualquier mano). Pintor nuevo con
+  texto = parámetro `mirrored` y `paintUpright`.
 - Colores: SOLO desde `context.palette` (`lib/ui/palette.dart`, paleta Palisandro con versión
   clara y oscura) o `Theme.of(context).colorScheme`. Nada de `Colors.red`/hex sueltos ni
   colores por módulo. El color codifica intervalos (`palette.intervalColor('b3')`) y siempre
@@ -124,6 +131,13 @@ cada nota pertenezca a la escala. No bajar la tolerancia de 0.
   compases va cada grado del blues y qué nota distingue al modo (`modeColorTones`, de
   `compareScale`). Test: `progression_kinds_test.dart`. El eólico no tiene vamp propio: es la
   menor natural, y va en «En menor».
+- Progresiones, «¿Qué tocar encima?» (`lib/domain/theory/play_over.dart`, decisión del usuario
+  tras revisar las apps jam): por regla, las escalas de la tónica que contienen todas las notas de
+  todos los acordes (`scalesForChord` sobre `progressionTones`; las de mismas notas, una vez), las
+  pentatónicas que caben en la primera, y en el blues (ninguna de 7 notas contiene I7, IV7 y V7)
+  la pentatónica menor, la de blues y la mayor, con lo que aporta cada una (test con sus
+  intervalos). Debajo, las notas de cada acorde con sus intervalos (`degreeArpeggio`). Cada escala
+  abre su detalle en la tónica con `push`.
 - Progresiones, escuchar (decisión del usuario tras revisar las apps jam): la vuelta entera se
   sintetiza en un WAV (`progression_playback.dart`: un compás por acorde, un golpe abajo por
   pulso), con tempo de 5 en 5 (40–200, los límites de Técnica) y bucle. En bucle el archivo

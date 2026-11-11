@@ -92,6 +92,19 @@ class SettingsPanel extends ConsumerWidget {
                     ),
           ),
           const Divider(height: 1),
+          SwitchListTile(
+            key: const Key('settings-left-handed'),
+            secondary: Icon(Icons.back_hand_outlined, color: p.textSecondary),
+            title: Text(AppStrings.leftHanded),
+            subtitle: Text(
+              AppStrings.leftHandedSubtitle,
+              style: text.labelSmall?.copyWith(color: p.textSecondary),
+            ),
+            value: ref.watch(settingsViewModelProvider.select((s) => s.leftHanded)),
+            onChanged: (value) =>
+                ref.read(settingsViewModelProvider.notifier).setLeftHanded(leftHanded: value),
+          ),
+          const Divider(height: 1),
           Padding(
             padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 6),
             child: Row(

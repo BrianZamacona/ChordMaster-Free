@@ -9,7 +9,11 @@ class SettingsState {
   const SettingsState({
     this.themeMode = ThemeMode.system,
     this.localeCode = 'es',
+    this.leftHanded = false,
   });
+
+  /// Modo zurdo: el mástil y los diagramas se ven espejados.
+  final bool leftHanded;
 
   /// The currently selected [ThemeMode].
   final ThemeMode themeMode;
@@ -18,10 +22,12 @@ class SettingsState {
   SettingsState copyWith({
     ThemeMode? themeMode,
     String? localeCode,
+    bool? leftHanded,
   }) =>
       SettingsState(
         themeMode: themeMode ?? this.themeMode,
         localeCode: localeCode ?? this.localeCode,
+        leftHanded: leftHanded ?? this.leftHanded,
       );
 }
 
@@ -34,6 +40,7 @@ final settingsViewModelProvider =
 class SettingsViewModel extends Notifier<SettingsState> {
   static const _keyThemeMode = 'themeMode';
   static const _keyLocaleCode = 'localeCode';
+  static const _keyLeftHanded = 'leftHanded';
 
   @override
   SettingsState build() {
@@ -51,9 +58,11 @@ class SettingsViewModel extends Notifier<SettingsState> {
           StorageBoxes.settings, _keyLocaleCode);
       final localeCode =
           stored == null ? state.localeCode : AppI18n.normalize(stored);
+      final leftHanded = await storage.get<bool>(StorageBoxes.settings, _keyLeftHanded) ?? false;
       state = state.copyWith(
         themeMode: _parseThemeMode(raw),
         localeCode: localeCode,
+        leftHanded: leftHanded,
       );
     } catch (e, st) {
       debugPrint('SettingsViewModel._loadSettings error: $e\n$st');
@@ -71,6 +80,16 @@ class SettingsViewModel extends Notifier<SettingsState> {
       );
     } catch (e, st) {
       debugPrint('SettingsViewModel.setLocaleCode error: $e\n$st');
+    }
+  }
+
+  /// Guarda y aplica el modo zurdo.
+  Future<void> setLeftHanded({required bool leftHanded}) async {
+    try {
+      state = state.copyWith(leftHanded: leftHanded);
+      await ref.read(keyValueStoreProvider).save(StorageBoxes.settings, _keyLeftHanded, leftHanded);
+    } catch (e, st) {
+      debugPrint('SettingsViewModel.setLeftHanded error: $e\n$st');
     }
   }
 

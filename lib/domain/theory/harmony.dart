@@ -303,17 +303,20 @@ List<({int semitones, String numeral})> modeColorTones(Progression p) {
 
 /// Semitonos desde la tónica de las notas del acorde del grado [d] (tríada o
 /// cuatríada, según su tipo).
-Set<int> degreeChordTones(ProgressionDegree d) {
-  final intervals = switch (d.type) {
-    'major' => [0, 4, 7],
-    'minor' => [0, 3, 7],
-    'diminished' => [0, 3, 6],
-    'dominant7' => [0, 4, 7, 10],
-    'minor7' => [0, 3, 7, 10],
-    _ => throw ArgumentError.value(d.type, 'type'),
-  };
-  return {for (final i in intervals) (d.semitones + i) % 12};
-}
+Set<int> degreeChordTones(ProgressionDegree d) => {
+  for (final i in degreeChordIntervals(d.type)) (d.semitones + i) % 12,
+};
+
+/// Intervalos desde la raíz de un acorde de [type] (los tipos de las
+/// progresiones).
+List<int> degreeChordIntervals(String type) => switch (type) {
+  'major' => const [0, 4, 7],
+  'minor' => const [0, 3, 7],
+  'diminished' => const [0, 3, 6],
+  'dominant7' => const [0, 4, 7, 10],
+  'minor7' => const [0, 3, 7, 10],
+  _ => throw ArgumentError.value(type, 'type'),
+};
 
 LocalizedText _modeLine(Progression p, int tonic) {
   final scale = modeIntervals(p.mode!);
