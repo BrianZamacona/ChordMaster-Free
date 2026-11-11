@@ -65,7 +65,15 @@ void main() {
     testWidgets('a 360 dp ($code): tempo y bucle caben y el tempo cambia de 5 en 5', (tester) async {
       await open(tester, code);
       expect(tester.takeException(), isNull);
-      for (final k in ['progression-listen', 'progression-bpm-down', 'progression-bpm', 'progression-bpm-up', 'progression-loop']) {
+      for (final k in [
+        'progression-listen',
+        'progression-bpm-down',
+        'progression-bpm',
+        'progression-bpm-up',
+        'progression-loop',
+        for (var i = 0; i < 5; i++) 'progression-pattern-$i',
+        'progression-pattern-view',
+      ]) {
         final f = find.byKey(Key(k));
         expect(f, findsOneWidget, reason: k);
         expect(tester.getRect(f).right, lessThanOrEqualTo(360), reason: k);

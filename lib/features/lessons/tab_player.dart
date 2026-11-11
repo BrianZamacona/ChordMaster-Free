@@ -6,6 +6,7 @@ import 'package:flutter_riverpod/flutter_riverpod.dart';
 
 import '../../core/constants/app_strings.dart';
 import '../../domain/lessons/lesson.dart';
+import '../../domain/licks/lick_backing.dart';
 import '../../domain/practice/play_along.dart';
 import '../../domain/practice/tab_notation.dart';
 import '../../domain/practice/tab_playback.dart';
@@ -37,6 +38,7 @@ class TabPlayer extends ConsumerStatefulWidget {
     required this.notes,
     required this.bpm,
     this.chordLabels = const {},
+    this.backing,
     this.swing = TabSwing.none,
     this.onPlay,
     this.onPlayed,
@@ -48,6 +50,10 @@ class TabPlayer extends ConsumerStatefulWidget {
 
   /// El acorde que entra en cada nota, escrito encima de la tablatura.
   final Map<int, String> chordLabels;
+
+  /// Con golpes, ▶ suena con ese acompañamiento debajo, más bajo (también en
+  /// un renglón suelto). El micrófono nunca lo pone: lo oiría.
+  final List<BackingStroke>? backing;
 
   /// Swing de la tablatura: corre el contratiempo al sonar y al marcarlo.
   final TabSwing swing;
@@ -122,7 +128,10 @@ class _TabPlayerState extends ConsumerState<TabPlayer> {
     super.didUpdateWidget(old);
     // Por contenido: hay pantallas que arman la lista en cada build.
     final same = listEquals(old.notes, widget.notes);
-    if (!same || old.bpm != widget.bpm || old.swing != widget.swing) _stop();
+    // El acompañamiento se compara por si está y cuántos golpes trae: la
+    // pantalla lo arma en cada build.
+    final backingChanged = old.backing?.length != widget.backing?.length;
+    if (!same || old.bpm != widget.bpm || old.swing != widget.swing || backingChanged) _stop();
     if (!same) {
       _again?.cancel();
       _line = null;
@@ -169,8 +178,21 @@ class _TabPlayerState extends ConsumerState<TabPlayer> {
   /// Suena el tramo elegido desde el principio (también al volver en bucle).
   void _start() {
     final part = _part;
+    final backing = widget.backing;
+    final range = _range;
+    final positions = tabPositions(widget.notes);
     _audio.playTab(
-      tabSounds(part, bpm: widget.bpm, swing: widget.swing),
+      [
+        ...tabSounds(part, bpm: widget.bpm, swing: widget.swing),
+        if (backing != null)
+          ...lickBacking(
+            backing,
+            from: positions[range.start],
+            to: range.end < widget.notes.length ? positions[range.end] : tabLength(widget.notes),
+            bpm: widget.bpm,
+            swing: widget.swing,
+          ),
+      ],
       seconds: tabDurationSeconds(part, bpm: widget.bpm, swing: widget.swing),
     );
     _clock

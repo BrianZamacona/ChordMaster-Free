@@ -7,6 +7,7 @@ import '../../core/constants/chord_metadata.dart';
 import '../../core/widgets/chord_diagram.dart';
 import '../../domain/lessons/lesson.dart';
 import '../../domain/licks/lick.dart';
+import '../../domain/licks/lick_backing.dart';
 import '../../domain/open_chords/chord_shape.dart';
 import '../../domain/practice/tab_playback.dart';
 import '../../domain/theory/notes.dart';
@@ -26,6 +27,23 @@ Map<int, String> lickChordLabels(Lick lick, List<TabNote> tab, int root) {
     for (final c in lick.chordsIn(root))
       if (positions.indexOf(c.start) case final i when i >= 0) i: lickChordName(c.root, c.chord),
   };
+}
+
+/// Los golpes del acompañamiento de [lick] en la tónica [root], con las
+/// digitaciones de chords.json; `null` si alguna todavía no está (se lee en
+/// otro hilo).
+List<BackingStroke>? lickBackingStrokes(Lick lick, int root, ChordViewModel library) {
+  final chords = [
+    for (final c in lick.chordsIn(root)) library.findByName(lickChordName(c.root, c.chord)),
+  ];
+  if (chords.contains(null)) return null;
+  final shapes = [
+    for (final c in chords.cast<Chord>())
+      ChordShape(name: c.name, frets: c.fretPositions, fingers: c.fingerPositions),
+  ];
+  return [
+    for (final s in lick.chordStrokes) (shape: shapes[s.chord], position: (s.beat * tabQuarter).round()),
+  ];
 }
 
 /// La parte rítmica de una frase: los acordes que suenan debajo, con su

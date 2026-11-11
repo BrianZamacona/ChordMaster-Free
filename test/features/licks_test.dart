@@ -7,6 +7,7 @@ import 'package:chordmaster_free/core/i18n/tr.dart';
 import 'package:chordmaster_free/data/repository/scale_repository.dart';
 import 'package:chordmaster_free/domain/lessons/lesson.dart';
 import 'package:chordmaster_free/domain/licks/lick.dart';
+import 'package:chordmaster_free/domain/licks/lick_backing.dart';
 import 'package:chordmaster_free/domain/licks/lick_browse.dart';
 import 'package:chordmaster_free/domain/licks/lick_transpose.dart';
 import 'package:chordmaster_free/domain/licks/licks.dart';
@@ -125,7 +126,7 @@ void main() {
         await settle(tester);
         expect(tester.takeException(), isNull);
         expect(isMovable(mine[1]), isTrue);
-        for (final k in ['lick-key-down', 'lick-key-up', 'lick-speed-50', 'lick-speed-100', 'lick-previous', 'lick-next']) {
+        for (final k in ['lick-key-down', 'lick-key-up', 'lick-speed-50', 'lick-speed-100', 'lick-backing', 'lick-previous', 'lick-next']) {
           final f = find.byKey(Key(k));
           await tester.ensureVisible(f);
           await tester.pump();
@@ -309,6 +310,41 @@ void main() {
       audio.played.single,
       strumStrokes([for (final s in jazz.chordStrokes) (shape: shapes[s.chord], beat: s.beat)], bpm: jazz.bpm),
     );
+  });
+
+  testWidgets('con acompañamiento, ▶ suma los acordes de fondo más bajos; sin él, solo la frase', (tester) async {
+    final lick = licksById['minor_blues_lick']!;
+    final (audio, _) = await open(tester, '/licks/${lick.id}');
+    await loadChords(tester);
+    final play = find.byKey(const Key('tab-play'));
+    final backing = find.byKey(const Key('lick-backing'));
+    await tester.ensureVisible(backing);
+    await tester.pump();
+    await tester.tap(backing);
+    await tester.pump();
+    await tester.ensureVisible(play);
+    await tester.pump();
+    await tester.tap(play);
+    await tester.pump();
+    final phrase = tabSounds(lick.tab, bpm: lick.bpm, swing: lick.swing);
+    final sounded = audio.played.single;
+    expect(sounded.sublist(0, phrase.length), phrase);
+    final extra = sounded.sublist(phrase.length);
+    // Am7 (5 cuerdas en su forma de chords.json) en cada uno de los 4 pulsos.
+    final am7 = chordByName['Am7']!;
+    final strings = (am7['fretPositions'] as List).where((f) => f != -1).length;
+    expect(extra, hasLength(4 * strings));
+    expect(extra.every((s) => s.gain == lickBackingGain), isTrue);
+    await tester.tap(play);
+    await tester.pump();
+    // Apagado, otra vez solo la frase.
+    await tester.tap(backing);
+    await tester.pump();
+    await tester.tap(play);
+    await tester.pump();
+    expect(audio.played.last, phrase);
+    await tester.tap(play);
+    await tester.pump();
   });
 
   testWidgets('tocar un acorde abre su ficha y atrás vuelve a la frase; al transponer cambian', (tester) async {

@@ -53,4 +53,12 @@ void main() {
     }
     expect(strokesPerBeat(ProgressionFeel.straight), 1);
   });
+
+  test('con un patrón de rasgueo, ese patrón en cada compás', () {
+    // El 2 son corcheas abajo y arriba: 8 golpes por compás; arriba suenan
+    // solo las 4 cuerdas más agudas.
+    final sounds = progressionStrum([g], bpm: 60, pattern: 'DUDUDUDU');
+    expect(sounds, hasLength(4 * 6 + 4 * 4));
+    expect(progressionStrum([g], bpm: 60, pattern: 'D D D D '), progressionStrum([g], bpm: 60));
+  });
 }

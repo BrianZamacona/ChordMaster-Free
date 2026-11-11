@@ -10,6 +10,7 @@ import '../../domain/open_chords/chord_shape.dart';
 import '../../domain/progressions/progression_builder.dart';
 import '../../domain/progressions/progression_data.dart';
 import '../../domain/progressions/progression_playback.dart';
+import '../../domain/strumming/strumming_course.dart';
 import '../../domain/theory/notes.dart';
 import '../../domain/voicing/voice_leading.dart';
 import '../../services/achievement_service.dart';
@@ -28,7 +29,12 @@ class ProgressionsState {
     this.playingIndex,
     this.bpm = progressionDefaultBpm,
     this.loop = false,
+    this.pattern = 0,
   });
+
+  /// Patrón de rasgueo al escuchar (índice en `strummingPatterns`; el 0 es un
+  /// golpe por pulso). El 12/8 no lo usa.
+  final int pattern;
 
   /// Tempo al escuchar la progresión (un compás por acorde).
   final int bpm;
@@ -74,6 +80,7 @@ class ProgressionsState {
     Object? playingIndex = _keep,
     int? bpm,
     bool? loop,
+    int? pattern,
   }) => ProgressionsState(
     tonic: tonic ?? this.tonic,
     progressionId: progressionId ?? this.progressionId,
@@ -84,6 +91,7 @@ class ProgressionsState {
     playingIndex: identical(playingIndex, _keep) ? this.playingIndex : playingIndex as int?,
     bpm: bpm ?? this.bpm,
     loop: loop ?? this.loop,
+    pattern: pattern ?? this.pattern,
   );
 
   static const Object _keep = Object();
@@ -337,7 +345,12 @@ class ProgressionsViewModel extends Notifier<ProgressionsState> {
       for (final s in plan.steps)
         ChordShape(name: '', frets: s.voicing.jsonFrets, fingers: List.filled(6, 0)),
     ];
-    final sounds = progressionStrum(shapes, bpm: bpm, feel: state.progression.feel);
+    final sounds = progressionStrum(
+      shapes,
+      bpm: bpm,
+      feel: state.progression.feel,
+      pattern: strummingPatterns[state.pattern],
+    );
     final seconds = progressionAudioSeconds(count, bpm: bpm, loop: loop);
     final audio = ref.read(audioServiceProvider);
     state = state.copyWith(playingIndex: 0);
@@ -377,6 +390,13 @@ class ProgressionsViewModel extends Notifier<ProgressionsState> {
   void setLoop({required bool loop}) {
     if (loop == state.loop) return;
     state = state.copyWith(loop: loop);
+    _restartIfPlaying();
+  }
+
+  /// Patrón de rasgueo ([strummingPatterns]). Si suena, vuelve a empezar.
+  void setPattern(int pattern) {
+    if (pattern == state.pattern || pattern < 0 || pattern >= strummingPatterns.length) return;
+    state = state.copyWith(pattern: pattern);
     _restartIfPlaying();
   }
 

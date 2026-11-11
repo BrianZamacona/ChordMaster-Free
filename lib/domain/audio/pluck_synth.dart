@@ -129,6 +129,7 @@ class StringSound {
     this.glides = const [],
     this.vibratoFrom,
     this.touch = StringTouch.open,
+    this.gain = 1,
   });
 
   final int midi;
@@ -137,6 +138,21 @@ class StringSound {
   final List<Glide> glides;
   final double? vibratoFrom;
   final StringTouch touch;
+
+  /// Volumen frente a las demás cuerdas de la mezcla (1 = igual): el
+  /// acompañamiento va más bajo que la frase.
+  final double gain;
+
+  /// La misma cuerda con volumen [gain].
+  StringSound withGain(double gain) => StringSound(
+    midi: midi,
+    at: at,
+    seconds: seconds,
+    glides: glides,
+    vibratoFrom: vibratoFrom,
+    touch: touch,
+    gain: gain,
+  );
 
   /// La altura (MIDI, con decimales) a los [t] segundos del ataque.
   double midiAt(double t) {
@@ -171,7 +187,8 @@ class StringSound {
       '$midi@${at.toStringAsFixed(4)}+${seconds.toStringAsFixed(3)}'
       '${touch == StringTouch.open ? '' : ':${touch.name}'}'
       '${[for (final g in glides) '>${g.midi}@${g.at.toStringAsFixed(3)}/${g.seconds.toStringAsFixed(3)}${g.excite ? 'x' : ''}'].join()}'
-      '${vibratoFrom == null ? '' : '~${vibratoFrom!.toStringAsFixed(3)}'}';
+      '${vibratoFrom == null ? '' : '~${vibratoFrom!.toStringAsFixed(3)}'}'
+      '${gain == 1 ? '' : '*${gain.toStringAsFixed(2)}'}';
 }
 
 /// Coeficiente de pérdida por vuelta del lazo para que una cuerda de [hz]
@@ -189,7 +206,7 @@ Float64List renderStrings(List<StringSound> sounds, {required double seconds}) {
     if (length <= 0) continue;
     final note = _renderString(s, length / synthSampleRate, seed: i + 1);
     for (var t = 0; t < note.length && start + t < total; t++) {
-      mix[start + t] += note[t];
+      mix[start + t] += note[t] * s.gain;
     }
   }
   _normalize(mix, 0.9);

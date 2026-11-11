@@ -3,6 +3,7 @@ import 'package:chordmaster_free/domain/open_chords/chord_shape.dart';
 import 'package:chordmaster_free/domain/progressions/progression_builder.dart';
 import 'package:chordmaster_free/domain/progressions/progression_data.dart';
 import 'package:chordmaster_free/domain/progressions/progression_playback.dart';
+import 'package:chordmaster_free/domain/strumming/strumming_course.dart';
 import 'package:chordmaster_free/features/progressions/progressions_viewmodel.dart';
 import 'package:chordmaster_free/services/audio_service.dart';
 import 'package:chordmaster_free/services/key_value_store.dart';
@@ -122,6 +123,22 @@ void main() {
     expect(c.read(progressionsViewModelProvider).playingIndex, isNull);
     await tester.pump(bar * 8);
     expect(audio.played, hasLength(2));
+  });
+
+  testWidgets('con un patrón de rasgueo suena ese patrón; cambiarlo mientras suena vuelve a empezar', (tester) async {
+    final audio = _FakeAudio();
+    final c = container(audio);
+    final vm = c.read(progressionsViewModelProvider.notifier)..setPattern(3);
+    expect(c.read(progressionsViewModelProvider).pattern, 3);
+    await vm.listen(plan);
+    expect(audio.played.single.sounds, progressionStrum(shapes, bpm: progressionDefaultBpm, pattern: strummingPatterns[3]));
+    vm.setPattern(1);
+    await tester.pump();
+    expect(audio.played, hasLength(2));
+    expect(audio.played.last.sounds, progressionStrum(shapes, bpm: progressionDefaultBpm, pattern: strummingPatterns[1]));
+    await vm.listen(plan);
+    vm.setPattern(9); // fuera de la lista: no cambia
+    expect(c.read(progressionsViewModelProvider).pattern, 1);
   });
 
   test('el tempo va de 5 en 5 y no sale de 40–200', () {

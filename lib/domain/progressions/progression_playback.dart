@@ -21,15 +21,23 @@ int progressionTempo(int bpm) =>
 /// Golpes por pulso: uno, o tres en 12/8.
 int strokesPerBeat(ProgressionFeel feel) => feel == ProgressionFeel.triplet ? 3 : 1;
 
-/// Los golpes de [shapes], uno tras otro: un golpe hacia abajo por pulso, o
-/// tres parejos (como un tresillo) en 12/8.
+/// Los golpes de [shapes], uno tras otro: con [pattern] (una letra por
+/// corchea, los de `strummingPatterns`), ese rasgueo en cada compás; sin él,
+/// un golpe hacia abajo por pulso, o tres parejos (como un tresillo) en 12/8.
+/// El 12/8 no lleva patrón: sus corcheas son de tresillo.
 List<StringSound> progressionStrum(
   List<ChordShape> shapes, {
   required int bpm,
   ProgressionFeel feel = ProgressionFeel.straight,
+  String? pattern,
 }) {
   if (feel == ProgressionFeel.straight) {
-    return strumEvents(shapes, bpm: bpm, beatsPerSlot: progressionBeatsPerChord);
+    return strumEvents(
+      shapes,
+      bpm: bpm,
+      beatsPerSlot: progressionBeatsPerChord,
+      patterns: pattern == null ? null : List.filled(shapes.length, pattern),
+    );
   }
   final per = strokesPerBeat(feel);
   return strumStrokes([
