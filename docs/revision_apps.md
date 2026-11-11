@@ -335,6 +335,19 @@ Para decidir:
 - ¿Modo zurdo?
 - ¿«Pentatónica del modo» como escala nueva?
 
+Decidido por el usuario (2026-11-11):
+- **Pistas de acompañamiento**: sí, primero solo guitarra rasgueada con su patrón, bucle, tempo y
+  el compás resaltado, con el motor que ya tenemos. Bajo y batería, después si se quiere. Vale
+  también para el acompañamiento debajo del lick.
+- **Progresiones nuevas**: blues de 12 compases (mayor con cambio rápido, menor y en 12/8),
+  progresiones en menor y vamps modales, todas por grados y con tests.
+- **Tempo y bucle** en Progresiones.
+- **Aprobado**: «qué tocar encima» junto a la progresión (escalas que caben y arpegio de cada
+  acorde), modo zurdo y la pentatónica de cada modo (por regla, con su generador y su auditoría).
+
+Orden de trabajo (un PR por punto): tempo y bucle → progresiones nuevas → pista de guitarra (y
+debajo del lick) → qué tocar encima → pentatónica del modo → modo zurdo.
+
 ## 3. Familia caged: sistema CAGED
 
 Qué mirar: cómo enseña las cinco formas y cómo pasa de una a otra, cómo une acorde, arpegio y
