@@ -123,6 +123,9 @@ cada nota pertenezca a la escala. No bajar la tolerancia de 0.
   dura la vuelta justa y se repite solo (`AudioService.loopTab`, `LoopMode.one`); el acorde
   marcado sale de las vueltas del temporizador (`progressionChordAt`). Cambiar tempo o bucle
   mientras suena la vuelve a empezar; la cadencia del círculo sigue con su paso de 1.6 s.
+  Rasgueo (pista de guitarra, decisión del usuario: primero solo guitarra; bajo y batería
+  después): uno de los 5 patrones del curso (`strummingPatterns`; el 1 = un golpe por pulso),
+  dibujado con `StrumPatternView`; el 12/8 no lleva patrón.
 - Comparador de digitaciones: `analyzeFingering` incluye SIEMPRE la cejilla en el costo,
   así que puede no coincidir con Progresiones en modo Estándar; la pantalla lo advierte.
 - Calidad de double stops por grado (3ª, 6ª, 7ª...) en `lib/domain/theory/double_stops.dart`,
@@ -413,6 +416,10 @@ cada nota pertenezca a la escala. No bajar la tolerancia de 0.
   (`lick_chords_test.dart`): duran lo que la tablatura, existen en chords.json en cada tónica
   ofrecida, sus notas son de la escala, la primera nota de cada acorde es suya y, en los licks,
   también las de una negra o más y la última. Los riffs de rock van sobre power chords.
+  Acompañamiento debajo de la frase (la misma pista de guitarra): el chip «Con acompañamiento»
+  (de la sesión) suma a ▶ los golpes de la parte rítmica más bajos (`lick_backing.dart`,
+  `lickBackingGain` = 0.4, `StringSound.gain`), también en un renglón suelto y con swing. El
+  micrófono nunca lo pone: lo oiría.
   El mejor tempo limpio con el micrófono se guarda en `licks_best_bpm` (`{id: bpm}`) y
   cuenta como día de técnica (`ActivityLog`); "más lento" cambia el tempo solo en la sesión. Los
   ids son permanentes. Rutas `/licks/:id` y `/learn/licks/:id`.

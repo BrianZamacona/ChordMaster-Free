@@ -18,6 +18,7 @@ import '../../domain/theory/notes.dart';
 import '../../services/session_log.dart';
 import '../../ui/section_routes.dart';
 import '../../ui/theme.dart';
+import '../chords/chord_viewmodel.dart';
 import '../lessons/tab_player.dart';
 import 'lick_rhythm_part.dart';
 import 'lick_texts.dart';
@@ -54,6 +55,11 @@ class LickDetailScreen extends ConsumerWidget {
     final text = Theme.of(context).textTheme;
 
     final favorite = state.favorites.contains(lick.id);
+    // Se mira la biblioteca para tener las digitaciones del acompañamiento.
+    ref.watch(chordViewModelProvider.select((s) => s.allChords.length));
+    final backing = state.backing
+        ? lickBackingStrokes(lick, scale.root, ref.read(chordViewModelProvider.notifier))
+        : null;
     return Scaffold(
       appBar: AppBar(
         title: Text(AppStrings.moduleLicks),
@@ -96,11 +102,25 @@ class LickDetailScreen extends ConsumerWidget {
                   _KeyPicker(lick: lick, root: scale.root, onChanged: (r) => vm.setRoot(lick.id, r)),
                   const SizedBox(height: 4),
                   _Speeds(lick: lick, bpm: bpm, onChanged: (b) => vm.setTempo(lick.id, b)),
+                  const SizedBox(height: 4),
+                  Align(
+                    alignment: AlignmentDirectional.centerStart,
+                    child: FilterChip(
+                      key: const Key('lick-backing'),
+                      avatar: Icon(Icons.queue_music, size: 18, color: p.textPrimary),
+                      label: Text(AppStrings.licksBacking),
+                      tooltip: AppStrings.licksBackingHint,
+                      selected: state.backing,
+                      showCheckmark: false,
+                      onSelected: (v) => vm.setBacking(on: v),
+                    ),
+                  ),
                   const SizedBox(height: 8),
                   TabPlayer(
                     notes: notes,
                     bpm: bpm,
                     chordLabels: lickChordLabels(lick, notes, scale.root),
+                    backing: backing,
                     swing: lick.swing,
                     onPlayed: (r) => _played(context, ref, lick, r),
                     onBpmChanged: (b) => vm.setTempo(lick.id, b),

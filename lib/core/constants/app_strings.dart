@@ -1135,6 +1135,11 @@ class AppStrings {
   static String get progressionSlower => tr(es: 'Más lento', en: 'Slower');
   static String get progressionFaster => tr(es: 'Más rápido', en: 'Faster');
   static String progressionBpm(int bpm) => tr(es: '$bpm BPM', en: '$bpm BPM');
+  static String get progressionStrum => tr(es: 'Rasgueo', en: 'Strum');
+  static String progressionBarPerChordPattern(int n) => tr(
+    es: 'Un compás por acorde, con el patrón $n del curso de rasgueo.',
+    en: 'One bar per chord, with pattern $n from the strumming course.',
+  );
   static String get progressionBarPerChordTriplet => tr(
     es: 'Un compás por acorde, en 12/8: tres golpes hacia abajo en cada pulso.',
     en: 'One bar per chord, in 12/8: three downstrokes on each beat.',
@@ -1492,6 +1497,11 @@ class AppStrings {
     en: 'It uses open strings: it plays in its own key and is not transposed.',
   );
   static String get licksRhythmPart => tr(es: 'Parte rítmica', en: 'Rhythm part');
+  static String get licksBacking => tr(es: 'Con acompañamiento', en: 'With backing');
+  static String get licksBackingHint => tr(
+    es: 'Al escuchar, los acordes de fondo suenan debajo de la frase, más bajos.',
+    en: 'When listening, the backing chords play under the phrase, more quietly.',
+  );
   static String get licksRhythmHint => tr(
     es: 'Los acordes que suenan debajo de la frase; van escritos encima de la tablatura. Toca uno para ver su ficha.',
     en: 'The chords that sound under the phrase; they are written above the tab. Tap one to open it.',

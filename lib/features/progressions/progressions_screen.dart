@@ -8,12 +8,14 @@ import '../../core/widgets/feature_module_scaffold.dart';
 import '../../core/widgets/selector_pill.dart';
 import '../../domain/practice/technique_exercises.dart';
 import '../../domain/progressions/progression_data.dart';
+import '../../domain/strumming/strumming_course.dart';
 import '../../domain/theory/harmony.dart';
 import '../../domain/theory/notes.dart';
 import '../../domain/voicing/barre_detection.dart';
 import '../../ui/theme.dart';
 import '../chords/chord_viewmodel.dart';
 import '../chords/fingering_selection.dart';
+import '../lessons/lesson_widgets.dart';
 import 'progressions_viewmodel.dart';
 
 /// Chord progressions screen.
@@ -270,10 +272,33 @@ class _ListenOptions extends ConsumerWidget {
             ),
           ],
         ),
+        if (state.progression.feel == ProgressionFeel.straight) ...[
+          Wrap(
+            key: const Key('progression-patterns'),
+            spacing: 6,
+            runSpacing: 4,
+            crossAxisAlignment: WrapCrossAlignment.center,
+            children: [
+              Text(AppStrings.progressionStrum, style: text.labelLarge),
+              for (var i = 0; i < strummingPatterns.length; i++)
+                ChoiceChip(
+                  key: Key('progression-pattern-$i'),
+                  label: Text('${i + 1}', semanticsLabel: patternName(i).text),
+                  selected: state.pattern == i,
+                  onSelected: (_) => vm.setPattern(i),
+                ),
+            ],
+          ),
+          const SizedBox(height: 6),
+          StrumPatternView(key: const Key('progression-pattern-view'), pattern: strummingPatterns[state.pattern]),
+          const SizedBox(height: 6),
+        ],
         Text(
           state.progression.feel == ProgressionFeel.triplet
               ? AppStrings.progressionBarPerChordTriplet
-              : AppStrings.progressionBarPerChord,
+              : state.pattern == 0
+              ? AppStrings.progressionBarPerChord
+              : AppStrings.progressionBarPerChordPattern(state.pattern + 1),
           style: text.bodySmall?.copyWith(color: context.palette.textSecondary),
         ),
       ],

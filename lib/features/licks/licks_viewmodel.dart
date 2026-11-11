@@ -17,7 +17,12 @@ class LicksState {
     this.tempos = const {},
     this.favorites = const {},
     this.roots = const {},
+    this.backing = false,
   });
+
+  /// ▶ suena con el acompañamiento (los acordes de fondo) debajo; de la
+  /// sesión, para todas las frases.
+  final bool backing;
 
   /// Mejor tempo tocado limpio con el micrófono, por id.
   final Map<String, int> records;
@@ -39,11 +44,13 @@ class LicksState {
     Map<String, int>? tempos,
     Set<String>? favorites,
     Map<String, int>? roots,
+    bool? backing,
   }) => LicksState(
     records: records ?? this.records,
     tempos: tempos ?? this.tempos,
     favorites: favorites ?? this.favorites,
     roots: roots ?? this.roots,
+    backing: backing ?? this.backing,
   );
 }
 
@@ -104,6 +111,9 @@ class LicksViewModel extends Notifier<LicksState> {
     if (transposeShift(licksById[id]!, root) == null) return;
     state = state.copyWith(roots: {...state.roots, id: root % 12});
   }
+
+  /// Suena (o no) el acompañamiento debajo de la frase.
+  void setBacking({required bool on}) => state = state.copyWith(backing: on);
 
   /// Tempo de [id] para esta sesión (dentro de los límites de Técnica).
   void setTempo(String id, int bpm) => state = state.copyWith(
