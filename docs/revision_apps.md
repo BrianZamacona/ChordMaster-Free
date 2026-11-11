@@ -29,12 +29,12 @@ el progreso. Compara con Licks y riffs, `TabPlayer` y las guías de Estilos.
 
 | App | Estado | Fecha |
 |---|---|---|
-| 144 Blues Guitar Licks Pro | pendiente | |
-| 20 Acoustic Blues Solos | pendiente | |
-| 40 Guitar Licks | pendiente | |
-| 48 Jazz Guitar Licks | pendiente | |
-| 50 Easy Blues Guitar Licks | pendiente | |
-| 63 Advanced Blues Guitar Licks | pendiente | |
+| 144 Blues Guitar Licks Pro | revisada | 2026-11-11 |
+| 20 Acoustic Blues Solos | revisada | 2026-11-11 |
+| 40 Guitar Licks | revisada | 2026-11-11 |
+| 48 Jazz Guitar Licks | revisada | 2026-11-11 |
+| 50 Easy Blues Guitar Licks | revisada | 2026-11-11 |
+| 63 Advanced Blues Guitar Licks | revisada | 2026-11-11 |
 | 65 Country Guitar Licks | pendiente | |
 | 65 Gypsy Jazz Guitar Licks | pendiente | |
 | 85 Metal Guitar Licks | pendiente | |
@@ -42,6 +42,117 @@ el progreso. Compara con Licks y riffs, `TabPlayer` y las guías de Estilos.
 
 Ojo: el gypsy jazz no está entre los estilos (`LickStyle`). Agregarlo es una decisión de
 producto.
+
+Las cuatro pendientes (65 Country, 65 Gypsy Jazz, 85 Metal y 96 Rock) quedaron sin ver el
+2026-11-11, porque no se aceptó en el teléfono el permiso para mostrar la pantalla. Las de Jonathan Bell
+comparten plantilla, así que se espera que solo cambien las pestañas y los textos.
+
+### 144 Blues Guitar Licks Pro (licks) — 2026-11-11
+
+Es de Jonathan Bell, con la misma plantilla que 20 Acoustic, 48 Jazz, 50 Easy y 63 Advanced. Tiene 144 licks
+numerados en 6 pestañas por estilo (clásico, Chicago, rockabilly, Texas y dos de extras), sin
+título ni nivel por lick. Cada lick muestra la tablatura con ritmo, tempo y tonalidad, ▶/■, favorito,
+anterior/siguiente y un texto de dos líneas. El texto dice qué posición de la escala usa y qué papel
+tiene la nota clave (por ejemplo, que el bend lleva a la b5).
+
+| Idea | Estado | Dónde encaja | Esfuerzo | Notas |
+|---|---|---|---|---|
+| Transponer el lick a cualquier tonalidad con − / + (la tablatura se recalcula) | nueva | `Lick` + `TabPlayer` (detalle de lick) | M | La más valiosa. Se haría por regla: subir o bajar todos los trastes y, si alguno sale de 0–24, desplazar ±12 (como las escalas). Una frase con cuerdas al aire solo se transpone si todo queda dentro del mástil; si no, no se ofrece. Los textos que nombran notas tendrían que generarse, no ser fijos (la app los esconde al transponer). |
+| Favoritos (estrella) | nueva | Licks y riffs | S | Hoy solo se guarda el récord (`licks_best_bpm`). Falta decidir dónde se verían (por ejemplo, un filtro «Favoritos» en la lista). |
+| Anterior / siguiente sin volver a la lista | nueva | detalle de lick | S | Dentro del mismo estilo o del filtro activo. |
+| El texto dice la posición de la escala y la función de la nota clave | parcial | `Lick.about` | S | Algunas de nuestras frases ya lo hacen; se podría pedir en todas, con test de lo que afirma, como siempre. |
+| Marcar la nota que suena | ya está | `TabPlayer` | — | Ellos no marcan nada al sonar. Nosotros sí, y además tenemos bucle, tramo, tempo y micrófono. |
+
+### 20 Acoustic Blues Solos (licks) — 2026-11-11
+
+Misma plantilla. Las pestañas van por nivel (principiante, intermedio, avanzado) y los solos son largos, de
+varios renglones y con repeticiones. En lugar de transponer trae afinador, porque los solos usan cuerdas
+al aire. El texto explica la técnica: bajo constante con el pulgar y melodía con los dedos.
+
+| Idea | Estado | Dónde encaja | Esfuerzo | Notas |
+|---|---|---|---|---|
+| Bajo alternado y melodía a la vez (dos voces con duraciones distintas) | nueva | notación (`TabNote`) | L | `TabNote.chord` solo admite notas que empiezan y duran juntas. Dos voces piden otra estructura. Serviría para fingerstyle (la rítmica tiene la unidad «Con los dedos»). |
+| Repeticiones (barras de repetición) | nueva | notación | M | Hoy, para repetir, se copian las notas. |
+| Afinador a mano desde la frase | parcial | `Lesson.tool` | S | Las lecciones ya abren el afinador; el detalle de lick no. |
+| Solos largos por nivel | parcial | Licks y riffs | — | Nuestras frases son cortas a propósito; un «solo» sería un tipo nuevo de frase (decisión de producto). |
+
+### 40 Guitar Licks (licks) — 2026-11-11
+
+De otro autor y más sencilla. Tiene cuatro categorías (rock and roll, blues, funk, hard rock) con licks
+numerados. Cada lick suena **con una pista de acompañamiento**, con un volumen para el lick y otro
+para el acompañamiento, y hay un botón de media velocidad.
+
+| Idea | Estado | Dónde encaja | Esfuerzo | Notas |
+|---|---|---|---|---|
+| Acompañamiento debajo de cada lick, con dos volúmenes | nueva | `TabPlayer` + audio | L | Habría que sintetizar acordes (ya tenemos rasgueo y digitaciones) y, para que suene a banda, bajo y batería. Conviene revisarlo junto con la familia jam. |
+| Media velocidad con un toque | parcial | `TabPlayer` | S | Tenemos el tempo y «más lento» (−10 BPM); un botón de 50 % es más directo. |
+
+### 48 Jazz Guitar Licks (licks) — 2026-11-11
+
+Plantilla de Jonathan Bell, organizada **por progresión**: una pestaña por progresión (rhythm
+changes y ii–V–I mayor). Los acordes van escritos encima de la tablatura, compás por compás, y
+hay ▶ al 50 %, 75 % y 100 %. Un botón cambia la vista a la **parte rítmica** del mismo tramo:
+los acordes con su diagrama y su tablatura de acompañamiento.
+
+| Idea | Estado | Dónde encaja | Esfuerzo | Notas |
+|---|---|---|---|---|
+| Acordes encima de la tablatura (qué suena debajo del lick) | nueva | `Lick` + `lesson_tab.dart` | M | Sería un campo con el acorde de cada compás. Un test exigiría que el acorde exista en `chords.json` y que las notas largas del lick sean del acorde o de la escala. Ayuda a entender por qué funciona la frase. |
+| Ver la parte rítmica del lick (acordes con diagrama) | nueva | detalle de lick | M | Saldría de los acordes del punto anterior y de las digitaciones de `chords.json`. El ▶ rasguearía como en el círculo (`playCircleChords`). |
+| Licks agrupados por progresión | parcial | Licks y riffs / Progresiones | M | El círculo ya tiene el ii–V–I (`twoFiveOne`). Un filtro o una sección «sobre esta progresión» uniría Licks y Progresiones. |
+| ▶ al 50 / 75 / 100 % | parcial | `TabPlayer` | S | Igual que en 40 Guitar Licks. |
+
+### 50 Easy Blues Guitar Licks (licks) — 2026-11-11
+
+Plantilla de Jonathan Bell, organizada **por escala** (pentatónica menor, pentatónica mayor, blues, híbrida).
+Una pestaña enseña primero cada escala, corta y después completa, y dice qué licks salen de ella.
+Otra trae solos y una pista de blues de 12 compases con los acordes y sus diagramas, también
+transponible.
+
+| Idea | Estado | Dónde encaja | Esfuerzo | Notas |
+|---|---|---|---|---|
+| Recorrido escala → licks de esa escala → improvisar sobre una pista | parcial | Guías / Licks y riffs | M | Ya enseñamos la escala de cada frase, y las guías de estilo siguen el orden riff → lick → escala. Faltaría el paso de improvisar (familia jam). |
+| Filtrar licks por escala | nueva | lista de Licks y riffs | S | Cada `Lick` ya declara su escala; sería un filtro más. |
+| La escala corta (pocas cuerdas) antes de la completa | parcial | detalle de escala / rutinas | S | Tenemos las posiciones completas; no existe una versión de 2–3 cuerdas para empezar. |
+| 12 compases con acordes y diagramas para tocar encima | parcial | lecciones de rítmica | M | El blues de 12 compases existe como lección; como pista para improvisar, entra en la familia jam. |
+
+### 63 Advanced Blues Guitar Licks (licks) — 2026-11-11
+
+Plantilla de Jonathan Bell, organizada por técnica: rápidos, de acordes, jazz y disminuidos. Los «licks de
+acordes» son double stops que se deslizan juntos, en tresillos y con swing, pensados también
+como relleno en la parte rítmica.
+
+| Idea | Estado | Dónde encaja | Esfuerzo | Notas |
+|---|---|---|---|---|
+| Deslizar o ligar un double stop (las dos notas a la vez) | nueva | notación (`TabNote.chord`) | M | Hoy un acorde no se liga ni se desliza (`tabNotationProblems`). Habría que permitir el slide cuando todas sus notas se mueven igual, con su sonido y su test. |
+| Frases de relleno para la parte rítmica | nueva | Licks y riffs / rítmica | M | Sería un tipo de frase «relleno», además de riff y lick; es decisión de producto. |
+| Licks sobre el acorde disminuido | nueva | Licks y riffs | M | Ya tenemos la escala disminuida y su teoría. |
+
+### Resumen de la familia licks (6 de 10 vistas)
+
+Lo que más se repite y más valdría, en orden:
+1. **Transponer** cualquier frase a otra tonalidad. Lo traen las cinco de Jonathan Bell.
+2. **Acordes encima de la tablatura** y la vista de la parte rítmica. Explica por qué suena bien
+   la frase y conecta Licks con Acordes y Progresiones.
+3. **Acompañamiento debajo del lick**, con dos volúmenes. Se decide junto con la familia jam.
+4. **Ir más lento con un toque** (50 / 75 %), **favoritos** y **anterior / siguiente**. Son pequeños y
+   baratos.
+5. En la notación: **slides y ligados en double stops** y, más adelante, **dos voces** (bajo y
+   melodía) y **repeticiones**.
+
+Lo que ya hacemos mejor:
+- marcar la nota que suena;
+- el bucle por renglón y el tempo libre;
+- «Tocar yo» con el micrófono, con su récord;
+- los dedos debajo de la tablatura;
+- que cada texto se verifica contra las notas.
+
+Para decidir:
+- ¿Transponer las frases? Falta decidir cómo tratar las que usan cuerdas al aire (no ofrecerlo, o desplazar
+  ±12) y si los textos que nombran notas se generan.
+- ¿Favoritos? ¿Dónde se verían?
+- ¿Tipos nuevos de frase: el «solo» largo y el «relleno» rítmico?
+- ¿Agregar el gypsy jazz como estilo?
+- ¿El acompañamiento espera a la revisión de la familia jam?
 
 ## 2. Familia jam: pistas de acompañamiento
 
