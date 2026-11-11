@@ -371,6 +371,14 @@ cada nota pertenezca a la escala. No bajar la tolerancia de 0.
   la barra del detalle, marca en la tarjeta y chip "Favoritas" en la lista
   (`LickFilter.favoritesOnly`); se guardan en `licks_favorites` (lista de ids; uno que ya no existe
   se descarta al leer).
+  Transponer (decisión del usuario: solo las movibles, `lib/domain/licks/lick_transpose.dart`):
+  movible = ninguna nota al aire (`isMovable`). "Tonalidad: − E +" en el detalle lleva la frase a
+  las tónicas en las que cabe (`transposableRoots`): todos los trastes se mueven lo mismo, por el
+  camino más corto, y si algo sale de los trastes 1–20 se prueba la otra octava; si tampoco cabe,
+  esa tónica no se ofrece. Las de cuerdas al aire lo dicen. La tónica elegida es de la sesión y
+  cambia tablatura, sonido, micrófono, escala y texto. Los textos de las frases nombran notas
+  relativas a la tónica (`{R}`, `{R+11}`; `Lick.aboutIn`, `aboutText`); un test exige que ninguna
+  movible nombre una nota fija y que cada tónica ofrecida quede bien escrita y en su escala.
   El mejor tempo limpio con el micrófono se guarda en `licks_best_bpm` (`{id: bpm}`) y
   cuenta como día de técnica (`ActivityLog`); "más lento" cambia el tempo solo en la sesión. Los
   ids son permanentes. Rutas `/licks/:id` y `/learn/licks/:id`.

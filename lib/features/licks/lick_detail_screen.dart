@@ -7,11 +7,14 @@ import 'package:go_router/go_router.dart';
 import '../../core/constants/app_strings.dart';
 import '../../data/repository/scale_repository.dart';
 import '../../domain/guides/guides.dart';
+import '../../domain/lessons/lesson.dart';
 import '../../domain/licks/lick.dart';
 import '../../domain/licks/lick_browse.dart';
+import '../../domain/licks/lick_transpose.dart';
 import '../../domain/licks/licks.dart';
 import '../../domain/practice/play_along.dart';
 import '../../domain/practice/session_summary.dart';
+import '../../domain/theory/notes.dart';
 import '../../services/session_log.dart';
 import '../../ui/section_routes.dart';
 import '../../ui/theme.dart';
@@ -39,6 +42,11 @@ class LickDetailScreen extends ConsumerWidget {
     final state = ref.watch(licksViewModelProvider);
     final vm = ref.read(licksViewModelProvider.notifier);
     final bpm = state.tempoOf(lick.id);
+    final root = state.rootOf(lick.id);
+    // En otra tónica (transponer); si no se puede, la suya.
+    final moved = transposedLick(lick, root);
+    final notes = moved?.tab ?? lick.tab;
+    final scale = moved?.scale ?? lick.scale;
     final record = state.records[lick.id];
     final style = lickStyleInfo(lick.style);
     final p = context.palette;
@@ -70,7 +78,7 @@ class LickDetailScreen extends ConsumerWidget {
             style: text.labelMedium?.copyWith(color: p.textSecondary),
           ),
           const SizedBox(height: 12),
-          Text(lick.about.text, style: text.bodyLarge),
+          Text(lick.aboutIn(scale.root).text, key: const Key('lick-about'), style: text.bodyLarge),
           const SizedBox(height: 12),
           Card(
             child: Padding(
@@ -79,15 +87,17 @@ class LickDetailScreen extends ConsumerWidget {
                 crossAxisAlignment: CrossAxisAlignment.stretch,
                 children: [
                   Text(
-                    AppStrings.licksScaleAt(lickScaleLabel(lick.scale), bpm),
+                    AppStrings.licksScaleAt(lickScaleLabel(scale), bpm),
                     key: const Key('lick-scale'),
                     style: musicMono(fontSize: 13, color: p.textSecondary),
                   ),
                   const SizedBox(height: 8),
+                  _KeyPicker(lick: lick, root: scale.root, onChanged: (r) => vm.setRoot(lick.id, r)),
+                  const SizedBox(height: 4),
                   _Speeds(lick: lick, bpm: bpm, onChanged: (b) => vm.setTempo(lick.id, b)),
                   const SizedBox(height: 8),
                   TabPlayer(
-                    notes: lick.tab,
+                    notes: notes,
                     bpm: bpm,
                     swing: lick.swing,
                     onPlayed: (r) => _played(context, ref, lick, r),
@@ -134,7 +144,7 @@ class LickDetailScreen extends ConsumerWidget {
             ),
           ),
           const SizedBox(height: 12),
-          _ScaleButton(lick: lick),
+          _ScaleButton(scale: scale),
           const SizedBox(height: 12),
           _Neighbors(lick: lick),
         ],
@@ -234,18 +244,70 @@ class _Neighbors extends StatelessWidget {
   }
 }
 
-/// Abre la escala de la frase en el diapasón, en su tónica.
-class _ScaleButton extends ConsumerWidget {
-  const _ScaleButton({required this.lick});
+/// "Tonalidad: − E +": lleva la frase a la tónica anterior o siguiente en la
+/// que cabe. Las frases con cuerdas al aire no se transponen y lo dicen.
+class _KeyPicker extends StatelessWidget {
+  const _KeyPicker({required this.lick, required this.root, required this.onChanged});
 
   final Lick lick;
+  final int root;
+  final ValueChanged<int> onChanged;
+
+  @override
+  Widget build(BuildContext context) {
+    final text = Theme.of(context).textTheme;
+    final roots = transposableRoots(lick);
+    if (roots.length < 2) {
+      return Text(
+        AppStrings.licksKeyFixed,
+        key: const Key('lick-key-fixed'),
+        style: text.bodySmall?.copyWith(color: context.palette.textSecondary),
+      );
+    }
+    final i = roots.indexOf(root);
+    return Row(
+      children: [
+        Text(AppStrings.licksKey, style: text.labelLarge),
+        const SizedBox(width: 4),
+        IconButton(
+          key: const Key('lick-key-down'),
+          tooltip: AppStrings.licksKeyDown,
+          icon: const Icon(Icons.remove),
+          onPressed: () => onChanged(roots[(i - 1) % roots.length]),
+        ),
+        SizedBox(
+          width: 36,
+          child: Text(
+            pitchClassName(root),
+            key: const Key('lick-key'),
+            textAlign: TextAlign.center,
+            style: musicMono(fontSize: 16, fontWeight: FontWeight.w600),
+          ),
+        ),
+        IconButton(
+          key: const Key('lick-key-up'),
+          tooltip: AppStrings.licksKeyUp,
+          icon: const Icon(Icons.add),
+          onPressed: () => onChanged(roots[(i + 1) % roots.length]),
+        ),
+      ],
+    );
+  }
+}
+
+/// Abre la escala de la frase en el diapasón, en su tónica (la elegida, si se
+/// transpuso).
+class _ScaleButton extends ConsumerWidget {
+  const _ScaleButton({required this.scale});
+
+  final LessonScale scale;
 
   @override
   Widget build(BuildContext context, WidgetRef ref) {
     final definition = [
       ...?ref.watch(allScalesProvider).value,
       ...?ref.watch(allModesProvider).value,
-    ].where((s) => s.id == lick.scale.scaleId).firstOrNull;
+    ].where((s) => s.id == scale.scaleId).firstOrNull;
     return OutlinedButton.icon(
       key: const Key('lick-open-scale'),
       icon: const Icon(Icons.linear_scale),
@@ -253,7 +315,7 @@ class _ScaleButton extends ConsumerWidget {
       onPressed: definition == null
           ? null
           : () => context.push(
-                context.sectionPath('scales/${definition.id}?root=${lick.scale.root}'),
+                context.sectionPath('scales/${definition.id}?root=${scale.root}'),
                 extra: definition,
               ),
     );

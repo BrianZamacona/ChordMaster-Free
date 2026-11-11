@@ -32,12 +32,12 @@ Guide _guideFor(LickStyle style) {
     chapters: [
       GuideChapter(
         title: LocalizedText(es: 'El riff: ${riff.title.es}', en: 'The riff: ${riff.title.en}'),
-        body: riff.about,
+        body: riff.aboutText,
         target: LickLink(riff.id),
       ),
       GuideChapter(
         title: LocalizedText(es: 'El lick: ${lick.title.es}', en: 'The lick: ${lick.title.en}'),
-        body: lick.about,
+        body: lick.aboutText,
         target: LickLink(lick.id),
       ),
       GuideChapter(

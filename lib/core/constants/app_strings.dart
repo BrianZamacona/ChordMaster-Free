@@ -1462,6 +1462,13 @@ class AppStrings {
   static String get licksPrevious => tr(es: 'Anterior', en: 'Previous');
   static String get licksNext => tr(es: 'Siguiente', en: 'Next');
   static String get licksFavorites => tr(es: 'Favoritas', en: 'Favorites');
+  static String get licksKey => tr(es: 'Tonalidad', en: 'Key');
+  static String get licksKeyDown => tr(es: 'Bajar la tonalidad', en: 'Lower the key');
+  static String get licksKeyUp => tr(es: 'Subir la tonalidad', en: 'Raise the key');
+  static String get licksKeyFixed => tr(
+    es: 'Usa cuerdas al aire: suena en su tonalidad, no se transpone.',
+    en: 'It uses open strings: it plays in its own key and is not transposed.',
+  );
   static String get licksFavoriteAdd => tr(es: 'Marcar como favorita', en: 'Add to favorites');
   static String get licksFavoriteRemove => tr(es: 'Quitar de favoritas', en: 'Remove from favorites');
   static String get licksNoFavorites => tr(
