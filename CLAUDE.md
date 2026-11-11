@@ -107,6 +107,12 @@ cada nota pertenezca a la escala. No bajar la tolerancia de 0.
   abre todas sus posiciones (principal, CAGED, voicings, tríadas, inversiones) y la elegida
   reemplaza SOLO ese acorde (`chosen` en el estado; las transiciones se recalculan). Se
   descarta al cambiar tonalidad, progresión o modo.
+- Progresiones, escuchar (decisión del usuario tras revisar las apps jam): la vuelta entera se
+  sintetiza en un WAV (`progression_playback.dart`: un compás por acorde, un golpe abajo por
+  pulso), con tempo de 5 en 5 (40–200, los límites de Técnica) y bucle. En bucle el archivo
+  dura la vuelta justa y se repite solo (`AudioService.loopTab`, `LoopMode.one`); el acorde
+  marcado sale de las vueltas del temporizador (`progressionChordAt`). Cambiar tempo o bucle
+  mientras suena la vuelve a empezar; la cadencia del círculo sigue con su paso de 1.6 s.
 - Comparador de digitaciones: `analyzeFingering` incluye SIEMPRE la cejilla en el costo,
   así que puede no coincidir con Progresiones en modo Estándar; la pantalla lo advierte.
 - Calidad de double stops por grado (3ª, 6ª, 7ª...) en `lib/domain/theory/double_stops.dart`,

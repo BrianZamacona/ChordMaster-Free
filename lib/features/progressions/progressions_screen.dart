@@ -6,6 +6,7 @@ import '../../core/constants/chord_metadata.dart';
 import '../../core/widgets/chord_diagram.dart';
 import '../../core/widgets/feature_module_scaffold.dart';
 import '../../core/widgets/selector_pill.dart';
+import '../../domain/practice/technique_exercises.dart';
 import '../../domain/progressions/progression_data.dart';
 import '../../domain/theory/harmony.dart';
 import '../../domain/theory/notes.dart';
@@ -200,6 +201,61 @@ class _ProblemMessage extends StatelessWidget {
   );
 }
 
+/// Tempo (de 5 en 5) y bucle de la escucha.
+class _ListenOptions extends ConsumerWidget {
+  const _ListenOptions();
+
+  @override
+  Widget build(BuildContext context, WidgetRef ref) {
+    final state = ref.watch(progressionsViewModelProvider);
+    final vm = ref.read(progressionsViewModelProvider.notifier);
+    final text = Theme.of(context).textTheme;
+    return Column(
+      crossAxisAlignment: CrossAxisAlignment.start,
+      children: [
+        Wrap(
+          spacing: 4,
+          runSpacing: 4,
+          crossAxisAlignment: WrapCrossAlignment.center,
+          children: [
+            Text(AppStrings.progressionTempo, style: text.labelLarge),
+            IconButton(
+              key: const Key('progression-bpm-down'),
+              tooltip: AppStrings.progressionSlower,
+              onPressed: state.bpm > techniqueMinBpm ? () => vm.setBpm(state.bpm - techniqueBpmStep) : null,
+              icon: const Icon(Icons.remove),
+            ),
+            Text(
+              AppStrings.progressionBpm(state.bpm),
+              key: const Key('progression-bpm'),
+              style: musicMono(fontSize: 14, fontWeight: FontWeight.w600),
+            ),
+            IconButton(
+              key: const Key('progression-bpm-up'),
+              tooltip: AppStrings.progressionFaster,
+              onPressed: state.bpm < techniqueMaxBpm ? () => vm.setBpm(state.bpm + techniqueBpmStep) : null,
+              icon: const Icon(Icons.add),
+            ),
+            const SizedBox(width: 4),
+            FilterChip(
+              key: const Key('progression-loop'),
+              avatar: Icon(Icons.repeat, size: 18, color: context.palette.textPrimary),
+              label: Text(AppStrings.tabLoop),
+              selected: state.loop,
+              showCheckmark: false,
+              onSelected: (v) => vm.setLoop(loop: v),
+            ),
+          ],
+        ),
+        Text(
+          AppStrings.progressionBarPerChord,
+          style: text.bodySmall?.copyWith(color: context.palette.textSecondary),
+        ),
+      ],
+    );
+  }
+}
+
 class _PlanView extends ConsumerWidget {
   const _PlanView({required this.plan, required this.playingIndex});
 
@@ -227,6 +283,8 @@ class _PlanView extends ConsumerWidget {
                     : AppStrings.progressionStop,
               ),
             ),
+            const SizedBox(height: 4),
+            const _ListenOptions(),
             const SizedBox(height: 8),
           ],
           Text(

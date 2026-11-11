@@ -1127,6 +1127,14 @@ class AppStrings {
   static String get progressionListen =>
       tr(es: 'Escuchar progresión', en: 'Listen to the progression');
   static String get progressionStop => tr(es: 'Detener', en: 'Stop');
+  static String get progressionTempo => tr(es: 'Tempo', en: 'Tempo');
+  static String get progressionSlower => tr(es: 'Más lento', en: 'Slower');
+  static String get progressionFaster => tr(es: 'Más rápido', en: 'Faster');
+  static String progressionBpm(int bpm) => tr(es: '$bpm BPM', en: '$bpm BPM');
+  static String get progressionBarPerChord => tr(
+    es: 'Un compás por acorde, un golpe hacia abajo en cada pulso.',
+    en: 'One bar per chord, one downstroke on each beat.',
+  );
   static String get progressionTapHint => tr(
     es: 'Toca un acorde para ver todas sus posiciones y cambiarla.',
     en: 'Tap a chord to see all of its positions and change it.',

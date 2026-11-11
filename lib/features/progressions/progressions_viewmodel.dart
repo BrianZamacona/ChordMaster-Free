@@ -1,11 +1,15 @@
+import 'dart:async';
+
 import 'package:flutter/foundation.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 
 import '../../core/constants/chord_metadata.dart';
 import '../../core/i18n/tr.dart';
 import '../../data/repository/chord_repository.dart';
+import '../../domain/open_chords/chord_shape.dart';
 import '../../domain/progressions/progression_builder.dart';
 import '../../domain/progressions/progression_data.dart';
+import '../../domain/progressions/progression_playback.dart';
 import '../../domain/theory/notes.dart';
 import '../../domain/voicing/voice_leading.dart';
 import '../../services/achievement_service.dart';
@@ -22,7 +26,15 @@ class ProgressionsState {
     this.custom = const [],
     this.chosen = const {},
     this.playingIndex,
+    this.bpm = progressionDefaultBpm,
+    this.loop = false,
   });
+
+  /// Tempo al escuchar la progresión (un compás por acorde).
+  final int bpm;
+
+  /// Repetir la progresión sin parar al escucharla.
+  final bool loop;
 
   /// Acorde que está sonando al escuchar la progresión (`null` = en silencio).
   final int? playingIndex;
@@ -60,6 +72,8 @@ class ProgressionsState {
     List<String>? custom,
     Map<int, FingeringChoice>? chosen,
     Object? playingIndex = _keep,
+    int? bpm,
+    bool? loop,
   }) => ProgressionsState(
     tonic: tonic ?? this.tonic,
     progressionId: progressionId ?? this.progressionId,
@@ -68,6 +82,8 @@ class ProgressionsState {
     custom: custom ?? this.custom,
     chosen: chosen ?? this.chosen,
     playingIndex: identical(playingIndex, _keep) ? this.playingIndex : playingIndex as int?,
+    bpm: bpm ?? this.bpm,
+    loop: loop ?? this.loop,
   );
 
   static const Object _keep = Object();
@@ -246,6 +262,7 @@ class ProgressionsViewModel extends Notifier<ProgressionsState> {
 
   @override
   ProgressionsState build() {
+    ref.onDispose(() => _listenTimer?.cancel());
     _seen.clear();
     _loaded = _loadCount();
     return const ProgressionsState();
@@ -289,35 +306,84 @@ class ProgressionsViewModel extends Notifier<ProgressionsState> {
     }
   }
 
-  /// Segundos que suena cada acorde al escuchar la progresión.
-  static const listenStepSeconds = 1.6;
+  /// Cada cuánto se mira qué acorde suena.
+  static const listenFrame = Duration(milliseconds: 30);
 
-  /// Sube en cada escucha o cambio: una escucha vieja deja de sonar.
+  /// Sube en cada escucha o cambio: una escucha vieja deja de marcar.
   int _listenToken = 0;
+  Timer? _listenTimer;
 
-  /// Rasguea los acordes de [plan] uno tras otro, marcando cuál suena.
-  /// Llamarla otra vez mientras suena la detiene.
+  /// La progresión que suena (para volver a empezarla al cambiar el tempo).
+  ProgressionPlan? _listening;
+
+  /// Rasguea [plan] entera (un compás por acorde, al tempo y, con bucle, sin
+  /// parar), marcando cuál suena. Llamarla otra vez mientras suena la detiene.
   Future<void> listen(ProgressionPlan plan) async {
     if (state.playingIndex != null) {
       _stopListening();
       return;
     }
-    final token = ++_listenToken;
-    final audio = ref.read(audioServiceProvider);
-    for (final (i, step) in plan.steps.indexed) {
-      if (token != _listenToken) return;
-      state = state.copyWith(playingIndex: i);
-      await audio.playFingering(step.voicing.jsonFrets);
-      await Future<void>.delayed(
-        Duration(milliseconds: (listenStepSeconds * 1000).round()),
-      );
-    }
-    if (token == _listenToken) state = state.copyWith(playingIndex: null);
+    await _start(plan);
   }
 
-  void _stopListening() {
+  Future<void> _start(ProgressionPlan plan) async {
+    final token = ++_listenToken;
+    _listenTimer?.cancel();
+    _listening = plan;
+    final bpm = state.bpm;
+    final loop = state.loop;
+    final count = plan.steps.length;
+    final shapes = [
+      for (final s in plan.steps)
+        ChordShape(name: '', frets: s.voicing.jsonFrets, fingers: List.filled(6, 0)),
+    ];
+    final sounds = progressionStrum(shapes, bpm: bpm);
+    final seconds = progressionAudioSeconds(count, bpm: bpm, loop: loop);
+    final audio = ref.read(audioServiceProvider);
+    state = state.copyWith(playingIndex: 0);
+    // El temporizador cuenta sus vueltas (`tick` salta si una se atrasa):
+    // así la marca sigue al audio, y en los tests avanza con el reloj falso.
+    _listenTimer = Timer.periodic(listenFrame, (timer) {
+      if (token != _listenToken) return timer.cancel();
+      final elapsed = timer.tick * listenFrame.inMicroseconds / 1e6;
+      final i = progressionChordAt(elapsed, count, bpm: bpm, loop: loop);
+      if (i == null) {
+        _stopListening(silence: false);
+      } else if (i != state.playingIndex) {
+        state = state.copyWith(playingIndex: i);
+      }
+    });
+    await (loop ? audio.loopTab(sounds, seconds: seconds) : audio.playTab(sounds, seconds: seconds));
+  }
+
+  void _stopListening({bool silence = true}) {
     _listenToken++;
-    if (state.playingIndex != null) state = state.copyWith(playingIndex: null);
+    _listenTimer?.cancel();
+    _listenTimer = null;
+    final wasPlaying = state.playingIndex != null;
+    if (wasPlaying) state = state.copyWith(playingIndex: null);
+    if (wasPlaying && silence) ref.read(audioServiceProvider).stopAll();
+  }
+
+  /// Tempo de la escucha (de 5 en 5, 40–200). Si suena, vuelve a empezar.
+  void setBpm(int bpm) {
+    final next = progressionTempo(bpm);
+    if (next == state.bpm) return;
+    state = state.copyWith(bpm: next);
+    _restartIfPlaying();
+  }
+
+  /// Repetir la vuelta sin parar. Si suena, vuelve a empezar.
+  void setLoop({required bool loop}) {
+    if (loop == state.loop) return;
+    state = state.copyWith(loop: loop);
+    _restartIfPlaying();
+  }
+
+  void _restartIfPlaying() {
+    final plan = _listening;
+    if (state.playingIndex == null || plan == null) return;
+    unawaited(_start(plan));
   }
 
   /// Usa [choice] para el acorde [index] de la progresión (glosario).

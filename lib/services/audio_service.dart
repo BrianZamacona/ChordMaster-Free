@@ -113,6 +113,14 @@ class AudioService {
     return _playVoice(key, () => renderStrings(sounds, seconds: seconds));
   }
 
+  /// Como [playTab], pero el archivo se repite hasta [stopAll] (la vuelta de
+  /// una progresión). [seconds] debe ser la vuelta justa.
+  Future<void> loopTab(List<StringSound> sounds, {required double seconds}) {
+    if (sounds.isEmpty) return Future.value();
+    final key = 'tab-${stableKey('${sounds.join('|')}-$seconds')}';
+    return _playVoice(key, () => renderStrings(sounds, seconds: seconds), loop: true);
+  }
+
   /// Un clic suelto; [isAccent] para el primer tiempo del compás.
   Future<void> playMetronomeTick({bool isAccent = false}) async {
     try {
@@ -171,12 +179,13 @@ class AudioService {
 
   // ── Interno ───────────────────────────────────────────────────────────────
 
-  Future<void> _playVoice(String key, Float64List Function() render) async {
+  Future<void> _playVoice(String key, Float64List Function() render, {bool loop = false}) async {
     try {
       await initialize();
       final player = _voice!;
       await player.stop();
       await player.setFilePath(await _file(key, render));
+      await player.setLoopMode(loop ? LoopMode.one : LoopMode.off);
       unawaited(player.play());
     } catch (e, st) {
       debugPrint('AudioService._playVoice error ($key): $e\n$st');
