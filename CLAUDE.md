@@ -351,7 +351,10 @@ cada nota pertenezca a la escala. No bajar la tolerancia de 0.
   estándar por ahora (decisión del usuario; las abiertas o graves, después).
 - Datos en `lib/domain/licks/licks.dart` (fuente única; se componen, no salen de una regla). Cada
   estilo (`lickStyleInfo`) declara nombre, resumen y `traits` (técnicas que lo distinguen); cada
-  frase (`Lick`) su tipo (riff o lick), nivel (`GuideLevel`), escala y tónica, tempo, swing y
+  frase (`Lick`) su tipo (riff, lick, relleno o solo; decisión del usuario tras revisar las apps
+  de licks: relleno = lo que se toca entre los golpes de la parte rítmica, deja los dos primeros
+  pulsos al rasgueo; solo = cuatro compases en varios renglones, uno por nivel; test en
+  `lick_solos_test.dart`), nivel (`GuideLevel`), escala y tónica, tempo, swing y
   tablatura con la notación de la fase 1. Los power chords se escriben con `TabNote.chord`
   (decisión del usuario: solo el motor y un riff nuevo, "Power chords en corcheas" del punk;
   los riffs que ya había no cambian).

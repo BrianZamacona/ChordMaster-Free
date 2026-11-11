@@ -20,6 +20,8 @@ String techniqueLabel(TabTechnique t) => switch (t) {
 String lickKindLabel(LickKind kind) => switch (kind) {
   LickKind.riff => AppStrings.licksKindRiff,
   LickKind.lick => AppStrings.licksKindLick,
+  LickKind.fill => AppStrings.licksKindFill,
+  LickKind.solo => AppStrings.licksKindSolo,
 };
 
 /// "A Pentatónica menor": tónica y nombre de la escala.

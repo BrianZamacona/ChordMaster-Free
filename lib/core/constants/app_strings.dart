@@ -1483,6 +1483,8 @@ class AppStrings {
   );
   static String get licksKindRiff => tr(es: 'Riff', en: 'Riff');
   static String get licksKindLick => tr(es: 'Lick', en: 'Lick');
+  static String get licksKindFill => tr(es: 'Relleno', en: 'Fill');
+  static String get licksKindSolo => tr(es: 'Solo', en: 'Solo');
   static String get licksNoResults =>
       tr(es: 'Ninguna frase con esos filtros.', en: 'No phrase matches those filters.');
   static String get licksStyle => tr(es: 'El estilo', en: 'The style');
