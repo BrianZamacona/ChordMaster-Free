@@ -42,7 +42,14 @@ int? lickSpeedOf(Lick lick, int bpm) {
 
 /// Filtros de la biblioteca; `null` = todos.
 class LickFilter {
-  const LickFilter({this.level, this.kind, this.scaleId, this.root, this.technique});
+  const LickFilter({
+    this.level,
+    this.kind,
+    this.scaleId,
+    this.root,
+    this.technique,
+    this.favoritesOnly = false,
+  });
 
   final GuideLevel? level;
   final LickKind? kind;
@@ -54,7 +61,11 @@ class LickFilter {
   final int? root;
   final TabTechnique? technique;
 
-  bool matches(Lick l) =>
+  /// Solo las frases de [favorites] (las marca el usuario con la estrella).
+  final bool favoritesOnly;
+
+  bool matches(Lick l, {Set<String> favorites = const {}}) =>
+      (!favoritesOnly || favorites.contains(l.id)) &&
       (level == null || l.level == level) &&
       (kind == null || l.kind == kind) &&
       (scaleId == null || l.scale.scaleId == scaleId) &&
@@ -67,12 +78,14 @@ class LickFilter {
     String? Function()? scaleId,
     int? Function()? root,
     TabTechnique? Function()? technique,
+    bool? favoritesOnly,
   }) => LickFilter(
     level: level == null ? this.level : level(),
     kind: kind == null ? this.kind : kind(),
     scaleId: scaleId == null ? this.scaleId : scaleId(),
     root: root == null ? this.root : root(),
     technique: technique == null ? this.technique : technique(),
+    favoritesOnly: favoritesOnly ?? this.favoritesOnly,
   );
 }
 

@@ -11,7 +11,7 @@ import '../../services/key_value_store.dart';
 
 /// Récords y tempo de cada frase de la biblioteca.
 class LicksState {
-  const LicksState({this.records = const {}, this.tempos = const {}});
+  const LicksState({this.records = const {}, this.tempos = const {}, this.favorites = const {}});
 
   /// Mejor tempo tocado limpio con el micrófono, por id.
   final Map<String, int> records;
@@ -19,17 +19,29 @@ class LicksState {
   /// Tempo elegido en esta sesión ("más lento"), por id; sin él, el suyo.
   final Map<String, int> tempos;
 
+  /// Frases marcadas con la estrella.
+  final Set<String> favorites;
+
   int tempoOf(String id) => tempos[id] ?? licksById[id]!.bpm;
 
-  LicksState copyWith({Map<String, int>? records, Map<String, int>? tempos}) =>
-      LicksState(records: records ?? this.records, tempos: tempos ?? this.tempos);
+  LicksState copyWith({
+    Map<String, int>? records,
+    Map<String, int>? tempos,
+    Set<String>? favorites,
+  }) => LicksState(
+    records: records ?? this.records,
+    tempos: tempos ?? this.tempos,
+    favorites: favorites ?? this.favorites,
+  );
 }
 
 final licksViewModelProvider = NotifierProvider<LicksViewModel, LicksState>(LicksViewModel.new);
 
-/// Los récords se guardan en [StorageBoxes.userProgress] como `{id: bpm}`.
+/// Los récords se guardan en [StorageBoxes.userProgress] como `{id: bpm}` y
+/// los favoritos como una lista de ids.
 class LicksViewModel extends Notifier<LicksState> {
   static const keyRecords = 'licks_best_bpm';
+  static const keyFavorites = 'licks_favorites';
 
   @override
   LicksState build() {
@@ -43,15 +55,35 @@ class LicksViewModel extends Notifier<LicksState> {
     try {
       final raw = await _storage.get<Map<dynamic, dynamic>>(StorageBoxes.userProgress, keyRecords) ??
           const {};
+      final favorites =
+          await _storage.get<List<dynamic>>(StorageBoxes.userProgress, keyFavorites) ?? const [];
       if (!ref.mounted) return;
       state = state.copyWith(
         records: {
           for (final MapEntry(:key, :value) in raw.entries)
             if (key is String && licksById.containsKey(key) && value is int) key: value,
         },
+        // Un id que ya no existe se descarta.
+        favorites: {
+          ...state.favorites,
+          for (final id in favorites)
+            if (id is String && licksById.containsKey(id)) id,
+        },
       );
     } catch (e, st) {
       debugPrint('LicksViewModel._load error: $e\n$st');
+    }
+  }
+
+  /// Marca o desmarca [id] como favorita y lo guarda.
+  Future<void> toggleFavorite(String id) async {
+    final favorites = {...state.favorites};
+    if (!favorites.remove(id)) favorites.add(id);
+    state = state.copyWith(favorites: favorites);
+    try {
+      await _storage.save(StorageBoxes.userProgress, keyFavorites, favorites.toList()..sort());
+    } catch (e, st) {
+      debugPrint('LicksViewModel.toggleFavorite error: $e\n$st');
     }
   }
 

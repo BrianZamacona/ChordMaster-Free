@@ -34,13 +34,14 @@ class _LicksScreenState extends ConsumerState<LicksScreen> {
     final p = context.palette;
     final text = Theme.of(context).textTheme;
     final records = ref.watch(licksViewModelProvider.select((s) => s.records));
+    final favorites = ref.watch(licksViewModelProvider.select((s) => s.favorites));
     final sections = [
       for (final style in LickStyle.values)
         (
           style,
           [
             for (final l in licks)
-              if (l.style == style && _filter.matches(l)) l,
+              if (l.style == style && _filter.matches(l, favorites: favorites)) l,
           ],
         ),
     ].where((s) => s.$2.isNotEmpty).toList();
@@ -70,6 +71,17 @@ class _LicksScreenState extends ConsumerState<LicksScreen> {
             selected: _filter.kind,
             keyOf: (k) => 'licks-kind-${k?.name ?? 'all'}',
             onChanged: (k) => setState(() => _filter = _filter.copyWith(kind: () => k)),
+          ),
+          const SizedBox(height: 4),
+          Align(
+            alignment: AlignmentDirectional.centerStart,
+            child: FilterChip(
+              key: const Key('licks-favorites'),
+              avatar: const Icon(Icons.star, size: 18),
+              label: Text(AppStrings.licksFavorites),
+              selected: _filter.favoritesOnly,
+              onSelected: (v) => setState(() => _filter = _filter.copyWith(favoritesOnly: v)),
+            ),
           ),
           const SizedBox(height: 8),
           Wrap(
@@ -105,7 +117,12 @@ class _LicksScreenState extends ConsumerState<LicksScreen> {
           if (sections.isEmpty)
             Padding(
               padding: const EdgeInsets.symmetric(vertical: 24),
-              child: Text(AppStrings.licksNoResults, key: const Key('licks-empty')),
+              child: Text(
+                _filter.favoritesOnly && favorites.isEmpty
+                    ? AppStrings.licksNoFavorites
+                    : AppStrings.licksNoResults,
+                key: const Key('licks-empty'),
+              ),
             ),
           for (final (style, items) in sections) ...[
             const SizedBox(height: 20),
@@ -120,7 +137,8 @@ class _LicksScreenState extends ConsumerState<LicksScreen> {
               style: text.bodySmall?.copyWith(color: p.textSecondary),
             ),
             const SizedBox(height: 8),
-            for (final l in items) _LickCard(lick: l, record: records[l.id]),
+            for (final l in items)
+              _LickCard(lick: l, record: records[l.id], favorite: favorites.contains(l.id)),
           ],
         ],
       ),
@@ -207,10 +225,11 @@ class _Menu<T> extends StatelessWidget {
 }
 
 class _LickCard extends StatelessWidget {
-  const _LickCard({required this.lick, required this.record});
+  const _LickCard({required this.lick, required this.record, required this.favorite});
 
   final Lick lick;
   final int? record;
+  final bool favorite;
 
   @override
   Widget build(BuildContext context) {
@@ -254,6 +273,13 @@ class _LickCard extends StatelessWidget {
                   ],
                 ),
               ),
+              if (favorite)
+                Icon(
+                  Icons.star,
+                  key: Key('lick-${lick.id}-favorite'),
+                  color: p.accent,
+                  semanticLabel: AppStrings.licksFavorites,
+                ),
               Icon(Icons.chevron_right, color: p.textSecondary),
             ],
           ),
