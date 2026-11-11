@@ -1,4 +1,5 @@
 import 'package:chordmaster_free/domain/open_chords/chord_shape.dart';
+import 'package:chordmaster_free/domain/progressions/progression_data.dart';
 import 'package:chordmaster_free/domain/progressions/progression_playback.dart';
 import 'package:flutter_test/flutter_test.dart';
 
@@ -39,5 +40,17 @@ void main() {
     expect(progressionChordAt(6, 3, bpm: 120, loop: true), 0);
     expect(progressionChordAt(9, 3, bpm: 120, loop: true), 1);
     expect(progressionChordAt(1, 0, bpm: 120, loop: true), isNull);
+  });
+
+  test('en 12/8: tres golpes parejos por pulso, el compás dura lo mismo', () {
+    final sounds = progressionStrum([c], bpm: 60, feel: ProgressionFeel.triplet);
+    // 4 pulsos × 3 golpes × 5 cuerdas.
+    expect(sounds, hasLength(4 * 3 * 5));
+    final bass = [for (final s in sounds) if (s.midi == 48) s.at];
+    expect(bass, hasLength(12));
+    for (var k = 0; k < 12; k++) {
+      expect(bass[k], closeTo(k / 3, 1e-9));
+    }
+    expect(strokesPerBeat(ProgressionFeel.straight), 1);
   });
 }

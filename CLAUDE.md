@@ -107,6 +107,16 @@ cada nota pertenezca a la escala. No bajar la tolerancia de 0.
   abre todas sus posiciones (principal, CAGED, voicings, tríadas, inversiones) y la elegida
   reemplaza SOLO ese acorde (`chosen` en el estado; las transiciones se recalculan). Se
   descarta al cambiar tonalidad, progresión o modo.
+- Progresiones por familia (`ProgressionKind`, decisión del usuario tras revisar las apps jam):
+  en mayor (las de siempre; las únicas que gira el capo, `majorProgressions`), blues de 12
+  compases (un grado por compás: normal, cambio rápido, lento en 12/8 con
+  `ProgressionFeel.triplet` = tres golpes por pulso, y menor con ♭VI y V7), en menor y vamps
+  modales (dórico, frigio, lidio, mixolidio, locrio; `mode` = rotación de la mayor). Los grados
+  de fuera de la mayor (I7, ♭VII, II…) se cuentan desde la tónica, con ♭ como en el círculo. La
+  teoría «¿Por qué?» les da función solo a los que la tienen clara (`functionOf`), dice en qué
+  compases va cada grado del blues y qué nota distingue al modo (`modeColorTones`, de
+  `compareScale`). Test: `progression_kinds_test.dart`. El eólico no tiene vamp propio: es la
+  menor natural, y va en «En menor».
 - Progresiones, escuchar (decisión del usuario tras revisar las apps jam): la vuelta entera se
   sintetiza en un WAV (`progression_playback.dart`: un compás por acorde, un golpe abajo por
   pulso), con tempo de 5 en 5 (40–200, los límites de Técnica) y bucle. En bucle el archivo

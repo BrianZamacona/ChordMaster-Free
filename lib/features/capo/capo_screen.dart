@@ -86,7 +86,7 @@ class _CapoScreenState extends State<CapoScreen> {
               keyName: keyName,
               keyRoot: _key,
               options: options,
-              progression: progressions[_progression],
+              progression: majorProgressions[_progression],
               onPick: () => _pickProgression(context),
             ),
           ],
@@ -105,7 +105,7 @@ class _CapoScreenState extends State<CapoScreen> {
         title: AppStrings.capoProgression,
         builder: (sheet) => Column(
           children: [
-            for (final (i, p) in progressions.indexed)
+            for (final (i, p) in majorProgressions.indexed)
               ListTile(
                 key: Key('capo-progression-${p.id}'),
                 title: Text(p.label, style: musicMono(fontSize: 14)),

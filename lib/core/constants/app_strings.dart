@@ -1128,9 +1128,17 @@ class AppStrings {
       tr(es: 'Escuchar progresión', en: 'Listen to the progression');
   static String get progressionStop => tr(es: 'Detener', en: 'Stop');
   static String get progressionTempo => tr(es: 'Tempo', en: 'Tempo');
+  static String get progressionKindMajor => tr(es: 'En mayor', en: 'Major');
+  static String get progressionKindBlues => tr(es: 'Blues', en: 'Blues');
+  static String get progressionKindMinor => tr(es: 'En menor', en: 'Minor');
+  static String get progressionKindModal => tr(es: 'Modos (vamps de dos acordes)', en: 'Modes (two-chord vamps)');
   static String get progressionSlower => tr(es: 'Más lento', en: 'Slower');
   static String get progressionFaster => tr(es: 'Más rápido', en: 'Faster');
   static String progressionBpm(int bpm) => tr(es: '$bpm BPM', en: '$bpm BPM');
+  static String get progressionBarPerChordTriplet => tr(
+    es: 'Un compás por acorde, en 12/8: tres golpes hacia abajo en cada pulso.',
+    en: 'One bar per chord, in 12/8: three downstrokes on each beat.',
+  );
   static String get progressionBarPerChord => tr(
     es: 'Un compás por acorde, un golpe hacia abajo en cada pulso.',
     en: 'One bar per chord, one downstroke on each beat.',

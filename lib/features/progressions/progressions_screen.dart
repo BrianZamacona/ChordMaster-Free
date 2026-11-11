@@ -67,7 +67,7 @@ class ProgressionsContent extends ConsumerWidget {
               label: AppStrings.progressionLabel,
               value: state.isCustom
                   ? AppStrings.progressionCustom
-                  : _numerals(current),
+                  : current.name?.text ?? _numerals(current),
               onOpen: () => _showProgressionSheet(
                 context,
                 tonic: state.tonic,
@@ -117,8 +117,19 @@ class ProgressionsContent extends ConsumerWidget {
   static String _numerals(Progression p) =>
       [for (final d in p.degrees) d.numeral].join('–');
 
-  static String _chordsIn(Progression p, int tonic) =>
-      [for (final d in p.degrees) _chordIn(d, tonic)].join(' · ');
+  /// Los acordes en [tonic]; en las que tienen nombre (los blues), cada uno
+  /// una vez.
+  static String _chordsIn(Progression p, int tonic) {
+    final chords = [for (final d in p.degrees) _chordIn(d, tonic)];
+    return (p.name == null ? chords : chords.toSet().toList()).join(' · ');
+  }
+
+  static String _kindTitle(ProgressionKind k) => switch (k) {
+    ProgressionKind.major => AppStrings.progressionKindMajor,
+    ProgressionKind.blues => AppStrings.progressionKindBlues,
+    ProgressionKind.minor => AppStrings.progressionKindMinor,
+    ProgressionKind.modal => AppStrings.progressionKindModal,
+  };
 
   void _showProgressionSheet(
     BuildContext context, {
@@ -155,21 +166,32 @@ class ProgressionsContent extends ConsumerWidget {
                   },
                 ),
               ),
-              for (final prog in progressions)
+              for (final kind in ProgressionKind.values) ...[
+                Padding(
+                  key: Key('progression-kind-${kind.name}'),
+                  padding: const EdgeInsets.fromLTRB(4, 16, 4, 4),
+                  child: Align(
+                    alignment: AlignmentDirectional.centerStart,
+                    child: Text(_kindTitle(kind), style: Theme.of(sheet).textTheme.titleSmall),
+                  ),
+                ),
+                for (final prog in progressions.where((p) => p.kind == kind))
                 Card(
                   color: prog.id == selectedId
                       ? p.accent.withValues(alpha: 0.18)
                       : null,
                   child: ListTile(
                     key: Key('progression-${prog.id}'),
-                    title: Text(
-                      _numerals(prog),
-                      style: musicMono(
-                        fontSize: 15,
-                        fontWeight: FontWeight.w600,
-                        color: p.textPrimary,
-                      ),
-                    ),
+                    title: prog.name == null
+                        ? Text(
+                            _numerals(prog),
+                            style: musicMono(
+                              fontSize: 15,
+                              fontWeight: FontWeight.w600,
+                              color: p.textPrimary,
+                            ),
+                          )
+                        : Text(prog.name!.text, style: Theme.of(sheet).textTheme.titleMedium),
                     subtitle: Text(_chordsIn(prog, tonic)),
                     trailing: prog.id == selectedId
                         ? Icon(Icons.check, color: p.accent)
@@ -180,6 +202,7 @@ class ProgressionsContent extends ConsumerWidget {
                     },
                   ),
                 ),
+              ],
             ],
           );
         },
@@ -248,7 +271,9 @@ class _ListenOptions extends ConsumerWidget {
           ],
         ),
         Text(
-          AppStrings.progressionBarPerChord,
+          state.progression.feel == ProgressionFeel.triplet
+              ? AppStrings.progressionBarPerChordTriplet
+              : AppStrings.progressionBarPerChord,
           style: text.bodySmall?.copyWith(color: context.palette.textSecondary),
         ),
       ],
@@ -668,7 +693,7 @@ class _WhyCard extends StatelessWidget {
               child: Text(l.text, style: text.bodyMedium),
             ),
           const SizedBox(height: 6),
-          for (final n in majorDegreeNumerals)
+          for (final n in allDegreeNumerals)
             if (numerals.contains(n))
               Padding(
                 padding: const EdgeInsets.only(bottom: 4),

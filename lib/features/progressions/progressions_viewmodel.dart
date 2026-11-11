@@ -337,7 +337,7 @@ class ProgressionsViewModel extends Notifier<ProgressionsState> {
       for (final s in plan.steps)
         ChordShape(name: '', frets: s.voicing.jsonFrets, fingers: List.filled(6, 0)),
     ];
-    final sounds = progressionStrum(shapes, bpm: bpm);
+    final sounds = progressionStrum(shapes, bpm: bpm, feel: state.progression.feel);
     final seconds = progressionAudioSeconds(count, bpm: bpm, loop: loop);
     final audio = ref.read(audioServiceProvider);
     state = state.copyWith(playingIndex: 0);

@@ -23,7 +23,7 @@ void main() {
     return {for (final i in c.intervals) (root + i) % 12};
   }
 
-  test('9 progresiones × 12 tónicas: un acorde por grado y notas del acorde', () {
+  test('todas las progresiones × 12 tónicas: un acorde por grado y notas del acorde', () {
     final noPath = <String>[];
     var combos = 0;
     for (final progression in progressions) {
@@ -215,7 +215,7 @@ void main() {
       }
     });
 
-    test('108 combinaciones: el modo principiante nunca usa más cejilla grande', () {
+    test('todas las combinaciones: el modo principiante nunca usa más cejilla grande', () {
       var changed = 0;
       var strictViolations = 0;
       for (final progression in progressions) {
