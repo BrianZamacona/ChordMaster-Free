@@ -425,6 +425,16 @@ Para decidir:
 - ¿Recorrido guiado del ancla y práctica sorteada de tónica y forma?
 - ¿Tríadas agrupadas por forma CAGED en el detalle de acorde?
 
+Decidido por el usuario (2026-11-11):
+- **Arpegio dentro de la forma**: en el detalle de escala; un botón resalta las notas del acorde
+  de la forma, en cualquier tónica, y deja ocultar el resto.
+- **Aprobado**: partes comunes y «unir» en la vista ampliada, recorrido guiado desde el ancla,
+  práctica sorteada de tónica y forma, y tríadas agrupadas por forma CAGED en el detalle de
+  acorde.
+
+Orden de trabajo (un PR por punto): arpegio en el detalle de escala → partes comunes y unir →
+tríadas por forma → recorrido desde el ancla → práctica sorteada.
+
 ## 4. Familia mastil: mástil y escalas
 
 Qué mirar: tipos de pregunta y de juego, cómo muestra las escalas (sistemas, digitaciones,
