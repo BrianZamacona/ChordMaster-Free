@@ -30,6 +30,13 @@ typedef HeardNote = ({int midi, double at, bool plucked});
 /// de la ventana entera con YIN y, con [expectedMidi], cuánto suena esa nota.
 /// En un acorde, la nota esperada (la más grave) se busca con el periodo del
 /// acorde entero: [periodDivisor] veces el suyo.
+///
+/// [sounding] = las últimas notas oídas, que pueden seguir sonando y tapar
+/// la esperada (una nota apagada con la palma se apaga enseguida bajo una
+/// cuerda que sigue abierta). La esperada también se busca sin ellas
+/// ([withoutPeriod]) y vale la mejor de las dos medidas. No se quita una
+/// nota cuyo periodo cabe entero en el de la esperada: lo que quedara de
+/// ella lo cumpliría.
 PitchFrame analyzeFrame(
   Float64List window,
   int sampleRate, {
@@ -37,16 +44,31 @@ PitchFrame analyzeFrame(
   required int hop,
   int? expectedMidi,
   int periodDivisor = 1,
+  List<int> sounding = const [],
   double a4 = 440,
-}) => (
-  at: at,
-  rms: rmsOf(window, from: window.length - hop),
-  attack: attackLevelOf(window, from: window.length - hop),
-  hz: detectPitchHz(window, sampleRate),
-  fit: expectedMidi == null
-      ? null
-      : _fitOf(window, sampleRate, midiToHz(expectedMidi) * a4 / 440 / periodDivisor),
-);
+}) {
+  double? fit;
+  if (expectedMidi != null) {
+    final hz = midiToHz(expectedMidi) * a4 / 440 / periodDivisor;
+    fit = _fitOf(window, sampleRate, hz);
+    var rest = window;
+    for (final midi in sounding) {
+      final other = midiToHz(midi) * a4 / 440;
+      final ratio = other / hz;
+      if ((ratio - ratio.round()).abs() > 0.03 * ratio) {
+        rest = withoutPeriod(rest, sampleRate, other);
+      }
+    }
+    if (!identical(rest, window)) fit = math.min(fit, _fitOf(rest, sampleRate, hz));
+  }
+  return (
+    at: at,
+    rms: rmsOf(window, from: window.length - hop),
+    attack: attackLevelOf(window, from: window.length - hop),
+    hz: detectPitchHz(window, sampleRate),
+    fit: fit,
+  );
+}
 
 double _fitOf(Float64List window, int sampleRate, double hz) =>
     periodicityAt(window, sampleRate, hz, minHz: math.min(60, hz * 0.95));
@@ -56,8 +78,10 @@ double _fitOf(Float64List window, int sampleRate, double hz) =>
 /// - Un **ataque** es un salto del nivel de agudos ([onsetRatio] veces el
 ///   menor de los últimos cuadros) con sonido por encima de [minRms]. La púa
 ///   suena sobre todo aguda, así que se nota aunque otras cuerdas sigan
-///   sonando. Los cuadros del ataque no se usan para la altura: su ventana
-///   mezcla lo de antes con lo nuevo.
+///   sonando. Los cuadros del ataque no se usan para la altura de YIN: su
+///   ventana mezcla lo de antes con lo nuevo. En su cola (el ataque ya baja)
+///   sí cuenta el periodo de la nota esperada: una nota apagada con la palma
+///   se apaga antes de que el ataque termine.
 /// - **La nota esperada** se da por oída tras un ataque cuando está presente
 ///   (`fit` bajo [fitThreshold], y YIN no oye clara una nota vecina) en
 ///   [confirmFrames] cuadros seguidos, aunque otra cuerda siga sonando.
@@ -117,44 +141,35 @@ class NoteOnsetDetector {
   /// oye clara una sola nota, tiene que ser la del bajo (en cualquier octava).
   HeardNote? feed(PitchFrame f, {int? expected, bool chord = false}) {
     final floor = _recentAttack.isEmpty ? 0.0 : _recentAttack.reduce(math.min);
+    final previous = _recentAttack.isEmpty ? 0.0 : _recentAttack.last;
     final attack = f.rms >= minRms && f.attack > floor * onsetRatio;
     _recentAttack.add(f.attack);
     if (_recentAttack.length > _attackFrames) _recentAttack.removeAt(0);
+    final present = _isPresent(f, expected, chord: chord);
     if (attack) {
-      // Un ataque que sigue subiendo en el cuadro siguiente es el mismo.
-      final rising = _onsetAt != null && _onsetAge < _attackFrames;
-      if (!rising) _onsetAt = f.at;
+      // Un ataque que sigue en el cuadro siguiente es el mismo.
+      final ongoing = _onsetAt != null && _onsetAge < _attackFrames;
+      // Si ya baja, es su cola: la nota nueva domina la ventana y su periodo
+      // cuenta. Una nota corta (apagada con la palma) se apaga antes de que
+      // termine el ataque, sobre todo tras un silencio, cuando el piso es 0.
+      final fading = ongoing && f.attack < previous;
+      if (!ongoing) _onsetAt = f.at;
       _onsetAge = 0;
       _candidate = null;
       _count = 0;
-      _fitCount = 0;
+      _fitCount = fading && present ? _fitCount + 1 : 0;
+      if (_fitCount >= confirmFrames) return _emit(expected!, _onsetAt!, plucked: true);
       return null;
     }
     if (_onsetAt != null && ++_onsetAge > _onsetPatience) _onsetAt = null;
 
     // La nota esperada, tras un ataque.
-    final fit = f.fit;
-    final hz = f.hz;
-    // Si YIN oye clara una nota vecina (a uno o dos semitonos), no es la
-    // esperada: el valle de la diferencia es ancho y una vecina también la
-    // deja baja. Una nota lejana puede ser otra cuerda que sigue sonando.
-    final heard = hz == null ? null : nearestNote(hz, a4: a4).midi;
-    final neighbour = heard != null &&
-        expected != null &&
-        heard != expected &&
-        (heard - expected).abs() <= 2;
-    final notTheBass = chord && heard != null && expected != null && (heard - expected) % 12 != 0;
-    final present = expected != null &&
-        fit != null &&
-        fit < fitThreshold &&
-        !neighbour &&
-        !notTheBass &&
-        f.rms >= minRms;
     _fitCount = present ? _fitCount + 1 : 0;
     if (_onsetAt case final at? when present && _fitCount >= confirmFrames) {
-      return _emit(expected, at, plucked: true);
+      return _emit(expected!, at, plucked: true);
     }
 
+    final hz = f.hz;
     if (hz == null) {
       _candidate = null;
       _count = 0;
@@ -172,6 +187,22 @@ class NoteOnsetDetector {
     if (_count < confirmFrames) return null;
     if (midi == _sounding && _onsetAt == null) return null;
     return _emit(midi, _onsetAt ?? _candidateAt, plucked: _onsetAt != null);
+  }
+
+  /// La nota esperada suena en este cuadro: su periodo está (`fit` bajo
+  /// [fitThreshold]) y YIN no oye clara una vecina (a uno o dos semitonos:
+  /// el valle de la diferencia es ancho y una vecina también lo deja bajo;
+  /// una nota lejana puede ser otra cuerda que sigue sonando). En un acorde,
+  /// lo que YIN oiga claro tiene que ser el bajo, en cualquier octava.
+  bool _isPresent(PitchFrame f, int? expected, {required bool chord}) {
+    final fit = f.fit;
+    final hz = f.hz;
+    if (expected == null || fit == null || fit >= fitThreshold || f.rms < minRms) return false;
+    if (hz == null) return true;
+    final heard = nearestNote(hz, a4: a4).midi;
+    final neighbour = heard != expected && (heard - expected).abs() <= 2;
+    final notTheBass = chord && (heard - expected) % 12 != 0;
+    return !neighbour && !notTheBass;
   }
 
   HeardNote _emit(int midi, double at, {required bool plucked}) {
