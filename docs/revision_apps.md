@@ -35,17 +35,14 @@ el progreso. Compara con Licks y riffs, `TabPlayer` y las guías de Estilos.
 | 48 Jazz Guitar Licks | revisada | 2026-11-11 |
 | 50 Easy Blues Guitar Licks | revisada | 2026-11-11 |
 | 63 Advanced Blues Guitar Licks | revisada | 2026-11-11 |
-| 65 Country Guitar Licks | pendiente | |
-| 65 Gypsy Jazz Guitar Licks | pendiente | |
-| 85 Metal Guitar Licks | pendiente | |
-| 96 Rock Guitar Licks | pendiente | |
+| 65 Country Guitar Licks | revisada | 2026-11-11 |
+| 65 Gypsy Jazz Guitar Licks | revisada | 2026-11-11 |
+| 85 Metal Guitar Licks | revisada | 2026-11-11 |
+| 96 Rock Guitar Licks | revisada | 2026-11-11 |
 
 Ojo: el gypsy jazz no está entre los estilos (`LickStyle`). Agregarlo es una decisión de
 producto.
 
-Las cuatro pendientes (65 Country, 65 Gypsy Jazz, 85 Metal y 96 Rock) quedaron sin ver el
-2026-11-11, porque no se aceptó en el teléfono el permiso para mostrar la pantalla. Las de Jonathan Bell
-comparten plantilla, así que se espera que solo cambien las pestañas y los textos.
 
 ### 144 Blues Guitar Licks Pro (licks) — 2026-11-11
 
@@ -127,17 +124,63 @@ como relleno en la parte rítmica.
 | Frases de relleno para la parte rítmica | nueva | Licks y riffs / rítmica | M | Sería un tipo de frase «relleno», además de riff y lick; es decisión de producto. |
 | Licks sobre el acorde disminuido | nueva | Licks y riffs | M | Ya tenemos la escala disminuida y su teoría. |
 
-### Resumen de la familia licks (6 de 10 vistas)
+### 65 Country Guitar Licks (licks) — 2026-11-11
+
+Plantilla de Jonathan Bell, organizada **por tonalidad** (A, C, E y G mayor). No transpone, porque los licks usan
+cuerdas al aire. El texto da consejos de práctica: empezar despacio y no apurar los hammer-ons.
+
+| Idea | Estado | Dónde encaja | Esfuerzo | Notas |
+|---|---|---|---|---|
+| Agrupar por tonalidad | parcial | lista de Licks y riffs | S | Cada `Lick` declara su tónica; sería un filtro por tónica, junto al filtro por escala (50 Easy Blues). |
+| Consejo de práctica en el texto | ya está | `Lick.about` | — | Nuestros textos ya dicen qué cuidar al tocar. |
+
+### 65 Gypsy Jazz Guitar Licks (licks) — 2026-11-11
+
+Plantilla de Jonathan Bell, organizada **por cadencia** (licks mayores, menores, V7–I mayor y V7–I menor), con los
+acordes encima de la tablatura y ▶ al 50 y al 100 %, como 48 Jazz.
+
+| Idea | Estado | Dónde encaja | Esfuerzo | Notas |
+|---|---|---|---|---|
+| Licks sobre una cadencia (V7–I) con los acordes encima | nueva | `Lick` + `lesson_tab.dart` | M | Es la misma idea que «acordes encima de la tablatura» (48 Jazz). El dominante y su resolución ya existen en el círculo (`dominantOf`). |
+| Nota ligada a través de la barra de compás (el número entre paréntesis) | nueva | notación (`TabNote`) | S | Hoy una nota larga dura lo que diga `length`, pero no se dibuja dividida entre dos compases; haría falta para frases que cruzan el compás. |
+| El gypsy jazz como estilo | nueva | `LickStyle` | M | Es decisión de producto. |
+
+### 85 Metal Guitar Licks (licks) — 2026-11-11
+
+Plantilla de Jonathan Bell, organizada **por técnica**: púa alterna, sweep picking, legato y tapping, y clásicos. Cada
+lick lleva su tonalidad y su tempo, y ▶ al 50, 75 y 100 %. El sweep son arpegios en seisillos con la
+dirección de la púa en cada nota; el legato, tresillos con hammer-ons y pull-offs encadenados.
+
+| Idea | Estado | Dónde encaja | Esfuerzo | Notas |
+|---|---|---|---|---|
+| Filtrar licks por técnica | parcial | lista de Licks y riffs | S | Cada lick ya muestra sus técnicas (`Lick.techniques`); faltaría el filtro. |
+| Sweep picking (arpegios con la púa en cada nota) | parcial | Licks y riffs / Técnica | M | La notación ya tiene la púa y el seisillo (`tabTripletSixteenth`). Faltan frases y un ejercicio de Técnica. |
+| Tapping | nueva | notación + Técnica | M | Es lo que mira la familia técnica (Learn Tapping). |
+| Tempos de más de 120 BPM | parcial | `licks_test.dart` | S | Nuestro test limita el tempo de presentación a 50–120; con el 50 % bastaría para empezar despacio. |
+
+### 96 Rock Guitar Licks (licks) — 2026-11-11
+
+Plantilla de Jonathan Bell, organizada **por tonalidad** (A, D, E y G menor). Los licks suben hasta el traste 20 y
+encadenan bend, release y pull-off. No trae texto por lick.
+
+| Idea | Estado | Dónde encaja | Esfuerzo | Notas |
+|---|---|---|---|---|
+| Frases en la parte alta del mástil (hasta el traste 20) | parcial | `licks_test.dart` | S | Nuestro test no deja pasar del traste 15. Con la transposición, una frase podría subir una octava. |
+| Bend → release → pull-off encadenados | ya está | notación | — | Ya se escribe y suena. |
+
+### Resumen de la familia licks (10 de 10)
 
 Lo que más se repite y más valdría, en orden:
-1. **Transponer** cualquier frase a otra tonalidad. Lo traen las cinco de Jonathan Bell.
+1. **Transponer** cualquier frase a otra tonalidad. Lo traen casi todas las de Jonathan Bell; las de
+   cuerdas al aire (country, acústico) se agrupan por tonalidad en lugar de transponer.
 2. **Acordes encima de la tablatura** y la vista de la parte rítmica. Explica por qué suena bien
    la frase y conecta Licks con Acordes y Progresiones.
 3. **Acompañamiento debajo del lick**, con dos volúmenes. Se decide junto con la familia jam.
-4. **Ir más lento con un toque** (50 / 75 %), **favoritos** y **anterior / siguiente**. Son pequeños y
-   baratos.
-5. En la notación: **slides y ligados en double stops** y, más adelante, **dos voces** (bajo y
-   melodía) y **repeticiones**.
+4. **Ir más lento con un toque** (50 / 75 %), **favoritos**, **anterior / siguiente** y **filtros**
+   por escala, tónica y técnica. Son pequeños y baratos.
+5. En la notación: **slides y ligados en double stops**, **notas ligadas entre compases** y, más
+   adelante, **dos voces** (bajo y melodía) y **repeticiones**. El **tapping** se ve con la familia
+   técnica.
 
 Lo que ya hacemos mejor:
 - marcar la nota que suena;
@@ -152,6 +195,7 @@ Para decidir:
 - ¿Favoritos? ¿Dónde se verían?
 - ¿Tipos nuevos de frase: el «solo» largo y el «relleno» rítmico?
 - ¿Agregar el gypsy jazz como estilo?
+- ¿Subir los límites del test de licks (tempo de presentación hasta 120, traste hasta 15)?
 - ¿El acompañamiento espera a la revisión de la familia jam?
 
 ## 2. Familia jam: pistas de acompañamiento
