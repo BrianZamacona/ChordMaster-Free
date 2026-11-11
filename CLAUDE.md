@@ -693,6 +693,11 @@ Objetivo: código legible y mantenible antes que ingenioso. Capas (puertos y ada
   decodificado fuera del hilo de la UI; vistas `chords()` y `fingerings()`) y `ScaleRepository`
   (resolución por raíz). Nadie más llama a `rootBundle` para estos archivos.
 - `lib/features/` — pantallas por módulo (chords, progressions, ...).
+  - Explorador del acorde, tríadas «Por cuerdas | Por forma CAGED» (decisión del usuario tras revisar
+    las apps CAGED; `lib/domain/voicing/triads_by_shape.dart`): una tríada es de una forma si todas
+    sus notas caen en los trastes de la forma (`shapeWindow`, del más bajo al más alto que suena),
+    tal cual o una octava arriba o abajo; las que no caben en ninguna van en «Entre dos formas».
+    Por forma no hay casilla de comparar (las tríadas corridas no son las de chords.json).
   - `features/chords/chord_compare_screen.dart` — ruta `/learn/chords/:id/compare?sel=caged:0,voicings:2`
     (claves `sección:índice`, máx. 3; secciones `main`, `caged`, `voicings`, `triadInversions`,
     `advancedInversions`). Parseo y títulos en `fingering_selection.dart`; el explorador marca

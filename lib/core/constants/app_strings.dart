@@ -83,6 +83,18 @@ class AppStrings {
       tr(es: 'Del mismo estilo', en: 'Same style');
   static String get chordExplorer => tr(es: 'Explorador', en: 'Explorer');
   static String get curatedVoicings => tr(es: 'Voicings', en: 'Voicings');
+  static String get triadsByStrings => tr(es: 'Por cuerdas', en: 'By strings');
+  static String get triadsByShape => tr(es: 'Por forma CAGED', en: 'By CAGED shape');
+  static String get triadsByShapeHint => tr(
+    es: 'Cada tríada, en la forma CAGED cuyos trastes la contienen (corrida una octava si hace falta).',
+    en: 'Each triad, in the CAGED shape whose frets contain it (moved an octave if needed).',
+  );
+  static String triadsInShape(String shape, int from, int to) =>
+      tr(es: 'Forma $shape · trastes $from–$to', en: '$shape shape · frets $from–$to');
+  static String get triadsNoneInShape =>
+      tr(es: 'Ninguna tríada cabe entera en esta forma.', en: 'No triad fits entirely in this shape.');
+  static String get triadsBetweenShapes =>
+      tr(es: 'Entre dos formas', en: 'Between two shapes');
   static String get triadInversions =>
       tr(es: 'Inversiones de tríada', en: 'Triad inversions');
   static String get advancedInversions =>
