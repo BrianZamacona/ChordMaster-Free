@@ -475,6 +475,12 @@ cada nota pertenezca a la escala. No bajar la tolerancia de 0.
 - Diseño vertical (decisión del usuario: nada de filas que se deslizan de lado): cada categoría es
   una sección con sus guías en lista, a todo lo ancho (dibujo, título, subtítulo, capítulos,
   minutos y avance).
+- «CAGED desde el ancla» (decisión del usuario tras revisar las apps CAGED; ruta `/learn/caged`, en
+  Aprender; `lib/domain/theory/caged_anchor.dart`): cinco pasos con tónica a elegir. La tónica en la
+  6ª, la 5ª y la 4ª cuerda (`anchorFret`); las formas E y G desde la 6ª, A y C desde la 5ª y D desde
+  la 4ª (`cagedAnchorString`), con su diagrama de chords.json, el traste de su raíz y hacia dónde se
+  arma (`shapeGoesUp`: E, A y D suben; G y C bajan hacia la cejuela). Solo acordes mayores. Test: en
+  las 12 tónicas, cada forma de chords.json tiene la raíz en su cuerda ancla y va hacia donde dice.
 - "¿Qué capo uso?" (`lib/domain/theory/capo.dart`, ruta `/learn/capo`): por regla, el traste del
   capo para cada forma abierta (C A G E D; Am Em Dm en menor), hasta el traste 7, con su
   I – IV – V. Las cinco formas mayores cubren cualquier tonalidad sin pasar del 7 (hay test).
