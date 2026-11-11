@@ -225,6 +225,10 @@ class _TrackRows extends StatelessWidget {
           for (final unit in unitsOf(track, level: level)) ...[
             segment(),
             _UnitNode(unit: unit, path: path),
+            if (unitChallengeOf(unit) case final challenge?) ...[
+              segment(),
+              _ChallengeNode(challenge: challenge),
+            ],
           ],
           for (final challenge in challengesOf(track, level: level)) ...[
             segment(),

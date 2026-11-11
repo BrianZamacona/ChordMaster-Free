@@ -886,6 +886,8 @@ class AppStrings {
   static String get unitLessons => tr(es: 'Lecciones', en: 'Lessons');
   static String get unitChallenge =>
       tr(es: 'Reto del nivel', en: 'Level challenge');
+  static String get unitOwnChallenge =>
+      tr(es: 'Reto de la unidad', en: 'Unit challenge');
   static String get unitResults =>
       tr(es: 'Resultados de la unidad', en: 'Unit results');
   static String get unitResultLessons => tr(es: 'lecciones', en: 'lessons');
@@ -994,6 +996,12 @@ class AppStrings {
       tr(es: 'Abrir los double stops', en: 'Open double stops');
   static String get lessonOpenCircle =>
       tr(es: 'Abrir el círculo de quintas', en: 'Open the circle of fifths');
+  static String get lessonOpenCircleBuild =>
+      tr(es: 'Abrir «¿Cómo se arma?»', en: 'Open "How is it built?"');
+  static String get lessonOpenCircleHarmony =>
+      tr(es: 'Abrir «Más allá de la tonalidad»', en: 'Open "Beyond the key"');
+  static String get lessonOpenCircleQuiz =>
+      tr(es: 'Abrir el quiz del círculo', en: 'Open the circle quiz');
   static String get lessonNotFound =>
       tr(es: 'No encontramos esta lección.', en: 'We could not find this lesson.');
 

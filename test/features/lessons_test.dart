@@ -10,6 +10,10 @@ import 'package:chordmaster_free/domain/lessons/lesson_path.dart';
 import 'package:chordmaster_free/domain/lessons/unit_summary.dart';
 import 'package:chordmaster_free/domain/melodies/basics_course.dart';
 import 'package:chordmaster_free/domain/melodies/melody_course.dart';
+import 'package:chordmaster_free/features/circle/circle_build_screen.dart';
+import 'package:chordmaster_free/features/circle/circle_harmony_screen.dart';
+import 'package:chordmaster_free/features/circle/circle_quiz_screen.dart';
+import 'package:chordmaster_free/features/circle/circle_quiz_viewmodel.dart';
 import 'package:chordmaster_free/features/circle/circle_screen.dart';
 import 'package:chordmaster_free/features/courses/course_progress.dart';
 import 'package:chordmaster_free/features/lessons/lesson_tab.dart';
@@ -343,6 +347,9 @@ void main() {
     for (final (lessonId, screen) in [
       ('l17_thirds', DoubleStopsScreen),
       ('l16_neighbor_keys', CircleScreen),
+      ('l_circle_build', CircleBuildScreen),
+      ('l_secondary_dominants', CircleHarmonyScreen),
+      ('l_circle_quiz', CircleQuizScreen),
       ('r13_color_chords', ProgressionsScreen),
     ]) {
       testWidgets('$lessonId abre $screen y atrás vuelve a la lección', (
@@ -417,6 +424,53 @@ void main() {
         find.byKey(Key('unit-challenge-${challenge.id}'), skipOffstage: false),
         findsNothing,
       );
+    });
+
+    testWidgets('la unidad del círculo termina en su propio reto, que se supera con el quiz', (
+      tester,
+    ) async {
+      final unit = unitsById['l_circle_of_fifths']!;
+      final challenge = unitChallengeOf(unit)!;
+      await open(
+        tester,
+        '/learn/lessons/unit/${unit.id}',
+        progress: {CircleQuizViewModel.keyBestStreak: challenge.goal - 1},
+      );
+      final status = find.byKey(Key('unit-challenge-status-${challenge.id}'), skipOffstage: false);
+      expect(
+        tester.widget<Text>(status).data,
+        AppStrings.challengeEarBest(challenge.goal - 1, challenge.goal),
+      );
+      // Otro ProviderScope: si no, se reusa el de antes con el récord viejo.
+      await tester.pumpWidget(const SizedBox());
+      await open(
+        tester,
+        '/learn/lessons/unit/${unit.id}',
+        progress: {CircleQuizViewModel.keyBestStreak: challenge.goal},
+      );
+      expect(tester.widget<Text>(status).data, AppStrings.challengePassed);
+      expect(
+        tester.widget<Text>(find.byKey(const Key('unit-challenge-label'), skipOffstage: false)).data,
+        AppStrings.unitOwnChallenge,
+      );
+      await tester.pumpWidget(const SizedBox());
+      // En el mapa va justo debajo de la unidad, y tocarlo abre el quiz.
+      await open(tester, '/learn/lessons');
+      final node = find.byKey(Key('challenge-${challenge.id}'), skipOffstage: false);
+      final unitNode = find.byKey(Key('unit-${unit.id}'), skipOffstage: false);
+      final nextUnit = unitsOf(LessonTrack.lead, level: 2)[unitsOf(LessonTrack.lead, level: 2).indexOf(unit) + 1];
+      expect(tester.getRect(unitNode).bottom, lessThan(tester.getRect(node).top));
+      expect(
+        tester.getRect(node).bottom,
+        lessThan(tester.getRect(find.byKey(Key('unit-${nextUnit.id}'), skipOffstage: false)).top),
+      );
+      await tester.ensureVisible(node);
+      await tester.pump();
+      await tester.tap(node);
+      for (var i = 0; i < 5; i++) {
+        await tester.pump(const Duration(milliseconds: 300));
+      }
+      expect(find.byType(CircleQuizScreen), findsOneWidget);
     });
 
     testWidgets('"Siguiente unidad" reemplaza a esta y atrás vuelve al mapa', (
@@ -532,7 +586,10 @@ void main() {
         for (final track in [LessonTrack.rhythm, LessonTrack.lead]) {
           for (final level in levelsOf(track)) {
             final keys = [
-              for (final u in unitsOf(track, level: level)) Key('unit-${u.id}'),
+              for (final u in unitsOf(track, level: level)) ...[
+                Key('unit-${u.id}'),
+                if (unitChallengeOf(u) case final c?) Key('challenge-${c.id}'),
+              ],
               for (final c in challengesOf(track, level: level)) Key('challenge-${c.id}'),
             ];
             for (var i = 1; i < keys.length; i++) {

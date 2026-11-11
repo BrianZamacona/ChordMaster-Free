@@ -870,6 +870,82 @@ const List<Lesson> curriculum = [
     tool: LessonTool.circle,
   ),
   Lesson(
+    id: 'l_circle_build',
+    unit: _circleOfFifths,
+    title: LocalizedText(es: 'Cómo se arma el círculo', en: 'How the circle is built'),
+    body: LocalizedText(
+      es: 'Cada paso a la derecha sube una quinta (7 semitonos) y cambia una sola nota: la 4ª de la tonalidad anterior sube un semitono y pasa a ser la 7ª de la nueva. De C a G, F sube a F#; de G a D, C sube a C#.',
+      en: 'Each step to the right goes up a fifth (7 half steps) and changes a single note: the 4th of the previous key rises a half step and becomes the 7th of the new one. From C to G, F rises to F#; from G to D, C rises to C#.',
+    ),
+    steps: [
+      LocalizedText(
+        es: 'Abre «¿Cómo se arma?» y avanza paso a paso.',
+        en: 'Open "How is it built?" and go step by step.',
+      ),
+      LocalizedText(
+        es: 'En cada paso, di en voz alta qué nota sube.',
+        en: 'At each step, say out loud which note rises.',
+      ),
+      LocalizedText(
+        es: 'Llega hasta A y cuenta sus ♯: son 3 (F#, C# y G#).',
+        en: 'Go as far as A and count its ♯: there are 3 (F#, C# and G#).',
+      ),
+    ],
+    minutes: 8,
+    tool: LessonTool.circleBuild,
+  ),
+  Lesson(
+    id: 'l_secondary_dominants',
+    unit: _circleOfFifths,
+    title: LocalizedText(es: 'Dominantes secundarias', en: 'Secondary dominants'),
+    body: LocalizedText(
+      es: 'El V7 de un acorde es su vecino de la derecha en el círculo. En C, el V7 de Am es E7 y el de Dm es A7: tocar E7 justo antes de Am hace que Am suene a llegada.',
+      en: 'The V7 of a chord is its neighbor to the right on the circle. In C, the V7 of Am is E7 and the V7 of Dm is A7: playing E7 right before Am makes Am sound like an arrival.',
+    ),
+    steps: [
+      LocalizedText(
+        es: 'Abre «Más allá de la tonalidad» en C.',
+        en: 'Open "Beyond the key" in C.',
+      ),
+      LocalizedText(
+        es: 'Toca E7 – Am y luego A7 – Dm.',
+        en: 'Play E7 – Am and then A7 – Dm.',
+      ),
+      LocalizedText(
+        es: 'Prueba la cadena E7 – A7 – D7 – G7 – C: cada acorde es el V7 del siguiente.',
+        en: 'Try the chain E7 – A7 – D7 – G7 – C: each chord is the V7 of the next.',
+      ),
+    ],
+    minutes: 10,
+    chords: ['E7', 'Am', 'A7', 'Dm'],
+    tool: LessonTool.circleHarmony,
+  ),
+  Lesson(
+    id: 'l_circle_quiz',
+    unit: _circleOfFifths,
+    title: LocalizedText(es: 'El círculo de memoria', en: 'The circle by heart'),
+    body: LocalizedText(
+      es: 'Responde sin mirar la rueda: el V de una tonalidad (el de E es B), cuántas alteraciones tiene (A tiene 3 ♯) y qué acorde falta en su ventana. Si fallas, la respuesta te dice por qué.',
+      en: 'Answer without looking at the wheel: the V of a key (the V of E is B), how many sharps or flats it has (A has 3 ♯) and which chord is missing from its window. If you miss, the answer tells you why.',
+    ),
+    steps: [
+      LocalizedText(
+        es: 'Responde 10 preguntas y lee cada explicación.',
+        en: 'Answer 10 questions and read each explanation.',
+      ),
+      LocalizedText(
+        es: 'Si fallas, busca esa tonalidad en la rueda y vuelve.',
+        en: 'If you miss, find that key on the wheel and come back.',
+      ),
+      LocalizedText(
+        es: 'Busca 10 seguidas sin fallar: es el reto de la unidad.',
+        en: 'Go for 10 in a row without a miss: that is the unit challenge.',
+      ),
+    ],
+    minutes: 10,
+    tool: LessonTool.circleQuiz,
+  ),
+  Lesson(
     id: 'l17_thirds',
     unit: _doubleStops,
     title: LocalizedText(es: 'Terceras en dos cuerdas', en: 'Thirds on two strings'),
@@ -1032,6 +1108,17 @@ const _majorMinor = LessonUnit(
   ),
   art: ScaleArt(LessonScale(scaleId: 'major', root: 7)),
 );
+const _circleOfFifths = LessonUnit(
+  id: 'l_circle_of_fifths',
+  track: LessonTrack.lead,
+  level: 2,
+  title: LocalizedText(es: 'Círculo de quintas', en: 'Circle of fifths'),
+  summary: LocalizedText(
+    es: 'Cómo se arma, las dominantes secundarias y el círculo de memoria.',
+    en: 'How it is built, secondary dominants and the circle by heart.',
+  ),
+  art: NotesArt(['C', 'G', 'D', 'A', 'E']),
+);
 const _doubleStops = LessonUnit(
   id: 'l_double_stops',
   track: LessonTrack.lead,
@@ -1124,6 +1211,7 @@ const List<LessonUnit> lessonUnits = [
   _theNeck,
   _licks,
   _majorMinor,
+  _circleOfFifths,
   _doubleStops,
 ];
 
@@ -1174,6 +1262,19 @@ const List<LessonChallenge> challenges = [
     kind: ChallengeKind.earStreak,
     goal: 10,
   ),
+  LessonChallenge(
+    id: 'lu_circle_streak',
+    track: LessonTrack.lead,
+    level: 2,
+    unit: _circleOfFifths,
+    title: LocalizedText(es: 'Reto: el círculo de memoria', en: 'Challenge: the circle by heart'),
+    body: LocalizedText(
+      es: 'Responde 10 preguntas seguidas sin fallar en el quiz del círculo.',
+      en: 'Answer 10 questions in a row without a miss in the circle quiz.',
+    ),
+    kind: ChallengeKind.circleStreak,
+    goal: 10,
+  ),
 ];
 
 /// Lecciones de [track], en orden.
@@ -1195,11 +1296,16 @@ List<int> levelsOf(LessonTrack track) =>
 List<Lesson> lessonsOfUnit(LessonUnit unit) =>
     [for (final l in curriculum) if (l.unit == unit) l];
 
-/// Retos de [track]; con [level], solo el que cierra ese nivel en el mapa.
+/// Retos que cierran un nivel de [track] (sin los de unidad); con [level],
+/// solo el de ese nivel.
 List<LessonChallenge> challengesOf(LessonTrack track, {int? level}) => [
   for (final c in challenges)
-    if (c.track == track && (level == null || c.level == level)) c,
+    if (c.unit == null && c.track == track && (level == null || c.level == level)) c,
 ];
+
+/// El reto propio de [unit] (va detrás de ella en el mapa), si tiene.
+LessonChallenge? unitChallengeOf(LessonUnit unit) =>
+    challenges.where((c) => c.unit == unit).firstOrNull;
 
 /// Lecciones por id.
 final Map<String, Lesson> lessonsById = {for (final l in curriculum) l.id: l};
