@@ -97,6 +97,12 @@ void main() {
           final line = tester.getRect(find.byKey(const Key('lesson-tab-line-0')));
           expect(line.right, lessThanOrEqualTo(360), reason: l.id);
           expect(find.byKey(const Key('tab-mic')), findsOneWidget, reason: l.id);
+          // Con acordes, el micrófono dice que escucha la nota más grave.
+          expect(
+            tester.widget<Text>(find.byKey(const Key('tab-mic-status'))).data,
+            l.tab.any((n) => n.isChord) ? AppStrings.tabMicHintChords : AppStrings.tabMicHint,
+            reason: l.id,
+          );
         }
       });
     });

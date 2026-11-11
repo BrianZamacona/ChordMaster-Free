@@ -50,6 +50,7 @@ class NoteFollower {
       if (n.isRest || n.technique == TabTechnique.dead) continue;
       _indices.add(i);
       expected.add(tabMidi(n));
+      _divisors.add(tabChordPeriodDivisor(n));
       _beats.add(tabSwungBeats(positions[i], swing));
     }
   }
@@ -61,6 +62,7 @@ class NoteFollower {
   /// su traste, y la nota empujada llega sin ataque).
   final expected = <int>[];
   final _indices = <int>[];
+  final _divisors = <int>[];
   final _beats = <double>[];
 
   int _next = 0;
@@ -75,6 +77,10 @@ class NoteFollower {
 
   /// La nota que se espera, o `null` al terminar.
   int? get expectedMidi => done ? null : expected[_next];
+
+  /// En un acorde, cuántos periodos de la nota esperada dura el del acorde
+  /// ([tabChordPeriodDivisor]); 1 en una nota sola.
+  int get expectedPeriodDivisor => done ? 1 : _divisors[_next];
 
   /// Instantes en que salió bien cada nota.
   List<double> get times => List.unmodifiable(_times);
@@ -134,9 +140,14 @@ class PlayAlongSession {
       at: at,
       hop: hop,
       expectedMidi: expected,
+      periodDivisor: follower.expectedPeriodDivisor,
       a4: a4,
     );
-    final note = _detector.feed(frame, expected: expected);
+    final note = _detector.feed(
+      frame,
+      expected: expected,
+      chord: follower.expectedPeriodDivisor > 1,
+    );
     if (note == null) return null;
     lastHeard = note.midi;
     return follower.hear(note);

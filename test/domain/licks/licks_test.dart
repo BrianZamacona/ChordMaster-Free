@@ -18,6 +18,8 @@ void main() {
   };
   Set<int> pitchClasses(LessonScale s) => {for (final i in intervals[s.scaleId]!) (s.root + i) % 12};
   List<TabNote> played(Lick l) => [for (final n in l.tab) if (!n.isRest) n];
+  // Cada nota que suena, también las de un acorde.
+  List<TabNote> tones(Lick l) => [for (final n in played(l)) ...n.tones];
   Lick lick(String id) => licksById[id]!;
   String pitchName(TabNote n) => pitchClassName(tabMidi(n));
 
@@ -36,7 +38,7 @@ void main() {
       for (final l in licks) {
         expect(intervals, contains(l.scale.scaleId), reason: l.id);
         final allowed = pitchClasses(l.scale);
-        for (final n in played(l)) {
+        for (final n in tones(l)) {
           expect(allowed, contains(tabMidi(n) % 12), reason: '${l.id} $n');
           expect(allowed, contains((tabMidi(n) + n.bend) % 12), reason: '${l.id} $n');
         }
@@ -52,7 +54,7 @@ void main() {
 
     test('la mano no se estira más de 5 trastes ni sube del 15', () {
       for (final l in licks) {
-        final frets = [for (final n in played(l)) if (n.fret > 0) n.fret];
+        final frets = [for (final n in tones(l)) if (n.fret > 0) n.fret];
         expect(frets.reduce((a, b) => a > b ? a : b), lessThanOrEqualTo(15), reason: l.id);
         final span = frets.reduce((a, b) => a > b ? a : b) - frets.reduce((a, b) => a < b ? a : b);
         expect(span, lessThanOrEqualTo(5), reason: l.id);

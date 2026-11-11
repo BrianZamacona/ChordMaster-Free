@@ -3,6 +3,7 @@
 library;
 
 import '../lessons/lesson.dart';
+import 'tab_playback.dart';
 
 /// Lo que está mal escrito en [notes] (vacío = bien). Cada problema dice el
 /// índice de la nota.
@@ -24,10 +25,26 @@ List<String> tabNotationProblems(List<TabNote> notes) {
     }
     if (n.bend > 3) fail('un bend de más de un tono y medio');
     if (n.technique == TabTechnique.bend && n.fret == 0) fail('una cuerda al aire no se empuja');
+    if (n.isChord) {
+      if (n.chord.length > 2) fail('un acorde de la tablatura tiene 2 o 3 notas');
+      if (n.technique != TabTechnique.none && n.technique != TabTechnique.palmMute) {
+        fail('un acorde se pulsa, abierto o con palma');
+      }
+      final strings = {for (final t in n.tones) t.string};
+      if (strings.length != n.tones.length) fail('cada nota del acorde en su cuerda');
+      for (final (s, f) in n.chord) {
+        if (s < 1 || s > 6 || f < 0 || f > 24) fail('nota del acorde fuera del mástil');
+      }
+      for (final t in n.tones.skip(1)) {
+        if (t.string >= 1 && t.string <= 6 && tabMidi(t) <= tabMidi(n)) {
+          fail('la nota principal es la más grave del acorde');
+        }
+      }
+    }
     if (n.technique.legato) {
       if (n.pick != null) fail('una nota ligada no lleva púa');
       final p = previous;
-      if (p == null || p.string != n.string || p.technique == TabTechnique.dead) {
+      if (p == null || p.string != n.string || p.technique == TabTechnique.dead || p.isChord) {
         fail('se liga a la nota anterior, en la misma cuerda');
       } else {
         switch (n.technique) {
@@ -57,6 +74,7 @@ Set<TabMark> tabMarksIn(List<TabNote> notes) => {
     else ...[
       ?_markOf(n),
       if (n.pick != null) TabMark.pick,
+      if (n.isChord) TabMark.chord,
     ],
 };
 
@@ -73,7 +91,7 @@ TabMark? _markOf(TabNote n) => switch (n.technique) {
 };
 
 /// Lo que se explica debajo de una tablatura.
-enum TabMark { rest, triplet, hammerOn, pullOff, slide, bend, release, vibrato, palmMute, dead, pick }
+enum TabMark { rest, triplet, chord, hammerOn, pullOff, slide, bend, release, vibrato, palmMute, dead, pick }
 
 /// Grupos de tresillo de [notes]: índices de cada tres notas seguidas con
 /// duración de tresillo (un tresillo incompleto no forma grupo).
