@@ -1453,6 +1453,14 @@ class AppStrings {
     en: 'Short, original phrases that show how each style sounds: the riff accompanies, the lick goes in the solo. Listen, loop them and play them with the microphone.',
   );
   static String get licksKind => tr(es: 'Tipo', en: 'Type');
+  static String get licksScale => tr(es: 'Escala', en: 'Scale');
+  static String get licksTonic => tr(es: 'Tónica', en: 'Tonic');
+  static String get licksTechnique => tr(es: 'Técnica', en: 'Technique');
+  static String get licksAny => tr(es: 'Todas', en: 'All');
+  static String get licksSpeed => tr(es: 'Velocidad', en: 'Speed');
+  static String licksSpeedPercent(int percent) => tr(es: '$percent %', en: '$percent%');
+  static String get licksPrevious => tr(es: 'Anterior', en: 'Previous');
+  static String get licksNext => tr(es: 'Siguiente', en: 'Next');
   static String get licksKindRiff => tr(es: 'Riff', en: 'Riff');
   static String get licksKindLick => tr(es: 'Lick', en: 'Lick');
   static String get licksNoResults =>

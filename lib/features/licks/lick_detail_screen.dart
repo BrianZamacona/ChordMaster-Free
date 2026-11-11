@@ -8,6 +8,7 @@ import '../../core/constants/app_strings.dart';
 import '../../data/repository/scale_repository.dart';
 import '../../domain/guides/guides.dart';
 import '../../domain/licks/lick.dart';
+import '../../domain/licks/lick_browse.dart';
 import '../../domain/licks/licks.dart';
 import '../../domain/practice/play_along.dart';
 import '../../domain/practice/session_summary.dart';
@@ -69,7 +70,9 @@ class LickDetailScreen extends ConsumerWidget {
                     key: const Key('lick-scale'),
                     style: musicMono(fontSize: 13, color: p.textSecondary),
                   ),
-                  const SizedBox(height: 10),
+                  const SizedBox(height: 8),
+                  _Speeds(lick: lick, bpm: bpm, onChanged: (b) => vm.setTempo(lick.id, b)),
+                  const SizedBox(height: 8),
                   TabPlayer(
                     notes: lick.tab,
                     bpm: bpm,
@@ -119,6 +122,8 @@ class LickDetailScreen extends ConsumerWidget {
           ),
           const SizedBox(height: 12),
           _ScaleButton(lick: lick),
+          const SizedBox(height: 12),
+          _Neighbors(lick: lick),
         ],
       ),
     );
@@ -140,6 +145,79 @@ class LickDetailScreen extends ConsumerWidget {
     ScaffoldMessenger.of(context)
       ..hideCurrentSnackBar()
       ..showSnackBar(SnackBar(content: Text(AppStrings.tabMicSaved(bpm))));
+  }
+}
+
+/// "Velocidad: 50 % · 75 % · 100 %": el tempo de la frase a esa fracción, de un
+/// toque. Si el tempo se eligió a mano, ninguna queda marcada.
+class _Speeds extends StatelessWidget {
+  const _Speeds({required this.lick, required this.bpm, required this.onChanged});
+
+  final Lick lick;
+  final int bpm;
+  final ValueChanged<int> onChanged;
+
+  @override
+  Widget build(BuildContext context) {
+    final current = lickSpeedOf(lick, bpm);
+    return Wrap(
+      spacing: 6,
+      runSpacing: 4,
+      crossAxisAlignment: WrapCrossAlignment.center,
+      children: [
+        Text(AppStrings.licksSpeed, style: Theme.of(context).textTheme.labelLarge),
+        for (final s in lickSpeeds)
+          ChoiceChip(
+            key: Key('lick-speed-$s'),
+            label: Text(AppStrings.licksSpeedPercent(s)),
+            selected: current == s,
+            onSelected: (_) => onChanged(lickTempoAt(lick, s)),
+          ),
+      ],
+    );
+  }
+}
+
+/// La frase anterior y la siguiente del mismo estilo; reemplaza esta pantalla
+/// (atrás vuelve a la lista).
+class _Neighbors extends StatelessWidget {
+  const _Neighbors({required this.lick});
+
+  final Lick lick;
+
+  @override
+  Widget build(BuildContext context) {
+    final (:previous, :next) = lickNeighbors(lick);
+    Widget button(Lick? other, {required bool forward}) => Expanded(
+      child: other == null
+          ? const SizedBox.shrink()
+          : OutlinedButton(
+              key: Key(forward ? 'lick-next' : 'lick-previous'),
+              onPressed: () => context.pushReplacement(context.sectionPath('licks/${other.id}')),
+              child: Padding(
+                padding: const EdgeInsets.symmetric(vertical: 8),
+                child: Column(
+                  crossAxisAlignment: forward ? CrossAxisAlignment.end : CrossAxisAlignment.start,
+                  children: [
+                    Text(forward ? '${AppStrings.licksNext} →' : '← ${AppStrings.licksPrevious}'),
+                    Text(
+                      other.title.text,
+                      maxLines: 1,
+                      overflow: TextOverflow.ellipsis,
+                      style: Theme.of(context).textTheme.bodySmall,
+                    ),
+                  ],
+                ),
+              ),
+            ),
+    );
+    return Row(
+      children: [
+        button(previous, forward: false),
+        const SizedBox(width: 8),
+        button(next, forward: true),
+      ],
+    );
   }
 }
 

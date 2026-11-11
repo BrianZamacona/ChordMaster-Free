@@ -4,9 +4,12 @@ import 'package:chordmaster_free/app.dart';
 import 'package:chordmaster_free/core/constants/app_strings.dart';
 import 'package:chordmaster_free/core/i18n/tr.dart';
 import 'package:chordmaster_free/data/repository/scale_repository.dart';
+import 'package:chordmaster_free/domain/lessons/lesson.dart';
 import 'package:chordmaster_free/domain/licks/lick.dart';
+import 'package:chordmaster_free/domain/licks/lick_browse.dart';
 import 'package:chordmaster_free/domain/licks/licks.dart';
 import 'package:chordmaster_free/domain/practice/tab_playback.dart';
+import 'package:chordmaster_free/features/licks/lick_texts.dart';
 import 'package:chordmaster_free/features/licks/licks_viewmodel.dart';
 import 'package:chordmaster_free/services/audio_service.dart';
 import 'package:chordmaster_free/services/key_value_store.dart';
@@ -88,6 +91,25 @@ void main() {
         }
       });
 
+      testWidgets('filtros, velocidad y anterior / siguiente caben a lo ancho', (tester) async {
+        await open(tester, '/licks', code: code, size: const Size(360, 6000));
+        for (final k in ['licks-scale', 'licks-root', 'licks-technique']) {
+          expect(tester.getRect(find.byKey(Key(k))).right, lessThanOrEqualTo(360), reason: k);
+        }
+        // La frase del medio de su estilo tiene las dos vecinas.
+        final mine = [for (final l in licks) if (l.style == LickStyle.punk) l];
+        appRouter.go('/licks/${mine[1].id}');
+        await settle(tester);
+        expect(tester.takeException(), isNull);
+        for (final k in ['lick-speed-50', 'lick-speed-100', 'lick-previous', 'lick-next']) {
+          final f = find.byKey(Key(k));
+          await tester.ensureVisible(f);
+          await tester.pump();
+          expect(tester.getRect(f).right, lessThanOrEqualTo(360), reason: k);
+          expect(tester.getRect(f).left, greaterThanOrEqualTo(0), reason: k);
+        }
+      });
+
       testWidgets('el detalle cabe: tablatura, marcas y botones', (tester) async {
         await open(tester, '/licks', code: code);
         for (final l in licks) {
@@ -151,6 +173,55 @@ void main() {
     expect(audio.played.single, tabSounds(lick.tab, bpm: lick.bpm));
     await tester.tap(play);
     await tester.pump();
+  });
+
+  testWidgets('el menú de técnica deja solo las frases que la usan', (tester) async {
+    await open(tester, '/licks', size: const Size(360, 6000));
+    await tester.tap(find.byKey(const Key('licks-technique')).last);
+    await tester.pumpAndSettle();
+    await tester.tap(find.text(techniqueLabel(TabTechnique.bend)).last);
+    await tester.pumpAndSettle();
+    for (final l in licks) {
+      final shown = l.techniques.contains(TabTechnique.bend);
+      expect(find.byKey(Key('lick-${l.id}')), shown ? findsOneWidget : findsNothing, reason: l.id);
+    }
+  });
+
+  testWidgets('▶ al 50 %: suena al tempo de la mitad y queda marcado', (tester) async {
+    final lick = licksById['stadium_lick']!;
+    final (audio, _) = await open(tester, '/licks/${lick.id}');
+    final half = find.byKey(const Key('lick-speed-50'));
+    await tester.ensureVisible(half);
+    await tester.pump();
+    await tester.tap(half);
+    await tester.pump();
+    expect(tester.widget<ChoiceChip>(half).selected, isTrue);
+    final play = find.byKey(const Key('tab-play'));
+    await tester.ensureVisible(play);
+    await tester.pump();
+    await tester.tap(play);
+    await tester.pump();
+    expect(audio.played.single, tabSounds(lick.tab, bpm: lickTempoAt(lick, 50)));
+    await tester.tap(play);
+    await tester.pump();
+  });
+
+  testWidgets('siguiente reemplaza la frase y atrás vuelve a la lista', (tester) async {
+    final first = licks.first;
+    final next = lickNeighbors(first).next!;
+    await open(tester, '/licks');
+    await tester.tap(find.byKey(Key('lick-${first.id}')));
+    await settle(tester);
+    expect(find.byKey(const Key('lick-previous')), findsNothing);
+    final button = find.byKey(const Key('lick-next'));
+    await tester.ensureVisible(button);
+    await tester.pump();
+    await tester.tap(button);
+    await settle(tester);
+    expect(location(), '/licks/${next.id}');
+    await tester.tap(find.byType(BackButton));
+    await settle(tester);
+    expect(location(), '/licks');
   });
 
   testWidgets('el récord guardado se muestra en la lista y en el detalle', (tester) async {

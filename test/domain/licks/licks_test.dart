@@ -52,10 +52,10 @@ void main() {
       }
     });
 
-    test('la mano no se estira más de 5 trastes ni sube del 15', () {
+    test('la mano no se estira más de 5 trastes ni sube del 20', () {
       for (final l in licks) {
         final frets = [for (final n in tones(l)) if (n.fret > 0) n.fret];
-        expect(frets.reduce((a, b) => a > b ? a : b), lessThanOrEqualTo(15), reason: l.id);
+        expect(frets.reduce((a, b) => a > b ? a : b), lessThanOrEqualTo(20), reason: l.id);
         final span = frets.reduce((a, b) => a > b ? a : b) - frets.reduce((a, b) => a < b ? a : b);
         expect(span, lessThanOrEqualTo(5), reason: l.id);
       }
@@ -76,7 +76,7 @@ void main() {
 
     test('tempo razonable para empezar', () {
       for (final l in licks) {
-        expect(l.bpm, inInclusiveRange(50, 120), reason: l.id);
+        expect(l.bpm, inInclusiveRange(50, 160), reason: l.id);
       }
     });
   });

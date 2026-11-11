@@ -3,17 +3,22 @@ import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:go_router/go_router.dart';
 
 import '../../core/constants/app_strings.dart';
+import '../../core/constants/scale_names.dart';
 import '../../domain/guides/guides.dart';
+import '../../domain/lessons/lesson.dart';
 import '../../domain/licks/lick.dart';
+import '../../domain/licks/lick_browse.dart';
 import '../../domain/licks/licks.dart';
+import '../../domain/theory/notes.dart';
 import '../../ui/section_routes.dart';
 import '../../ui/theme.dart';
 import 'lick_texts.dart';
 import 'licks_viewmodel.dart';
 
 /// La biblioteca de licks y riffs: una sección por estilo (nombre y cómo
-/// suena) con sus frases en lista, a todo lo ancho. Se filtra por nivel y
-/// por tipo; los estilos que quedan vacíos se ocultan.
+/// suena) con sus frases en lista, a todo lo ancho. Se filtra por nivel,
+/// tipo, escala, tónica y técnica ([LickFilter]); los estilos que quedan
+/// vacíos se ocultan.
 class LicksScreen extends ConsumerStatefulWidget {
   const LicksScreen({super.key});
 
@@ -22,8 +27,7 @@ class LicksScreen extends ConsumerStatefulWidget {
 }
 
 class _LicksScreenState extends ConsumerState<LicksScreen> {
-  GuideLevel? _level;
-  LickKind? _kind;
+  var _filter = const LickFilter();
 
   @override
   Widget build(BuildContext context) {
@@ -36,10 +40,7 @@ class _LicksScreenState extends ConsumerState<LicksScreen> {
           style,
           [
             for (final l in licks)
-              if (l.style == style &&
-                  (_level == null || l.level == _level) &&
-                  (_kind == null || l.kind == _kind))
-                l,
+              if (l.style == style && _filter.matches(l)) l,
           ],
         ),
     ].where((s) => s.$2.isNotEmpty).toList();
@@ -56,9 +57,9 @@ class _LicksScreenState extends ConsumerState<LicksScreen> {
             label: AppStrings.guidesLevel,
             values: GuideLevel.values,
             nameOf: (l) => guideLevelTitle(l).text,
-            selected: _level,
+            selected: _filter.level,
             keyOf: (l) => 'licks-level-${l?.name ?? 'all'}',
-            onChanged: (l) => setState(() => _level = l),
+            onChanged: (l) => setState(() => _filter = _filter.copyWith(level: () => l)),
           ),
           const SizedBox(height: 4),
           _Filters<LickKind>(
@@ -66,9 +67,40 @@ class _LicksScreenState extends ConsumerState<LicksScreen> {
             label: AppStrings.licksKind,
             values: LickKind.values,
             nameOf: lickKindLabel,
-            selected: _kind,
+            selected: _filter.kind,
             keyOf: (k) => 'licks-kind-${k?.name ?? 'all'}',
-            onChanged: (k) => setState(() => _kind = k),
+            onChanged: (k) => setState(() => _filter = _filter.copyWith(kind: () => k)),
+          ),
+          const SizedBox(height: 8),
+          Wrap(
+            spacing: 12,
+            runSpacing: 8,
+            children: [
+              _Menu<String>(
+                key: const Key('licks-scale'),
+                label: AppStrings.licksScale,
+                values: lickScaleIds,
+                nameOf: (id) => scaleDisplayName(id, const []),
+                selected: _filter.scaleId,
+                onChanged: (id) => setState(() => _filter = _filter.copyWith(scaleId: () => id)),
+              ),
+              _Menu<int>(
+                key: const Key('licks-root'),
+                label: AppStrings.licksTonic,
+                values: lickRoots,
+                nameOf: pitchClassName,
+                selected: _filter.root,
+                onChanged: (r) => setState(() => _filter = _filter.copyWith(root: () => r)),
+              ),
+              _Menu<TabTechnique>(
+                key: const Key('licks-technique'),
+                label: AppStrings.licksTechnique,
+                values: lickTechniques,
+                nameOf: techniqueLabel,
+                selected: _filter.technique,
+                onChanged: (t) => setState(() => _filter = _filter.copyWith(technique: () => t)),
+              ),
+            ],
           ),
           if (sections.isEmpty)
             Padding(
@@ -135,6 +167,41 @@ class _Filters<T> extends StatelessWidget {
           selected: selected == v,
           onSelected: (_) => onChanged(v),
         ),
+    ],
+  );
+}
+
+/// "Escala: Todas ▾": un menú con "Todas" (`null`) y cada valor.
+class _Menu<T> extends StatelessWidget {
+  const _Menu({
+    super.key,
+    required this.label,
+    required this.values,
+    required this.nameOf,
+    required this.selected,
+    required this.onChanged,
+  });
+
+  final String label;
+  final List<T> values;
+  final String Function(T) nameOf;
+  final T? selected;
+  final ValueChanged<T?> onChanged;
+
+  @override
+  Widget build(BuildContext context) => Row(
+    mainAxisSize: MainAxisSize.min,
+    children: [
+      Text(label, style: Theme.of(context).textTheme.labelLarge),
+      const SizedBox(width: 6),
+      DropdownButton<T?>(
+        value: selected,
+        onChanged: onChanged,
+        items: [
+          DropdownMenuItem<T?>(child: Text(AppStrings.licksAny)),
+          for (final v in values) DropdownMenuItem<T?>(value: v, child: Text(nameOf(v))),
+        ],
+      ),
     ],
   );
 }
