@@ -726,7 +726,7 @@ class AppStrings {
   );
   static String guideOpenWorkout(String scale) =>
       tr(es: 'Rutinas de $scale', en: '$scale workouts');
-  static String get hubEar => tr(es: 'Oído', en: 'Ear');
+  static String get hubEar => tr(es: 'Oído', en: 'Ear Training');
 
   // ── Quiz del diapasón ─────────────────────────────────────────────────────
   static String get hubFretboard => tr(es: 'Notas del mástil', en: 'Fretboard notes');

@@ -25,7 +25,7 @@ void main() {
   const spider = TechniqueTarget(TechniqueExercise.spider, 5);
 
   test('las claves se leen de vuelta', () {
-    for (final t in [ode, spider]) {
+    for (final t in [ode, spider, const LickTarget('folk_lick')]) {
       final back = RunTarget.fromKey(t.key)!;
       expect(back.key, t.key);
     }

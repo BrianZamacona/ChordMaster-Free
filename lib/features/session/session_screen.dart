@@ -6,6 +6,7 @@ import '../../core/constants/app_strings.dart';
 import '../../domain/courses/course.dart';
 import '../../domain/lessons/curriculum.dart';
 import '../../domain/lessons/lesson.dart';
+import '../../domain/licks/licks.dart';
 import '../../domain/practice/session_summary.dart';
 import '../../domain/practice/technique_exercises.dart';
 import '../../services/session_log.dart';
@@ -179,6 +180,13 @@ class _TargetTile extends ConsumerWidget {
         step?.title.text ?? unit.title.text,
         unit.title.text,
         step == null ? '/learn/lessons/unit/${unit.id}' : c.stepRoute(stepId),
+      );
+    case LickTarget(:final lickId):
+      final lick = licksById[lickId];
+      return (
+        lick?.title.text ?? lickId,
+        lick == null ? AppStrings.moduleLicks : lickStyleInfo(lick.style).title.text,
+        lick == null ? '/licks' : '/licks/$lickId',
       );
     case TechniqueTarget(:final exercise, :final startFret):
       return (
