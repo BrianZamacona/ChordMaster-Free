@@ -1469,6 +1469,12 @@ class AppStrings {
     es: 'Usa cuerdas al aire: suena en su tonalidad, no se transpone.',
     en: 'It uses open strings: it plays in its own key and is not transposed.',
   );
+  static String get licksRhythmPart => tr(es: 'Parte rítmica', en: 'Rhythm part');
+  static String get licksRhythmHint => tr(
+    es: 'Los acordes que suenan debajo de la frase; van escritos encima de la tablatura. Toca uno para ver su ficha.',
+    en: 'The chords that sound under the phrase; they are written above the tab. Tap one to open it.',
+  );
+  static String get licksRhythmPlay => tr(es: 'Escuchar los acordes', en: 'Hear the chords');
   static String get licksFavoriteAdd => tr(es: 'Marcar como favorita', en: 'Add to favorites');
   static String get licksFavoriteRemove => tr(es: 'Quitar de favoritas', en: 'Remove from favorites');
   static String get licksNoFavorites => tr(

@@ -347,6 +347,14 @@ List<StringSound> strumEvents(
   ];
 }
 
+/// Un golpe hacia abajo de cada forma en su pulso ([beat], desde el
+/// principio): como [strumEvents], pero con los golpes donde caigan.
+List<StringSound> strumStrokes(List<({ChordShape shape, double beat})> strokes, {required int bpm}) => [
+  for (final s in strokes)
+    for (final (j, m) in strokeMidi(s.shape, 'D').indexed)
+      StringSound(midi: m, at: s.beat * 60 / bpm + j * defaultStrumGap, seconds: strumRingSeconds(bpm)),
+];
+
 /// Cuánto suena cada cuerda de un golpe: hasta el siguiente pulso.
 double strumRingSeconds(int bpm) => 60 / bpm;
 

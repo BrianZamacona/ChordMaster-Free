@@ -19,6 +19,7 @@ import '../../services/session_log.dart';
 import '../../ui/section_routes.dart';
 import '../../ui/theme.dart';
 import '../lessons/tab_player.dart';
+import 'lick_rhythm_part.dart';
 import 'lick_texts.dart';
 import 'licks_viewmodel.dart';
 
@@ -99,6 +100,7 @@ class LickDetailScreen extends ConsumerWidget {
                   TabPlayer(
                     notes: notes,
                     bpm: bpm,
+                    chordLabels: lickChordLabels(lick, notes, scale.root),
                     swing: lick.swing,
                     onPlayed: (r) => _played(context, ref, lick, r),
                     onBpmChanged: (b) => vm.setTempo(lick.id, b),
@@ -127,6 +129,8 @@ class LickDetailScreen extends ConsumerWidget {
               ),
             ),
           ),
+          const SizedBox(height: 12),
+          LickRhythmPart(lick: lick, root: scale.root, bpm: bpm),
           const SizedBox(height: 12),
           Card(
             child: Padding(

@@ -379,6 +379,15 @@ cada nota pertenezca a la escala. No bajar la tolerancia de 0.
   cambia tablatura, sonido, micrófono, escala y texto. Los textos de las frases nombran notas
   relativas a la tónica (`{R}`, `{R+11}`; `Lick.aboutIn`, `aboutText`); un test exige que ninguna
   movible nombre una nota fija y que cada tónica ofrecida quede bien escrita y en su escala.
+  Acordes de fondo (decisión del usuario, inspirada en las apps de jazz): cada frase declara
+  `chords` (`LickChord`: semitonos desde la tónica, tipo de chords.json y duración en partes de
+  pulso, un compás si no se dice), así se transponen con ella. Van escritos encima de la
+  tablatura, en la nota en que entra cada uno (`TabPlayer.chordLabels`, `lickChordLabels`), y la
+  tarjeta "Parte rítmica" muestra su diagrama (tocarlo abre la ficha con `push`) y ▶ los rasguea:
+  un golpe al entrar cada acorde y en cada pulso (`Lick.chordStrokes`, `strumStrokes`). Test
+  (`lick_chords_test.dart`): duran lo que la tablatura, existen en chords.json en cada tónica
+  ofrecida, sus notas son de la escala, la primera nota de cada acorde es suya y, en los licks,
+  también las de una negra o más y la última. Los riffs de rock van sobre power chords.
   El mejor tempo limpio con el micrófono se guarda en `licks_best_bpm` (`{id: bpm}`) y
   cuenta como día de técnica (`ActivityLog`); "más lento" cambia el tempo solo en la sesión. Los
   ids son permanentes. Rutas `/licks/:id` y `/learn/licks/:id`.

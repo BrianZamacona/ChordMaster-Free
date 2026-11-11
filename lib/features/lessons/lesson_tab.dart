@@ -25,8 +25,9 @@ List<String> get tabStringNames => [
 /// púa (⊓ V) y PM. Un silencio es una barrita entre la 3ª y la 4ª cuerda. Si
 /// la tablatura trae ritmo propio ([tabHasRhythm]), debajo va el conteo
 /// ("1 e y a") y, con [showFingers], el dedo de cada nota ([tabFingers]) si la
-/// regla de un dedo por traste alcanza. Debajo se explican solo las marcas
-/// que aparecen.
+/// regla de un dedo por traste alcanza. Con [chordLabels], arriba de todo va
+/// el acorde que suena desde esa nota. Debajo se explican solo las marcas que
+/// aparecen.
 class LessonTabView extends StatelessWidget {
   const LessonTabView({
     super.key,
@@ -37,9 +38,14 @@ class LessonTabView extends StatelessWidget {
     this.played = 0,
     this.focusLine,
     this.showFingers = false,
+    this.chordLabels = const {},
   });
 
   final List<TabNote> notes;
+
+  /// El acorde que entra en cada nota (índice en [notes] → nombre), escrito
+  /// encima de ella.
+  final Map<int, String> chordLabels;
 
   /// Con swing, el conteo lleva ritmo aunque todas sean corcheas.
   final TabSwing swing;
@@ -74,6 +80,7 @@ class LessonTabView extends StatelessWidget {
       ),
       count: tabHasRhythm(notes, swing: swing),
       fingers: fingers != null,
+      chords: chordLabels.isNotEmpty,
     );
     final count = (
       e: AppStrings.tabCountE,
@@ -136,6 +143,10 @@ class LessonTabView extends StatelessWidget {
                             : highlight! - i * tabNotesPerLine,
                         playedFrom: playedFrom - i * tabNotesPerLine,
                         played: played - i * tabNotesPerLine,
+                        chords: {
+                          for (final MapEntry(:key, :value) in chordLabels.entries)
+                            if (tabLineOf(key) == i) key - i * tabNotesPerLine: value,
+                        },
                         fingers: fingers?.sublist(
                           i * tabNotesPerLine,
                           math.min((i + 1) * tabNotesPerLine, notes.length),
@@ -220,19 +231,29 @@ String _legend(TabMark m) => switch (m) {
 /// el conteo y los dedos. Todos los renglones de una tablatura, iguales.
 @immutable
 class _TabLayout {
-  const _TabLayout({required this.top, required this.count, required this.fingers});
+  const _TabLayout({
+    required this.top,
+    required this.count,
+    required this.fingers,
+    this.chords = false,
+  });
 
   final bool top;
   final bool count;
   final bool fingers;
+  final bool chords;
 
   static const lineGap = 14.0;
   static const margin = 8.0;
   static const topRow = 14.0;
   static const countRow = 14.0;
   static const fingerRow = 16.0;
+  static const chordRow = 16.0;
 
-  double get firstString => (top ? topRow : 0) + margin;
+  double get _chordHeight => chords ? chordRow : 0;
+  double get chordY => chordRow / 2;
+  double get topY => _chordHeight + topRow / 2 + 2;
+  double get firstString => _chordHeight + (top ? topRow : 0) + margin;
   double get lastString => firstString + lineGap * 5;
   double get countY => lastString + margin + countRow / 2;
   double get fingerY => lastString + (count ? countRow : 0) + fingerRow - 2;
@@ -242,10 +263,14 @@ class _TabLayout {
 
   @override
   bool operator ==(Object other) =>
-      other is _TabLayout && other.top == top && other.count == count && other.fingers == fingers;
+      other is _TabLayout &&
+      other.top == top &&
+      other.count == count &&
+      other.fingers == fingers &&
+      other.chords == chords;
 
   @override
-  int get hashCode => Object.hash(top, count, fingers);
+  int get hashCode => Object.hash(top, count, fingers, chords);
 }
 
 class _TabPainter extends CustomPainter {
@@ -260,6 +285,7 @@ class _TabPainter extends CustomPainter {
     this.playedFrom = 0,
     this.played = 0,
     this.fingers,
+    this.chords = const {},
   });
 
   static const labelWidth = 18.0;
@@ -287,6 +313,9 @@ class _TabPainter extends CustomPainter {
   /// Dedo de cada nota de este renglón (`null` = al aire), o sin fila.
   final List<int?>? fingers;
 
+  /// Acorde que entra en cada nota de este renglón (índice → nombre).
+  final Map<int, String> chords;
+
   double _y(int string) => layout.firstString + (string - 1) * _TabLayout.lineGap;
 
   double _cell(double width) => (width - labelWidth) / tabNotesPerLine;
@@ -306,6 +335,9 @@ class _TabPainter extends CustomPainter {
     }
     for (final g in triplets) {
       _tripletBracket(canvas, _x(g.first, size.width), _x(g.last, size.width));
+    }
+    for (final MapEntry(key: i, value: name) in chords.entries) {
+      _chordName(canvas, name, _x(i, size.width) - _cell(size.width) / 2, size.width);
     }
     for (final (i, n) in notes.indexed) {
       final x = _x(i, size.width);
@@ -397,7 +429,7 @@ class _TabPainter extends CustomPainter {
       };
       _text(canvas, letter, Offset(x - _cell(width) / 2, y - 7), color, 11, bold: true);
     }
-    const top = _TabLayout.topRow / 2 + 2;
+    final top = layout.topY;
     switch (n.technique) {
       case TabTechnique.bend:
         // Al lado del traste, sobre un hueco en la línea (como el número).
@@ -423,7 +455,7 @@ class _TabPainter extends CustomPainter {
   /// última nota con un "3" en medio (si la línea cruza un tresillo con púa,
   /// el número queda sobre la línea).
   void _tripletBracket(Canvas canvas, double from, double to) {
-    const y = _TabLayout.topRow / 2 + 2;
+    final y = layout.topY;
     final paint = Paint()
       ..color = palette.textSecondary
       ..strokeWidth = 1;
@@ -434,6 +466,20 @@ class _TabPainter extends CustomPainter {
     final mid = (from + to) / 2;
     canvas.drawRect(Rect.fromCenter(center: Offset(mid, y), width: 10, height: 10), Paint()..color = palette.surface);
     _text(canvas, '3', Offset(mid, y), palette.textSecondary, 10, bold: true);
+  }
+
+  /// El nombre del acorde desde el borde izquierdo de su nota (como en un
+  /// cancionero); si no cabe al final del renglón, se corre a la izquierda.
+  void _chordName(Canvas canvas, String name, double left, double width) {
+    final painter = TextPainter(
+      text: TextSpan(
+        text: name,
+        style: musicMono(fontSize: 12, fontWeight: FontWeight.w600, color: palette.textPrimary),
+      ),
+      textDirection: TextDirection.ltr,
+    )..layout();
+    final x = math.min(left + 2, width - painter.width);
+    painter.paint(canvas, Offset(x, layout.chordY - painter.height / 2));
   }
 
   /// ⊓ abajo y V arriba, dibujados (la fuente no los trae).
@@ -491,5 +537,6 @@ class _TabPainter extends CustomPainter {
       old.playedFrom != playedFrom ||
       old.played != played ||
       !listEquals(old.counts, counts) ||
-      !listEquals(old.fingers, fingers);
+      !listEquals(old.fingers, fingers) ||
+      !mapEquals(old.chords, chords);
 }

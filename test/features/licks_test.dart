@@ -1,3 +1,4 @@
+import 'dart:convert';
 import 'dart:io';
 
 import 'package:chordmaster_free/app.dart';
@@ -9,8 +10,11 @@ import 'package:chordmaster_free/domain/licks/lick.dart';
 import 'package:chordmaster_free/domain/licks/lick_browse.dart';
 import 'package:chordmaster_free/domain/licks/lick_transpose.dart';
 import 'package:chordmaster_free/domain/licks/licks.dart';
+import 'package:chordmaster_free/domain/open_chords/chord_shape.dart';
 import 'package:chordmaster_free/domain/practice/tab_playback.dart';
 import 'package:chordmaster_free/domain/theory/notes.dart';
+import 'package:chordmaster_free/features/lessons/lesson_tab.dart';
+import 'package:chordmaster_free/features/licks/lick_rhythm_part.dart';
 import 'package:chordmaster_free/features/licks/lick_texts.dart';
 import 'package:chordmaster_free/features/licks/licks_viewmodel.dart';
 import 'package:chordmaster_free/services/audio_service.dart';
@@ -37,10 +41,21 @@ void main() {
   TestWidgetsFlutterBinding.ensureInitialized();
   tearDown(() => CurrentLanguage.value = AppLanguage.es);
 
+  final chordByName = {
+    for (final c in (jsonDecode(File('assets/data/chords.json').readAsStringSync()) as List).cast<Map>())
+      c['displayName'] as String: c,
+  };
+
   Future<void> settle(WidgetTester tester) async {
     for (var i = 0; i < 5; i++) {
       await tester.pump(const Duration(milliseconds: 300));
     }
+  }
+
+  // chords.json se decodifica en otro isolate: hace falta tiempo real.
+  Future<void> loadChords(WidgetTester tester) async {
+    await tester.runAsync(() => Future<void>.delayed(const Duration(seconds: 2)));
+    await settle(tester);
   }
 
   String location() => switch (appRouter.routerDelegate.currentConfiguration.last) {
@@ -119,7 +134,8 @@ void main() {
       });
 
       testWidgets('el detalle cabe: tablatura, marcas y botones', (tester) async {
-        await open(tester, '/licks', code: code);
+        await open(tester, '/licks/${licks.first.id}', code: code);
+        await loadChords(tester);
         for (final l in licks) {
           appRouter.go('/licks/${l.id}');
           await settle(tester);
@@ -133,6 +149,13 @@ void main() {
             l.tab.any((n) => n.isChord) ? AppStrings.tabMicHintChords : AppStrings.tabMicHint,
             reason: l.id,
           );
+          // La parte rítmica: un diagrama por acorde distinto, dentro de la pantalla.
+          final names = {for (final c in l.chordsIn(l.scale.root)) chordByName[lickChordName(c.root, c.chord)]!['name']};
+          for (final n in names) {
+            final diagram = find.byKey(Key('lick-chord-$n'));
+            expect(diagram, findsOneWidget, reason: '${l.id} $n');
+            expect(tester.getRect(diagram).right, lessThanOrEqualTo(360), reason: '${l.id} $n');
+          }
         }
       });
     });
@@ -232,6 +255,63 @@ void main() {
     expect(audio.played.single, tabSounds(transposedLick(lick, next)!.tab, bpm: lick.bpm, swing: lick.swing));
     await tester.tap(play);
     await tester.pump();
+  });
+
+  test('el acorde de cada frase va encima de la nota en la que entra, con su nombre de chords.json', () {
+    for (final l in licks) {
+      for (final r in isMovable(l) ? transposableRoots(l) : [l.scale.root]) {
+        final tab = transposedLick(l, r)?.tab ?? l.tab;
+        final labels = lickChordLabels(l, tab, r);
+        expect(labels, hasLength(l.chords.length), reason: l.id);
+        for (final name in labels.values) {
+          expect(chordByName, contains(name), reason: '${l.id} en ${pitchClassName(r)}');
+        }
+      }
+    }
+    expect(lickChordLabels(licksById['jazz_lick']!, licksById['jazz_lick']!.tab, noteIndex('D')), {0: 'Dm7', 4: 'G7', 7: 'Cmaj7'});
+  });
+
+  testWidgets('la tablatura lleva los acordes encima y ▶ los rasguea al tempo de la frase', (tester) async {
+    final jazz = licksById['jazz_lick']!;
+    final (audio, _) = await open(tester, '/licks/${jazz.id}');
+    await loadChords(tester);
+    expect(tester.widget<LessonTabView>(find.byType(LessonTabView)).chordLabels, {0: 'Dm7', 4: 'G7', 7: 'Cmaj7'});
+    final play = find.byKey(const Key('lick-rhythm-play'));
+    await tester.ensureVisible(play);
+    await tester.pump();
+    await tester.tap(play);
+    await tester.pump();
+    ChordShape shape(String name) {
+      final c = chordByName[name]!;
+      return ChordShape(name: name, frets: (c['fretPositions'] as List).cast<int>(), fingers: (c['fingerPositions'] as List).cast<int>());
+    }
+
+    final shapes = [shape('Dm7'), shape('G7'), shape('Cmaj7')];
+    expect(
+      audio.played.single,
+      strumStrokes([for (final s in jazz.chordStrokes) (shape: shapes[s.chord], beat: s.beat)], bpm: jazz.bpm),
+    );
+  });
+
+  testWidgets('tocar un acorde abre su ficha y atrás vuelve a la frase; al transponer cambian', (tester) async {
+    final lick = licksById['minor_blues_lick']!;
+    await open(tester, '/licks/${lick.id}');
+    await loadChords(tester);
+    expect(find.byKey(Key('lick-chord-${chordByName['Am7']!['name']}')), findsOneWidget);
+    await tester.tap(find.byKey(const Key('lick-key-up')));
+    await tester.pump();
+    final root = pitchClassName(transposableRoots(lick)[(transposableRoots(lick).indexOf(lick.scale.root) + 1) % transposableRoots(lick).length]);
+    final name = chordByName['${root}m7']!['name'] as String;
+    final chord = find.byKey(Key('lick-chord-$name'));
+    expect(chord, findsOneWidget);
+    await tester.ensureVisible(chord);
+    await tester.pump();
+    await tester.tap(chord);
+    await settle(tester);
+    expect(location(), '/chords/${Uri.encodeComponent(name)}');
+    await tester.tap(find.byType(BackButton));
+    await settle(tester);
+    expect(location(), '/licks/${lick.id}');
   });
 
   testWidgets('una frase con cuerdas al aire no ofrece transponer y lo dice', (tester) async {
