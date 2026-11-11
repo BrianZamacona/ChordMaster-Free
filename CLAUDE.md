@@ -185,7 +185,7 @@ cada nota pertenezca a la escala. No bajar la tolerancia de 0.
 ## Lecciones
 - Currículo en `lib/domain/lessons/curriculum.dart` (fuente única): Fundamentos (dos cursos:
   Primeros pasos y Melodías, sin lecciones sueltas) y, al terminarlo, dos caminos: rítmica
-  (R1–R14, empieza por los cursos de Acordes abiertos 1, Rasgueo 1 y Acordes abiertos 2; su rasgueo de corcheas, pop y G–D–Em–C vive en el curso, no en lecciones) y líder (L1–L18), cada uno en
+  (R1–R14, empieza por los cursos de Acordes abiertos 1, Rasgueo 1 y Acordes abiertos 2; su rasgueo de corcheas, pop y G–D–Em–C vive en el curso, no en lecciones) y líder (L1–L21), cada uno en
   dos niveles
   (`LessonUnit.level`; Fundamentos solo tiene el 1). Las lecciones se agrupan en unidades
   (`LessonUnit`, nodos del mapa, con un `summary` que la pantalla de la unidad muestra como
@@ -193,8 +193,10 @@ cada nota pertenezca a la escala. No bajar la tolerancia de 0.
   `scales_master.json`.
 - Nivel 2 (decisión del usuario, inspirado en roadmaps tipo "Part 1/2"): rítmica = Acordes
   abiertos 2 (D/Dm, séptimas, maj7/m7), Rasgueo 2 (3/4, 6/8 y acento en 2 y 4) y Riffs (power
-  chords y boogie); líder = Licks, Mayor y menor (escala mayor, relativa menor, círculo) y
-  Double stops (terceras y sextas). Nada de riffs ni melodías con derechos de autor.
+  chords y boogie); líder = Licks, Mayor y menor (escala mayor, relativa menor, círculo),
+  Círculo de quintas (cómo se arma, dominantes secundarias y el quiz; cada lección abre su
+  pantalla con `LessonTool.circleBuild/circleHarmony/circleQuiz`) y Double stops (terceras y
+  sextas). Nada de riffs ni melodías con derechos de autor.
 - Fundamentos (decisión del usuario, inspirado en "Basic Skills" y "Melodies"): conocer el
   instrumento y moverse con ganas de seguir, no acordes. Am, A y E van en el curso Acordes
   abiertos – Parte 2 (las lecciones f3–f5 y su unidad "Más acordes abiertos" se borraron al
@@ -233,6 +235,11 @@ cada nota pertenezca a la escala. No bajar la tolerancia de 0.
   traste 12; el del nivel 2 pide más (ritmo 85 → 95 %, Oído 5 → 10). Se superan solos con el
   récord de un módulo de práctica (precisión del juego de ritmo, mejor racha de Oído en
   `ear_training_best_streak`); no se marcan a mano.
+- Reto de unidad (decisión del usuario): `LessonChallenge.unit` lo ata a una unidad que no cierra
+  su nivel; va justo debajo de ella en el mapa y al final de su pantalla (`unitChallengeOf`,
+  `UnitSummary.challenge`). `challengesOf` solo da los de nivel, así la regla "un reto por nivel"
+  sigue igual. El único: "el círculo de memoria" (racha de 10 en el quiz del círculo,
+  `circle_quiz_best_streak`, `ChallengeKind.circleStreak`).
 - Pantalla de unidad (`lesson_unit_screen.dart`, datos de `unit_summary.dart`): encabezado con
   "camino · Unidad n de m", lecciones en una línea vertical con lo que practica cada una (acordes,
   escala, rasgueo, tablatura, herramienta), el reto si la unidad cierra su nivel, resultados
@@ -626,6 +633,3 @@ Objetivo: código legible y mantenible antes que ingenioso. Capas (puertos y ada
    `config.build_settings['GCC_PREPROCESSOR_DEFINITIONS'] ||= ['$(inherited)', 'PERMISSION_MICROPHONE=1', 'PERMISSION_NOTIFICATIONS=1']`;
    sin eso el micrófono queda siempre denegado. `Info.plist` ya trae
    `NSMicrophoneUsageDescription`.
-6. Círculo de quintas, fase 3:
-   - Unidad "Círculo de quintas" en Lecciones (según las reglas de esa sección), con un reto que
-     se supere con el récord del quiz.

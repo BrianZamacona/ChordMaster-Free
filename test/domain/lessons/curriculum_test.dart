@@ -5,6 +5,7 @@ import 'package:chordmaster_free/core/i18n/tr.dart';
 import 'package:chordmaster_free/domain/lessons/curriculum.dart';
 import 'package:chordmaster_free/domain/lessons/lesson.dart';
 import 'package:chordmaster_free/domain/practice/tab_notation.dart';
+import 'package:chordmaster_free/domain/theory/circle_harmony.dart';
 import 'package:chordmaster_free/domain/theory/circle_of_fifths.dart';
 import 'package:chordmaster_free/domain/theory/double_stops.dart';
 import 'package:chordmaster_free/domain/theory/notes.dart';
@@ -60,14 +61,14 @@ void main() {
         expect(u.title.en, isNot(matches(plain)), reason: u.id);
       }
     });
-    test('Fundamentos son dos cursos; rítmica con 14 lecciones y líder con 18', () {
+    test('Fundamentos son dos cursos; rítmica con 14 lecciones y líder con 21', () {
       expect(lessonsOf(LessonTrack.foundations), isEmpty);
       expect(
         [for (final u in unitsOf(LessonTrack.foundations)) u.course],
         [LessonCourse.basics, LessonCourse.melodies],
       );
       expect(lessonsOf(LessonTrack.rhythm), hasLength(14));
-      expect(lessonsOf(LessonTrack.lead), hasLength(18));
+      expect(lessonsOf(LessonTrack.lead), hasLength(21));
     });
 
     test('niveles: Fundamentos solo el 1; cada camino, el 1 y el 2 en orden', () {
@@ -226,6 +227,9 @@ void main() {
           LessonTool.progressions,
           LessonTool.doubleStops,
           LessonTool.circle,
+          LessonTool.circleBuild,
+          LessonTool.circleHarmony,
+          LessonTool.circleQuiz,
         ]),
       );
     });
@@ -550,6 +554,78 @@ void main() {
       expect(keySignatureAt(1).accidental, Accidental.sharp);
       expect(addedAccidentalAt(1)!.pitchClass, noteIndex('F#'));
       expect(commonNoteCount(noteIndex('C'), noteIndex('G')), 6);
+    });
+
+    test('círculo: cada quinta cambia una nota (F → F#, C → C#) y A tiene 3 ♯', () {
+      final steps = circleConstruction();
+      expect(steps[1].tonic, noteIndex('G'));
+      expect((steps[1].raisedFrom, steps[1].raisedTo), (noteIndex('F'), noteIndex('F#')));
+      expect(steps[2].tonic, noteIndex('D'));
+      expect((steps[2].raisedFrom, steps[2].raisedTo), (noteIndex('C'), noteIndex('C#')));
+      for (final s in steps.skip(1).take(circleLength - 1)) {
+        // 7 semitonos, la 4ª anterior sube a la 7ª nueva y solo cambia esa nota.
+        expect((s.tonic - s.previousTonic!) % 12, perfectFifth);
+        expect((s.raisedFrom! - s.previousTonic!) % 12, 5);
+        expect((s.raisedTo! - s.tonic) % 12, 11);
+        expect(s.scale.toSet().difference(s.previousScale!.toSet()), {s.raisedTo});
+      }
+      final a = circleIndexOf(noteIndex('A'));
+      expect(a, 3);
+      expect(keySignatureAt(a).count, 3);
+      expect(keySignatureAt(a).accidental, Accidental.sharp);
+      expect(
+        [for (final s in steps.sublist(1, a + 1)) pitchClassName(s.raisedTo!)],
+        ['F#', 'C#', 'G#'],
+      );
+    });
+
+    test('dominantes secundarias: en C, E7 → Am y A7 → Dm; la cadena E7 A7 D7 G7 C', () {
+      final c = noteIndex('C');
+      final byTarget = {
+        for (final s in secondaryDominants(c)) pitchClassName(s.target.root): s.dominant,
+      };
+      expect(pitchClassName(byTarget['A']!.root), 'E');
+      expect(pitchClassName(byTarget['D']!.root), 'A');
+      expect(byTarget['A']!.type, 'dominant7');
+      // El vecino de la derecha.
+      expect(circleIndexOf(noteIndex('E')), (circleIndexOf(noteIndex('A')) + 1) % circleLength);
+      final chain = dominantChain(c);
+      expect([for (final x in chain) pitchClassName(x.root)], ['E', 'A', 'D', 'G', 'C']);
+      for (var i = 0; i + 1 < chain.length; i++) {
+        expect(dominantOf(chain[i + 1].root), chain[i].root);
+      }
+      expect(lessonsById['l_secondary_dominants']!.chords, ['E7', 'Am', 'A7', 'Dm']);
+    });
+
+    test('el quiz: el V de E es B y A tiene 3 ♯', () {
+      expect(pitchClassName(dominantOf(noteIndex('E'))), 'B');
+      expect(keySignatureAt(circleIndexOf(noteIndex('A'))).short, '3 ♯');
+    });
+
+    test('reto de unidad: el del círculo va detrás de su unidad y no cierra el nivel', () {
+      final unitChallenges = [for (final c in challenges) if (c.unit != null) c];
+      expect(unitChallenges, isNotEmpty);
+      for (final c in unitChallenges) {
+        final unit = c.unit!;
+        expect(lessonUnits, contains(unit), reason: c.id);
+        expect((unit.track, unit.level), (c.track, c.level), reason: c.id);
+        expect(unitChallengeOf(unit), c);
+        // No es la última de su nivel: esa termina en el reto del nivel.
+        expect(unitsOf(unit.track, level: unit.level).last, isNot(unit), reason: c.id);
+        expect(challengesOf(c.track), isNot(contains(c)));
+      }
+      final circle = unitsById['l_circle_of_fifths']!;
+      final challenge = unitChallengeOf(circle)!;
+      expect(challenge.kind, ChallengeKind.circleStreak);
+      expect(challenge.goal, 10);
+      expect(lessonsOfUnit(circle).map((l) => l.tool), [
+        LessonTool.circleBuild,
+        LessonTool.circleHarmony,
+        LessonTool.circleQuiz,
+      ]);
+      // Líder, nivel 2, justo después de "Mayor y menor".
+      final row = unitsOf(LessonTrack.lead, level: 2);
+      expect(row[row.indexOf(circle) - 1].id, 'l_major_minor');
     });
 
     Map<int, int> distanceByDegree(DiatonicDoubleStopInterval interval) => {

@@ -43,7 +43,7 @@ class LessonUnitScreen extends ConsumerWidget {
     final summary = UnitSummary(unit, completed: path.completed);
     final lessons = summary.lessons;
     final next = path.nextLesson;
-    final challenge = summary.closingChallenge;
+    final challenge = summary.challenge;
     final nextUnit = summary.nextUnit;
     final text = Theme.of(context).textTheme;
 
@@ -342,6 +342,9 @@ class _LessonStep extends StatelessWidget {
         LessonTool.progressions => (Icons.queue_music, AppStrings.hubProgressions),
         LessonTool.doubleStops => (Icons.straighten, AppStrings.dsTitle),
         LessonTool.circle => (Icons.donut_large, AppStrings.circleTitle),
+        LessonTool.circleBuild => (Icons.donut_large, AppStrings.circleBuildTitle),
+        LessonTool.circleHarmony => (Icons.donut_large, AppStrings.circleHarmonyTitle),
+        LessonTool.circleQuiz => (Icons.quiz_outlined, AppStrings.circleQuizTitle),
       };
 }
 
@@ -444,7 +447,8 @@ class _ChallengeStep extends ConsumerWidget {
                     crossAxisAlignment: CrossAxisAlignment.start,
                     children: [
                       Text(
-                        AppStrings.unitChallenge,
+                        challenge.unit == null ? AppStrings.unitChallenge : AppStrings.unitOwnChallenge,
+                        key: const Key('unit-challenge-label'),
                         style: text.labelMedium?.copyWith(color: inlay),
                       ),
                       Text(challenge.title.text, style: text.titleSmall),
@@ -626,7 +630,7 @@ class _CourseUnitScreen extends ConsumerWidget {
     final summary = UnitSummary(unit, completed: path.completed);
     final (done, total) = watchUnitProgress(ref, unit);
     final progress = ref.watch(courseProgressProvider(course.progressId));
-    final challenge = summary.closingChallenge;
+    final challenge = summary.challenge;
     final nextUnit = summary.nextUnit;
     final text = Theme.of(context).textTheme;
     return Scaffold(

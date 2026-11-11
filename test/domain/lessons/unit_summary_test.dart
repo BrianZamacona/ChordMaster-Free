@@ -58,6 +58,17 @@ void main() {
     }
   });
 
+  test('la unidad con reto propio lo muestra; las demás, solo el de cierre', () {
+    for (final unit in unitsById.values) {
+      final s = UnitSummary(unit);
+      expect(s.unitChallenge, unitChallengeOf(unit), reason: unit.id);
+      expect(s.challenge, s.unitChallenge ?? s.closingChallenge, reason: unit.id);
+    }
+    final circle = UnitSummary(unitsById['l_circle_of_fifths']!);
+    expect(circle.closingChallenge, isNull);
+    expect(circle.challenge?.id, 'lu_circle_streak');
+  });
+
   test('la siguiente unidad sigue el camino y pasa de nivel', () {
     for (final track in LessonTrack.values) {
       final all = unitsOf(track);

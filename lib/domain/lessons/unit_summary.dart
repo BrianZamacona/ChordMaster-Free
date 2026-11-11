@@ -57,6 +57,13 @@ class UnitSummary {
     return challengesOf(unit.track, level: unit.level).firstOrNull;
   }
 
+  /// El reto propio de la unidad (no cierra el nivel), si tiene.
+  LessonChallenge? get unitChallenge => unitChallengeOf(unit);
+
+  /// El reto que la pantalla de la unidad muestra al final: el suyo o, en la
+  /// última de su nivel, el del nivel.
+  LessonChallenge? get challenge => unitChallenge ?? closingChallenge;
+
   /// La unidad que sigue en el mismo camino (pasando de nivel). Null al final
   /// del camino: lo que sigue a Fundamentos lo elige el usuario en el mapa.
   LessonUnit? get nextUnit {

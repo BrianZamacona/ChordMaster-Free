@@ -4,8 +4,18 @@ import '../../core/i18n/tr.dart';
 /// la ruta se divide en rítmica y líder.
 enum LessonTrack { foundations, rhythm, lead }
 
-/// Herramienta o módulo de la app que una lección pide abrir.
-enum LessonTool { tuner, metronome, progressions, doubleStops, circle }
+/// Herramienta o módulo de la app que una lección pide abrir. Las del
+/// círculo: la rueda, "¿Cómo se arma?", "Más allá de la tonalidad" y el quiz.
+enum LessonTool {
+  tuner,
+  metronome,
+  progressions,
+  doubleStops,
+  circle,
+  circleBuild,
+  circleHarmony,
+  circleQuiz,
+}
 
 /// Partes de pulso (negra) de [TabNote.length]: 12 deja escribir
 /// semicorcheas, corcheas y también tresillos.
@@ -193,10 +203,14 @@ enum ChallengeKind {
 
   /// Mejor racha de intervalos acertados seguidos en Oído.
   earStreak,
+
+  /// Mejor racha de respuestas seguidas en el quiz del círculo de quintas.
+  circleStreak,
 }
 
-/// Reto al final de un nivel de un camino. Se supera solo, cuando el récord del módulo
-/// de práctica llega a [goal]; no se marca a mano.
+/// Reto al final de un nivel de un camino o, con [unit], de una sola unidad. Se
+/// supera solo, cuando el récord del módulo de práctica llega a [goal]; no se
+/// marca a mano.
 class LessonChallenge {
   const LessonChallenge({
     required this.id,
@@ -206,6 +220,7 @@ class LessonChallenge {
     required this.kind,
     required this.goal,
     this.level = 1,
+    this.unit,
   });
 
   final String id;
@@ -217,6 +232,10 @@ class LessonChallenge {
 
   /// El reto cierra este nivel del camino.
   final int level;
+
+  /// Reto de unidad: va detrás de esa unidad y no cierra el nivel (el de
+  /// cada nivel sigue siendo uno). `null` = reto de nivel.
+  final LessonUnit? unit;
 
   bool isPassed(int best) => best >= goal;
 }

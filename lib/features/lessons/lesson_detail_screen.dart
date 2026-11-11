@@ -163,6 +163,24 @@ class _ToolButton extends ConsumerWidget {
           '/learn/circle',
           true,
         ),
+      LessonTool.circleBuild => (
+          Icons.donut_large,
+          AppStrings.lessonOpenCircleBuild,
+          '/learn/circle/build',
+          true,
+        ),
+      LessonTool.circleHarmony => (
+          Icons.donut_large,
+          AppStrings.lessonOpenCircleHarmony,
+          '/learn/circle/harmony',
+          true,
+        ),
+      LessonTool.circleQuiz => (
+          Icons.quiz_outlined,
+          AppStrings.lessonOpenCircleQuiz,
+          '/learn/circle/quiz',
+          true,
+        ),
     };
     return OutlinedButton.icon(
       key: const Key('lesson-open-tool'),
