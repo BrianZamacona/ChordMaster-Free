@@ -17,6 +17,26 @@ const tabNoteRingSeconds = 1.2;
 /// MIDI de una nota de tablatura (cuerda 1 = mi aguda).
 int tabMidi(TabNote note) => standardOpenStringMidi[note.string - 1] + note.fret;
 
+/// Cuántas veces cabe el periodo de la nota más grave de [note] en el periodo
+/// de todo el acorde: con la quinta (3:2) el acorde se repite cada dos periodos
+/// de la raíz, con la cuarta (4:3) cada tres; con octavas o una nota sola, 1.
+/// El micrófono busca la nota esperada con ese periodo: la quinta borra el de
+/// la raíz sola.
+int tabChordPeriodDivisor(TabNote note) {
+  var divisor = 1;
+  for (final t in note.tones.skip(1)) {
+    final d = switch ((tabMidi(t) - tabMidi(note)) % 12) {
+      perfectFifthSemitones => 2,
+      perfectFourthSemitones => 3,
+      _ => 1,
+    };
+    if (divisor % d != 0) divisor *= d;
+  }
+  return divisor;
+}
+
+const perfectFifthSemitones = 7, perfectFourthSemitones = 5;
+
 /// Notas por renglón: la pantalla dibuja la tablatura de a tantas notas (a 360
 /// dp caben sin apretarse) y cada renglón se puede practicar suelto.
 const tabNotesPerLine = 8;
@@ -41,8 +61,10 @@ const handSpanFrets = 4;
 /// cuerda al aire), por la regla de un dedo por traste: si todo lo pisado cabe
 /// en los trastes 1 a 4, el dedo es el traste (primera posición); si no, el
 /// índice va en el traste más bajo. `null` si lo pisado no cabe en
-/// [handSpanFrets] trastes (la mano se mueve y la regla no alcanza).
+/// [handSpanFrets] trastes (la mano se mueve y la regla no alcanza) o si hay
+/// acordes (un número por columna no dice qué dedo va en cada cuerda).
 List<int?>? tabFingers(List<TabNote> notes) {
+  if (notes.any((n) => n.isChord)) return null;
   final fretted = [for (final n in notes) if (!n.isRest && n.fret > 0) n.fret];
   if (fretted.isEmpty) return [for (final _ in notes) null];
   final low = fretted.reduce((a, b) => a < b ? a : b);
@@ -124,6 +146,10 @@ const bendSeconds = 0.14;
 /// Cuándo empieza el vibrato tras la púa.
 const vibratoDelaySeconds = 0.12;
 
+/// Un acorde se rasguea: cada cuerda suena tanto después de la anterior (de
+/// grave a aguda hacia abajo; al revés con la púa hacia arriba).
+const chordStrumSeconds = 0.012;
+
 /// Lo que suena de [notes]: una cuerda por cada nota pulsada. Una nota que se
 /// liga ([TabTechnique.legato]) no se vuelve a pulsar: cambia la altura de la
 /// cuerda que ya suena. Volver a pulsar una cuerda apaga lo que sonaba en ella;
@@ -156,6 +182,23 @@ List<StringSound> tabSounds(
       };
       open.glides.add(glide);
       open.lastEvent = t;
+      continue;
+    }
+    if (n.isChord) {
+      // Grave a aguda (la principal es la más grave); arriba, al revés.
+      final tones = [...n.tones]..sort((a, b) => tabMidi(a).compareTo(tabMidi(b)));
+      final order = n.pick == PickStroke.up ? tones.reversed.toList() : tones;
+      for (final (k, tone) in order.indexed) {
+        final at = t + k * chordStrumSeconds;
+        ringing[tone.string]?.cutAt = at;
+        final voice = _Voice(
+          at: at,
+          midi: tabMidi(tone),
+          touch: n.technique == TabTechnique.palmMute ? StringTouch.palmMute : StringTouch.open,
+        );
+        voices.add(voice);
+        ringing[tone.string] = voice;
+      }
       continue;
     }
     // Pulsar otra vez la cuerda apaga lo que sonaba en ella.
@@ -227,9 +270,9 @@ double tabDurationSeconds(
   final onsets = tabOnsetSeconds(notes, bpm: bpm, swing: swing);
   var end = tabEndSeconds(notes, bpm: bpm, swing: swing);
   for (final (i, n) in notes.indexed) {
-    if (!n.isRest && onsets[i] + tabNoteRingSeconds > end) {
-      end = onsets[i] + tabNoteRingSeconds;
-    }
+    // Un acorde rasgueado termina un poco después: su última cuerda llega tarde.
+    final last = onsets[i] + n.chord.length * chordStrumSeconds + tabNoteRingSeconds;
+    if (!n.isRest && last > end) end = last;
   }
   return end;
 }

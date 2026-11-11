@@ -81,6 +81,7 @@ class TabNote {
     this.technique = TabTechnique.none,
     this.bend = 0,
     this.pick,
+    this.chord = const [],
   });
 
   const TabNote.rest(this.length)
@@ -88,7 +89,8 @@ class TabNote {
         fret = 0,
         technique = TabTechnique.none,
         bend = 0,
-        pick = null;
+        pick = null,
+        chord = const [];
 
   final int string;
   final int fret;
@@ -99,7 +101,24 @@ class TabNote {
   final int bend;
   final PickStroke? pick;
 
+  /// Notas que suenan junto con esta, (cuerda, traste): un power chord de 2 o
+  /// 3 notas. Van en cuerdas más agudas y suenan más alto, así que la nota
+  /// principal ([string], [fret]) es la más grave: la que espera el micrófono.
+  /// Se tocan de un golpe, con la técnica y la púa de la principal.
+  final List<(int, int)> chord;
+
   bool get isRest => string == 0;
+
+  /// Lleva más de una nota a la vez.
+  bool get isChord => chord.isNotEmpty;
+
+  /// Todas las notas que suenan, la principal primero, cada una como nota
+  /// suelta (con la duración, la técnica y la púa de esta).
+  List<TabNote> get tones => [
+    if (!isRest) this,
+    for (final (s, f) in chord)
+      TabNote(s, f, length: length, technique: technique, pick: pick),
+  ];
 
   @override
   bool operator ==(Object other) =>
@@ -109,17 +128,28 @@ class TabNote {
       other.length == length &&
       other.technique == technique &&
       other.bend == bend &&
-      other.pick == pick;
+      other.pick == pick &&
+      _sameChord(other.chord, chord);
+
+  static bool _sameChord(List<(int, int)> a, List<(int, int)> b) {
+    if (a.length != b.length) return false;
+    for (var i = 0; i < a.length; i++) {
+      if (a[i] != b[i]) return false;
+    }
+    return true;
+  }
 
   @override
-  int get hashCode => Object.hash(string, fret, length, technique, bend, pick);
+  int get hashCode =>
+      Object.hash(string, fret, length, technique, bend, pick, Object.hashAll(chord));
 
   @override
   String toString() => isRest
       ? 'TabNote.rest($length)'
       : 'TabNote($string, $fret${length == tabEighth ? '' : ', length: $length'}'
           '${technique == TabTechnique.none ? '' : ', $technique'}'
-          '${bend == 0 ? '' : ', bend: $bend'}${pick == null ? '' : ', $pick'})';
+          '${bend == 0 ? '' : ', bend: $bend'}${pick == null ? '' : ', $pick'}'
+          '${chord.isEmpty ? '' : ', chord: $chord'})';
 }
 
 /// Swing: el contratiempo llega tarde, a dos tercios del pulso (corcheas) o

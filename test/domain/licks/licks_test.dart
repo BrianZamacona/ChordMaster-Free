@@ -18,6 +18,8 @@ void main() {
   };
   Set<int> pitchClasses(LessonScale s) => {for (final i in intervals[s.scaleId]!) (s.root + i) % 12};
   List<TabNote> played(Lick l) => [for (final n in l.tab) if (!n.isRest) n];
+  // Cada nota que suena, también las de un acorde.
+  List<TabNote> tones(Lick l) => [for (final n in played(l)) ...n.tones];
   Lick lick(String id) => licksById[id]!;
   String pitchName(TabNote n) => pitchClassName(tabMidi(n));
 
@@ -36,7 +38,7 @@ void main() {
       for (final l in licks) {
         expect(intervals, contains(l.scale.scaleId), reason: l.id);
         final allowed = pitchClasses(l.scale);
-        for (final n in played(l)) {
+        for (final n in tones(l)) {
           expect(allowed, contains(tabMidi(n) % 12), reason: '${l.id} $n');
           expect(allowed, contains((tabMidi(n) + n.bend) % 12), reason: '${l.id} $n');
         }
@@ -52,7 +54,7 @@ void main() {
 
     test('la mano no se estira más de 5 trastes ni sube del 15', () {
       for (final l in licks) {
-        final frets = [for (final n in played(l)) if (n.fret > 0) n.fret];
+        final frets = [for (final n in tones(l)) if (n.fret > 0) n.fret];
         expect(frets.reduce((a, b) => a > b ? a : b), lessThanOrEqualTo(15), reason: l.id);
         final span = frets.reduce((a, b) => a > b ? a : b) - frets.reduce((a, b) => a < b ? a : b);
         expect(span, lessThanOrEqualTo(5), reason: l.id);
@@ -255,6 +257,21 @@ void main() {
       final l = played(lick('punk_lick'));
       expect({for (final n in l) tabMidi(n) % 12}, hasLength(4));
       expect(l.every((n) => n.pick == PickStroke.down), isTrue);
+    });
+
+    test('punk, power chords: E5 A5 B5 de raíz, quinta y octava, todo abajo; solo E5 con palma', () {
+      final riff = played(lick('punk_power_riff'));
+      expect(riff.every((n) => n.isChord && n.length == tabEighth && n.pick == PickStroke.down), isTrue);
+      for (final n in riff) {
+        // Tres notas: raíz (la más grave), quinta y octava.
+        expect([for (final t in n.tones) tabMidi(t) - tabMidi(n)], [0, 7, 12], reason: '$n');
+        final name = pitchName(n);
+        expect(name, isIn(['E', 'A', 'B']));
+        expect(n.technique, name == 'E' ? TabTechnique.palmMute : TabTechnique.none, reason: '$n');
+      }
+      expect({for (final n in riff) pitchName(n)}, {'E', 'A', 'B'});
+      // La guía del punk sigue con su primer riff, de una nota a la vez.
+      expect(licks.firstWhere((l) => l.style == LickStyle.punk).id, 'punk_riff');
     });
 
     test('country: sube de G a C con un hammer-on; bend de un tono en la 3ª y pull-offs al aire hasta G', () {

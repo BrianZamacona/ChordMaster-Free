@@ -135,6 +135,7 @@ void main() {
         TabNote(2, 5, technique: TabTechnique.slide),
         TabNote(6, 0, technique: TabTechnique.palmMute),
         TabNote(6, 0, technique: TabTechnique.dead),
+        TabNote(6, 0, chord: [(5, 2)]),
         TabNote.rest(tabEighth),
         TabNote(1, 5, technique: TabTechnique.vibrato, length: tabQuarter),
       ];
@@ -277,6 +278,94 @@ void main() {
       }
       expect(f.result.bpm, closeTo(60, 1e-9));
       expect(f.result.paused, isFalse);
+    });
+  });
+
+  group('acordes (power chords)', () {
+    const e5 = TabNote(6, 0, pick: PickStroke.down, chord: [(5, 2), (4, 2)]);
+
+    test('bien escrito: 2 o 3 notas, cada una en su cuerda y más aguda que la principal', () {
+      expect(tabNotationProblems(const [e5]), isEmpty);
+      expect(tabNotationProblems(const [TabNote(5, 3, chord: [(4, 5)], technique: TabTechnique.palmMute)]), isEmpty);
+      // Misma cuerda dos veces, nota más grave que la principal, cuatro notas.
+      expect(tabNotationProblems(const [TabNote(5, 3, chord: [(5, 5)])]), isNotEmpty);
+      expect(tabNotationProblems(const [TabNote(5, 7, chord: [(6, 0)])]), isNotEmpty);
+      expect(tabNotationProblems(const [TabNote(5, 7, chord: [(4, 0)])]), isNotEmpty);
+      expect(tabNotationProblems(const [TabNote(6, 0, chord: [(5, 2), (4, 2), (3, 1)])]), isNotEmpty);
+      // Un acorde no se empuja ni se liga.
+      expect(tabNotationProblems(const [TabNote(6, 3, technique: TabTechnique.bend, bend: 1, chord: [(5, 5)])]), isNotEmpty);
+      expect(tabNotationProblems(const [e5, TabNote(6, 2, technique: TabTechnique.hammerOn)]), isNotEmpty);
+      expect(tabMarksIn(const [e5]), contains(TabMark.chord));
+    });
+
+    test('suena de un golpe: cada cuerda un poco después, de grave a aguda; arriba al revés', () {
+      final down = tabSounds(const [e5], bpm: 60);
+      expect([for (final s in down) s.midi], [40, 47, 52]);
+      expect([for (final s in down) s.at], [0, chordStrumSeconds, 2 * chordStrumSeconds]);
+      final up = tabSounds(const [TabNote(6, 0, pick: PickStroke.up, chord: [(5, 2), (4, 2)])], bpm: 60);
+      expect([for (final s in up) s.midi], [52, 47, 40]);
+      expect(up.first.at, 0);
+    });
+
+    test('con palma se apaga solo; el acorde siguiente apaga el anterior en sus cuerdas', () {
+      final pm = tabSounds(
+        const [TabNote(6, 0, technique: TabTechnique.palmMute, chord: [(5, 2)])],
+        bpm: 60,
+      );
+      expect(pm.every((s) => s.touch == StringTouch.palmMute), isTrue);
+      final two = tabSounds(const [e5, TabNote(5, 0, chord: [(4, 2), (3, 2)])], bpm: 60);
+      expect(two, hasLength(6));
+      // La 6ª sigue sonando; la 5ª y la 4ª se cortan al llegar el A5.
+      expect(two[0].seconds, tabNoteRingSeconds);
+      expect(two[1].at + two[1].seconds, closeTo(0.5, 1e-9));
+      expect(two[2].at + two[2].seconds, closeTo(0.5 + chordStrumSeconds, 1e-9));
+      expect(
+        tabDurationSeconds(const [e5], bpm: 60),
+        closeTo(2 * chordStrumSeconds + tabNoteRingSeconds, 1e-9),
+      );
+    });
+
+    test('el micrófono espera la nota más grave de cada acorde', () {
+      final follower = NoteFollower(const [e5, TabNote(5, 0, chord: [(4, 2), (3, 2)])]);
+      expect(follower.expected, [40, 45]);
+    });
+
+    test('sin fila de dedos: un número por columna no dice qué dedo va en cada cuerda', () {
+      expect(tabFingers(const [TabNote(5, 3, chord: [(4, 5)])]), isNull);
+    });
+
+    test('en el acorde sintetizado, el micrófono encuentra la raíz y no oye una vecina', () {
+      final audio = renderStrings(
+        tabSounds(const [TabNote(5, 0, length: tabHalf, chord: [(4, 2), (3, 2)])], bpm: 60),
+        seconds: 1.5,
+      );
+      final half = decimateByTwo(audio);
+      const rate = synthSampleRate ~/ 2;
+      for (final from in [0.2, 0.4, 0.6]) {
+        final start = (from * rate).round();
+        final window = Float64List.sublistView(half, start, start + 2048);
+        // Con el periodo del acorde (dos de la raíz, por la quinta): lo mismo
+        // que pide NoteOnsetDetector para dar por oída la nota esperada.
+        const chord = TabNote(5, 0, chord: [(4, 2), (3, 2)]);
+        expect(tabChordPeriodDivisor(chord), 2);
+        final fit = analyzeFrame(
+          window,
+          rate,
+          at: from,
+          hop: 1024,
+          expectedMidi: 45,
+          periodDivisor: tabChordPeriodDivisor(chord),
+        ).fit!;
+        expect(fit, lessThan(0.5), reason: '$from');
+        // Con el periodo de la raíz sola no se encuentra: la quinta lo borra.
+        expect(periodicityAt(window, rate, midiToHz(45)), greaterThan(0.5), reason: '$from');
+        final hz = detectPitchHz(window, rate);
+        if (hz != null) {
+          final midi = 69 + 12 * math.log(hz / 440) / math.ln2;
+          final off = ((midi - 45).round() % 12 + 12) % 12;
+          expect(off, isNot(isIn([1, 2, 10, 11])), reason: '$from: $hz Hz');
+        }
+      }
     });
   });
 }

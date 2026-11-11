@@ -6,6 +6,7 @@ import 'package:chordmaster_free/domain/audio/pitch_detection.dart';
 import 'package:chordmaster_free/domain/audio/pluck_synth.dart';
 import 'package:chordmaster_free/domain/courses/course.dart';
 import 'package:chordmaster_free/domain/lessons/lesson.dart';
+import 'package:chordmaster_free/domain/licks/licks.dart';
 import 'package:chordmaster_free/domain/melodies/basics_course.dart';
 import 'package:chordmaster_free/domain/melodies/melody_course.dart';
 import 'package:chordmaster_free/domain/practice/play_along.dart';
@@ -91,6 +92,32 @@ void main() {
       // El límite conocido: varias cuerdas al aire graves sonando al mismo
       // nivel tapan la nota nueva (b_open toca las seis al aire seguidas).
       expect(failed.length, lessThanOrEqualTo(steps.length ~/ 10), reason: '$failed');
+    });
+
+    test('power chords: se espera la nota más grave y el riff se sigue entero, sin errores', () {
+      // Sin la palma: una nota apagada se apaga antes de que el micrófono la
+      // confirme (límite conocido, también con notas sueltas).
+      final tab = [
+        for (final n in licksById['punk_power_riff']!.tab)
+          TabNote(n.string, n.fret, pick: n.pick, chord: n.chord),
+      ];
+      for (final bpm in [70, 110]) {
+        // Como suena en la app: rasgueado y con las cuerdas que siguen sonando.
+        final audio = Float64List.fromList([
+          ...Float64List((synthSampleRate * _lead).round()),
+          ...renderStrings(tabSounds(tab, bpm: bpm), seconds: tabDurationSeconds(tab, bpm: bpm)),
+        ]);
+        final f = _listen(tab, audio).follower;
+        expect(f.done, isTrue, reason: '$bpm BPM: se quedó en ${f.position}');
+        expect(f.mistakes, 0, reason: '$bpm BPM');
+        expect(f.result.bpm, closeTo(bpm, bpm * 0.03), reason: '$bpm BPM');
+      }
+      // Tocar solo la quinta del acorde (B en vez de E5) no lo da por bueno.
+      final wrong = renderStrings(
+        tabSounds(const [TabNote(5, 2, length: tabHalf)], bpm: 60),
+        seconds: 2,
+      );
+      expect(_listen(tab.take(1).toList(), wrong).follower.done, isFalse);
     });
 
     test('una nota equivocada cuenta como error y se sigue esperando la correcta', () {

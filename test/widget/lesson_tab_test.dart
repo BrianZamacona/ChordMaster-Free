@@ -83,4 +83,31 @@ void main() {
       expect(tester.getRect(find.byKey(const Key('lesson-tab-line-0'))).right, lessThanOrEqualTo(360));
     });
   }
+
+  testWidgets('un acorde: sin fila de dedos, leyenda y el lector dice sus notas', (tester) async {
+    final semantics = tester.ensureSemantics();
+    await pump(tester, const [TabNote(6, 0, chord: [(5, 2), (4, 2)])]);
+    expect(hint(tester), AppStrings.lessonTabHint);
+    expect(find.text(AppStrings.tabLegendChord), findsOneWidget);
+    final spoken = [
+      AppStrings.lessonTabNote(6, 0),
+      AppStrings.lessonTabNote(5, 2),
+      AppStrings.lessonTabNote(4, 2),
+    ].join(AppStrings.tabSpokenChordJoin);
+    expect(find.bySemanticsLabel(RegExp(RegExp.escape(spoken))), findsOneWidget);
+    semantics.dispose();
+  });
+
+  for (final lang in AppLanguage.values) {
+    testWidgets('a 360 dp (${lang.name}) ocho acordes con su leyenda caben', (tester) async {
+      CurrentLanguage.value = lang;
+      await pump(tester, [
+        for (var i = 0; i < 8; i++)
+          const TabNote(5, 2, technique: TabTechnique.palmMute, pick: PickStroke.down, chord: [(4, 4), (3, 4)]),
+      ]);
+      expect(tester.takeException(), isNull);
+      expect(tester.getRect(find.byKey(const Key('lesson-tab-line-0'))).right, lessThanOrEqualTo(360));
+      expect(tester.getRect(find.byKey(const Key('lesson-tab-legend'))).right, lessThanOrEqualTo(360));
+    });
+  }
 }

@@ -192,7 +192,10 @@ String _spoken(TabNote n, int? finger) {
     PickStroke.up => AppStrings.tabSpokenUp,
   };
   return [
-    AppStrings.lessonTabNote(n.string, n.fret, finger: finger),
+    [
+      for (final t in n.tones)
+        AppStrings.lessonTabNote(t.string, t.fret, finger: n.isChord ? null : finger),
+    ].join(AppStrings.tabSpokenChordJoin),
     ?technique,
     ?pick,
   ].join(' ');
@@ -201,6 +204,7 @@ String _spoken(TabNote n, int? finger) {
 String _legend(TabMark m) => switch (m) {
   TabMark.rest => AppStrings.tabLegendRest,
   TabMark.triplet => AppStrings.tabLegendTriplet,
+  TabMark.chord => AppStrings.tabLegendChord,
   TabMark.hammerOn => AppStrings.tabLegendHammerOn,
   TabMark.pullOff => AppStrings.tabLegendPullOff,
   TabMark.slide => AppStrings.tabLegendSlide,
@@ -310,7 +314,10 @@ class _TabPainter extends CustomPainter {
       if (n.isRest) {
         _rest(canvas, x, playing);
       } else {
-        _note(canvas, n, x, playing: playing, done: done);
+        // Un acorde: cada nota en su cuerda, en la misma columna.
+        for (final t in n.tones) {
+          _note(canvas, t, x, playing: playing, done: done);
+        }
         _marks(canvas, n, i == 0 ? previous : notes[i - 1], x, size.width, playing);
       }
       if (counts?[i] case final count?) {

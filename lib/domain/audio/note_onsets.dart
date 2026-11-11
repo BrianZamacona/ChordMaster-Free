@@ -28,12 +28,15 @@ typedef HeardNote = ({int midi, double at, bool plucked});
 /// Analiza una ventana del micrófono: los niveles salen de las últimas [hop]
 /// muestras (lo que acaba de entrar, así el ataque se ubica bien), la altura
 /// de la ventana entera con YIN y, con [expectedMidi], cuánto suena esa nota.
+/// En un acorde, la nota esperada (la más grave) se busca con el periodo del
+/// acorde entero: [periodDivisor] veces el suyo.
 PitchFrame analyzeFrame(
   Float64List window,
   int sampleRate, {
   required double at,
   required int hop,
   int? expectedMidi,
+  int periodDivisor = 1,
   double a4 = 440,
 }) => (
   at: at,
@@ -42,8 +45,11 @@ PitchFrame analyzeFrame(
   hz: detectPitchHz(window, sampleRate),
   fit: expectedMidi == null
       ? null
-      : periodicityAt(window, sampleRate, midiToHz(expectedMidi) * a4 / 440),
+      : _fitOf(window, sampleRate, midiToHz(expectedMidi) * a4 / 440 / periodDivisor),
 );
+
+double _fitOf(Float64List window, int sampleRate, double hz) =>
+    periodicityAt(window, sampleRate, hz, minHz: math.min(60, hz * 0.95));
 
 /// Convierte cuadros en notas que empiezan.
 ///
@@ -106,7 +112,10 @@ class NoteOnsetDetector {
 
   /// Un cuadro más ([expected]: la nota que se espera, la misma con la que
   /// se calculó `fit`); devuelve la nota que acaba de empezar, si hay una.
-  HeardNote? feed(PitchFrame f, {int? expected}) {
+  /// Con [chord], lo esperado es un acorde con esa nota en el bajo: su
+  /// periodo también lo cumplen la quinta o la octava solas, así que si YIN
+  /// oye clara una sola nota, tiene que ser la del bajo (en cualquier octava).
+  HeardNote? feed(PitchFrame f, {int? expected, bool chord = false}) {
     final floor = _recentAttack.isEmpty ? 0.0 : _recentAttack.reduce(math.min);
     final attack = f.rms >= minRms && f.attack > floor * onsetRatio;
     _recentAttack.add(f.attack);
@@ -134,10 +143,12 @@ class NoteOnsetDetector {
         expected != null &&
         heard != expected &&
         (heard - expected).abs() <= 2;
+    final notTheBass = chord && heard != null && expected != null && (heard - expected) % 12 != 0;
     final present = expected != null &&
         fit != null &&
         fit < fitThreshold &&
         !neighbour &&
+        !notTheBass &&
         f.rms >= minRms;
     _fitCount = present ? _fitCount + 1 : 0;
     if (_onsetAt case final at? when present && _fitCount >= confirmFrames) {

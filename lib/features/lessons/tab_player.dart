@@ -453,7 +453,11 @@ class _MicStatus extends StatelessWidget {
 
     switch (s?.status) {
       case null || PlayAlongStatus.idle:
-        return Text(AppStrings.tabMicHint, key: const Key('tab-mic-status'), style: secondary);
+        return Text(
+          notes.any((n) => n.isChord) ? AppStrings.tabMicHintChords : AppStrings.tabMicHint,
+          key: const Key('tab-mic-status'),
+          style: secondary,
+        );
       case PlayAlongStatus.denied:
         return Column(
           crossAxisAlignment: CrossAxisAlignment.start,
