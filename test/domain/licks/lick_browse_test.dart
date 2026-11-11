@@ -60,6 +60,16 @@ void main() {
     expect(wider.root, 4);
   });
 
+  test('solo favoritas: deja las marcadas y se combina con los demás filtros', () {
+    const favorites = {'punk_riff', 'stadium_lick'};
+    const only = LickFilter(favoritesOnly: true);
+    expect(licks.where((l) => only.matches(l, favorites: favorites)).map((l) => l.id).toSet(), favorites);
+    expect(licks.where(only.matches), isEmpty);
+    const riffs = LickFilter(favoritesOnly: true, kind: LickKind.riff);
+    expect(licks.where((l) => riffs.matches(l, favorites: favorites)).map((l) => l.id), ['punk_riff']);
+    expect(only.copyWith(favoritesOnly: false).favoritesOnly, isFalse);
+  });
+
   test('los menús ofrecen solo lo que usa la biblioteca, sin repetir', () {
     expect(lickScaleIds.toSet(), {for (final l in licks) l.scale.scaleId});
     expect(lickScaleIds, hasLength(lickScaleIds.toSet().length));

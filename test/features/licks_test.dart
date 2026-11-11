@@ -96,6 +96,11 @@ void main() {
         for (final k in ['licks-scale', 'licks-root', 'licks-technique']) {
           expect(tester.getRect(find.byKey(Key(k))).right, lessThanOrEqualTo(360), reason: k);
         }
+        // Favoritas va alineado a la izquierda, como los demás filtros.
+        expect(
+          tester.getRect(find.byKey(const Key('licks-favorites'))).left,
+          tester.getRect(find.byKey(const Key('licks-levels'))).left,
+        );
         // La frase del medio de su estilo tiene las dos vecinas.
         final mine = [for (final l in licks) if (l.style == LickStyle.punk) l];
         appRouter.go('/licks/${mine[1].id}');
@@ -222,6 +227,44 @@ void main() {
     await tester.tap(find.byType(BackButton));
     await settle(tester);
     expect(location(), '/licks');
+  });
+
+  testWidgets('la estrella guarda la favorita, la marca en la lista y el filtro la deja sola', (tester) async {
+    final lick = licksById['doom_riff']!;
+    final (_, store) = await open(tester, '/licks/${lick.id}');
+    final star = find.byKey(const Key('lick-favorite'));
+    expect(tester.widget<IconButton>(star).isSelected, isFalse);
+    await tester.tap(star);
+    await settle(tester);
+    expect(tester.widget<IconButton>(star).isSelected, isTrue);
+    expect(store.progress[LicksViewModel.keyFavorites], [lick.id]);
+    await tester.tap(find.byType(BackButton));
+    await settle(tester);
+    appRouter.go('/licks');
+    await settle(tester);
+    expect(find.byKey(Key('lick-${lick.id}-favorite')), findsOneWidget);
+    await tester.tap(find.byKey(const Key('licks-favorites')));
+    await settle(tester);
+    for (final l in licks) {
+      expect(find.byKey(Key('lick-${l.id}'), skipOffstage: false), l == lick ? findsOneWidget : findsNothing, reason: l.id);
+    }
+  });
+
+  testWidgets('las favoritas guardadas se leen (y se descarta un id que ya no existe)', (tester) async {
+    await open(
+      tester,
+      '/licks',
+      size: const Size(360, 6000),
+      progress: {LicksViewModel.keyFavorites: ['punk_riff', 'ya_no_existe']},
+    );
+    expect(find.byKey(const Key('lick-punk_riff-favorite')), findsOneWidget);
+  });
+
+  testWidgets('sin favoritas, el filtro lo explica', (tester) async {
+    await open(tester, '/licks', size: const Size(360, 6000));
+    await tester.tap(find.byKey(const Key('licks-favorites')));
+    await settle(tester);
+    expect(tester.widget<Text>(find.byKey(const Key('licks-empty'))).data, AppStrings.licksNoFavorites);
   });
 
   testWidgets('el récord guardado se muestra en la lista y en el detalle', (tester) async {

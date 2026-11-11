@@ -1461,6 +1461,13 @@ class AppStrings {
   static String licksSpeedPercent(int percent) => tr(es: '$percent %', en: '$percent%');
   static String get licksPrevious => tr(es: 'Anterior', en: 'Previous');
   static String get licksNext => tr(es: 'Siguiente', en: 'Next');
+  static String get licksFavorites => tr(es: 'Favoritas', en: 'Favorites');
+  static String get licksFavoriteAdd => tr(es: 'Marcar como favorita', en: 'Add to favorites');
+  static String get licksFavoriteRemove => tr(es: 'Quitar de favoritas', en: 'Remove from favorites');
+  static String get licksNoFavorites => tr(
+    es: 'Todavía no tienes favoritas: márcalas con la estrella en cada frase.',
+    en: 'No favorites yet: mark them with the star on each phrase.',
+  );
   static String get licksKindRiff => tr(es: 'Riff', en: 'Riff');
   static String get licksKindLick => tr(es: 'Lick', en: 'Lick');
   static String get licksNoResults =>

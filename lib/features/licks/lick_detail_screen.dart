@@ -44,8 +44,21 @@ class LickDetailScreen extends ConsumerWidget {
     final p = context.palette;
     final text = Theme.of(context).textTheme;
 
+    final favorite = state.favorites.contains(lick.id);
     return Scaffold(
-      appBar: AppBar(title: Text(AppStrings.moduleLicks)),
+      appBar: AppBar(
+        title: Text(AppStrings.moduleLicks),
+        actions: [
+          IconButton(
+            key: const Key('lick-favorite'),
+            tooltip: favorite ? AppStrings.licksFavoriteRemove : AppStrings.licksFavoriteAdd,
+            isSelected: favorite,
+            icon: const Icon(Icons.star_border),
+            selectedIcon: Icon(Icons.star, color: p.accent),
+            onPressed: () => vm.toggleFavorite(lick.id),
+          ),
+        ],
+      ),
       body: ListView(
         padding: const EdgeInsets.fromLTRB(16, 12, 16, 32),
         children: [
