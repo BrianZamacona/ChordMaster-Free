@@ -212,6 +212,36 @@ class AppStrings {
   static String circleOpenChord(String name) =>
       tr(es: 'Abrir la ficha de $name', en: 'Open the $name chord page');
   // ── Círculo, fase 2: más allá de la tonalidad ─────────────────────────────
+  // ── Círculo, fase 3: quiz ─────────────────────────────────────────────────
+  static String get circleQuizTitle => tr(es: 'Quiz del círculo', en: 'Circle quiz');
+  static String get circleQuizIntro => tr(
+    es: 'Tres preguntas que se turnan: la dominante de una tonalidad, su armadura y el acorde que falta en su ventana. Con 10 seguidas, el logro.',
+    en: 'Three questions that take turns: the dominant of a key, its key signature and the chord missing from its window. Get 10 in a row for the achievement.',
+  );
+  static String circleQuizDominant(String key) =>
+      tr(es: '¿Cuál es el V de $key?', en: 'What is the V of $key?');
+  static String circleQuizSignature(String key) => tr(
+    es: '¿Cuántas alteraciones tiene $key mayor?',
+    en: 'How many accidentals does $key major have?',
+  );
+  static String circleQuizMissing(String key, String shown) => tr(
+    es: 'En $key mayor están $shown. ¿Qué acorde falta?',
+    en: 'In $key major you have $shown. Which chord is missing?',
+  );
+  static String circleQuizWhyDominant(String key, String dominant) => tr(
+    es: 'El V está una quinta arriba: el vecino de la derecha de $key en el círculo es $dominant.',
+    en: 'The V is a fifth above: the right-hand neighbor of $key on the circle is $dominant.',
+  );
+  static String circleQuizWhySignature(String key, String signature) => tr(
+    es: '$key está en la posición de $signature: cada paso a la derecha suma un ♯ y a la izquierda un ♭.',
+    en: '$key sits at the position of $signature: each step right adds a ♯ and each step left a ♭.',
+  );
+  static String circleQuizWhyMissing(String numeral) => tr(
+    es: 'Faltaba el $numeral: la ventana tiene IV I V afuera, ii vi iii adentro y el vii°.',
+    en: 'The $numeral was missing: the window has IV I V outside, ii vi iii inside and the vii°.',
+  );
+  static String get circleQuizOpen => tr(es: 'Quiz del círculo', en: 'Circle quiz');
+
   static String get circleHarmonyTitle =>
       tr(es: 'Más allá de la tonalidad', en: 'Beyond the key');
   static String circleHarmonyIntro(String key) => tr(

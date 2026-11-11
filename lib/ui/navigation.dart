@@ -12,6 +12,7 @@ import '../features/chords/chord_explorer_screen.dart';
 import '../features/chords/chord_library_screen.dart';
 import '../features/circle/circle_build_screen.dart';
 import '../features/circle/circle_harmony_screen.dart';
+import '../features/circle/circle_quiz_screen.dart';
 import '../features/circle/circle_screen.dart';
 import '../features/courses/course_registry.dart';
 import '../features/courses/course_step_route.dart';
@@ -108,6 +109,10 @@ List<RouteBase> _moduleRoutes() => [
         GoRoute(
           path: 'harmony',
           builder: (_, _) => const CircleHarmonyScreen(),
+        ),
+        GoRoute(
+          path: 'quiz',
+          builder: (_, _) => const CircleQuizScreen(),
         ),
       ],
     ),

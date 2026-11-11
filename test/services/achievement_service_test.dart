@@ -18,6 +18,7 @@ void main() {
         'health_conscious',
         'song_learner',
         'foundations_done',
+        'circle_master', // racha de 10 en el quiz del círculo
       ]),
     );
   });
