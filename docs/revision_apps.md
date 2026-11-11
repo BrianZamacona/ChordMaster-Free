@@ -214,12 +214,126 @@ instrumentos).
 
 | App | Estado | Fecha |
 |---|---|---|
-| Blues Guitar Jam Tracks | pendiente | |
-| Slow Blues Guitar Jam Tracks | pendiente | |
-| Rock Guitar Jam Tracks | pendiente | |
-| Metal Guitar Jam Tracks | pendiente | |
-| Country Guitar Jam Tracks | pendiente | |
-| Modal Guitar Jam Tracks | pendiente | |
+| Blues Guitar Jam Tracks | revisada | 2026-11-11 |
+| Slow Blues Guitar Jam Tracks | revisada | 2026-11-11 |
+| Rock Guitar Jam Tracks | revisada | 2026-11-11 |
+| Metal Guitar Jam Tracks | revisada | 2026-11-11 |
+| Country Guitar Jam Tracks | revisada | 2026-11-11 |
+| Modal Guitar Jam Tracks | revisada | 2026-11-11 |
+
+Las seis son la misma plantilla de Jonathan Bell, igual que la familia licks: cambian las
+pistas y las pestañas de escalas. Se ficha completa la primera y, de las demás, solo lo que
+cambia.
+
+### Blues Guitar Jam Tracks (jam) — 2026-11-11
+
+15 pistas de blues grabadas. Cada una tiene un nombre y dice su tempo y si va con swing o recta
+(«Slow blues 57 BPM swing»). Dentro de la pista:
+- **Controles**: tonalidad con − y +, tempo con − y +, ▶, parar y bucle.
+- **Progresión**: los 12 compases en una cuadrícula de 3 × 4, un acorde por casilla. Al sonar se
+  resalta el compás.
+- **Escalas y arpegios**: pestañas con la pentatónica menor, la pentatónica mayor y la escala de
+  blues de la tonalidad, y el arpegio de cada acorde (I7, IV7, V7). Se ven en el mástil del 0
+  al 12 con el nombre de cada nota, y hay un botón para zurdos que espeja el mástil.
+- Las flechas pasan a la pista siguiente. Nombra los acordes con bemoles (Bb7, Eb7).
+
+| Idea | Estado | Dónde encaja | Esfuerzo | Notas |
+|---|---|---|---|---|
+| Pista de acompañamiento para improvisar (tocar encima) | nueva | módulo nuevo o Progresiones | L | Lo más valioso de la familia. Hoy Progresiones rasguea cada acorde una vez, con 1.6 s entre acordes (`ProgressionsViewModel.listen`), sin pulso ni bucle. Habría que sintetizar una pista entera: rasgueo por patrón (`strumEvents`) y, para que suene a banda, bajo y batería (no hay síntesis de ninguno de los dos). Es decisión de producto. |
+| Blues de 12 compases (I7–IV7–V7) | parcial | `progression_data.dart` | S | Existe como lección de rítmica, pero no como progresión: las de Progresiones son todas de 3 o 4 grados, en mayor y sin séptimas. Faltan el blues de 12 compases y su cambio rápido al IV. |
+| Tonalidad y tempo con − y + | parcial | Progresiones | S | Progresiones ya cambia de tonalidad; le falta el tempo. |
+| Resaltar el compás que suena | ya está | Progresiones (`playingIndex`) | — | Ya marcamos el acorde que suena. |
+| Bucle | parcial | Progresiones | S | `TabPlayer` tiene bucle; la progresión no. |
+| Escalas que caben encima, en el mismo lugar | parcial | detalle de escala, Progresiones | M | El detalle de escala tiene ideas para improvisar y `scalesForChord`; faltaría, junto a la progresión, «qué escala usar encima» con un botón que la abra en esa tónica. |
+| Arpegio de cada acorde de la progresión | parcial | detalle de acorde | M | Tenemos tríadas e inversiones; un arpegio del acorde en el mástil, al lado de la progresión, no. |
+| Mástil para zurdos | nueva | ajustes + `FretGridGeometry` | M | Espejar el mástil y los diagramas en toda la app; es decisión de producto. |
+
+Lo que hacemos mejor: las notas siempre con sostenidos y verificadas, la teoría «¿Por qué?» de
+cada grado y el camino de digitaciones con voice leading.
+
+Para decidir: si hacemos pistas de acompañamiento (y con qué instrumentos sintetizados), y si
+hay modo zurdo.
+
+### Slow Blues Guitar Jam Tracks (jam) — 2026-11-11
+
+La misma plantilla con 12 pistas lentas (47 a 74 BPM). Una va en tresillos («47 BPM triplet»,
+o sea 12/8). Algunas son blues menores (Dm–Gm–A7#5), pero las pestañas de arpegio siguen
+diciendo D7, G7 y A7: la plantilla no se ajusta a la pista.
+
+| Idea | Estado | Dónde encaja | Esfuerzo | Notas |
+|---|---|---|---|---|
+| Blues lento en 12/8 (tresillos) | parcial | pista / `TabSwing` | M | Tenemos tresillos en la tablatura y el 6/8 en Rasgueo 2; una pista en 12/8 lo pediría en el acompañamiento. |
+| Blues menor de 12 compases (i–iv–V) | nueva | `progression_data.dart` | S | Va con el blues mayor: grados con su calidad (m7, 7). Nosotros generaríamos las escalas y arpegios desde los grados, así no pasa lo de los arpegios equivocados. |
+
+### Rock Guitar Jam Tracks (jam) — 2026-11-11
+
+La misma plantilla con 15 pistas de rock. Cada una dice su tempo y si es mayor o menor. Las
+progresiones tienen otros largos (una de 10 compases) y solo traen las dos pentatónicas. Aquí
+nombra los acordes con sostenidos (C#, G#).
+
+| Idea | Estado | Dónde encaja | Esfuerzo | Notas |
+|---|---|---|---|---|
+| Marcar mayor o menor en cada pista | parcial | Progresiones | S | Nuestras progresiones son todas en mayor; agregar las de modo menor (i–♭VII–♭VI…) daría la etiqueta. |
+
+### Metal Guitar Jam Tracks (jam) — 2026-11-11
+
+La misma plantilla con 10 pistas de 85 a 190 BPM, sin pestaña de progresión: son riffs, no
+acordes. Trae las escalas que caben encima: pentatónica menor, blues, eólico, frigio, frigio
+dominante y el arpegio disminuido.
+
+| Idea | Estado | Dónde encaja | Esfuerzo | Notas |
+|---|---|---|---|---|
+| Pista de riff (sin acordes) con sus escalas | parcial | Licks y riffs | M | Nuestros riffs ya suenan y dicen su escala; un acompañamiento de riff en bucle para tocar encima sería parte de la decisión de pistas. |
+| Escalas de metal juntas (frigio dominante, disminuida) | ya está | `scales_master.json` | — | Están todas; falta solo agruparlas por estilo, como la guía de metal. |
+
+### Country Guitar Jam Tracks (jam) — 2026-11-11
+
+La misma plantilla con 15 pistas (80 a 200 BPM; vals y shuffle incluidos). Además de las
+pentatónicas y la escala mayor, trae pestañas de **terceras y sextas mayores**: los double stops
+de la escala dibujados en el mástil, en las cuerdas 1 y 2.
+
+| Idea | Estado | Dónde encaja | Esfuerzo | Notas |
+|---|---|---|---|---|
+| Double stops de la tonalidad junto a la pista | ya está | Double stops (`double_stops.dart`) | — | Tenemos terceras y sextas diatónicas verificadas; faltaría solo enlazarlas desde la progresión. |
+| Vals en 3/4 como pista | parcial | Rasgueo 2 | S | El 3/4 ya está en Rasgueo 2; entraría en las pistas. |
+
+### Modal Guitar Jam Tracks (jam) — 2026-11-11
+
+La misma plantilla con dos pistas por modo, de jónico a locrio. Cada una es un vamp que hace oír
+el modo (lidio = I–II mayor, F–G, con la #4 en el acorde de G) y trae el modo y una «pentatónica
+del modo».
+
+| Idea | Estado | Dónde encaja | Esfuerzo | Notas |
+|---|---|---|---|---|
+| Vamp que hace sonar cada modo | parcial | círculo («modos por brillo»), detalle de escala | M | Ya explicamos qué nota cambia cada modo (`modesByBrightness`). Un vamp de dos acordes por modo, generado por regla desde su nota característica, lo haría oír. Un test verificaría que el vamp contiene la nota característica. |
+| Pentatónica de cada modo | nueva | `scales_master.json` | M | Es la pentatónica que conserva la nota característica. Habría que definirla por regla con su generador y su auditoría. Es decisión musical (no es una escala estándar). |
+
+## Resumen de la familia jam
+
+Lo que más se repite, ordenado por valor:
+1. **Pistas para tocar encima** (las seis apps): bucle, tempo, tonalidad y el compás que suena.
+   Es lo que más falta; hoy solo rasgueamos cada acorde una vez. Pediría sintetizar bajo y
+   batería además de la guitarra.
+2. **Progresiones nuevas**: blues de 12 compases (mayor, menor, cambio rápido, 12/8), progresiones
+   en menor y vamps modales. Son pocas líneas en `progression_data.dart` y se verifican con
+   tests.
+3. **«Qué tocar encima», junto a la progresión**: las escalas que caben y el arpegio de cada
+   acorde, abriendo lo que ya tenemos (detalle de escala, double stops), en la tónica de la
+   progresión.
+4. **Tempo y bucle en Progresiones**: pequeño, y sirve aunque no haya pistas.
+5. **Modo zurdo** (todas lo traen): espejar el mástil en toda la app.
+
+Lo que hacemos mejor: notas siempre con sostenidos, escalas y arpegios generados desde los
+grados (en estas apps el arpegio no cambia con la pista), la teoría de cada grado, el camino de
+digitaciones y el micrófono.
+
+Para decidir:
+- ¿Pistas de acompañamiento? Si sí: ¿solo guitarra rasgueada, o también bajo y batería
+  sintetizados? Esto también decide el «acompañamiento debajo del lick» que quedó pendiente de
+  la familia licks.
+- ¿Agregamos los blues de 12 compases, las progresiones en menor y los vamps modales?
+- ¿Modo zurdo?
+- ¿«Pentatónica del modo» como escala nueva?
 
 ## 3. Familia caged: sistema CAGED
 
