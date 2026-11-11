@@ -3,8 +3,10 @@ import 'dart:io';
 
 import 'package:chordmaster_free/core/constants/app_strings.dart';
 import 'package:chordmaster_free/core/i18n/tr.dart';
+import 'package:chordmaster_free/data/models/note_coordinate.dart';
 import 'package:chordmaster_free/data/models/scale_definition.dart';
 import 'package:chordmaster_free/data/repository/scale_repository.dart';
+import 'package:chordmaster_free/domain/theory/notes.dart';
 import 'package:chordmaster_free/services/key_value_store.dart';
 import 'package:chordmaster_free/ui/scales/detail/scale_detail_notifier.dart';
 import 'package:chordmaster_free/ui/scales/detail/scale_detail_screen.dart';
@@ -306,6 +308,41 @@ void main() {
           }
         });
       }
+    }
+  });
+
+  group('arpegio de la tónica dentro de la forma', () {
+    for (final code in ['es', 'en']) {
+      testWidgets('a 360 dp ($code): resalta C E G, «solo el arpegio» deja solo esas notas', (tester) async {
+        CurrentLanguage.value = code == 'es' ? AppLanguage.es : AppLanguage.en;
+        await pump(tester);
+        final chip = find.byKey(const Key('scale-arpeggio'));
+        expect(chip, findsOneWidget);
+        expect(tester.getRect(chip).right, lessThanOrEqualTo(360));
+        expect(find.text(AppStrings.scaleArpeggioOf('C')), findsOneWidget);
+        final all = stateOf(tester).currentPattern!.coordinates;
+        await tester.tap(chip);
+        await tester.pump();
+        final board = tester.widget<FretboardDiagram>(find.byKey(const Key('scale-arpeggio-board')));
+        // Resaltadas: solo C, E y G; las demás siguen dibujadas, atenuadas.
+        int pc(NoteCoordinate c) => (standardOpenStringMidi[c.string - 1] + c.fret) % 12;
+        expect(board.highlighted!.map(pc).toSet(), {0, 4, 7});
+        expect(board.pattern.coordinates, hasLength(all.length));
+        expect(tester.widget<Text>(find.byKey(const Key('scale-arpeggio-hint'))).data, contains('C E G'));
+        final only = find.byKey(const Key('scale-arpeggio-only'));
+        expect(tester.getRect(only).right, lessThanOrEqualTo(360));
+        await tester.tap(only);
+        await tester.pump();
+        final onlyBoard = tester.widget<FretboardDiagram>(find.byKey(const Key('scale-arpeggio-board')));
+        expect(onlyBoard.pattern.coordinates.map(pc).toSet(), {0, 4, 7});
+        expect(onlyBoard.highlighted, isNull);
+        // Apagar el arpegio vuelve a la forma entera.
+        await tester.tap(chip);
+        await tester.pump();
+        expect(find.byKey(const Key('scale-arpeggio-board')), findsNothing);
+        expect(find.byKey(const Key('scale-arpeggio-only')), findsNothing);
+        expect(tester.takeException(), isNull);
+      });
     }
   });
 }

@@ -704,6 +704,12 @@ Objetivo: código legible y mantenible antes que ingenioso. Capas (puertos y ada
     octavas donde cabe completa (`patternAcrossNeck`), ambas en `lib/domain/theory/neck_notes.dart`.
     Solo Android e iOS piden horizontal, y al salir se devuelve con la lista vacía: la app no fija
     orientación y así respeta el bloqueo de rotación.
+  - Arpegio dentro de la forma (decisión del usuario tras revisar las apps CAGED): chip «Arpegio
+    de C» bajo el diapasón fijo; resalta las notas de la tríada de la tónica (`tonicTriad`,
+    `lib/domain/theory/scale_arpeggio.dart`: grados 1, 3 y 5 en las de 7 notas; en las demás, su 3ª
+    y la 5ª justa, o b5/#5) y atenúa el resto (`FretboardDiagram.highlighted`); «Solo el arpegio»
+    deja solo esas notas. Estado en `ScaleDetailState.arpeggio/arpeggioOnly`; la vista ampliada no
+    lo usa.
   - Con nombres de nota, una nota al aire reemplaza el nombre de su cuerda para no decirlo dos
     veces; con intervalos, la afinación sigue al lado.
 - `lib/ui/navigation.dart` — UN solo `StatefulShellRoute` con 5 pestañas (`AppScaffold`):

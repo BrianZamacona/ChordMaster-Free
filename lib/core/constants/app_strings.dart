@@ -1136,6 +1136,12 @@ class AppStrings {
   static String get progressionFaster => tr(es: 'Más rápido', en: 'Faster');
   static String progressionBpm(int bpm) => tr(es: '$bpm BPM', en: '$bpm BPM');
   static String get progressionStrum => tr(es: 'Rasgueo', en: 'Strum');
+  static String scaleArpeggioOf(String chord) => tr(es: 'Arpegio de $chord', en: '$chord arpeggio');
+  static String get scaleArpeggioOnly => tr(es: 'Solo el arpegio', en: 'Arpeggio only');
+  static String scaleArpeggioHint(String chord, String notes) => tr(
+    es: 'Las notas de $chord ($notes) dentro de la forma: apóyate en ellas.',
+    en: 'The notes of $chord ($notes) inside the shape: lean on them.',
+  );
   static String get playOverTitle => tr(es: '¿Qué tocar encima?', en: 'What to play over it?');
   static String get playOverFit => tr(es: 'Caben en toda la progresión', en: 'They fit the whole progression');
   static String get playOverPentatonic => tr(es: 'Con 5 notas, más fáciles', en: 'With 5 notes, easier');
