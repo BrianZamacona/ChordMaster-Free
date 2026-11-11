@@ -1496,6 +1496,11 @@ class AppStrings {
     es: 'Usa cuerdas al aire: suena en su tonalidad, no se transpone.',
     en: 'It uses open strings: it plays in its own key and is not transposed.',
   );
+  static String get leftHanded => tr(es: 'Modo zurdo', en: 'Left-handed');
+  static String get leftHandedSubtitle => tr(
+    es: 'El mástil y los diagramas, espejados como en una guitarra de zurdo.',
+    en: 'The neck and the diagrams, mirrored as on a left-handed guitar.',
+  );
   static String get licksRhythmPart => tr(es: 'Parte rítmica', en: 'Rhythm part');
   static String get licksBacking => tr(es: 'Con acompañamiento', en: 'With backing');
   static String get licksBackingHint => tr(

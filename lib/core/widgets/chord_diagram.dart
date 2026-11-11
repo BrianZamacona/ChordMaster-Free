@@ -4,6 +4,7 @@ import 'package:flutter/material.dart';
 
 import '../../domain/voicing/barre_detection.dart';
 import '../../domain/voicing/fingering_metrics.dart';
+import '../../ui/handedness.dart';
 import '../../ui/theme.dart';
 
 /// Traste base del diagrama cuando no se indica uno explícito.
@@ -44,9 +45,9 @@ class ChordDiagramWidget extends StatelessWidget {
     this.dotLabel = DiagramDotLabel.finger,
     this.toneRow = DiagramToneRow.none,
   }) : assert(
-          fretPositions.length == 6,
-          'fretPositions must have exactly 6 values',
-        );
+         fretPositions.length == 6,
+         'fretPositions must have exactly 6 values',
+       );
 
   final List<int> fretPositions;
   final String chordName;
@@ -82,20 +83,24 @@ class ChordDiagramWidget extends StatelessWidget {
       baseFret: baseFret ?? diagramBaseFret(fretPositions),
     );
 
+    final mirrored = Handedness.of(context);
     return Semantics(
       label: _semanticLabel(tones),
       excludeSemantics: true,
-      child: CustomPaint(
-        size: Size(size, layout.height),
-        painter: _ChordDiagramPainter(
-          layout: layout,
-          fretPositions: fretPositions,
-          fingerPositions: fingers,
-          tones: tones,
-          barre: barre,
-          chordName: chordName,
-          dotLabel: dotLabel,
-          palette: context.palette,
+      child: HandedFlip(
+        child: CustomPaint(
+          size: Size(size, layout.height),
+          painter: _ChordDiagramPainter(
+            mirrored: mirrored,
+            layout: layout,
+            fretPositions: fretPositions,
+            fingerPositions: fingers,
+            tones: tones,
+            barre: barre,
+            chordName: chordName,
+            dotLabel: dotLabel,
+            palette: context.palette,
+          ),
         ),
       ),
     );
@@ -110,8 +115,9 @@ class ChordDiagramWidget extends StatelessWidget {
       final what = switch (fret) {
         -1 => 'muteada',
         0 => 'al aire',
-        _ => 'traste $fret'
-            '${fingerPositions != null && fingerPositions![s] > 0 ? ', dedo ${fingerPositions![s]}' : ''}',
+        _ =>
+          'traste $fret'
+              '${fingerPositions != null && fingerPositions![s] > 0 ? ', dedo ${fingerPositions![s]}' : ''}',
       };
       parts.add(
         'cuerda $string $what'
@@ -125,11 +131,14 @@ class ChordDiagramWidget extends StatelessWidget {
 /// Medidas de un diagrama de [width] desde [baseFret] (para los tests): el
 /// tamaño del número del dedo y dónde queda el centro de la rejilla.
 @visibleForTesting
-({double fingerFont, double gridCenter, double height, int frets}) chordDiagramMetrics(
-  double width, {
-  int baseFret = 1,
-}) {
-  final l = _DiagramLayout(width: width, showName: false, toneRows: 0, baseFret: baseFret);
+({double fingerFont, double gridCenter, double height, int frets})
+chordDiagramMetrics(double width, {int baseFret = 1}) {
+  final l = _DiagramLayout(
+    width: width,
+    showName: false,
+    toneRows: 0,
+    baseFret: baseFret,
+  );
   return (
     fingerFont: l.fingerFontSize('1'),
     gridCenter: l.left + 2.5 * l.stringSpacing,
@@ -193,9 +202,9 @@ class _DiagramLayout {
 
   /// Centro de la fila de tonos [row] (0 = intervalos, 1 = notas).
   Offset toneOffset(int jsonString, int row) => Offset(
-        left + jsonString * stringSpacing,
-        gridTop + gridHeight + (row + 0.6) * toneRowHeight,
-      );
+    left + jsonString * stringSpacing,
+    gridTop + gridHeight + (row + 0.6) * toneRowHeight,
+  );
 }
 
 class _ChordDiagramPainter extends CustomPainter {
@@ -208,7 +217,11 @@ class _ChordDiagramPainter extends CustomPainter {
     required this.chordName,
     required this.dotLabel,
     required this.palette,
+    this.mirrored = false,
   });
+
+  /// Modo zurdo: el lienzo llega espejado y los textos se enderezan.
+  final bool mirrored;
 
   final _DiagramLayout layout;
   final List<int> fretPositions;
@@ -251,7 +264,10 @@ class _ChordDiagramPainter extends CustomPainter {
       _text(
         canvas,
         '${l.baseFret}',
-        Offset(gridLeft - l.stringSpacing * 0.6, l.noteOffset(0, l.baseFret).dy),
+        Offset(
+          gridLeft - l.stringSpacing * 0.6,
+          l.noteOffset(0, l.baseFret).dy,
+        ),
         size: l.stringSpacing * 0.42,
         weight: FontWeight.w600,
         color: palette.textSecondary,
@@ -300,7 +316,9 @@ class _ChordDiagramPainter extends CustomPainter {
     for (var s = 0; s < 6; s++) {
       final fret = fretPositions[s];
       final tone = tones?[s];
-      final color = tone == null ? palette.accent : palette.intervalColor(tone.label);
+      final color = tone == null
+          ? palette.accent
+          : palette.intervalColor(tone.label);
       final c = l.noteOffset(s, fret);
 
       if (fret < 0) {
@@ -411,14 +429,17 @@ class _ChordDiagramPainter extends CustomPainter {
       ),
       textDirection: TextDirection.ltr,
     )..layout();
-    painter.paint(
+    paintUpright(
       canvas,
+      painter,
       center - Offset(painter.width / 2, painter.height / 2),
+      mirrored: mirrored,
     );
   }
 
   @override
   bool shouldRepaint(_ChordDiagramPainter old) =>
+      old.mirrored != mirrored ||
       old.chordName != chordName ||
       old.dotLabel != dotLabel ||
       old.palette != palette ||

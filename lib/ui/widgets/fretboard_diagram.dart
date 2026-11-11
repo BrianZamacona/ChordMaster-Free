@@ -8,6 +8,7 @@ import '../../core/i18n/tr.dart';
 
 import '../../data/models/note_coordinate.dart';
 import '../../data/repository/scale_repository.dart';
+import '../handedness.dart';
 import '../theme.dart';
 import 'fret_grid_geometry.dart';
 
@@ -45,27 +46,32 @@ class FretboardDiagram extends StatelessWidget {
       child: LayoutBuilder(
         builder: (context, constraints) => Semantics(
           label: tr(
-            es: 'Posición entre los trastes ${pattern.startingFret} y '
+            es:
+                'Posición entre los trastes ${pattern.startingFret} y '
                 '${pattern.endFret}, ${pattern.coordinates.length} notas'
                 '${open > 0 ? ', $open al aire' : ''}',
-            en: 'Position between frets ${pattern.startingFret} and '
+            en:
+                'Position between frets ${pattern.startingFret} and '
                 '${pattern.endFret}, ${pattern.coordinates.length} notes'
                 '${open > 0 ? ', $open open' : ''}',
           ),
           excludeSemantics: true,
-          child: CustomPaint(
-            size: Size(constraints.maxWidth, height),
-            painter: _BoardPainter(
-              geometry: FretGridGeometry(
-                width: constraints.maxWidth,
-                height: height,
-                startFret: pattern.startingFret,
-                endFret: pattern.endFret,
+          child: HandedFlip(
+            child: CustomPaint(
+              size: Size(constraints.maxWidth, height),
+              painter: _BoardPainter(
+                mirrored: Handedness.of(context),
+                geometry: FretGridGeometry(
+                  width: constraints.maxWidth,
+                  height: height,
+                  startFret: pattern.startingFret,
+                  endFret: pattern.endFret,
+                ),
+                coordinates: pattern.coordinates,
+                label: label,
+                links: links,
+                palette: context.palette,
               ),
-              coordinates: pattern.coordinates,
-              label: label,
-              links: links,
-              palette: context.palette,
             ),
           ),
         ),
@@ -183,6 +189,7 @@ class _FretboardNeckState extends State<FretboardNeck> {
         layer: layer,
         highlighted: widget.highlighted,
         numberEveryFret: true,
+        mirrored: Handedness.of(context),
       );
       Widget tappable(Widget child, {bool open = false}) {
         final onTap = widget.onTapCell;
@@ -198,52 +205,56 @@ class _FretboardNeckState extends State<FretboardNeck> {
       }
 
       return Semantics(
-        label: widget.semanticLabel ??
+        label:
+            widget.semanticLabel ??
             tr(
-              es: 'Mástil completo, ${widget.coordinates.length} notas de la '
+              es:
+                  'Mástil completo, ${widget.coordinates.length} notas de la '
                   'escala${widget.highlighted == null ? '' : ', ${widget.highlighted!.length} resaltadas'}',
-              en: 'Whole neck, ${widget.coordinates.length} scale notes'
+              en:
+                  'Whole neck, ${widget.coordinates.length} scale notes'
                   '${widget.highlighted == null ? '' : ', ${widget.highlighted!.length} highlighted'}',
             ),
-        child: Stack(
-          children: [
-            ScrollConfiguration(
-              // Con ratón también se arrastra, como con el dedo.
-              behavior: ScrollConfiguration.of(context).copyWith(
-                dragDevices: {...PointerDeviceKind.values},
-              ),
-              child: Scrollbar(
-                controller: _scroll,
-                thumbVisibility: true,
-                child: SingleChildScrollView(
-                  key: const Key('neck-scroll'),
+        child: HandedFlip(
+          child: Stack(
+            children: [
+              ScrollConfiguration(
+                // Con ratón también se arrastra, como con el dedo.
+                behavior: ScrollConfiguration.of(context)
+                    .copyWith(dragDevices: {...PointerDeviceKind.values}),
+                child: Scrollbar(
                   controller: _scroll,
-                  scrollDirection: Axis.horizontal,
-                  padding: const EdgeInsets.only(
-                    bottom: FretboardNeck._scrollbarGap,
-                  ),
-                  child: tappable(
-                    RepaintBoundary(
-                      child: CustomPaint(
-                        size: Size(geometry.boardWidth, height),
-                        painter: painter(_BoardLayer.frets),
+                  thumbVisibility: true,
+                  child: SingleChildScrollView(
+                    key: const Key('neck-scroll'),
+                    controller: _scroll,
+                    scrollDirection: Axis.horizontal,
+                    padding: const EdgeInsets.only(
+                      bottom: FretboardNeck._scrollbarGap,
+                    ),
+                    child: tappable(
+                      RepaintBoundary(
+                        child: CustomPaint(
+                          size: Size(geometry.boardWidth, height),
+                          painter: painter(_BoardLayer.frets),
+                        ),
                       ),
                     ),
                   ),
                 ),
               ),
-            ),
-            Positioned(
-              left: 0,
-              top: 0,
-              width: _BoardPainter.pinnedColumnWidth,
-              height: height,
-              child: tappable(
-                CustomPaint(painter: painter(_BoardLayer.tuning)),
-                open: true,
+              Positioned(
+                left: 0,
+                top: 0,
+                width: _BoardPainter.pinnedColumnWidth,
+                height: height,
+                child: tappable(
+                  CustomPaint(painter: painter(_BoardLayer.tuning)),
+                  open: true,
+                ),
               ),
-            ),
-          ],
+            ],
+          ),
         ),
       );
     },
@@ -267,7 +278,11 @@ class _BoardPainter extends CustomPainter {
     this.layer = _BoardLayer.all,
     this.highlighted,
     this.numberEveryFret = false,
+    this.mirrored = false,
   });
+
+  /// Modo zurdo: el lienzo llega espejado y los textos se enderezan.
+  final bool mirrored;
 
   /// Ancho de la columna fija: deja a la vista la cejuela de la capa de abajo.
   static const pinnedColumnWidth = FretGridGeometry.openColumnWidth - 1.5;
@@ -477,14 +492,17 @@ class _BoardPainter extends CustomPainter {
       ),
       textDirection: TextDirection.ltr,
     )..layout();
-    painter.paint(
+    paintUpright(
       canvas,
+      painter,
       center - Offset(painter.width / 2, painter.height / 2),
+      mirrored: mirrored,
     );
   }
 
   @override
   bool shouldRepaint(_BoardPainter old) =>
+      old.mirrored != mirrored ||
       old.geometry.width != geometry.width ||
       old.geometry.height != geometry.height ||
       old.geometry.fretWidth != geometry.fretWidth ||
