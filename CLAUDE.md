@@ -494,6 +494,13 @@ cada nota pertenezca a la escala. No bajar la tolerancia de 0.
     android-x64`. "Reducir movimiento" en Android: `settings put global transition_animation_scale 0`
     (no `animator_duration_scale`); al terminar, volver a 1.
 
+## Revisión de otras apps
+- Workflow `/revisar-app` (`.claude/skills/revisar-app/SKILL.md`): recorre una app del teléfono
+  por Enlace Móvil (computer use) y anota sus ideas en `docs/revision_apps.md` (catálogo por
+  familias, con estado y una ficha por app). Se toman ideas, nunca contenido (licks, tabs,
+  audio, textos, imágenes, artistas); no se compra, no se inicia sesión ni se acepta nada. El
+  workflow solo edita el documento: lo que el usuario apruebe se implementa como tarea aparte.
+
 ## Dependencias y herramientas
 - JDK para compilar Android: `android/gradle.properties` no fija ninguno (era una ruta de una sola
   máquina). Gradle usa `JAVA_HOME`; en esta máquina: `gradlew assembleRelease
