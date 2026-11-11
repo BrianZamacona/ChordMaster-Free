@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 
 import '../../../domain/theory/double_stops.dart';
+import '../../handedness.dart';
 import '../../theme.dart';
 import '../../widgets/fret_grid_geometry.dart';
 import 'double_stops_layout.dart';
@@ -36,14 +37,17 @@ class DoubleStopFretboard extends StatelessWidget {
   Widget build(BuildContext context) => SizedBox(
     height: height,
     child: LayoutBuilder(
-      builder: (context, constraints) => CustomPaint(
-        size: Size(constraints.maxWidth, height),
-        painter: DoubleStopPainter(
-          pairs: pairs,
-          startFret: range.start,
-          endFret: range.end,
-          tonic: tonic,
-          palette: context.palette,
+      builder: (context, constraints) => HandedFlip(
+        child: CustomPaint(
+          size: Size(constraints.maxWidth, height),
+          painter: DoubleStopPainter(
+            pairs: pairs,
+            startFret: range.start,
+            endFret: range.end,
+            tonic: tonic,
+            palette: context.palette,
+            mirrored: Handedness.of(context),
+          ),
         ),
       ),
     ),
@@ -57,7 +61,11 @@ class DoubleStopPainter extends CustomPainter {
     required this.endFret,
     required this.tonic,
     required this.palette,
+    this.mirrored = false,
   });
+
+  /// Modo zurdo: el lienzo llega espejado y los textos se enderezan.
+  final bool mirrored;
 
   final List<DoubleStopPair> pairs;
   final int startFret;
@@ -77,7 +85,12 @@ class DoubleStopPainter extends CustomPainter {
       ),
       textDirection: TextDirection.ltr,
     )..layout();
-    tp.paint(canvas, center - Offset(tp.width / 2, tp.height / 2));
+    paintUpright(
+      canvas,
+      tp,
+      center - Offset(tp.width / 2, tp.height / 2),
+      mirrored: mirrored,
+    );
   }
 
   @override
@@ -214,5 +227,6 @@ class DoubleStopPainter extends CustomPainter {
       old.startFret != startFret ||
       old.endFret != endFret ||
       old.tonic != tonic ||
-      old.palette != palette;
+      old.palette != palette ||
+      old.mirrored != mirrored;
 }

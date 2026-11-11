@@ -8,6 +8,7 @@ import 'core/i18n/app_i18n.dart';
 import 'core/i18n/tr.dart';
 import 'features/lessons/lessons_viewmodel.dart';
 import 'features/settings/settings_viewmodel.dart';
+import 'ui/handedness.dart';
 import 'ui/navigation.dart';
 import 'ui/theme.dart';
 
@@ -24,6 +25,7 @@ class ChordMasterApp extends ConsumerWidget {
     final localeCode =
         ref.watch(settingsViewModelProvider.select((s) => s.localeCode));
     CurrentLanguage.value = appLanguageFor(localeCode);
+    final leftHanded = ref.watch(settingsViewModelProvider.select((s) => s.leftHanded));
     return MaterialApp.router(
       title: AppStrings.appName,
       theme: lightTheme,
@@ -39,9 +41,12 @@ class ChordMasterApp extends ConsumerWidget {
       routerConfig: appRouter,
       debugShowCheckedModeBanner: false,
       // OWASP A05: warn when running in web (unencrypted storage).
-      builder: (context, child) => _RebuildOnLanguageChange(
-        localeCode: localeCode,
-        child: kIsWeb ? _WebStorageWarningBanner(child: child!) : child!,
+      builder: (context, child) => Handedness(
+        leftHanded: leftHanded,
+        child: _RebuildOnLanguageChange(
+          localeCode: localeCode,
+          child: kIsWeb ? _WebStorageWarningBanner(child: child!) : child!,
+        ),
       ),
     );
   }

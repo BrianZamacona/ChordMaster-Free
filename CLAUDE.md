@@ -45,6 +45,13 @@ cada nota pertenezca a la escala. No bajar la tolerancia de 0.
 - Las posiciones de `scales_master.json` solo suben desde su `fret_offset` en C: fuera de C casi
   nunca traen notas al aire (E menor pentatónica empieza en el traste 4, no en el 0). Las cuerdas
   al aire de otra tónica se ven en el mástil completo.
+- Modo zurdo (decisión del usuario tras revisar las apps jam; ajuste en Progreso → Ajustes,
+  `leftHanded` en la caja de ajustes): `Handedness` en la raíz de la app y `HandedFlip`
+  (`lib/ui/handedness.dart`) espejan de izquierda a derecha el dibujo del diapasón, el mástil
+  completo (con su columna fija y el scroll), los double stops y los diagramas de acorde; los
+  textos del painter se enderezan con `paintUpright`. Toques y scroll pasan por la misma
+  transformación. La tablatura NO se espeja (se lee igual con cualquier mano). Pintor nuevo con
+  texto = parámetro `mirrored` y `paintUpright`.
 - Colores: SOLO desde `context.palette` (`lib/ui/palette.dart`, paleta Palisandro con versión
   clara y oscura) o `Theme.of(context).colorScheme`. Nada de `Colors.red`/hex sueltos ni
   colores por módulo. El color codifica intervalos (`palette.intervalColor('b3')`) y siempre
