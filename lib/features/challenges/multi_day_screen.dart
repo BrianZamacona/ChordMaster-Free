@@ -155,5 +155,6 @@ class _ChallengeCard extends StatelessWidget {
         PracticeActivity.ear => ('/practice/ear-training', AppStrings.hubEar),
         PracticeActivity.rhythm => ('/practice/rhythm', AppStrings.hubRhythm),
   PracticeActivity.fretboard => ('/practice/fretboard', AppStrings.hubFretboard),
+  PracticeActivity.circle => ('/circle/quiz', AppStrings.circleQuizTitle),
       };
 }

@@ -166,6 +166,13 @@ class _KeyPanel extends ConsumerWidget {
           label: Text(AppStrings.circleHarmonyTitle),
           onPressed: () => context.push(context.sectionPath('circle/harmony')),
         ),
+        const SizedBox(height: 8),
+        OutlinedButton.icon(
+          key: const Key('circle-open-quiz'),
+          icon: const Icon(Icons.quiz_outlined),
+          label: Text(AppStrings.circleQuizOpen),
+          onPressed: () => context.push(context.sectionPath('circle/quiz')),
+        ),
       ],
     );
   }

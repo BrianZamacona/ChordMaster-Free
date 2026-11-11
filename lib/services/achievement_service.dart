@@ -128,6 +128,15 @@ class AchievementService {
       emoji: '🎤',
     ),
     AchievementDefinition(
+      id: 'circle_master',
+      title: LocalizedText(es: 'Maestro del círculo', en: 'Circle Master'),
+      description: LocalizedText(
+        es: 'Acierta 10 preguntas seguidas en el quiz del círculo de quintas.',
+        en: 'Answer 10 circle of fifths quiz questions in a row.',
+      ),
+      emoji: '⭕',
+    ),
+    AchievementDefinition(
       id: 'foundations_done',
       title: LocalizedText(es: 'Fundamentos completos', en: 'Foundations Complete'),
       description: LocalizedText(

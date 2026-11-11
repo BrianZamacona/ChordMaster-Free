@@ -558,6 +558,13 @@ Objetivo: código legible y mantenible antes que ingenioso. Capas (puertos y ada
   +1 … locrio −5, cada uno cambia una sola nota). Los ▶ rasguean con las digitaciones de
   chords.json (`playCircleChords`); un test exige que todos los acordes existan en las 12
   tonalidades.
+- Fase 3, quiz (`lib/domain/theory/circle_quiz.dart`, ruta `/circle/quiz` y `/learn/circle/quiz`,
+  botón en el panel): "¿cuál es el V de …?" (opciones: el V, el IV, dos pasos a la derecha y la
+  relativa menor), "¿cuántas alteraciones tiene …?" (la vecina de cada lado y la misma cantidad
+  del otro lado) y "¿qué acorde falta en la ventana?" (la misma raíz con otra calidad y mayores de
+  dos pasos, que no son de la tonalidad). Al responder dice por qué. Mejor racha en
+  `circle_quiz_best_streak`; 10 seguidas dan el logro `circle_master`; cada respuesta anota
+  `PracticeActivity.circle`. El generador se inyecta (`circleQuizRandomProvider`).
 - La rueda (`circle_wheel.dart`) está fuera del scroll para que un arrastre siempre la gire. La
   rotación vive en un `AnimationController` que repinta solo su `CustomPainter`; el panel se
   reconstruye únicamente al cambiar de tonalidad, y los textos del painter van ya medidos.
@@ -623,7 +630,5 @@ Objetivo: código legible y mantenible antes que ingenioso. Capas (puertos y ada
    sin eso el micrófono queda siempre denegado. `Info.plist` ya trae
    `NSMicrophoneUsageDescription`.
 5. Círculo de quintas, fase 3:
-   - Juego/quiz: "¿cuál es el V de E?", "¿cuántos ♯ tiene A?", "¿qué acorde falta en la ventana?",
-     con récord en `userProgress` y un logro nuevo que se pueda conseguir.
    - Unidad "Círculo de quintas" en Lecciones (según las reglas de esa sección), con un reto que
      se supere con el récord del quiz.

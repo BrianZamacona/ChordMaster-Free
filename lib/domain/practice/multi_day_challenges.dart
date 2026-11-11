@@ -23,6 +23,9 @@ enum PracticeActivity {
 
   /// Responder en el quiz del diapasón.
   fretboard,
+
+  /// Responder en el quiz del círculo de quintas.
+  circle,
 }
 
 /// Clave de un día, sin hora: "2026-11-07".
