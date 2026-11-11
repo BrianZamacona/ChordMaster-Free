@@ -14,7 +14,14 @@ class ScaleDetailState {
     required this.visiblePatterns,
     this.selectedPatternIndex,
     this.isLoading = false,
+    this.arpeggio = false,
+    this.arpeggioOnly = false,
   });
+
+  /// El diapasón resalta el arpegio de la tónica (`tonicTriad`) y atenúa el
+  /// resto; con [arpeggioOnly], el resto ni se dibuja.
+  final bool arpeggio;
+  final bool arpeggioOnly;
 
   final ScaleDefinition scale;
   final int rootSemitone;
@@ -73,6 +80,8 @@ class ScaleDetailState {
     bool? isLoading,
     bool clearSystem = false,
     bool clearPattern = false,
+    bool? arpeggio,
+    bool? arpeggioOnly,
   }) =>
       ScaleDetailState(
         scale: scale,
@@ -83,6 +92,8 @@ class ScaleDetailState {
             ? null
             : selectedPatternIndex ?? this.selectedPatternIndex,
         isLoading: isLoading ?? this.isLoading,
+        arpeggio: arpeggio ?? this.arpeggio,
+        arpeggioOnly: arpeggioOnly ?? this.arpeggioOnly,
       );
 }
 
@@ -120,6 +131,14 @@ class ScaleDetailNotifier extends Notifier<ScaleDetailState> {
   void changeSystem(String? systemId) => _load(systemId == null
       ? state.copyWith(clearSystem: true, clearPattern: true)
       : state.copyWith(selectedSystemId: systemId, clearPattern: true));
+
+  /// Muestra (o no) el arpegio de la tónica en el diapasón; al apagarlo
+  /// también vuelve a dibujar el resto de la escala.
+  void setArpeggio({required bool on}) =>
+      state = state.copyWith(arpeggio: on, arpeggioOnly: on && state.arpeggioOnly);
+
+  /// Con el arpegio, oculta (o no) las demás notas de la escala.
+  void setArpeggioOnly({required bool on}) => state = state.copyWith(arpeggioOnly: on);
 
   /// Elige una digitación de las visibles; `null` vuelve a todo el mástil.
   void selectPattern(int? index) {

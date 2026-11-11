@@ -28,9 +28,13 @@ class FretboardDiagram extends StatelessWidget {
     this.height = 180,
     this.label = FretboardLabel.interval,
     this.links = const [],
+    this.highlighted,
   });
 
   final ResolvedPattern pattern;
+
+  /// Con él, las demás notas se atenúan (el arpegio dentro de la forma).
+  final Set<NoteCoordinate>? highlighted;
   final double height;
   final FretboardLabel label;
 
@@ -71,6 +75,7 @@ class FretboardDiagram extends StatelessWidget {
                 label: label,
                 links: links,
                 palette: context.palette,
+                highlighted: highlighted,
               ),
             ),
           ),

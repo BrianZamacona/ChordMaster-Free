@@ -2,13 +2,17 @@ import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 
 import '../../../core/constants/app_strings.dart';
+import '../../../core/constants/chord_metadata.dart';
 import '../../../core/constants/scale_names.dart';
 import '../../../core/widgets/fingering_theory_card.dart';
 import '../../../core/widgets/interval_legend.dart';
 import '../../../core/widgets/selector_pill.dart';
+import '../../../data/models/note_coordinate.dart';
 import '../../../data/models/scale_definition.dart';
+import '../../../data/repository/scale_repository.dart';
 import '../../../domain/theory/intervals.dart';
 import '../../../domain/theory/notes.dart';
+import '../../../domain/theory/scale_arpeggio.dart';
 import '../../../ui/widgets/fretboard_diagram.dart';
 import '../../theme.dart';
 import 'scale_detail_notifier.dart';
@@ -78,12 +82,13 @@ class ScaleDetailScreen extends ConsumerWidget {
               if (pattern != null) ...[
                 Padding(
                   padding: const EdgeInsets.symmetric(horizontal: 16),
-                  child: FretboardDiagram(pattern: pattern),
+                  child: _ArpeggioBoard(state: state, pattern: pattern),
                 ),
                 _PatternContext(
                   state: state,
                   onExpand: () => openScaleFretboardFullscreen(context, args),
                 ),
+                _ArpeggioChips(state: state, onArpeggio: notifier.setArpeggio, onOnly: notifier.setArpeggioOnly),
                 IntervalLegend(
                   labels: [
                     for (final c in pattern.coordinates)
@@ -136,6 +141,96 @@ class ScaleDetailScreen extends ConsumerWidget {
             ],
           ),
         ),
+      ),
+    );
+  }
+}
+
+/// El diapasón de la forma; con el arpegio encendido, resalta las notas del
+/// acorde de la tónica (`tonicTriad`) y atenúa u oculta las demás.
+class _ArpeggioBoard extends StatelessWidget {
+  const _ArpeggioBoard({required this.state, required this.pattern});
+
+  final ScaleDetailState state;
+  final ResolvedPattern pattern;
+
+  @override
+  Widget build(BuildContext context) {
+    final triad = state.arpeggio ? tonicTriad(state.scale.intervals) : null;
+    if (triad == null) return FretboardDiagram(pattern: pattern);
+    final notes = {
+      for (final c in pattern.coordinates)
+        if (isTriadNote(c.string, c.fret, state.rootSemitone, triad)) c,
+    };
+    return FretboardDiagram(
+      key: const Key('scale-arpeggio-board'),
+      pattern: state.arpeggioOnly ? _onlyThese(pattern, notes) : pattern,
+      highlighted: state.arpeggioOnly ? null : notes,
+    );
+  }
+}
+
+ResolvedPattern _onlyThese(ResolvedPattern p, Set<NoteCoordinate> notes) => ResolvedPattern(
+  scaleId: p.scaleId,
+  scaleName: p.scaleName,
+  systemId: p.systemId,
+  systemName: p.systemName,
+  positionId: p.positionId,
+  positionName: p.positionName,
+  startingFret: p.startingFret,
+  endFret: p.endFret,
+  coordinates: [for (final c in p.coordinates) if (notes.contains(c)) c],
+  declaredOrder: p.declaredOrder,
+);
+
+/// «Arpegio de C» y, encendido, «Solo el arpegio», con las notas que lo forman.
+class _ArpeggioChips extends StatelessWidget {
+  const _ArpeggioChips({required this.state, required this.onArpeggio, required this.onOnly});
+
+  final ScaleDetailState state;
+  final void Function({required bool on}) onArpeggio;
+  final void Function({required bool on}) onOnly;
+
+  @override
+  Widget build(BuildContext context) {
+    final triad = tonicTriad(state.scale.intervals);
+    if (triad == null) return const SizedBox.shrink();
+    final chord = chordDisplayName(root: state.rootName, type: triadType(triad));
+    final text = Theme.of(context).textTheme;
+    return Padding(
+      padding: const EdgeInsets.fromLTRB(16, 8, 16, 8),
+      child: Column(
+        crossAxisAlignment: CrossAxisAlignment.start,
+        children: [
+          Wrap(
+            spacing: 8,
+            runSpacing: 4,
+            children: [
+              FilterChip(
+                key: const Key('scale-arpeggio'),
+                label: Text(AppStrings.scaleArpeggioOf(chord)),
+                selected: state.arpeggio,
+                onSelected: (v) => onArpeggio(on: v),
+              ),
+              if (state.arpeggio)
+                FilterChip(
+                  key: const Key('scale-arpeggio-only'),
+                  label: Text(AppStrings.scaleArpeggioOnly),
+                  selected: state.arpeggioOnly,
+                  onSelected: (v) => onOnly(on: v),
+                ),
+            ],
+          ),
+          if (state.arpeggio)
+            Text(
+              AppStrings.scaleArpeggioHint(
+                chord,
+                [for (final i in triad) pitchClassName(state.rootSemitone + i)].join(' '),
+              ),
+              key: const Key('scale-arpeggio-hint'),
+              style: text.bodySmall?.copyWith(color: context.palette.textSecondary),
+            ),
+        ],
       ),
     );
   }
