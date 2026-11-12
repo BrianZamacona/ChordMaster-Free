@@ -523,6 +523,18 @@ Para decidir:
 - ¿Modos de la menor armónica y de la melódica, y qué pentatónicas nuevas?
 - ¿El acorde en todo el mástil y las llaves de posición?
 
+Decidido por el usuario (2026-11-11), todo aprobado:
+- **Notas del mástil**: la pregunta al revés (nota y cuerda → traste), una ronda de 60 s con
+  puntos, filtros (cuerdas, rango de trastes, solo naturales) y el repaso de lo que cuesta con el
+  mapa de lo dominado.
+- **Escalas**: los modos de la menor melódica y armónica por rotación, y pentatónicas nuevas
+  (suspendida, dominante, de 7ª), con su generador y su auditoría.
+- **Vista ampliada**: el arpegio de la tónica en todo el mástil y las llaves de posición.
+
+Orden de trabajo (un PR por punto): pregunta al revés → filtros → ronda con reloj → repaso y mapa →
+modos de la melódica y la armónica → pentatónicas nuevas → acorde en todo el mástil → llaves de
+posición.
+
 ## 5. Familia tecnica: tapping
 
 Qué mirar: cómo dibuja el tapping en la tablatura y qué ejercicios tiene, en qué orden.
