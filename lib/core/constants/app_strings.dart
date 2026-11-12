@@ -362,6 +362,34 @@ class AppStrings {
     en: 'Topic tours: genres, technique, scales and theory.',
   );
   static String get hubCapo => tr(es: '¿Qué capo uso?', en: 'Which capo?');
+  static String get hubCagedDrill => tr(es: 'CAGED al azar', en: 'Random CAGED');
+  static String get hubCagedDrillSub => tr(
+    es: 'Una tónica y una forma sorteadas: la escala, su arpegio y el acorde.',
+    en: 'A random key and shape: the scale, its arpeggio and the chord.',
+  );
+  static String cagedDrillDraw(String key, String shape) =>
+      tr(es: '$key mayor · forma $shape', en: '$key major · $shape shape');
+  static String cagedDrillPhaseOf(int n, int total) => tr(es: 'Fase $n de $total', en: 'Phase $n of $total');
+  static String get cagedDrillReroll => tr(es: 'Otra tónica y forma', en: 'Another key and shape');
+  static String cagedDrillPhaseTitle(int phase) => switch (phase) {
+    0 => tr(es: 'La escala en la forma', en: 'The scale in the shape'),
+    1 => tr(es: 'Su arpegio', en: 'Its arpeggio'),
+    _ => tr(es: 'El acorde de la forma', en: 'The chord of the shape'),
+  };
+  static String cagedDrillPhaseBody(int phase, {required String key, required String shape}) => switch (phase) {
+    0 => tr(
+      es: 'Toca la escala de $key mayor en la forma $shape, de la nota más grave a la más aguda y de vuelta.',
+      en: 'Play the $key major scale in the $shape shape, from the lowest note to the highest and back.',
+    ),
+    1 => tr(
+      es: 'Ahora solo las notas resaltadas: las de $key ($key, su 3ª y su 5ª), dentro de la misma forma.',
+      en: 'Now only the highlighted notes: those of $key ($key, its 3rd and its 5th), inside the same shape.',
+    ),
+    _ => tr(
+      es: 'Y el acorde de $key en la forma $shape: rasguéalo y vuelve a la escala desde él.',
+      en: 'And the $key chord in the $shape shape: strum it and go back to the scale from it.',
+    ),
+  };
   static String get hubCaged => tr(es: 'CAGED desde el ancla', en: 'CAGED from the anchor');
   static String get hubCagedSub => tr(
     es: 'Encuentra la tónica en la 6ª, la 5ª y la 4ª cuerda y arma cada forma desde ella.',

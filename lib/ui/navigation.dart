@@ -5,6 +5,7 @@ import '../data/models/scale_definition.dart';
 import '../domain/lessons/curriculum.dart';
 import '../features/achievements/achievements_screen.dart';
 import '../features/caged/caged_anchor_screen.dart';
+import '../features/caged/caged_drill_screen.dart';
 import '../features/capo/capo_screen.dart';
 import '../features/challenges/multi_day_screen.dart';
 import '../features/chords/chord_compare_screen.dart';
@@ -298,6 +299,10 @@ final GoRouter appRouter = GoRouter(
                 GoRoute(
                   path: 'fretboard',
                   builder: (_, _) => const FretQuizScreen(),
+                ),
+                GoRoute(
+                  path: 'caged',
+                  builder: (_, _) => const CagedDrillScreen(),
                 ),
                 GoRoute(
                   path: 'workouts',
