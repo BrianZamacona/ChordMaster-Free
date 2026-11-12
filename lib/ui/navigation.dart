@@ -4,6 +4,7 @@ import '../core/widgets/app_scaffold.dart';
 import '../data/models/scale_definition.dart';
 import '../domain/lessons/curriculum.dart';
 import '../features/achievements/achievements_screen.dart';
+import '../features/caged/caged_anchor_screen.dart';
 import '../features/capo/capo_screen.dart';
 import '../features/challenges/multi_day_screen.dart';
 import '../features/chords/chord_compare_screen.dart';
@@ -273,6 +274,10 @@ final GoRouter appRouter = GoRouter(
                 GoRoute(
                   path: 'capo',
                   builder: (_, _) => const CapoScreen(),
+                ),
+                GoRoute(
+                  path: 'caged',
+                  builder: (_, _) => const CagedAnchorScreen(),
                 ),
                 ..._moduleRoutes(),
                 ..._toolRoutes(),

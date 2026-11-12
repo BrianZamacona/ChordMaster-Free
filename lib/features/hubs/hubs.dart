@@ -29,6 +29,12 @@ class LearnHubScreen extends StatelessWidget {
           subtitle: AppStrings.hubCapoSub,
           route: '/learn/capo',
         ),
+        HubEntry(
+          icon: Icons.anchor,
+          title: AppStrings.hubCaged,
+          subtitle: AppStrings.hubCagedSub,
+          route: '/learn/caged',
+        ),
       ];
 
   @override

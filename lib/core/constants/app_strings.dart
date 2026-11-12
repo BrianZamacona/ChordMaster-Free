@@ -167,10 +167,10 @@ class AppStrings {
   static String get tabProgress => tr(es: 'Progreso', en: 'Progress');
 
   static String get learnIntro => tr(
-    es: 'Lecciones paso a paso, guías por tema y qué capo usar. Acordes, '
-        'escalas, progresiones y el círculo de quintas están en Inicio.',
-    en: 'Step-by-step lessons, topic guides and which capo to use. Chords, '
-        'scales, progressions and the circle of fifths are on Home.',
+    es: 'Lecciones paso a paso, guías por tema, qué capo usar y CAGED desde el ancla. '
+        'Acordes, escalas, progresiones y el círculo de quintas están en Inicio.',
+    en: 'Step-by-step lessons, topic guides, which capo to use and CAGED from the anchor. '
+        'Chords, scales, progressions and the circle of fifths are on Home.',
   );
   static String get practiceIntro => tr(
     es: 'Entrena el oído y el ritmo, y aplica lo aprendido en canciones.',
@@ -362,6 +362,58 @@ class AppStrings {
     en: 'Topic tours: genres, technique, scales and theory.',
   );
   static String get hubCapo => tr(es: '¿Qué capo uso?', en: 'Which capo?');
+  static String get hubCaged => tr(es: 'CAGED desde el ancla', en: 'CAGED from the anchor');
+  static String get hubCagedSub => tr(
+    es: 'Encuentra la tónica en la 6ª, la 5ª y la 4ª cuerda y arma cada forma desde ella.',
+    en: 'Find the tonic on the 6th, 5th and 4th strings and build each shape from it.',
+  );
+  static String cagedStepOf(int n, int total) => tr(es: 'Paso $n de $total', en: 'Step $n of $total');
+  static String get cagedPrevious => tr(es: 'Anterior', en: 'Previous');
+  static String get cagedNext => tr(es: 'Siguiente', en: 'Next');
+  static String cagedShapeName(String shape) => tr(es: 'Forma $shape', en: '$shape shape');
+  static String _cagedFretEs(int f) => f == 0 ? 'al aire' : 'en el traste $f';
+  static String _cagedFretEn(int f) => f == 0 ? 'open' : 'at fret $f';
+
+  /// Los cinco pasos de «CAGED desde el ancla», en orden.
+  static String cagedStepTitle(int step) => switch (step) {
+    0 => tr(es: 'El ancla en la 6ª cuerda', en: 'The anchor on the 6th string'),
+    1 => tr(es: 'Los anclas de la 5ª y la 4ª', en: 'The anchors on the 5th and 4th'),
+    2 => tr(es: 'Desde la 6ª: formas E y G', en: 'From the 6th: E and G shapes'),
+    3 => tr(es: 'Desde la 5ª: formas A y C', en: 'From the 5th: A and C shapes'),
+    _ => tr(es: 'Desde la 4ª: forma D, y vuelta a empezar', en: 'From the 4th: D shape, and around again'),
+  };
+  static String cagedStepBody(int step, {required String key, required int six, required int five, required int four}) =>
+      switch (step) {
+        0 => tr(
+          es: 'En $key, la tónica cae ${_cagedFretEs(six)} en la 6ª cuerda (y otra vez en el traste ${six + 12}). Ese es el ancla de las formas E y G.',
+          en: 'In $key, the tonic sits ${_cagedFretEn(six)} on the 6th string (and again at fret ${six + 12}). That is the anchor of the E and G shapes.',
+        ),
+        1 => tr(
+          es: 'En la 5ª cuerda la tónica está ${_cagedFretEs(five)}: el ancla de A y C. En la 4ª, ${_cagedFretEs(four)}: el de D.',
+          en: 'On the 5th string the tonic is ${_cagedFretEn(five)}: the anchor of A and C. On the 4th, ${_cagedFretEn(four)}: the anchor of D.',
+        ),
+        2 => tr(
+          es: 'Desde el ancla de la 6ª, la forma E sube y la G baja hacia la cejuela.',
+          en: 'From the 6th-string anchor, the E shape goes up and the G shape goes down toward the nut.',
+        ),
+        3 => tr(
+          es: 'Desde el ancla de la 5ª, la forma A sube y la C baja hacia la cejuela.',
+          en: 'From the 5th-string anchor, the A shape goes up and the C shape goes down toward the nut.',
+        ),
+        _ => tr(
+          es: 'Desde el ancla de la 4ª sube la forma D. Después vuelve la C, una octava más arriba: el ciclo C A G E D se repite cada 12 trastes.',
+          en: 'From the 4th-string anchor the D shape goes up. Then the C comes back an octave higher: the C A G E D cycle repeats every 12 frets.',
+        ),
+      };
+  static String cagedShapeAnchor({required int string, required int fret, required bool? up}) {
+    final es = up == null ? '' : (up ? '; la forma sube desde ahí' : '; la forma baja desde ahí hacia la cejuela');
+    final en = up == null ? '' : (up ? '; the shape goes up from there' : '; the shape goes down from there toward the nut');
+    return tr(
+      es: 'Raíz en la $stringª cuerda, ${_cagedFretEs(fret)}$es.',
+      en: 'Root on string $string, ${_cagedFretEn(fret)}$en.',
+    );
+  }
+
   static String get hubCapoSub => tr(
     es: 'El traste y la forma abierta para cualquier tonalidad.',
     en: 'The fret and open shape for any key.',
