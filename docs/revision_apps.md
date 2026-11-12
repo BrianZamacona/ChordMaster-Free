@@ -443,9 +443,97 @@ de escala, la vista ampliada y el Buscador.
 
 | App | Estado | Fecha |
 |---|---|---|
-| Fretmaster | pendiente | |
-| Guitar Scales and Patterns | pendiente | |
-| Guitar Fretboard | pendiente | |
+| Fretmaster | revisada | 2026-11-11 |
+| Guitar Scales and Patterns | revisada | 2026-11-11 |
+| Guitar Fretboard | revisada (en parte) | 2026-11-11 |
+
+### FretMaster (mastil) — 2026-11-11
+
+Un entrenador de notas del mástil, en español.
+- **Desafío diario**: encontrar una nota en todas las cuerdas contra un reloj de 60 s. El mástil se
+  ve en vertical y se responde tocando el número de traste; lleva puntuación y racha.
+- **Repaso espaciado**: guarda lo que cuesta, con «notas pendientes hoy» y un «punto débil» de 18
+  posiciones, y lo vuelve a pedir.
+- **Progreso**: nivel y puntos, una racha con «días de gracia» y un **mapa del mástil** donde cada
+  posición se ilumina según cuánto la dominas (sin explorar, nueva, débil).
+- **Diapasón libre**: se toca una casilla y dice su nota, con varias afinaciones.
+- **Configuración**: guitarra, 7 cuerdas o bajo; modo zurdo; qué se practica (cuerdas, rango de
+  trastes, solo notas naturales, sesiones de 60 s).
+
+| Idea | Estado | Dónde encaja | Esfuerzo | Notas |
+|---|---|---|---|---|
+| «Encuentra la nota» en una cuerda, respondiendo el traste | parcial | Notas del mástil (`fretboard_quiz.dart`) | S | Preguntamos «¿qué nota es?» y «¿dónde está su octava?»; falta la pregunta al revés, la nota y la cuerda dadas. |
+| Ronda cronometrada de 60 s con puntos | nueva | Notas del mástil | S | Hoy no hay reloj; guardamos la mejor racha. |
+| Repaso de lo que cuesta (posiciones débiles) | nueva | Notas del mástil | M | Recordar qué posiciones fallan y pedirlas más seguido. Pide guardar aciertos por posición en `userProgress`. |
+| Mapa del mástil según lo dominado | nueva | Notas del mástil / Progreso | M | Un diapasón coloreado por aciertos de cada posición. Sale del mismo registro que el repaso. |
+| Elegir cuerdas, rango de trastes y solo naturales | parcial | Notas del mástil | S | Hoy son los trastes 0 a 12 y todas las notas. |
+| Racha con días de gracia | nueva | retos de la semana | S | Es decisión de producto. |
+| Diapasón libre: tocar y ver la nota | ya está | Buscador por notas (`/finder`) | — | |
+| Modo zurdo | ya está | modo zurdo (#142) | — | |
+| Bajo y 7 cuerdas, otras afinaciones | nueva | — | L | Por ahora solo afinación estándar (decisión del usuario). |
+
+Lo que hacemos mejor: la pregunta de la octava con sus formas, verificada contra la afinación.
+
+### Guitar Fretboard (mastil) — 2026-11-11
+
+En horizontal: elige una tónica y un acorde o escala («C · Major») y muestra sus notas en todo el
+mástil, con el intervalo y el nombre (1 C, 3 E, 5 G). Tiene botones para ocultar notas, cambiar
+entre notas e intervalos y pasar de forma en forma.
+
+| Idea | Estado | Dónde encaja | Esfuerzo | Notas |
+|---|---|---|---|---|
+| Las notas de un acorde en todo el mástil | parcial | vista ampliada, arpegio de la forma (#144) | S | El arpegio lo tenemos dentro de una forma; en el mástil completo, no. |
+| Intervalo y nota juntos en cada punto | ya está | diapasón (intervalos o notas) | — | |
+
+Sin ver: al abrir el selector, la versión gratuita avisa que mostrará un anuncio. No se tocó, así
+que no se vio el resto.
+
+### Guitar Scales and Patterns (mastil) — 2026-11-11
+
+Escalas en todo el mástil, con la tónica resaltada y llaves bajo los trastes que marcan cada
+posición. Las escalas van por familias: diatónicas y sus modos, pentatónicas (suspendida,
+dominante, de 7ª, menor/mayor, semidisminuida…), blues (una lleva nombre de artista) y los modos de
+la menor armónica (dórica #4, frigia dominante, lidia #2, locria b4 bb7). Nombra las notas con
+bemoles. Algunas funciones van con candado.
+
+| Idea | Estado | Dónde encaja | Esfuerzo | Notas |
+|---|---|---|---|---|
+| Los modos de la menor armónica (y de la melódica) | parcial | `scales_master.json` | M | Tenemos la frigia dominante; faltan los demás. Saldrían por rotación, como los de la mayor, con su generador y su auditoría. |
+| Variantes de pentatónica (suspendida, dominante, de 7ª) | parcial | `scales_master.json` | M | Tenemos mayor, menor, blues y las de cada modo. |
+| Llaves bajo el mástil que marcan dónde va cada posición | parcial | vista ampliada | S | Resaltamos la forma elegida, pero no marcamos los tramos de todas. |
+
+Lo que hacemos mejor: notas solo con sostenidos y verificadas, sistemas de digitación con su teoría,
+y ningún nombre de artista.
+
+Sin ver: lo que va con candado.
+
+## Resumen de la familia mastil
+
+Lo que se repite, ordenado por valor:
+1. **Notas del mástil más completo** (FretMaster): la pregunta al revés (nota y cuerda dadas →
+   traste), una ronda con reloj y elegir cuerdas, trastes y solo naturales.
+2. **Repaso de lo que cuesta y mapa de lo dominado**: recordar los aciertos por posición, volver a
+   pedir las débiles y mostrar el mástil coloreado.
+3. **Escalas nuevas por regla**: los modos de la menor armónica y de la melódica, y más pentatónicas.
+4. **El acorde en todo el mástil** y las llaves de posición en la vista ampliada.
+
+Para decidir:
+- ¿Ampliamos Notas del mástil (pregunta al revés, reloj, filtros)?
+- ¿Repaso de lo que cuesta y mapa de lo dominado?
+- ¿Modos de la menor armónica y de la melódica, y qué pentatónicas nuevas?
+- ¿El acorde en todo el mástil y las llaves de posición?
+
+Decidido por el usuario (2026-11-11), todo aprobado:
+- **Notas del mástil**: la pregunta al revés (nota y cuerda → traste), una ronda de 60 s con
+  puntos, filtros (cuerdas, rango de trastes, solo naturales) y el repaso de lo que cuesta con el
+  mapa de lo dominado.
+- **Escalas**: los modos de la menor melódica y armónica por rotación, y pentatónicas nuevas
+  (suspendida, dominante, de 7ª), con su generador y su auditoría.
+- **Vista ampliada**: el arpegio de la tónica en todo el mástil y las llaves de posición.
+
+Orden de trabajo (un PR por punto): pregunta al revés → filtros → ronda con reloj → repaso y mapa →
+modos de la melódica y la armónica → pentatónicas nuevas → acorde en todo el mástil → llaves de
+posición.
 
 ## 5. Familia tecnica: tapping
 
