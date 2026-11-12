@@ -238,6 +238,11 @@ cada nota pertenezca a la escala. No bajar la tolerancia de 0.
   dos octavas cae en el mismo traste). Trastes 0 a 12. El generador se inyecta
   (`fretQuizRandomProvider`) para los tests; la mejor racha va en `fretboard_quiz_best_streak` y cada
   respuesta anota `PracticeActivity.fretboard`. La guía "El mástil" (Teoría) lo enlaza.
+- CAGED al azar (`/practice/caged`, en Practicar; decisión del usuario tras revisar las apps CAGED;
+  `lib/domain/practice/caged_drill.dart`): sortea tónica y forma (nunca la misma pareja dos veces
+  seguidas) y recorre tres fases en la misma pantalla: la escala mayor en la posición CAGED de esa
+  forma (`caged_<forma>` de scales_master.json), su arpegio resaltado (`tonicTriad`) y el acorde de
+  la forma de chords.json. El azar se inyecta (`cagedDrillRandomProvider`).
 - Logros: todos deben poder conseguirse (test en `achievement_service_test.dart`). Comunidad
   se eliminó (no tenía ruta y solo guardaba en el teléfono).
 
