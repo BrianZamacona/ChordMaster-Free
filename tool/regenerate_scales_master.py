@@ -29,6 +29,10 @@ Reglas
            mástil): rotaciones de cada una, como los de la mayor, en `scales` con la categoría
            de su familia y en el orden de sus grados (el 1º es la propia escala y no se repite;
            el 5º de la armónica es `phrygian_dominant`, que pasa a esa familia).
+  Otras pentatónicas (decisión del usuario tras revisar las apps de mástil): la suspendida
+           (1 2 4 5 b7, sin 3ª) y la de 7ª mayor (1 2 3 5 7, la mayor con 7 en lugar de 6), con
+           CAGED y la caja de 2 notas. La "dominante" (1 2 3 5 b7) no se agrega: tiene las mismas
+           notas que `pentatonic_mixolydian`, que la nombra.
 Corrige además los `intervals` de los 7 modos (eran los de Jónico para todos) y el id/nombre
 de las dos disminuidas, que estaban cruzados: el id sale de los intervalos (empieza por
 semitono -> `diminished_hw`, semitono-tono; por tono -> `diminished_wh`, tono-semitono).
@@ -158,6 +162,20 @@ def modal_pentatonic(mode):
         keep.add(note)
     return sorted(base)
 
+OTHER_PENTATONICS = [
+    ('pentatonic_suspended', 'Suspended Pentatonic', [0, 2, 5, 7, 10]),
+    ('pentatonic_major7', 'Major 7 Pentatonic', [0, 2, 4, 7, 11]),
+]
+
+def add_other_pentatonics(data):
+    by_id = {s['id']: s for s in data['scales']}
+    for sid, name, intervals in OTHER_PENTATONICS:
+        entry = by_id.get(sid)
+        if entry is None:
+            entry = {'id': sid, 'name': name, 'category': 'Pentatónica', 'description': ''}
+            data['scales'].append(entry)
+        entry['intervals'] = intervals
+
 def add_modal_pentatonics(data):
     by_id = {s['id']: s for s in data['scales']}
     for mode in MODAL_PENTATONICS:
@@ -207,6 +225,7 @@ def main(path):
             s['id'] = 'diminished_hw' if half_first else 'diminished_wh'
             s['name'] = 'Diminished Half-Whole' if half_first else 'Diminished Whole-Half'
     add_modal_pentatonics(data)
+    add_other_pentatonics(data)
     add_mode_families(data)
     for s in data['scales'] + data['modes']:
         iv = s['intervals']; pos = []; systems = []

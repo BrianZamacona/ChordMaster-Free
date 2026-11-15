@@ -30,6 +30,11 @@ void main() {
     final types = {for (final c in chords) c['type'] as String};
     for (final MapEntry(key: id, value: iv) in scales.entries) {
       final triad = tonicTriad(iv);
+      // Sin 3ª (la pentatónica suspendida) no hay tríada: no se ofrece arpegio.
+      if (!iv.contains(3) && !iv.contains(4)) {
+        expect(triad, isNull, reason: id);
+        continue;
+      }
       expect(triad, isNotNull, reason: id);
       expect(iv, containsAll(triad!), reason: id);
       expect(types, contains(triadType(triad)), reason: id);

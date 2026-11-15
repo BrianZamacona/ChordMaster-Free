@@ -11,7 +11,10 @@ const _names = <String, LocalizedText>{
   'pentatonic_dorian': LocalizedText(es: 'Pentatónica dórica', en: 'Dorian Pentatonic'),
   'pentatonic_phrygian': LocalizedText(es: 'Pentatónica frigia', en: 'Phrygian Pentatonic'),
   'pentatonic_lydian': LocalizedText(es: 'Pentatónica lidia', en: 'Lydian Pentatonic'),
-  'pentatonic_mixolydian': LocalizedText(es: 'Pentatónica mixolidia', en: 'Mixolydian Pentatonic'),
+  // Con las mismas notas que la "pentatónica dominante": la nombra.
+  'pentatonic_mixolydian': LocalizedText(es: 'Pentatónica mixolidia (dominante)', en: 'Mixolydian (Dominant) Pentatonic'),
+  'pentatonic_suspended': LocalizedText(es: 'Pentatónica suspendida', en: 'Suspended Pentatonic'),
+  'pentatonic_major7': LocalizedText(es: 'Pentatónica de 7ª mayor', en: 'Major 7 Pentatonic'),
   'harmonic_minor': LocalizedText(es: 'Menor armónica', en: 'Harmonic Minor'),
   'melodic_minor': LocalizedText(es: 'Menor melódica', en: 'Melodic Minor'),
   'whole_tone': LocalizedText(es: 'Tonos enteros', en: 'Whole Tone'),

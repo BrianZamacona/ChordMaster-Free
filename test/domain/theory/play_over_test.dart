@@ -34,7 +34,8 @@ void main() {
 
   test('en mayor: la escala mayor y su pentatónica; en menor y en los modos, la suya', () {
     expect(over('v1-2').fit, ['major']);
-    expect(over('v1-2').pentatonic, ['pentatonic_major']);
+    // La de 7ª mayor (1 2 3 5 7) también cabe en la mayor.
+    expect(over('v1-2').pentatonic, ['pentatonic_major', 'pentatonic_major7']);
     expect(over('m1').fit, contains('natural_minor'));
     expect(over('m1').pentatonic, contains('pentatonic_minor'));
     expect(over('m3').fit, contains('harmonic_minor'));
