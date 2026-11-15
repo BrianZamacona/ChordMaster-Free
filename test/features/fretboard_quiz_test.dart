@@ -29,11 +29,12 @@ void main() {
     WidgetTester tester, {
     String code = 'es',
     Size size = const Size(360, 1600),
+    Map<String, Object?> settings = const {},
   }) async {
     tester.view.devicePixelRatio = 1;
     tester.view.physicalSize = size;
     addTearDown(tester.view.reset);
-    final store = InMemoryStore(settings: {'localeCode': code});
+    final store = InMemoryStore(settings: {'localeCode': code, ...settings});
     appRouter.go('/');
     await tester.pumpWidget(
       ProviderScope(
@@ -143,5 +144,64 @@ void main() {
         pitchClassName(q.note),
       ),
     );
+  });
+
+  for (final code in ['es', 'en']) {
+    testWidgets('a 360 dp ($code): los filtros cambian la pregunta, se guardan y se resumen', (tester) async {
+      final (store, c) = await open(tester, code: code, size: const Size(360, 800));
+      await tester.tap(find.byKey(const Key('fret-quiz-filters')));
+      await settle(tester);
+      // Quedan solo la 6ª y la 5ª.
+      for (final s in [1, 2, 3, 4]) {
+        final chip = find.byKey(Key('fret-filter-string-$s'));
+        expect(tester.getRect(chip).right, lessThanOrEqualTo(360));
+        await tester.tap(chip);
+        await tester.pump();
+      }
+      final naturals = find.byKey(const Key('fret-filter-naturals'));
+      await tester.ensureVisible(naturals);
+      await tester.pump();
+      await tester.tap(naturals);
+      await tester.pump();
+      expect(tester.takeException(), isNull);
+      const want = FretQuizFilter(strings: {6, 5}, naturalsOnly: true);
+      expect(c.read(fretQuizViewModelProvider).filter, want);
+      await tester.runAsync(() => Future<void>.delayed(const Duration(milliseconds: 50)));
+      expect(FretQuizFilter.fromJson(store.settings[FretQuizViewModel.keyFilter]), want);
+      await tester.tapAt(const Offset(180, 40));
+      await settle(tester);
+      expect(
+        tester.widget<Text>(find.byKey(const Key('fret-quiz-filter-summary'))).data,
+        AppStrings.fretQuizFilterSummary([6, 5], 0, 12, naturals: true),
+      );
+      for (var i = 0; i < 15; i++) {
+        final q = question(c);
+        switch (q) {
+          case NameNoteQuestion(:final spot):
+            expect([6, 5], contains(spot.string));
+            expect(isNaturalNote(q.answer), isTrue);
+          case FindNoteQuestion(:final string, :final note):
+            expect([6, 5], contains(string));
+            expect(isNaturalNote(note), isTrue);
+          case OctaveQuestion():
+            fail('la 6ª y la 5ª no forman ninguna octava');
+        }
+        c.read(fretQuizViewModelProvider.notifier).next();
+        await tester.pump();
+      }
+    });
+  }
+
+  testWidgets('el filtro guardado se usa desde la primera pregunta', (tester) async {
+    const saved = FretQuizFilter(strings: {3}, fromFret: 5, toFret: 9);
+    final (_, c) = await open(tester, settings: {FretQuizViewModel.keyFilter: saved.toJson()});
+    expect(c.read(fretQuizViewModelProvider).filter, saved);
+    final q = question(c);
+    final string = switch (q) {
+      NameNoteQuestion(:final spot) => spot.string,
+      FindNoteQuestion(:final string) => string,
+      OctaveQuestion() => fail('con una sola cuerda no hay octavas'),
+    };
+    expect(string, 3);
   });
 }
