@@ -83,6 +83,13 @@ cada nota pertenezca a la escala. No bajar la tolerancia de 0.
   `_lydian` (1 2 3 #4 5) y `_mixolydian` (1 2 3 5 b7), con CAGED y caja de 2 notas. El locrio no
   tiene: daría un tritón de la b5 a la octava que no cabe en una caja ni llena las 6 cuerdas. La
   caja quita la b5 solo en la escala de blues. Test: `test/data/modal_pentatonics_test.dart`.
+- Modos de la menor melódica y la armónica (decisión del usuario tras revisar las apps de mástil;
+  regla en `regenerate_scales_master.py`): rotaciones de cada una, en `scales` con categoría
+  `Modo de la melódica` / `Modo de la armónica` y en el orden de sus grados (2º a 7º; el 1º es la
+  propia escala, en Diatónicas). Melódica: dórica b2, lidia aumentada, lidia dominante, mixolidia
+  b6, locria #2, alterada. Armónica: locria #6, jónica #5, dórica #4, frigia dominante (pasó de
+  Exóticas a su familia), lidia #2, superlocria bb7. En la lista de Escalas van detrás de los
+  modos de la mayor. Test: `test/data/minor_modes_test.dart` (rotación y lo que dice cada idea).
 - Disminuidas: el id sale de los intervalos (`diminished_hw` = empieza por semitono,
   semitono-tono; `diminished_wh` = por tono). Lo fija `regenerate_scales_master.py`.
 - Formas de principiante ('Beginner Grip' en `voicings`): F xx3211, B xx4442, Bm xx4432,

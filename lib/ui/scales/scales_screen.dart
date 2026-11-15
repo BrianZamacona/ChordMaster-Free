@@ -9,11 +9,15 @@ import '../../data/repository/scale_repository.dart';
 import '../../domain/theory/scale_insights.dart';
 import '../section_routes.dart';
 
-/// Escalas por categoría, los modos de la mayor y el acceso a double stops.
+/// Escalas por categoría, los modos de la mayor, los de la menor melódica y
+/// la armónica, y el acceso a double stops.
 class ScalesScreen extends ConsumerWidget {
   const ScalesScreen({super.key});
 
   static const _categories = ['Diatónica', 'Pentatónica', 'Simétrica', 'Exótica'];
+
+  /// Las familias de modos de la menor, detrás de los modos de la mayor.
+  static const _modeFamilies = ['Modo de la melódica', 'Modo de la armónica'];
 
   @override
   Widget build(BuildContext context, WidgetRef ref) {
@@ -48,6 +52,12 @@ class ScalesScreen extends ConsumerWidget {
                 scales: [for (final s in scales) if (s.category == c) s],
               ),
             _Section(title: AppStrings.scaleModes, scales: modes),
+            for (final c in _modeFamilies)
+              _Section(
+                title: scaleCategoryName(c),
+                note: c == _modeFamilies.first ? AppStrings.scaleModesMelodicNote : AppStrings.scaleModesHarmonicNote,
+                scales: [for (final s in scales) if (s.category == c) s],
+              ),
           ],
         ),
         loading: () => const Center(child: CircularProgressIndicator()),
@@ -58,9 +68,12 @@ class ScalesScreen extends ConsumerWidget {
 }
 
 class _Section extends StatelessWidget {
-  const _Section({required this.title, required this.scales});
+  const _Section({required this.title, required this.scales, this.note});
 
   final String title;
+
+  /// Una línea debajo del título.
+  final String? note;
   final List<ScaleDefinition> scales;
 
   @override
@@ -71,6 +84,10 @@ class _Section extends StatelessWidget {
       crossAxisAlignment: CrossAxisAlignment.start,
       children: [
         Text(title, style: Theme.of(context).textTheme.titleMedium),
+        if (note case final note?) ...[
+          const SizedBox(height: 4),
+          Text(note, style: Theme.of(context).textTheme.bodySmall),
+        ],
         const SizedBox(height: 8),
         ...scales.map((scale) => Card(
               child: ListTile(
