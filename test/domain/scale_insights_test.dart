@@ -89,7 +89,8 @@ void main() {
     final m6 = scalesForChord([0, 3, 7, 9], all);
     expect(m6, containsAll(['dorian', 'melodic_minor']));
     expect(m6, isNot(contains('natural_minor'))); // su b6 choca con la 6
-    expect(scalesForChord([0, 4, 7, 11, 18], all), ['lydian']);
+    // maj7(#11): la lidia y la lidia #2 (6º modo de la armónica: su #2 no choca).
+    expect(scalesForChord([0, 4, 7, 11, 18], all), unorderedEquals(['lydian', 'lydian_sharp2']));
   });
 
   test('disminuidas: el nombre sale de los intervalos, no del id', () {

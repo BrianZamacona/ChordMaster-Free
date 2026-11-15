@@ -430,6 +430,118 @@ ImprovisationTip? improvisationTips(String scaleId, List<int> scale) {
         en: 'It is the 5th mode of harmonic minor: the b2 falling to the tonic is the flamenco gesture.',
       ),
     ),
+    // Modos de la menor melódica.
+    'dorian_b2' => const ImprovisationTip(
+      style: LocalizedText(
+        es: 'Jazz, sobre acordes sus4 con b9 y en lugar de la frigia.',
+        en: 'Jazz, over sus4 chords with a b9 and instead of Phrygian.',
+      ),
+      idea: LocalizedText(
+        es: 'Es la dórica con b2 (o la frigia con 6): la b2 y la 6 juntas son su color.',
+        en: 'It is Dorian with a b2 (or Phrygian with a 6): the b2 and the 6 together are its color.',
+      ),
+    ),
+    'lydian_augmented' => const ImprovisationTip(
+      style: LocalizedText(
+        es: 'Jazz, sobre acordes maj7 con #5.',
+        en: 'Jazz, over maj7 chords with a #5.',
+      ),
+      idea: LocalizedText(
+        es: 'Del 1 al #5 todo va por tonos (1 2 3 #4 #5), como la de tonos enteros; la 6 y la 7 la devuelven a la tónica.',
+        en: 'From the 1 to the #5 it is all whole steps (1 2 3 #4 #5), like the whole-tone scale; the 6 and 7 bring it back home.',
+      ),
+    ),
+    'lydian_dominant' => const ImprovisationTip(
+      style: LocalizedText(
+        es: 'Jazz, fusión y bandas sonoras, sobre acordes 7 con #11.',
+        en: 'Jazz, fusion and soundtracks, over 7 chords with a #11.',
+      ),
+      idea: LocalizedText(
+        es: 'Es la mixolidia con #4 (o la lidia con b7): la #4 sobre el acorde 7 suena abierta, sin el choque de la 4 con la 3.',
+        en: 'It is Mixolydian with a #4 (or Lydian with a b7): the #4 over the 7 chord sounds open, without the 4 clashing with the 3.',
+      ),
+    ),
+    'mixolydian_b6' => const ImprovisationTip(
+      style: LocalizedText(
+        es: 'Rock y bandas sonoras, sobre un acorde mayor o 7 con sonido melancólico.',
+        en: 'Rock and soundtracks, over a major or 7 chord with a wistful sound.',
+      ),
+      idea: LocalizedText(
+        es: 'Abajo (1 2 3 4) es la mayor y arriba (5 b6 b7) la menor natural: empieza alegre y termina triste.',
+        en: 'The bottom (1 2 3 4) is the major scale and the top (5 b6 b7) natural minor: it starts bright and ends dark.',
+      ),
+    ),
+    'locrian_sharp2' => const ImprovisationTip(
+      style: LocalizedText(
+        es: 'Jazz, sobre el acorde m7(b5) (semidisminuido).',
+        en: 'Jazz, over the m7(b5) (half-diminished) chord.',
+      ),
+      idea: LocalizedText(
+        es: 'Es la locria con 2: la b2 de la locria choca con el m7(b5) y esta 2 suena como su 9.',
+        en: 'It is Locrian with a 2: Locrian\'s b2 clashes with the m7(b5) and this 2 sounds as its 9.',
+      ),
+    ),
+    'altered' => const ImprovisationTip(
+      style: LocalizedText(
+        es: 'Jazz, sobre el acorde 7 alterado que resuelve a la tónica.',
+        en: 'Jazz, over the altered 7 chord that resolves to the tonic.',
+      ),
+      idea: LocalizedText(
+        es: 'Piensa en el acorde 7: tiene su 1, su 3 (escrita b4) y su b7, y todas las tensiones alteradas (b9, #9, b5, #5), pero no la 5.',
+        en: 'Think of the 7 chord: it has its 1, its 3 (spelled b4) and its b7, plus every altered tension (b9, #9, b5, #5), but not the 5.',
+      ),
+    ),
+    // Modos de la menor armónica (el 5º es la frigia dominante).
+    'locrian_sharp6' => const ImprovisationTip(
+      style: LocalizedText(
+        es: 'Sobre el m7(b5) del ii en una tonalidad menor (ii–V7–i).',
+        en: 'Over the m7(b5) of the ii in a minor key (ii–V7–i).',
+      ),
+      idea: LocalizedText(
+        es: 'Es la locria con 6: esa 6 es la sensible de la menor armónica y la que la distingue.',
+        en: 'It is Locrian with a 6: that 6 is harmonic minor\'s leading tone and what sets it apart.',
+      ),
+    ),
+    'ionian_augmented' => const ImprovisationTip(
+      style: LocalizedText(
+        es: 'Jazz y música clásica, sobre acordes maj7 con #5.',
+        en: 'Jazz and classical music, over maj7 chords with a #5.',
+      ),
+      idea: LocalizedText(
+        es: 'Es la mayor con #5: del 4 al #5 hay tono y medio, y la #5 sube a la 6 por medio tono.',
+        en: 'It is the major scale with a #5: from the 4 to the #5 is a step and a half, and the #5 rises a half step to the 6.',
+      ),
+    ),
+    'dorian_sharp4' => const ImprovisationTip(
+      style: LocalizedText(
+        es: 'Música de Europa del Este, klezmer y flamenco, sobre un acorde menor o m7.',
+        en: 'Eastern European music, klezmer and flamenco, over a minor or m7 chord.',
+      ),
+      idea: LocalizedText(
+        es: 'Es la dórica con #4: de la b3 a la #4 hay tono y medio, y la #4 sube a la 5 por medio tono.',
+        en: 'It is Dorian with a #4: from the b3 to the #4 is a step and a half, and the #4 rises a half step to the 5.',
+      ),
+    ),
+    'lydian_sharp2' => const ImprovisationTip(
+      style: LocalizedText(
+        es: 'Bandas sonoras y metal, sobre un acorde maj7 o maj7(#11).',
+        en: 'Soundtracks and metal, over a maj7 or maj7(#11) chord.',
+      ),
+      idea: LocalizedText(
+        es: 'Es la lidia con #2: de la tónica a la #2 hay tono y medio, y la #2 sube a la 3 por medio tono, como un adorno.',
+        en: 'It is Lydian with a #2: from the tonic to the #2 is a step and a half, and the #2 rises a half step to the 3, like an ornament.',
+      ),
+    ),
+    'super_locrian_bb7' => const ImprovisationTip(
+      style: LocalizedText(
+        es: 'Sobre el acorde dim7 de la sensible en la menor armónica, y en el metal neoclásico.',
+        en: 'Over the leading-tone dim7 chord in harmonic minor, and in neoclassical metal.',
+      ),
+      idea: LocalizedText(
+        es: 'Es la alterada con bb7: 1, b3, b5 y bb7 forman el acorde dim7, y las otras tres notas van entre ellas.',
+        en: 'It is the altered scale with a bb7: 1, b3, b5 and bb7 make the dim7 chord, and the other three notes sit between them.',
+      ),
+    ),
     'dorian' => const ImprovisationTip(
       style: LocalizedText(
         es: 'Funk, jazz, rock latino (Santana) sobre acordes m7 que se quedan.',

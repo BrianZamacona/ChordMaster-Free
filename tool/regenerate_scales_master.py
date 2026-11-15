@@ -25,6 +25,10 @@ Reglas
            con CAGED y la caja de 2 notas por cuerda. El jónico y el eólico son la mayor y la
            menor natural, sin nota propia; el locrio daría 1 b2 b3 4 b5, con un tritón de la b5 a
            la octava que no cabe en una caja ni llena las 6 cuerdas en una ventana CAGED.
+  Modos de la menor melódica y la armónica (decisión del usuario tras revisar las apps de
+           mástil): rotaciones de cada una, como los de la mayor, en `scales` con la categoría
+           de su familia y en el orden de sus grados (el 1º es la propia escala y no se repite;
+           el 5º de la armónica es `phrygian_dominant`, que pasa a esa familia).
 Corrige además los `intervals` de los 7 modos (eran los de Jónico para todos) y el id/nombre
 de las dos disminuidas, que estaban cruzados: el id sale de los intervalos (empieza por
 semitono -> `diminished_hw`, semitono-tono; por tono -> `diminished_wh`, tono-semitono).
@@ -165,6 +169,34 @@ def add_modal_pentatonics(data):
             data['scales'].append(entry)
         entry['intervals'] = modal_pentatonic(mode)
 
+MELODIC = [0, 2, 3, 5, 7, 9, 11]
+HARMONIC = [0, 2, 3, 5, 7, 8, 11]
+# familia -> (escala madre, categoría, [(grado desde 0, id, nombre en inglés)])
+MODE_FAMILIES = [
+    (MELODIC, 'Modo de la melódica', [
+        (1, 'dorian_b2', 'Dorian b2'), (2, 'lydian_augmented', 'Lydian Augmented'),
+        (3, 'lydian_dominant', 'Lydian Dominant'), (4, 'mixolydian_b6', 'Mixolydian b6'),
+        (5, 'locrian_sharp2', 'Locrian #2'), (6, 'altered', 'Altered')]),
+    (HARMONIC, 'Modo de la armónica', [
+        (1, 'locrian_sharp6', 'Locrian #6'), (2, 'ionian_augmented', 'Ionian #5'),
+        (3, 'dorian_sharp4', 'Dorian #4'), (4, 'phrygian_dominant', 'Phrygian Dominant'),
+        (5, 'lydian_sharp2', 'Lydian #2'), (6, 'super_locrian_bb7', 'Super Locrian bb7')]),
+]
+
+def rotation(scale, degree):
+    return sorted({(m - scale[degree]) % 12 for m in scale})
+
+def add_mode_families(data):
+    by_id = {s['id']: s for s in data['scales']}
+    family_ids = {sid for _, _, modes in MODE_FAMILIES for _, sid, _ in modes}
+    data['scales'] = [s for s in data['scales'] if s['id'] not in family_ids]
+    for parent, category, modes in MODE_FAMILIES:
+        for degree, sid, name in modes:
+            entry = by_id.get(sid) or {'id': sid, 'name': name, 'description': ''}
+            entry['category'] = category
+            entry['intervals'] = rotation(parent, degree)
+            data['scales'].append(entry)
+
 def main(path):
     data = json.loads(Path(path).read_text(encoding='utf-8'))
     for s in data['modes']:
@@ -175,6 +207,7 @@ def main(path):
             s['id'] = 'diminished_hw' if half_first else 'diminished_wh'
             s['name'] = 'Diminished Half-Whole' if half_first else 'Diminished Whole-Half'
     add_modal_pentatonics(data)
+    add_mode_families(data)
     for s in data['scales'] + data['modes']:
         iv = s['intervals']; pos = []; systems = []
         if s in data['scales']:

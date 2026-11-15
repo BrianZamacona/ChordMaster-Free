@@ -1271,7 +1271,15 @@ class AppStrings {
   static String get scaleShapeOrder => tr(es: 'Orden', en: 'Order');
   static String get cagedPositions =>
       tr(es: 'Posiciones CAGED', en: 'CAGED positions');
-  static String get scaleModes => tr(es: 'Modos', en: 'Modes');
+  static String get scaleModes => tr(es: 'Modos de la mayor', en: 'Major scale modes');
+  static String get scaleModesMelodicNote => tr(
+    es: 'Cada uno empieza en otro grado de la menor melódica (el 1º es ella misma, en Diatónicas).',
+    en: 'Each one starts on another degree of melodic minor (the 1st is melodic minor itself, under Diatonic).',
+  );
+  static String get scaleModesHarmonicNote => tr(
+    es: 'Cada uno empieza en otro grado de la menor armónica (el 1º es ella misma, en Diatónicas).',
+    en: 'Each one starts on another degree of harmonic minor (the 1st is harmonic minor itself, under Diatonic).',
+  );
   static String get scaleNotesCount => tr(es: 'notas', en: 'notes');
   static String get dsSub => tr(
     es: 'Parejas de notas por grado y par de cuerdas',
