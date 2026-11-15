@@ -11,6 +11,7 @@ import '../../ui/theme.dart';
 import '../../ui/widgets/fretboard_diagram.dart';
 import 'fretboard_quiz_filter_sheet.dart';
 import 'fretboard_quiz_viewmodel.dart';
+import 'fretboard_round_panel.dart';
 
 /// Quiz del diapasón: el mástil marca un lugar y se elige entre cuatro
 /// opciones (la nota, o el traste de su octava). Al responder se ve la
@@ -25,20 +26,13 @@ class FretQuizScreen extends ConsumerWidget {
     final q = state.question;
     final p = context.palette;
     final text = Theme.of(context).textTheme;
-    final (prompt, label) = switch (q) {
-      NameNoteQuestion(:final spot) => (
-        AppStrings.fretQuizNameNote(spot.string, spot.fret),
-        pitchClassName,
-      ),
-      FindNoteQuestion(:final note, :final string) => (
-        AppStrings.fretQuizFindNote(pitchClassName(note), string),
-        AppStrings.fretQuizFret,
-      ),
-      OctaveQuestion(:final from, :final to) => (
-        AppStrings.fretQuizFindOctave(pitchClassName(pitchClassAt(from)), from.string, from.fret, to.string),
-        AppStrings.fretQuizFret,
-      ),
-    };
+    final prompt = fretQuestionPrompt(q);
+    final label = fretChoiceLabel(q);
+    final inRound = state.round != null;
+    // Con la pestaña oculta la ronda no sigue corriendo: se deja.
+    if (inRound && !TickerMode.valuesOf(context).enabled) {
+      WidgetsBinding.instance.addPostFrameCallback((_) => vm.stopRound());
+    }
 
     return Scaffold(
       appBar: AppBar(
@@ -48,27 +42,33 @@ class FretQuizScreen extends ConsumerWidget {
             key: const Key('fret-quiz-filters'),
             tooltip: AppStrings.fretQuizFilters,
             icon: const Icon(Icons.tune),
-            onPressed: () => showFretQuizFilterSheet(context),
+            // Durante la ronda no se cambia qué se practica.
+            onPressed: inRound ? null : () => showFretQuizFilterSheet(context),
           ),
         ],
       ),
       body: ListView(
         padding: const EdgeInsets.fromLTRB(16, 12, 16, 32),
         children: [
-          Text(AppStrings.fretQuizIntro, style: text.bodyMedium?.copyWith(color: p.textSecondary)),
-          const SizedBox(height: 8),
-          Text(
-            AppStrings.fretQuizFilterSummary(
-              [for (var s = 6; s >= 1; s--) if (state.filter.strings.contains(s)) s],
-              state.filter.fromFret,
-              state.filter.toFret,
-              naturals: state.filter.naturalsOnly,
+          // En la ronda, el mástil y las opciones suben: sin la introducción.
+          if (!inRound) ...[
+            Text(AppStrings.fretQuizIntro, style: text.bodyMedium?.copyWith(color: p.textSecondary)),
+            const SizedBox(height: 8),
+            Text(
+              AppStrings.fretQuizFilterSummary(
+                [for (var s = 6; s >= 1; s--) if (state.filter.strings.contains(s)) s],
+                state.filter.fromFret,
+                state.filter.toFret,
+                naturals: state.filter.naturalsOnly,
+              ),
+              key: const Key('fret-quiz-filter-summary'),
+              style: musicMono(fontSize: 12, color: p.textSecondary),
             ),
-            key: const Key('fret-quiz-filter-summary'),
-            style: musicMono(fontSize: 12, color: p.textSecondary),
-          ),
+            const SizedBox(height: 12),
+          ],
+          const FretRoundPanel(),
           const SizedBox(height: 12),
-          SizedBox(height: 230, child: _Neck(question: q, answered: state.isAnswered, prompt: prompt)),
+          SizedBox(height: 230, child: _Neck(question: q, answered: state.isAnswered, prompt: prompt, filter: state.filter)),
           const SizedBox(height: 12),
           Text(prompt, key: const Key('fret-quiz-prompt'), style: text.titleMedium),
           const SizedBox(height: 12),
@@ -93,6 +93,10 @@ class FretQuizScreen extends ConsumerWidget {
                 ),
             ],
           ),
+          if (state.round?.previous case final previous?) ...[
+            const SizedBox(height: 12),
+            FretRoundPrevious(previous: previous),
+          ],
           if (state.isAnswered) ...[
             const SizedBox(height: 12),
             Text(
@@ -131,26 +135,43 @@ class FretQuizScreen extends ConsumerWidget {
               ),
             ),
           ],
+          if (!inRound) ...[
           const SizedBox(height: 16),
           Text(
             AppStrings.fretQuizScore(state.correct, state.answered, state.streak, state.bestStreak),
             key: const Key('fret-quiz-score'),
             style: musicMono(fontSize: 13, color: p.textSecondary),
           ),
+          ],
         ],
       ),
     );
   }
 }
 
+/// Lo que pregunta [q], sin la respuesta.
+String fretQuestionPrompt(FretQuestion q) => switch (q) {
+  NameNoteQuestion(:final spot) => AppStrings.fretQuizNameNote(spot.string, spot.fret),
+  FindNoteQuestion(:final note, :final string) => AppStrings.fretQuizFindNote(pitchClassName(note), string),
+  OctaveQuestion(:final from, :final to) =>
+    AppStrings.fretQuizFindOctave(pitchClassName(pitchClassAt(from)), from.string, from.fret, to.string),
+};
+
+/// Cómo se escribe una opción de [q]: una nota o un traste.
+String Function(int) fretChoiceLabel(FretQuestion q) =>
+    q is NameNoteQuestion ? pitchClassName : AppStrings.fretQuizFret;
+
 /// El mástil con lo que pregunta: la nota a nombrar ("?" hasta responder),
 /// la nota a encontrar (vacío hasta responder) o la nota de partida (raíz,
 /// cuadrada) y, al responder, su octava.
 class _Neck extends StatelessWidget {
-  const _Neck({required this.question, required this.answered, required this.prompt});
+  const _Neck({required this.question, required this.answered, required this.prompt, required this.filter});
 
   final FretQuestion question;
   final bool answered;
+
+  /// Sin notas que mostrar, se centra su tramo de trastes.
+  final FretQuizFilter filter;
 
   /// Lo que lee el lector de pantalla: la pregunta (sin la respuesta).
   final String prompt;
@@ -176,9 +197,10 @@ class _Neck extends StatelessWidget {
       key: ValueKey(question),
       coordinates: spots,
       label: FretboardLabel.note,
-      // Sin notas (la pregunta al revés, antes de responder), desde la cejuela.
+      // Sin notas (la pregunta al revés, antes de responder), el tramo del
+      // filtro.
       focus: frets.isEmpty
-          ? null
+          ? (start: math.max(1, filter.fromFret), end: math.max(4, filter.toFret))
           : (start: math.max(1, frets.reduce(math.min) - 1), end: math.max(4, frets.reduce(math.max) + 2)),
       semanticLabel: prompt,
     );

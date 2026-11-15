@@ -204,4 +204,84 @@ void main() {
     };
     expect(string, 3);
   });
+
+  for (final code in ['es', 'en']) {
+    testWidgets('a 360 dp ($code): la ronda de 60 s cuenta puntos sin pausa y guarda el récord', (tester) async {
+      final (store, c) = await open(tester, code: code);
+      final start = find.byKey(const Key('fret-round-start'));
+      expect(tester.getRect(start).right, lessThanOrEqualTo(360));
+      await tester.tap(start);
+      await tester.pump();
+      expect(find.byKey(const Key('fret-round-left')), findsOneWidget);
+      // Bien, bien, mal: la siguiente sale al responder, sin botón.
+      for (final right in [true, true, false]) {
+        final q = question(c);
+        final pick = right ? q.answer : q.choices.firstWhere((x) => x != q.answer);
+        final button = choiceFor(c, pick);
+        await tester.ensureVisible(button);
+        await tester.pump();
+        await tester.tap(button);
+        await tester.pump();
+        expect(find.byKey(const Key('fret-quiz-next')), findsNothing);
+        expect(question(c), isNot(same(q)));
+        expect(find.byKey(const Key('fret-round-previous')), findsOneWidget);
+      }
+      expect(
+        tester.widget<Text>(find.byKey(const Key('fret-round-score'))).data,
+        AppStrings.fretRoundScore(2, 3),
+      );
+      expect(tester.takeException(), isNull);
+      await tester.pump(const Duration(seconds: 30));
+      expect(tester.widget<Text>(find.byKey(const Key('fret-round-left'))).data, AppStrings.fretRoundLeft(30));
+      await tester.pump(const Duration(seconds: 30));
+      await tester.pump();
+      expect(find.byKey(const Key('fret-round-result')), findsOneWidget);
+      expect(find.text(AppStrings.fretRoundOver(2, 3)), findsOneWidget);
+      expect(find.text(AppStrings.fretRoundNewRecord), findsOneWidget);
+      await tester.runAsync(() => Future<void>.delayed(const Duration(milliseconds: 50)));
+      expect(store.progress[FretQuizViewModel.keyBestRound], 2);
+      expect(tester.takeException(), isNull);
+      // Otra ronda empieza de cero; terminarla antes no cuenta para el récord.
+      await tester.tap(find.byKey(const Key('fret-round-again')));
+      await tester.pump();
+      expect(c.read(fretQuizViewModelProvider).round!.left, 60);
+      await tester.tap(find.byKey(const Key('fret-round-stop')));
+      await tester.pump();
+      expect(c.read(fretQuizViewModelProvider).round, isNull);
+      expect(find.byKey(const Key('fret-round-result')), findsNothing);
+      expect(
+        tester.widget<Text>(find.byKey(const Key('fret-round-best'))).data,
+        AppStrings.fretRoundBest(2),
+      );
+    });
+  }
+
+  testWidgets('durante la ronda no se cambian los filtros', (tester) async {
+    final (_, c) = await open(tester);
+    c.read(fretQuizViewModelProvider.notifier).startRound();
+    await tester.pump();
+    final filters = tester.widget<IconButton>(find.byKey(const Key('fret-quiz-filters')));
+    expect(filters.onPressed, isNull);
+    c.read(fretQuizViewModelProvider.notifier).stopRound();
+    await tester.pump();
+  });
+
+  for (final code in ['es', 'en']) {
+    testWidgets('a 360 × 780 dp ($code): en la ronda las cuatro opciones se ven sin desplazar', (tester) async {
+      final (_, c) = await open(tester, code: code, size: const Size(360, 780));
+      final bar = tester.getRect(find.byType(NavigationBar));
+      for (var i = 0; i < 12; i++) {
+        c.read(fretQuizViewModelProvider.notifier).startRound();
+        await tester.pump();
+        await tester.pump(const Duration(milliseconds: 300));
+        expect(find.byKey(const Key('fret-quiz-filter-summary')), findsNothing);
+        for (var k = 0; k < fretQuizChoices; k++) {
+          expect(tester.getRect(find.byKey(Key('fret-choice-$k'))).bottom, lessThanOrEqualTo(bar.top), reason: '$i');
+        }
+        c.read(fretQuizViewModelProvider.notifier).stopRound();
+        await tester.pump();
+      }
+      expect(tester.takeException(), isNull);
+    });
+  }
 }

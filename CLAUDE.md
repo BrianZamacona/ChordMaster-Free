@@ -242,7 +242,12 @@ cada nota pertenezca a la escala. No bajar la tolerancia de 0.
   de la barra, `FretQuizFilter`, en ajustes `fretboard_quiz_filter`) elige cuerdas, tramo (al menos
   cuatro trastes, `fretQuizMinSpan`) y solo notas naturales; toda pregunta cae dentro (la octava
   pide sus dos cuerdas; si no cabe ninguna, no sale) y la pregunta al revés busca en doce trastes
-  desde el primero del tramo. El generador se inyecta
+  desde el primero del tramo. Ronda de 60 s (`lib/domain/theory/fretboard_round.dart`, inspirada en
+  el desafío de FretMaster): las mismas preguntas sin pausa (la siguiente sale al responder y se dice
+  si la anterior estuvo bien), un punto por acierto, el error no resta; el reloj es un `Timer` de un
+  segundo en el view-model y la ronda se deja al ocultar la pestaña. Récord en
+  `fretboard_quiz_best_round` (solo una ronda entera; terminarla antes no cuenta); durante la
+  ronda no se cambian los filtros. El generador se inyecta
   (`fretQuizRandomProvider`) para los tests; la mejor racha va en `fretboard_quiz_best_streak` y cada
   respuesta anota `PracticeActivity.fretboard`. La guía "El mástil" (Teoría) lo enlaza.
 - CAGED al azar (`/practice/caged`, en Practicar; decisión del usuario tras revisar las apps CAGED;
