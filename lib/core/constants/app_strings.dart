@@ -874,6 +874,21 @@ class AppStrings {
           en: 'Octave shape: ${shift > 0 ? '+' : '−'}${shift.abs()} frets${octaves == 2 ? ', two octaves' : ''}.',
         );
   static String get fretQuizNext => tr(es: 'Siguiente', en: 'Next');
+  static String get fretQuizReview => tr(
+    es: 'Repaso: aquí te equivocaste la última vez.',
+    en: 'Review: you missed this one last time.',
+  );
+  static String get fretMapTitle => tr(es: 'Tu mapa del mástil', en: 'Your fretboard map');
+  static String get fretMapIntro => tr(
+    es: 'Cada lugar del traste 0 al 12 se marca con tus respuestas: débil si fallaste la última vez, en camino al acertar y dominado con 3 aciertos seguidos. Los débiles vuelven en el repaso, una de cada tres preguntas.',
+    en: 'Every spot from fret 0 to 12 is marked by your answers: weak if you missed it last time, on the way once you get it right and mastered after 3 in a row. Weak spots come back in review, one question in three.',
+  );
+  static String fretMapWeak(int count) => tr(es: 'Débiles ($count)', en: 'Weak ($count)');
+  static String fretMapLearning(int count) => tr(es: 'En camino ($count)', en: 'On the way ($count)');
+  static String fretMapMastered(int count) => tr(es: 'Dominados ($count)', en: 'Mastered ($count)');
+  static String get fretMapNone => tr(es: 'Ninguno todavía.', en: 'None yet.');
+  static String fretMapUnexplored(int count, int total) =>
+      tr(es: 'Sin explorar: $count de $total lugares.', en: 'Unexplored: $count of $total spots.');
   static String get fretRoundStart => tr(es: 'Ronda de 60 s', en: '60-second round');
   static String get fretRoundStartSub => tr(
     es: 'Las mismas preguntas, sin pausa: un punto por acierto.',
