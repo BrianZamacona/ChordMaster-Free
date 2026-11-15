@@ -18,9 +18,13 @@ class FretQuizState {
     this.correct = 0,
     this.streak = 0,
     this.bestStreak = 0,
+    this.filter = const FretQuizFilter(),
   });
 
   final FretQuestion question;
+
+  /// Qué se practica (cuerdas, trastes, solo naturales).
+  final FretQuizFilter filter;
 
   /// Lo que se eligió (`null` = sin responder).
   final int? selected;
@@ -40,6 +44,7 @@ class FretQuizState {
     int? correct,
     int? streak,
     int? bestStreak,
+    FretQuizFilter? filter,
   }) =>
       FretQuizState(
         question: question ?? this.question,
@@ -48,6 +53,7 @@ class FretQuizState {
         correct: correct ?? this.correct,
         streak: streak ?? this.streak,
         bestStreak: bestStreak ?? this.bestStreak,
+        filter: filter ?? this.filter,
       );
 }
 
@@ -57,10 +63,12 @@ final fretQuizRandomProvider = Provider<Random>((ref) => Random());
 final fretQuizViewModelProvider =
     NotifierProvider.autoDispose<FretQuizViewModel, FretQuizState>(FretQuizViewModel.new);
 
-/// La mejor racha se guarda en [StorageBoxes.userProgress]; cada respuesta
-/// cuenta como día de práctica del diapasón.
+/// La mejor racha se guarda en [StorageBoxes.userProgress] y el filtro en
+/// [StorageBoxes.settings]; cada respuesta cuenta como día de práctica del
+/// diapasón.
 class FretQuizViewModel extends Notifier<FretQuizState> {
   static const keyBestStreak = 'fretboard_quiz_best_streak';
+  static const keyFilter = 'fretboard_quiz_filter';
 
   Random get _rng => ref.read(fretQuizRandomProvider);
 
@@ -75,7 +83,14 @@ class FretQuizViewModel extends Notifier<FretQuizState> {
   Future<void> _load() async {
     try {
       final best = await _storage.get<int>(StorageBoxes.userProgress, keyBestStreak) ?? 0;
-      if (ref.mounted && best > state.bestStreak) state = state.copyWith(bestStreak: best);
+      final filter = FretQuizFilter.fromJson(await _storage.get<Map>(StorageBoxes.settings, keyFilter));
+      if (!ref.mounted) return;
+      if (best > state.bestStreak) state = state.copyWith(bestStreak: best);
+      // Con un filtro guardado, la primera pregunta se vuelve a sacar dentro
+      // de él (si todavía no se respondió).
+      if (filter != state.filter && !state.isAnswered) {
+        state = state.copyWith(filter: filter, question: nextFretQuestion(_rng, filter));
+      }
     } catch (e, st) {
       debugPrint('FretQuizViewModel._load error: $e\n$st');
     }
@@ -103,5 +118,17 @@ class FretQuizViewModel extends Notifier<FretQuizState> {
     }
   }
 
-  void next() => state = state.copyWith(question: nextFretQuestion(_rng), selected: () => null);
+  void next() => state = state.copyWith(question: nextFretQuestion(_rng, state.filter), selected: () => null);
+
+  /// Cambia qué se practica: saca una pregunta nueva dentro y lo guarda. Un
+  /// filtro no válido (sin cuerdas o con menos de cuatro trastes) no se toma.
+  Future<void> setFilter(FretQuizFilter filter) async {
+    if (!filter.isValid || filter == state.filter) return;
+    state = state.copyWith(filter: filter, question: nextFretQuestion(_rng, filter), selected: () => null);
+    try {
+      await _storage.save(StorageBoxes.settings, keyFilter, filter.toJson());
+    } catch (e, st) {
+      debugPrint('FretQuizViewModel.setFilter error: $e\n$st');
+    }
+  }
 }

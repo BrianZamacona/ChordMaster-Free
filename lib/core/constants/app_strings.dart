@@ -874,6 +874,29 @@ class AppStrings {
           en: 'Octave shape: ${shift > 0 ? '+' : '−'}${shift.abs()} frets${octaves == 2 ? ', two octaves' : ''}.',
         );
   static String get fretQuizNext => tr(es: 'Siguiente', en: 'Next');
+  static String get fretQuizFilters => tr(es: 'Qué practicar', en: 'What to practice');
+  static String get fretQuizStrings => tr(es: 'Cuerdas', en: 'Strings');
+  static String fretQuizFrets(int from, int to) =>
+      tr(es: 'Trastes del $from al $to', en: 'Frets $from to $to');
+  static String get fretQuizFretsHint => tr(
+    es: 'Al menos cuatro trastes seguidos.',
+    en: 'At least four frets in a row.',
+  );
+  static String get fretQuizNaturals => tr(es: 'Solo notas naturales', en: 'Natural notes only');
+  static String get fretQuizNaturalsSub =>
+      tr(es: 'Sin sostenidos: C D E F G A B.', en: 'No sharps: C D E F G A B.');
+  static String get fretQuizNoOctaves => tr(
+    es: 'Con estas cuerdas y trastes no cabe ninguna octava: se turnan las otras dos preguntas.',
+    en: 'No octave fits these strings and frets: the other two questions take turns.',
+  );
+  static String get fretQuizAllFilters => tr(es: 'Todo el mástil', en: 'Whole neck');
+  static String fretQuizFilterSummary(List<int> strings, int from, int to, {required bool naturals}) {
+    final names = strings.join(' ');
+    return tr(
+      es: 'Cuerdas $names · trastes $from a $to · ${naturals ? 'solo naturales' : 'todas las notas'}',
+      en: 'Strings $names · frets $from to $to · ${naturals ? 'naturals only' : 'all notes'}',
+    );
+  }
   static String fretQuizScore(int correct, int answered, int streak, int best) => tr(
     es: 'Aciertos $correct de $answered · racha $streak · mejor $best',
     en: 'Correct $correct of $answered · streak $streak · best $best',

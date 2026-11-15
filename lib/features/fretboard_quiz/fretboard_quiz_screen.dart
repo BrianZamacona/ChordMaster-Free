@@ -9,6 +9,7 @@ import '../../domain/theory/fretboard_quiz.dart';
 import '../../domain/theory/notes.dart';
 import '../../ui/theme.dart';
 import '../../ui/widgets/fretboard_diagram.dart';
+import 'fretboard_quiz_filter_sheet.dart';
 import 'fretboard_quiz_viewmodel.dart';
 
 /// Quiz del diapasón: el mástil marca un lugar y se elige entre cuatro
@@ -40,11 +41,32 @@ class FretQuizScreen extends ConsumerWidget {
     };
 
     return Scaffold(
-      appBar: AppBar(title: Text(AppStrings.hubFretboard)),
+      appBar: AppBar(
+        title: Text(AppStrings.hubFretboard),
+        actions: [
+          IconButton(
+            key: const Key('fret-quiz-filters'),
+            tooltip: AppStrings.fretQuizFilters,
+            icon: const Icon(Icons.tune),
+            onPressed: () => showFretQuizFilterSheet(context),
+          ),
+        ],
+      ),
       body: ListView(
         padding: const EdgeInsets.fromLTRB(16, 12, 16, 32),
         children: [
           Text(AppStrings.fretQuizIntro, style: text.bodyMedium?.copyWith(color: p.textSecondary)),
+          const SizedBox(height: 8),
+          Text(
+            AppStrings.fretQuizFilterSummary(
+              [for (var s = 6; s >= 1; s--) if (state.filter.strings.contains(s)) s],
+              state.filter.fromFret,
+              state.filter.toFret,
+              naturals: state.filter.naturalsOnly,
+            ),
+            key: const Key('fret-quiz-filter-summary'),
+            style: musicMono(fontSize: 12, color: p.textSecondary),
+          ),
           const SizedBox(height: 12),
           SizedBox(height: 230, child: _Neck(question: q, answered: state.isAnswered, prompt: prompt)),
           const SizedBox(height: 12),

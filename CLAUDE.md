@@ -238,7 +238,11 @@ cada nota pertenezca a la escala. No bajar la tolerancia de 0.
   vecinos; el mástil queda vacío hasta responder; decisión del usuario tras revisar las apps de mástil)
   y "¿en qué traste está su octava?" con las formas de
   `octaveShapes` (opciones: el traste de partida, el error típico, y los vecinos; la forma 6 → 1 de
-  dos octavas cae en el mismo traste). Trastes 0 a 12. El generador se inyecta
+  dos octavas cae en el mismo traste). Trastes 0 a 12, salvo que se filtre: «Qué practicar» (botón
+  de la barra, `FretQuizFilter`, en ajustes `fretboard_quiz_filter`) elige cuerdas, tramo (al menos
+  cuatro trastes, `fretQuizMinSpan`) y solo notas naturales; toda pregunta cae dentro (la octava
+  pide sus dos cuerdas; si no cabe ninguna, no sale) y la pregunta al revés busca en doce trastes
+  desde el primero del tramo. El generador se inyecta
   (`fretQuizRandomProvider`) para los tests; la mejor racha va en `fretboard_quiz_best_streak` y cada
   respuesta anota `PracticeActivity.fretboard`. La guía "El mástil" (Teoría) lo enlaza.
 - CAGED al azar (`/practice/caged`, en Practicar; decisión del usuario tras revisar las apps CAGED;
