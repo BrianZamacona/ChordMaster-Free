@@ -839,8 +839,8 @@ class AppStrings {
     en: 'Name notes, find them on a string and look for their octaves.',
   );
   static String get fretQuizIntro => tr(
-    es: 'Tres preguntas que se turnan: qué nota hay en un lugar del mástil, en qué traste de una cuerda está una nota y en qué traste está su octava. Cada respuesta cuenta como práctica del día.',
-    en: 'Three questions that take turns: which note is at a spot on the neck, on which fret of a string a note is, and on which fret its octave is. Every answer counts as practice for the day.',
+    es: 'Tres preguntas que se turnan: qué nota hay en un lugar del mástil, en qué traste de una cuerda está una nota y en qué traste está su octava. Sin prisa o en una ronda con reloj; cada respuesta cuenta como práctica del día.',
+    en: 'Three questions that take turns: which note is at a spot on the neck, on which fret of a string a note is, and on which fret its octave is. At your pace or in a timed round; every answer counts as practice for the day.',
   );
   static String fretQuizNameNote(int string, int fret) => tr(
     es: '¿Qué nota es? Cuerda $string, traste $fret.',
@@ -874,6 +874,25 @@ class AppStrings {
           en: 'Octave shape: ${shift > 0 ? '+' : '−'}${shift.abs()} frets${octaves == 2 ? ', two octaves' : ''}.',
         );
   static String get fretQuizNext => tr(es: 'Siguiente', en: 'Next');
+  static String get fretRoundStart => tr(es: 'Ronda de 60 s', en: '60-second round');
+  static String get fretRoundStartSub => tr(
+    es: 'Las mismas preguntas, sin pausa: un punto por acierto.',
+    en: 'The same questions, no pauses: one point per right answer.',
+  );
+  static String fretRoundBest(int best) => tr(es: 'Récord: $best', en: 'Best: $best');
+  static String fretRoundLeft(int seconds) => tr(es: 'Quedan $seconds s', en: '$seconds s left');
+  static String fretRoundScore(int points, int answered) => tr(
+    es: 'Puntos $points · respondidas $answered',
+    en: 'Points $points · answered $answered',
+  );
+  static String get fretRoundStop => tr(es: 'Terminar', en: 'Stop');
+  static String fretRoundOver(int points, int answered) => tr(
+    es: 'Se acabó el tiempo: ${points == 1 ? '1 punto' : '$points puntos'} en ${answered == 1 ? '1 respuesta' : '$answered respuestas'}.',
+    en: "Time's up: ${points == 1 ? '1 point' : '$points points'} from ${answered == 1 ? '1 answer' : '$answered answers'}.",
+  );
+  static String get fretRoundNewRecord => tr(es: '¡Récord nuevo!', en: 'New record!');
+  static String get fretRoundAgain => tr(es: 'Otra ronda', en: 'Another round');
+  static String get fretRoundClose => tr(es: 'Cerrar', en: 'Close');
   static String get fretQuizFilters => tr(es: 'Qué practicar', en: 'What to practice');
   static String get fretQuizStrings => tr(es: 'Cuerdas', en: 'Strings');
   static String fretQuizFrets(int from, int to) =>
