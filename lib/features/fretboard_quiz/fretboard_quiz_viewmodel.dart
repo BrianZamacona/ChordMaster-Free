@@ -5,6 +5,7 @@ import 'package:flutter/foundation.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 
 import '../../domain/practice/multi_day_challenges.dart';
+import '../../domain/theory/fretboard_mastery.dart';
 import '../../domain/theory/fretboard_quiz.dart';
 import '../../domain/theory/fretboard_round.dart';
 import '../../services/activity_log.dart';
@@ -24,7 +25,11 @@ class FretQuizState {
     this.lastRound,
     this.lastRoundRecord = false,
     this.bestRound = 0,
+    this.mastery = const FretMastery(),
   });
+
+  /// Lo que se domina de cada lugar (repaso y mapa).
+  final FretMastery mastery;
 
   /// La ronda con reloj en curso (`null` = práctica libre).
   final FretRound? round;
@@ -66,6 +71,7 @@ class FretQuizState {
     FretRound? Function()? lastRound,
     bool? lastRoundRecord,
     int? bestRound,
+    FretMastery? mastery,
   }) =>
       FretQuizState(
         question: question ?? this.question,
@@ -79,6 +85,7 @@ class FretQuizState {
         lastRound: lastRound == null ? this.lastRound : lastRound(),
         lastRoundRecord: lastRoundRecord ?? this.lastRoundRecord,
         bestRound: bestRound ?? this.bestRound,
+        mastery: mastery ?? this.mastery,
       );
 }
 
@@ -95,8 +102,14 @@ class FretQuizViewModel extends Notifier<FretQuizState> {
   static const keyBestStreak = 'fretboard_quiz_best_streak';
   static const keyBestRound = 'fretboard_quiz_best_round';
   static const keyFilter = 'fretboard_quiz_filter';
+  static const keySpots = 'fretboard_quiz_spots';
 
   Random get _rng => ref.read(fretQuizRandomProvider);
+
+  /// La pregunta siguiente dentro de [filter] (el de ahora si no se da), con
+  /// el repaso de lo que costó.
+  FretQuestion _draw([FretQuizFilter? filter]) =>
+      nextFretQuestion(_rng, filter ?? state.filter, state.mastery.weak);
 
   /// El reloj de la ronda: un segundo por tic.
   Timer? _clock;
@@ -115,13 +128,15 @@ class FretQuizViewModel extends Notifier<FretQuizState> {
       final best = await _storage.get<int>(StorageBoxes.userProgress, keyBestStreak) ?? 0;
       final bestRound = await _storage.get<int>(StorageBoxes.userProgress, keyBestRound) ?? 0;
       final filter = FretQuizFilter.fromJson(await _storage.get<Map>(StorageBoxes.settings, keyFilter));
+      final mastery = FretMastery.fromJson(await _storage.get<Map>(StorageBoxes.userProgress, keySpots));
       if (!ref.mounted) return;
+      state = state.copyWith(mastery: mastery);
       if (best > state.bestStreak) state = state.copyWith(bestStreak: best);
       if (bestRound > state.bestRound) state = state.copyWith(bestRound: bestRound);
       // Con un filtro guardado, la primera pregunta se vuelve a sacar dentro
       // de él (si todavía no se respondió).
       if (filter != state.filter && !state.isAnswered) {
-        state = state.copyWith(filter: filter, question: nextFretQuestion(_rng, filter));
+        state = state.copyWith(filter: filter, question: _draw(filter));
       }
     } catch (e, st) {
       debugPrint('FretQuizViewModel._load error: $e\n$st');
@@ -135,9 +150,12 @@ class FretQuizViewModel extends Notifier<FretQuizState> {
     final streak = right ? state.streak + 1 : 0;
     final best = max(streak, state.bestStreak);
     final round = state.round;
+    final mastery = state.mastery.record(testedSpot(state.question), right: right);
+    // Primero el registro: la pregunta siguiente ya repasa este error.
+    state = state.copyWith(mastery: mastery);
     state = state.copyWith(
       // En la ronda no hay pausa: la siguiente sale al responder.
-      question: round == null ? null : nextFretQuestion(_rng, state.filter),
+      question: round == null ? null : _draw(),
       selected: () => round == null ? choice : null,
       round: round == null ? null : () => round.answer(state.question, choice),
       answered: state.answered + 1,
@@ -145,6 +163,11 @@ class FretQuizViewModel extends Notifier<FretQuizState> {
       streak: streak,
       bestStreak: best,
     );
+    try {
+      await _storage.save(StorageBoxes.userProgress, keySpots, mastery.toJson());
+    } catch (e, st) {
+      debugPrint('FretQuizViewModel.answer error: $e\n$st');
+    }
     if (best == streak && right) {
       try {
         await _storage.save(StorageBoxes.userProgress, keyBestStreak, best);
@@ -154,13 +177,13 @@ class FretQuizViewModel extends Notifier<FretQuizState> {
     }
   }
 
-  void next() => state = state.copyWith(question: nextFretQuestion(_rng, state.filter), selected: () => null);
+  void next() => state = state.copyWith(question: _draw(), selected: () => null);
 
   /// Empieza una ronda de [fretRoundSeconds] con una pregunta nueva.
   void startRound() {
     _clock?.cancel();
     state = state.copyWith(
-      question: nextFretQuestion(_rng, state.filter),
+      question: _draw(),
       selected: () => null,
       round: () => const FretRound(),
       lastRound: () => null,
@@ -185,7 +208,7 @@ class FretQuizViewModel extends Notifier<FretQuizState> {
     _clock?.cancel();
     final record = isRoundRecord(round.score, state.bestRound);
     state = state.copyWith(
-      question: nextFretQuestion(_rng, state.filter),
+      question: _draw(),
       selected: () => null,
       round: () => null,
       lastRound: () => round,
@@ -203,7 +226,7 @@ class FretQuizViewModel extends Notifier<FretQuizState> {
   /// Deja la ronda sin terminar (no cuenta para el récord).
   void stopRound() {
     _clock?.cancel();
-    state = state.copyWith(round: () => null, selected: () => null, question: nextFretQuestion(_rng, state.filter));
+    state = state.copyWith(round: () => null, selected: () => null, question: _draw());
   }
 
   /// Cierra el resultado de la última ronda.
@@ -213,7 +236,7 @@ class FretQuizViewModel extends Notifier<FretQuizState> {
   /// filtro no válido (sin cuerdas o con menos de cuatro trastes) no se toma.
   Future<void> setFilter(FretQuizFilter filter) async {
     if (!filter.isValid || filter == state.filter) return;
-    state = state.copyWith(filter: filter, question: nextFretQuestion(_rng, filter), selected: () => null);
+    state = state.copyWith(filter: filter, question: _draw(filter), selected: () => null);
     try {
       await _storage.save(StorageBoxes.settings, keyFilter, filter.toJson());
     } catch (e, st) {

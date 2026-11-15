@@ -5,10 +5,12 @@ import 'package:flutter_riverpod/flutter_riverpod.dart';
 
 import '../../core/constants/app_strings.dart';
 import '../../data/models/note_coordinate.dart';
+import '../../domain/theory/fretboard_mastery.dart';
 import '../../domain/theory/fretboard_quiz.dart';
 import '../../domain/theory/notes.dart';
 import '../../ui/theme.dart';
 import '../../ui/widgets/fretboard_diagram.dart';
+import 'fretboard_mastery_map.dart';
 import 'fretboard_quiz_filter_sheet.dart';
 import 'fretboard_quiz_viewmodel.dart';
 import 'fretboard_round_panel.dart';
@@ -70,6 +72,19 @@ class FretQuizScreen extends ConsumerWidget {
           const SizedBox(height: 12),
           SizedBox(height: 230, child: _Neck(question: q, answered: state.isAnswered, prompt: prompt, filter: state.filter)),
           const SizedBox(height: 12),
+          if (!state.isAnswered && state.mastery.of(testedSpot(q)) == SpotMastery.weak) ...[
+            Row(
+              key: const Key('fret-quiz-review'),
+              children: [
+                Icon(Icons.replay, size: 16, color: p.textSecondary),
+                const SizedBox(width: 6),
+                Expanded(
+                  child: Text(AppStrings.fretQuizReview, style: text.bodySmall?.copyWith(color: p.textSecondary)),
+                ),
+              ],
+            ),
+            const SizedBox(height: 4),
+          ],
           Text(prompt, key: const Key('fret-quiz-prompt'), style: text.titleMedium),
           const SizedBox(height: 12),
           Wrap(
@@ -142,6 +157,8 @@ class FretQuizScreen extends ConsumerWidget {
             key: const Key('fret-quiz-score'),
             style: musicMono(fontSize: 13, color: p.textSecondary),
           ),
+          const SizedBox(height: 24),
+          const FretMasteryMap(),
           ],
         ],
       ),

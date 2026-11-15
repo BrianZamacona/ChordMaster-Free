@@ -247,7 +247,14 @@ cada nota pertenezca a la escala. No bajar la tolerancia de 0.
   si la anterior estuvo bien), un punto por acierto, el error no resta; el reloj es un `Timer` de un
   segundo en el view-model y la ronda se deja al ocultar la pestaña. Récord en
   `fretboard_quiz_best_round` (solo una ronda entera; terminarla antes no cuenta); durante la
-  ronda no se cambian los filtros. El generador se inyecta
+  ronda no se cambian los filtros. Repaso y mapa (`lib/domain/theory/fretboard_mastery.dart`,
+  inspirados en FretMaster): cada respuesta anota el lugar que pone a prueba (`testedSpot`: el marcado,
+  el buscado o el de la octava) con respondidas y aciertos seguidos, en `fretboard_quiz_spots`
+  (`"cuerda:traste": [n, racha]`). Débil = la última fue error; en camino = 1 o 2 aciertos seguidos;
+  dominado = 3 (`masteredStreak`). Si hay débiles dentro del filtro, una de cada tres preguntas
+  (`fretReviewEvery`) es sobre uno (`reviewQuestion`: «¿qué nota es?» o al revés, nunca octava) y lo
+  avisa. Debajo, «Tu mapa del mástil» (`FretMasteryMap`): chips Débiles / En camino / Dominados con
+  su cantidad y el mástil con esos lugares; el estado va en texto, no en color. El generador se inyecta
   (`fretQuizRandomProvider`) para los tests; la mejor racha va en `fretboard_quiz_best_streak` y cada
   respuesta anota `PracticeActivity.fretboard`. La guía "El mástil" (Teoría) lo enlaza.
 - CAGED al azar (`/practice/caged`, en Practicar; decisión del usuario tras revisar las apps CAGED;

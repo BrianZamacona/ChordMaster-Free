@@ -3,8 +3,10 @@ import 'dart:math';
 import 'package:chordmaster_free/app.dart';
 import 'package:chordmaster_free/core/constants/app_strings.dart';
 import 'package:chordmaster_free/core/i18n/tr.dart';
+import 'package:chordmaster_free/domain/theory/fretboard_mastery.dart';
 import 'package:chordmaster_free/domain/theory/fretboard_quiz.dart';
 import 'package:chordmaster_free/domain/theory/notes.dart';
+import 'package:chordmaster_free/features/fretboard_quiz/fretboard_mastery_map.dart';
 import 'package:chordmaster_free/features/fretboard_quiz/fretboard_quiz_screen.dart';
 import 'package:chordmaster_free/features/fretboard_quiz/fretboard_quiz_viewmodel.dart';
 import 'package:chordmaster_free/services/key_value_store.dart';
@@ -131,10 +133,10 @@ void main() {
       tester.widget<Text>(find.byKey(const Key('fret-quiz-prompt'))).data,
       AppStrings.fretQuizFindNote(pitchClassName(q.note), q.string),
     );
-    expect(tester.widget<FretboardNeck>(find.byType(FretboardNeck)).coordinates, isEmpty);
+    expect(tester.widget<FretboardNeck>(find.byType(FretboardNeck).first).coordinates, isEmpty);
     await tester.tap(choiceFor(c, q.answer));
     await tester.pump();
-    final shown = tester.widget<FretboardNeck>(find.byType(FretboardNeck)).coordinates.single;
+    final shown = tester.widget<FretboardNeck>(find.byType(FretboardNeck).first).coordinates.single;
     expect((shown.string, shown.fret, shown.note), (q.string, q.answer, pitchClassName(q.note)));
     expect(
       tester.widget<Text>(find.byKey(const Key('fret-quiz-hint'))).data,
@@ -284,4 +286,52 @@ void main() {
       expect(tester.takeException(), isNull);
     });
   }
+
+  for (final code in ['es', 'en']) {
+    testWidgets('a 360 dp ($code): un error queda débil en el mapa, se guarda y vuelve en el repaso', (tester) async {
+      final (store, c) = await open(tester, code: code);
+      final q = question(c);
+      final spot = testedSpot(q);
+      final wrong = q.choices.firstWhere((x) => x != q.answer);
+      await tester.tap(choiceFor(c, wrong));
+      await tester.pump();
+      await tester.runAsync(() => Future<void>.delayed(const Duration(milliseconds: 50)));
+      expect(FretMastery.fromJson(store.progress[FretQuizViewModel.keySpots]).of(spot), SpotMastery.weak);
+      // El mapa lo muestra entre los débiles, con su nota.
+      final map = find.byKey(const Key('fret-map'));
+      await tester.ensureVisible(map);
+      await tester.pump();
+      expect(find.text(FretMasteryMap.levelLabel(SpotMastery.weak, 1)), findsOneWidget);
+      final neck = tester.widget<FretboardNeck>(find.descendant(of: map, matching: find.byType(FretboardNeck)));
+      expect([for (final n in neck.coordinates) (n.string, n.fret)], [(spot.string, spot.fret)]);
+      // Centrado en ese lugar (la columna del aire siempre se ve).
+      if (spot.fret > 0) expect(spot.fret, inInclusiveRange(neck.focus!.start, neck.focus!.end));
+      expect(tester.getRect(find.byKey(const Key('fret-map-mastered'))).right, lessThanOrEqualTo(360));
+      expect(tester.takeException(), isNull);
+      // Vuelve en el repaso, con su aviso.
+      var reviewed = false;
+      for (var i = 0; i < 40 && !reviewed; i++) {
+        c.read(fretQuizViewModelProvider.notifier).next();
+        await tester.pump();
+        reviewed = testedSpot(question(c)) == spot;
+      }
+      expect(reviewed, isTrue);
+      expect(find.byKey(const Key('fret-quiz-review')), findsOneWidget);
+    });
+  }
+
+  testWidgets('el registro guardado se lee al abrir', (tester) async {
+    const spot = (string: 4, fret: 5);
+    final saved = const FretMastery().record(spot, right: true).record(spot, right: true).record(spot, right: true);
+    final store = InMemoryStore(progress: {FretQuizViewModel.keySpots: saved.toJson()});
+    final container = ProviderContainer(overrides: [
+      keyValueStoreProvider.overrideWithValue(store),
+      fretQuizRandomProvider.overrideWithValue(Random(1)),
+    ]);
+    addTearDown(container.dispose);
+    final sub = container.listen(fretQuizViewModelProvider, (_, _) {});
+    addTearDown(sub.close);
+    await tester.runAsync(() => Future<void>.delayed(const Duration(milliseconds: 50)));
+    expect(container.read(fretQuizViewModelProvider).mastery.of(spot), SpotMastery.mastered);
+  });
 }

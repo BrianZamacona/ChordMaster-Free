@@ -121,6 +121,11 @@ class FretQuizFilter {
 
   bool _fretIn(int fret) => fret >= fromFret && fret <= toFret;
 
+  /// Si [spot] es de lo que se practica: cuerda elegida, traste en el tramo y,
+  /// si se pide, nota natural.
+  bool contains(FretSpot spot) =>
+      strings.contains(spot.string) && _fretIn(spot.fret) && _noteIn(pitchClassAt(spot));
+
   bool _noteIn(int pitchClass) => !naturalsOnly || isNaturalNote(pitchClass);
 
   FretQuizFilter copyWith({Set<int>? strings, int? fromFret, int? toFret, bool? naturalsOnly}) => FretQuizFilter(
@@ -159,7 +164,18 @@ bool isNaturalNote(int pitchClass) => !pitchClassName(pitchClass).contains('#');
 
 /// La pregunta siguiente, dentro de [filter]: un tercio de cada tipo (si en
 /// las cuerdas elegidas no cabe ninguna octava, se turnan las otras dos).
-FretQuestion nextFretQuestion(Random rng, [FretQuizFilter filter = const FretQuizFilter()]) {
+///
+/// [review] son los lugares que costaron (el repaso): si alguno cae en el
+/// filtro, una de cada tres preguntas es sobre uno de ellos.
+FretQuestion nextFretQuestion(
+  Random rng, [
+  FretQuizFilter filter = const FretQuizFilter(),
+  Set<FretSpot> review = const {},
+]) {
+  final toReview = [for (final s in review) if (filter.contains(s)) s];
+  if (toReview.isNotEmpty && rng.nextInt(fretReviewEvery) == 0) {
+    return reviewQuestion(rng, toReview[rng.nextInt(toReview.length)], filter);
+  }
   final octaves = _octaveCandidates(filter);
   return switch (rng.nextInt(octaves.isEmpty ? 2 : 3)) {
     0 => nameNoteQuestion(rng, filter),
@@ -167,6 +183,24 @@ FretQuestion nextFretQuestion(Random rng, [FretQuizFilter filter = const FretQui
     _ => _octaveQuestionFrom(rng, octaves, filter),
   };
 }
+
+/// Una de cada cuántas preguntas es de repaso (si hay lugares que costaron).
+const fretReviewEvery = 3;
+
+/// Una pregunta sobre [spot]: "¿qué nota es?" o, si cabe en los doce trastes
+/// de búsqueda, la pregunta al revés.
+FretQuestion reviewQuestion(Random rng, FretSpot spot, [FretQuizFilter filter = const FretQuizFilter()]) {
+  final canFind = spot.fret <= _findLast(filter);
+  return canFind && rng.nextBool() ? _findNoteAt(rng, spot, filter) : _nameNoteAt(rng, spot, filter);
+}
+
+/// El lugar del mástil que pone a prueba [q]: el marcado, el de la nota
+/// buscada o el de la octava.
+FretSpot testedSpot(FretQuestion q) => switch (q) {
+  NameNoteQuestion(:final spot) => spot,
+  FindNoteQuestion(:final spot) => spot,
+  OctaveQuestion(:final to) => to,
+};
 
 /// Trastes en los que se busca una nota: doce seguidos, donde cada nota sale
 /// una vez (en el traste 12 se repite la del aire).
@@ -189,9 +223,15 @@ List<FretSpot> _spots(FretQuizFilter filter, {required int maxFret}) => [
 /// Se busca en doce trastes desde el primero del filtro, donde cada nota sale
 /// una sola vez.
 FindNoteQuestion findNoteQuestion(Random rng, [FretQuizFilter filter = const FretQuizFilter()]) {
-  final last = min(filter.toFret, filter.fromFret + findNoteMaxFret);
-  final spots = _spots(filter, maxFret: last);
-  final spot = spots[rng.nextInt(spots.length)];
+  final spots = _spots(filter, maxFret: _findLast(filter));
+  return _findNoteAt(rng, spots[rng.nextInt(spots.length)], filter);
+}
+
+/// Último traste donde se busca una nota: doce desde el primero del filtro.
+int _findLast(FretQuizFilter filter) => min(filter.toFret, filter.fromFret + findNoteMaxFret);
+
+FindNoteQuestion _findNoteAt(Random rng, FretSpot spot, FretQuizFilter filter) {
+  final last = _findLast(filter);
   final answer = spot.fret;
   final wrong = [
     for (final d in [-1, 1, -2, 2, 3, -3])
@@ -207,7 +247,10 @@ FindNoteQuestion findNoteQuestion(Random rng, [FretQuizFilter filter = const Fre
 /// que se confunden.
 NameNoteQuestion nameNoteQuestion(Random rng, [FretQuizFilter filter = const FretQuizFilter()]) {
   final spots = _spots(filter, maxFret: filter.toFret);
-  final spot = spots[rng.nextInt(spots.length)];
+  return _nameNoteAt(rng, spots[rng.nextInt(spots.length)], filter);
+}
+
+NameNoteQuestion _nameNoteAt(Random rng, FretSpot spot, FretQuizFilter filter) {
   final answer = pitchClassAt(spot);
   final List<int> near;
   if (filter.naturalsOnly) {
