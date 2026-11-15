@@ -83,6 +83,11 @@ cada nota pertenezca a la escala. No bajar la tolerancia de 0.
   `_lydian` (1 2 3 #4 5) y `_mixolydian` (1 2 3 5 b7), con CAGED y caja de 2 notas. El locrio no
   tiene: daría un tritón de la b5 a la octava que no cabe en una caja ni llena las 6 cuerdas. La
   caja quita la b5 solo en la escala de blues. Test: `test/data/modal_pentatonics_test.dart`.
+- Otras pentatónicas (decisión del usuario tras revisar las apps de mástil; regla en
+  `regenerate_scales_master.py`): suspendida (`pentatonic_suspended`, 1 2 4 5 b7) y de 7ª mayor
+  (`pentatonic_major7`, 1 2 3 5 7), con CAGED y caja de 2 notas. La "dominante" (1 2 3 5 b7) no se
+  repite: es `pentatonic_mixolydian`, que la nombra en su nombre y su idea. Test:
+  `test/data/other_pentatonics_test.dart`.
 - Modos de la menor melódica y la armónica (decisión del usuario tras revisar las apps de mástil;
   regla en `regenerate_scales_master.py`): rotaciones de cada una, en `scales` con categoría
   `Modo de la melódica` / `Modo de la armónica` y en el orden de sus grados (2º a 7º; el 1º es la

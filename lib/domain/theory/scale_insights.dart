@@ -326,8 +326,28 @@ ImprovisationTip? improvisationTips(String scaleId, List<int> scale) {
         en: 'Classic rock, blues-rock and country, over a I–♭VII vamp or a 7 chord.',
       ),
       idea: LocalizedText(
-        es: 'Es la pentatónica mayor con la b7 en lugar de la 6: 1 2 3 5 b7, las notas del acorde 7 más la 2.',
-        en: 'It is the major pentatonic with the b7 instead of the 6: 1 2 3 5 b7, the notes of the 7 chord plus the 2.',
+        es: 'Es la pentatónica mayor con la b7 en lugar de la 6: 1 2 3 5 b7, las notas del acorde 7 más la 2. Por eso también se llama pentatónica dominante.',
+        en: 'It is the major pentatonic with the b7 instead of the 6: 1 2 3 5 b7, the notes of the 7 chord plus the 2. That is why it is also called the dominant pentatonic.',
+      ),
+    ),
+    'pentatonic_suspended' => const ImprovisationTip(
+      style: LocalizedText(
+        es: 'Rock, folk y blues, sobre acordes sus2, sus4 o 7sus4 y sobre power chords.',
+        en: 'Rock, folk and blues, over sus2, sus4 or 7sus4 chords and over power chords.',
+      ),
+      idea: LocalizedText(
+        es: 'No tiene 3ª (1 2 4 5 b7), así que no dice si el acorde es mayor o menor. Es la pentatónica mayor empezando en su 2º grado.',
+        en: 'It has no 3rd (1 2 4 5 b7), so it does not say whether the chord is major or minor. It is the major pentatonic starting on its 2nd degree.',
+      ),
+    ),
+    'pentatonic_major7' => const ImprovisationTip(
+      style: LocalizedText(
+        es: 'Pop, jazz suave y bossa nova, sobre acordes maj7.',
+        en: 'Pop, smooth jazz and bossa nova, over maj7 chords.',
+      ),
+      idea: LocalizedText(
+        es: 'Es la pentatónica mayor con 7 en lugar de 6: 1 3 5 7 son el acorde maj7 y la 2 suena como su 9.',
+        en: 'It is the major pentatonic with a 7 instead of the 6: 1 3 5 7 are the maj7 chord and the 2 sounds as its 9.',
       ),
     ),
     'major' || 'ionian' => const ImprovisationTip(
