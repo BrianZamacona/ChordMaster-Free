@@ -1,6 +1,7 @@
 /// Quiz del diapasón (inspirado en el "Note Finder" de Gibson, por reglas):
-/// nombrar la nota de un lugar del mástil y encontrar su octava con las
-/// formas de [octaveShapes]. Todo sale de la afinación; las preguntas se
+/// nombrar la nota de un lugar del mástil, encontrar una nota en una cuerda
+/// (la pregunta al revés) y encontrar su octava con las formas de
+/// [octaveShapes]. Todo sale de la afinación; las preguntas se
 /// arman con un generador que se pasa (así se pueden probar).
 library;
 
@@ -39,6 +40,21 @@ class NameNoteQuestion extends FretQuestion {
   final FretSpot spot;
 }
 
+/// "¿En qué traste de la cuerda [string] está [note]?" (la pregunta al
+/// revés): las opciones son trastes del 0 al 11, donde cada nota está una sola
+/// vez, y [answer] es el suyo.
+class FindNoteQuestion extends FretQuestion {
+  const FindNoteQuestion({required this.string, required this.note, required super.choices, required super.answer});
+
+  final int string;
+
+  /// Clase de altura (C = 0).
+  final int note;
+
+  /// Dónde está la respuesta.
+  FretSpot get spot => (string: string, fret: answer);
+}
+
 /// "¿En qué traste de la cuerda [OctaveShape.highString] está su octava?":
 /// [from] marcado; las opciones son trastes y [to] es la respuesta.
 class OctaveQuestion extends FretQuestion {
@@ -55,9 +71,35 @@ class OctaveQuestion extends FretQuestion {
   final FretSpot to;
 }
 
-/// La pregunta siguiente: mitad de cada tipo.
-FretQuestion nextFretQuestion(Random rng) =>
-    rng.nextBool() ? nameNoteQuestion(rng) : octaveQuestion(rng);
+/// La pregunta siguiente: un tercio de cada tipo.
+FretQuestion nextFretQuestion(Random rng) => switch (rng.nextInt(3)) {
+  0 => nameNoteQuestion(rng),
+  1 => findNoteQuestion(rng),
+  _ => octaveQuestion(rng),
+};
+
+/// Trastes en los que se busca una nota: del 0 al 11 cada nota sale una vez
+/// (en el 12 se repite la del aire).
+const findNoteMaxFret = 11;
+
+/// Traste de [note] (clase de altura) en [string], entre 0 y 11: los
+/// semitonos que hay desde la cuerda al aire.
+int fretOfNote(int string, int note) => (note - standardOpenStringMidi[string - 1]) % 12;
+
+/// Una nota y una cuerda: hay que dar el traste. Las opciones equivocadas son
+/// los trastes vecinos (a uno o dos): los que se confunden al contar.
+FindNoteQuestion findNoteQuestion(Random rng) {
+  final string = rng.nextInt(6) + 1;
+  final note = rng.nextInt(12);
+  final answer = fretOfNote(string, note);
+  final wrong = [
+    for (final d in [-1, 1, -2, 2, 3, -3])
+      if (answer + d >= 0 && answer + d <= findNoteMaxFret) answer + d,
+  ];
+  final near = wrong.take(4).toList()..shuffle(rng);
+  final choices = [answer, ...near.take(fretQuizChoices - 1)]..shuffle(rng);
+  return FindNoteQuestion(string: string, note: note, choices: choices, answer: answer);
+}
 
 /// Una nota en cualquier cuerda, del traste 0 al 12. Las opciones
 /// equivocadas son vecinas (a uno o dos semitonos): las que se confunden.

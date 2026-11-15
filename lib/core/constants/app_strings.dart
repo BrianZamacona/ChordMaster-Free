@@ -835,17 +835,27 @@ class AppStrings {
   // ── Quiz del diapasón ─────────────────────────────────────────────────────
   static String get hubFretboard => tr(es: 'Notas del mástil', en: 'Fretboard notes');
   static String get hubFretboardSub => tr(
-    es: 'Nombra notas y encuentra sus octavas, sin mirar la respuesta.',
-    en: 'Name notes and find their octaves, without peeking.',
+    es: 'Nombra notas, encuéntralas en una cuerda y busca sus octavas.',
+    en: 'Name notes, find them on a string and look for their octaves.',
   );
   static String get fretQuizIntro => tr(
-    es: 'Dos preguntas que se turnan: qué nota hay en un lugar del mástil y en qué traste está su octava. Cada respuesta cuenta como práctica del día.',
-    en: 'Two questions that take turns: which note is at a spot on the neck and on which fret its octave is. Every answer counts as practice for the day.',
+    es: 'Tres preguntas que se turnan: qué nota hay en un lugar del mástil, en qué traste de una cuerda está una nota y en qué traste está su octava. Cada respuesta cuenta como práctica del día.',
+    en: 'Three questions that take turns: which note is at a spot on the neck, on which fret of a string a note is, and on which fret its octave is. Every answer counts as practice for the day.',
   );
   static String fretQuizNameNote(int string, int fret) => tr(
     es: '¿Qué nota es? Cuerda $string, traste $fret.',
     en: 'Which note is it? String $string, fret $fret.',
   );
+  static String fretQuizFindNote(String note, int string) => tr(
+    es: '¿En qué traste de la cuerda $string está $note?',
+    en: 'On which fret of string $string is $note?',
+  );
+  static String fretQuizFindNoteHint(String open, int fret, String note) => fret == 0
+      ? tr(es: 'Es la cuerda al aire: $open.', en: 'It is the open string: $open.')
+      : tr(
+          es: 'Al aire suena $open; $fret ${fret == 1 ? 'semitono' : 'semitonos'} más arriba está $note.',
+          en: 'Open, it sounds $open; $fret ${fret == 1 ? 'semitone' : 'semitones'} higher is $note.',
+        );
   static String fretQuizFindOctave(String note, int fromString, int fromFret, int toString) => tr(
     es: 'Es $note en la cuerda $fromString, traste $fromFret. ¿En qué traste de la cuerda $toString está su octava?',
     en: 'It is $note on string $fromString, fret $fromFret. On which fret of string $toString is its octave?',

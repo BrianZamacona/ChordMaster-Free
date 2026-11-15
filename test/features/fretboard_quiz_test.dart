@@ -4,10 +4,12 @@ import 'package:chordmaster_free/app.dart';
 import 'package:chordmaster_free/core/constants/app_strings.dart';
 import 'package:chordmaster_free/core/i18n/tr.dart';
 import 'package:chordmaster_free/domain/theory/fretboard_quiz.dart';
+import 'package:chordmaster_free/domain/theory/notes.dart';
 import 'package:chordmaster_free/features/fretboard_quiz/fretboard_quiz_screen.dart';
 import 'package:chordmaster_free/features/fretboard_quiz/fretboard_quiz_viewmodel.dart';
 import 'package:chordmaster_free/services/key_value_store.dart';
 import 'package:chordmaster_free/ui/navigation.dart';
+import 'package:chordmaster_free/ui/widgets/fretboard_diagram.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:flutter_test/flutter_test.dart';
@@ -104,7 +106,9 @@ void main() {
         await tester.tap(button);
         await tester.pump();
         expect(tester.takeException(), isNull);
-        if (q is OctaveQuestion) expect(find.byKey(const Key('fret-quiz-hint')), findsOneWidget);
+        if (q is OctaveQuestion || q is FindNoteQuestion) {
+          expect(find.byKey(const Key('fret-quiz-hint')), findsOneWidget);
+        }
         final next = find.byKey(const Key('fret-quiz-next'));
         await tester.ensureVisible(next);
         await tester.pump();
@@ -114,4 +118,30 @@ void main() {
       expect(c.read(fretQuizViewModelProvider).streak, 20);
     });
   }
+
+  testWidgets('la pregunta al revés: nada en el mástil hasta responder, luego la nota y por qué', (tester) async {
+    final (_, c) = await open(tester);
+    while (question(c) is! FindNoteQuestion) {
+      c.read(fretQuizViewModelProvider.notifier).next();
+      await tester.pump();
+    }
+    final q = question(c) as FindNoteQuestion;
+    expect(
+      tester.widget<Text>(find.byKey(const Key('fret-quiz-prompt'))).data,
+      AppStrings.fretQuizFindNote(pitchClassName(q.note), q.string),
+    );
+    expect(tester.widget<FretboardNeck>(find.byType(FretboardNeck)).coordinates, isEmpty);
+    await tester.tap(choiceFor(c, q.answer));
+    await tester.pump();
+    final shown = tester.widget<FretboardNeck>(find.byType(FretboardNeck)).coordinates.single;
+    expect((shown.string, shown.fret, shown.note), (q.string, q.answer, pitchClassName(q.note)));
+    expect(
+      tester.widget<Text>(find.byKey(const Key('fret-quiz-hint'))).data,
+      AppStrings.fretQuizFindNoteHint(
+        pitchClassName(pitchClassAt((string: q.string, fret: 0))),
+        q.answer,
+        pitchClassName(q.note),
+      ),
+    );
+  });
 }
