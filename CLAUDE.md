@@ -232,8 +232,11 @@ cada nota pertenezca a la escala. No bajar la tolerancia de 0.
   Técnica (rota por día). Cada paso se marca solo cuando `ActivityLog` anota su actividad hoy.
   Sin azar: `dayNumber` cuenta días de calendario, así que la hora no cambia el plan.
 - Notas del mástil (`/practice/fretboard`, en Practicar; inspirado en el "Note Finder" de Gibson,
-  por reglas): `lib/domain/theory/fretboard_quiz.dart` arma dos preguntas que se turnan, "¿qué nota
-  es?" (opciones a 1 o 2 semitonos) y "¿en qué traste está su octava?" con las formas de
+  por reglas): `lib/domain/theory/fretboard_quiz.dart` arma tres preguntas que se turnan, "¿qué nota
+  es?" (opciones a 1 o 2 semitonos), la pregunta al revés "¿en qué traste de la cuerda N está X?"
+  (`FindNoteQuestion`, trastes 0 a 11 donde cada nota sale una vez, `fretOfNote`; opciones = trastes
+  vecinos; el mástil queda vacío hasta responder; decisión del usuario tras revisar las apps de mástil)
+  y "¿en qué traste está su octava?" con las formas de
   `octaveShapes` (opciones: el traste de partida, el error típico, y los vecinos; la forma 6 → 1 de
   dos octavas cae en el mismo traste). Trastes 0 a 12. El generador se inyecta
   (`fretQuizRandomProvider`) para los tests; la mejor racha va en `fretboard_quiz_best_streak` y cada

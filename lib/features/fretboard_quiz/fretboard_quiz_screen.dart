@@ -29,6 +29,10 @@ class FretQuizScreen extends ConsumerWidget {
         AppStrings.fretQuizNameNote(spot.string, spot.fret),
         pitchClassName,
       ),
+      FindNoteQuestion(:final note, :final string) => (
+        AppStrings.fretQuizFindNote(pitchClassName(note), string),
+        AppStrings.fretQuizFret,
+      ),
       OctaveQuestion(:final from, :final to) => (
         AppStrings.fretQuizFindOctave(pitchClassName(pitchClassAt(from)), from.string, from.fret, to.string),
         AppStrings.fretQuizFret,
@@ -74,6 +78,18 @@ class FretQuizScreen extends ConsumerWidget {
               key: const Key('fret-quiz-verdict'),
               style: text.titleSmall?.copyWith(color: q.isRight(state.selected!) ? p.success : p.error),
             ),
+            if (q case FindNoteQuestion(:final string, :final note, :final answer)) ...[
+              const SizedBox(height: 4),
+              Text(
+                AppStrings.fretQuizFindNoteHint(
+                  pitchClassName(pitchClassAt((string: string, fret: 0))),
+                  answer,
+                  pitchClassName(note),
+                ),
+                key: const Key('fret-quiz-hint'),
+                style: text.bodySmall?.copyWith(color: p.textSecondary),
+              ),
+            ],
             if (q case OctaveQuestion(:final shape)) ...[
               const SizedBox(height: 4),
               Text(
@@ -105,8 +121,9 @@ class FretQuizScreen extends ConsumerWidget {
   }
 }
 
-/// El mástil con lo que pregunta: la nota a nombrar ("?" hasta responder) o
-/// la nota de partida (raíz, cuadrada) y, al responder, su octava.
+/// El mástil con lo que pregunta: la nota a nombrar ("?" hasta responder),
+/// la nota a encontrar (vacío hasta responder) o la nota de partida (raíz,
+/// cuadrada) y, al responder, su octava.
 class _Neck extends StatelessWidget {
   const _Neck({required this.question, required this.answered, required this.prompt});
 
@@ -126,19 +143,21 @@ class _Neck extends StatelessWidget {
     );
     final spots = switch (question) {
       NameNoteQuestion(:final spot) => [at(spot, root: false, show: answered)],
+      FindNoteQuestion(:final spot) => [if (answered) at(spot, root: false, show: true)],
       OctaveQuestion(:final from, :final to) => [
         at(from, root: true, show: true),
         if (answered) at(to, root: true, show: true),
       ],
     };
     final frets = [for (final s in spots) s.fret];
-    final low = frets.reduce(math.min);
-    final high = frets.reduce(math.max);
     return FretboardNeck(
       key: ValueKey(question),
       coordinates: spots,
       label: FretboardLabel.note,
-      focus: (start: math.max(1, low - 1), end: math.max(4, high + 2)),
+      // Sin notas (la pregunta al revés, antes de responder), desde la cejuela.
+      focus: frets.isEmpty
+          ? null
+          : (start: math.max(1, frets.reduce(math.min) - 1), end: math.max(4, frets.reduce(math.max) + 2)),
       semanticLabel: prompt,
     );
   }

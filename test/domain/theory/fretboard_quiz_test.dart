@@ -15,12 +15,20 @@ void main() {
     expect(pitchClassName(pitchClassAt((string: 1, fret: 12))), 'E');
   });
 
+  test('el traste de una nota en una cuerda: los semitonos desde el aire', () {
+    expect(fretOfNote(5, noteIndex('C')), 3);
+    expect(fretOfNote(6, noteIndex('E')), 0);
+    expect(fretOfNote(2, noteIndex('A#')), 11);
+    expect(fretOfNote(3, noteIndex('A')), 2);
+  });
+
   group('en 2000 preguntas', () {
     final rng = Random(7);
     final questions = [for (var i = 0; i < 2000; i++) nextFretQuestion(rng)];
 
-    test('salen los dos tipos y cuatro opciones distintas con la respuesta', () {
+    test('salen los tres tipos y cuatro opciones distintas con la respuesta', () {
       expect(questions.whereType<NameNoteQuestion>(), isNotEmpty);
+      expect(questions.whereType<FindNoteQuestion>(), isNotEmpty);
       expect(questions.whereType<OctaveQuestion>(), isNotEmpty);
       for (final q in questions) {
         expect(q.choices, hasLength(fretQuizChoices));
@@ -39,6 +47,23 @@ void main() {
           expect([1, 2, 10, 11], contains(d));
         }
       }
+    });
+
+    test('al revés: el traste da la nota pedida en su cuerda, único entre 0 y 11, y las otras son vecinas', () {
+      for (final q in questions.whereType<FindNoteQuestion>()) {
+        expect(q.answer, inInclusiveRange(0, findNoteMaxFret));
+        expect(pitchClassAt(q.spot), q.note);
+        for (final c in q.choices.where((c) => c != q.answer)) {
+          expect(c, inInclusiveRange(0, findNoteMaxFret));
+          // Otra nota de la misma cuerda, a 1, 2 o 3 trastes.
+          expect(pitchClassAt((string: q.string, fret: c)), isNot(q.note));
+          expect((c - q.answer).abs(), inInclusiveRange(1, 3));
+        }
+      }
+      // Todas las cuerdas y todas las notas.
+      final found = questions.whereType<FindNoteQuestion>();
+      expect({for (final q in found) q.string}, {1, 2, 3, 4, 5, 6});
+      expect({for (final q in found) q.note}, hasLength(12));
     });
 
     test('octava: la respuesta suena una (o dos) octavas arriba, según la forma', () {
