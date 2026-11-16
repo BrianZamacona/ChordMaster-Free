@@ -543,7 +543,60 @@ sería una técnica nueva, con su regla en `tabNotationProblems` y su sonido en 
 
 | App | Estado | Fecha |
 |---|---|---|
-| Learn Tapping for Guitar | pendiente | |
+| Learn Tapping for Guitar | revisada | 2026-11-15 |
+
+### Learn Tapping for Guitar (tecnica) — 2026-11-15
+
+La misma plantilla de Jonathan Bell que las familias licks y jam: 48 frases de tapping en tres
+pestañas (básico, intermedio y avanzado, 16 cada una), cada una con tonalidad, tempo (100–130),
+tablatura y un texto. Tiene ▶ (cada audio suena dos veces: a tempo y a la mitad), ■, favorita y
+anterior / siguiente. La pestaña «More apps» lleva a otras apps: no se tocó.
+- **Notación**: «T» encima de la nota que pisa la mano derecha y, como en el resto de la
+  tablatura, «H» y «P» con su arco; tresillos con su llave.
+- **Orden de lo que enseña** (lo valioso, más que las frases): arpegio en una cuerda (tap → pull-off
+  → hammer-on, en tresillos) → el mismo con el orden al revés → cambiar el acorde de la mano
+  izquierda (de Am a E7) → grupos de cuatro con la cuerda al aire → escalas en una cuerda (menor
+  pentatónica y natural) → la mano derecha se mueve y la izquierda se queda, y al revés → varias
+  cuerdas con la pentatónica y el tap fijo → grupos de tres cuerdas → «hammer-on desde la nada»
+  (la izquierda ataca una cuerda nueva sin púa) → trino con las dos manos (tap trill) → trinos
+  que suben por el mástil y cruzan cuerdas → frases largas → bends y armónicos con tap.
+- **Consejos de técnica** en los textos: dónde pisar (justo detrás del traste, con fuerza), el
+  pull-off «tirando» de la cuerda, no dejar hueco después de la nota más aguda, qué hacer con la
+  púa y apagar con la palma de la mano derecha las cuerdas que no suenan.
+
+| Idea | Estado | Dónde encaja | Esfuerzo | Notas |
+|---|---|---|---|---|
+| Tapping en la notación («T» sobre la nota) | nueva | `TabTechnique`, `tabNotationProblems`, `tabSounds`, `lesson_tab.dart` | M | Técnica nueva: suena sin púa pero con ataque (como un hammer-on fuerte) y es ligado con lo que sigue; regla: le sigue un pull-off a una nota más baja en la misma cuerda. El micrófono sí oye su ataque. |
+| «Hammer-on desde la nada» (la izquierda ataca una cuerda nueva sin púa) | nueva | `tabNotationProblems` + `tabSounds` | S | Hoy un hammer-on tiene que seguir a una nota en su cuerda. Haría falta permitirlo sin nota anterior y que suene con ataque. |
+| Recorrido de tapping en orden, de una cuerda al trino | nueva | curso, lecciones de líder o Técnica | M | Lo más valioso de la app. Con frases propias, verificadas contra su escala como las de Licks y riffs. Es decisión de producto dónde va. |
+| Trino con las dos manos (tap trill) como ejercicio con récord | nueva | Técnica (`technique_exercises.dart`) | S | Como el cromático o la araña: tempo de 5 en 5 y «me salió limpio». Necesita primero la notación. |
+| Frases de tapping en Licks y riffs | parcial | `licks.dart` (hard rock virtuoso) | S | El estilo virtuoso tiene legato, no tapping. Con la notación, un lick nuevo. |
+| Bends y armónicos con tap | nueva | notación + síntesis | L | Los armónicos piden una técnica nueva y un sonido nuevo (Karplus-Strong a la octava o más). Mejor dejarlo para después. |
+| Sonar a tempo y a la mitad | ya está | «Velocidad 50 / 75 / 100 %» y bucle de un renglón (`TabPlayer`) | — | |
+| Favoritas, anterior / siguiente | ya está | Licks y riffs (`licks_favorites`, `lickNeighbors`) | — | |
+| Consejos: apagar las cuerdas, la púa, dónde pisar | nueva | textos del recorrido | S | Texto propio, con test de lo que afirma. |
+
+Lo que hacemos mejor: notas verificadas contra su escala, micrófono que sigue lo que tocas con
+récord de tempo, tramo en bucle, transponer las movibles, conteo del ritmo y dedos en la tablatura.
+
+Sin ver: nada detrás de un pago; «More apps» no se abrió.
+
+## Resumen de la familia tecnica
+
+Una sola app. Por valor:
+1. **La notación del tapping** («T», con su sonido y su regla) y el **hammer-on desde la nada**:
+   sin esto no se puede escribir nada de lo demás.
+2. **Un recorrido de tapping en orden** (arpegio en una cuerda → escalas → mover una mano y luego
+   la otra → varias cuerdas → trino), con frases propias.
+3. **El trino con las dos manos en Técnica**, con su récord, y un lick de tapping en el estilo
+   virtuoso.
+4. Después, si se quiere: bends y armónicos con tap.
+
+Para decidir:
+- ¿Agregamos el tapping a la notación (y el hammer-on desde la nada)?
+- ¿Dónde va el recorrido: un curso nuevo del camino líder (nivel 2 o un nivel 3), lecciones
+  sueltas o solo ejercicios de Técnica y licks?
+- ¿Armónicos (naturales y con tap) ahora o después?
 
 ## 6. Familia componer
 
