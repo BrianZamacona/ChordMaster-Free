@@ -156,6 +156,8 @@ void main() {
         await settle(tester);
         expect(tester.getRect(f).right, lessThanOrEqualTo(360), reason: k);
       }
+      await tester.ensureVisible(find.byKey(const Key('custom-saved')));
+      await settle(tester);
       await tester.tap(find.byKey(const Key('custom-saved')));
       await settle(tester);
       expect(tester.getRect(find.byKey(const Key('saved-delete-0'))).right, lessThanOrEqualTo(360));
@@ -259,6 +261,26 @@ void main() {
       }
       await tester.tap(listen);
       await settle(tester);
+    });
+
+    testWidgets('a 360 dp ($code): cada acorde en el mástil, dentro de la escala', (tester) async {
+      await open(tester, code);
+      // I–V–vi–IV en C: cabe la mayor, y el primero que se ve es C.
+      final hint = find.byKey(const Key('chord-on-neck-hint'));
+      await tester.ensureVisible(hint);
+      await settle(tester);
+      expect(tester.widget<Text>(hint).data, contains('C (C E G)'));
+      for (var i = 0; i < 4; i++) {
+        final chip = find.byKey(Key('chord-on-neck-$i'));
+        expect(tester.getRect(chip).right, lessThanOrEqualTo(360), reason: 'chip $i');
+      }
+      await tester.tap(find.byKey(const Key('chord-on-neck-1')));
+      await settle(tester);
+      expect(tester.widget<Text>(hint).data, contains('G (G B D)'));
+      final neck = find.byKey(const ValueKey('chord-on-neck-V'));
+      expect(neck, findsOneWidget);
+      expect(tester.getRect(neck).right, lessThanOrEqualTo(360));
+      expect(tester.takeException(), isNull);
     });
 
     testWidgets('a 360 dp ($code): la lista se agrupa por familia y el blues trae sus 12 compases', (tester) async {

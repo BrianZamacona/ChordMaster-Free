@@ -26,6 +26,7 @@ import '../../ui/theme.dart';
 import '../chords/chord_viewmodel.dart';
 import '../chords/fingering_selection.dart';
 import '../lessons/lesson_widgets.dart';
+import 'chord_on_neck.dart';
 import 'progressions_viewmodel.dart';
 
 /// Chord progressions screen.
@@ -1204,6 +1205,19 @@ class _PlayOverCard extends ConsumerWidget {
                   style: musicMono(fontSize: 13, color: p.textPrimary),
                 ),
               ),
+            const SizedBox(height: 12),
+            // La escala del mástil: la primera que cabe en toda la progresión;
+            // en el blues, la pentatónica menor; si no, solo los acordes.
+            ChordOnNeck(
+              degrees: degrees.values.toList(),
+              tonic: tonic,
+              scale: [...?byId[[...r.fit, ...r.blues].firstOrNull]?.intervals],
+              scaleName: switch ([...r.fit, ...r.blues].firstOrNull) {
+                final id? when byId[id] != null =>
+                  '${pitchClassName(tonic)} ${scaleDisplayName(id, byId[id]!.intervals, fallback: byId[id]!.name)}',
+                _ => null,
+              },
+            ),
           ],
         ),
       ),
