@@ -11,6 +11,7 @@ import '../../domain/progressions/custom_progression.dart';
 import '../../domain/progressions/progression_builder.dart';
 import '../../domain/progressions/progression_data.dart';
 import '../../domain/progressions/progression_playback.dart';
+import '../../domain/progressions/saved_progressions.dart';
 import '../../domain/strumming/strumming_course.dart';
 import '../../domain/theory/notes.dart';
 import '../../domain/voicing/voice_leading.dart';
@@ -27,6 +28,8 @@ class ProgressionsState {
     this.beginner = false,
     this.custom = const [],
     this.customBeats = const [],
+    this.saved = const [],
+    this.clipboard,
     this.chosen = const {},
     this.playingIndex,
     this.bpm = progressionDefaultBpm,
@@ -75,6 +78,12 @@ class ProgressionsState {
   /// Pulsos de cada acorde de [custom] (los de `customChordBeats`).
   final List<int> customBeats;
 
+  /// "Mis progresiones": las guardadas con nombre, la última primero.
+  final List<SavedProgression> saved;
+
+  /// El acorde copiado de "Mi progresión", listo para pegar.
+  final CustomChord? clipboard;
+
   /// Digitaciones elegidas a mano en el glosario, por índice de acorde
   /// (orden de chords.json). El resto sigue el camino óptimo.
   final Map<int, FingeringChoice> chosen;
@@ -102,6 +111,8 @@ class ProgressionsState {
     bool? beginner,
     List<String>? custom,
     List<int>? customBeats,
+    List<SavedProgression>? saved,
+    Object? clipboard = _keep,
     Map<int, FingeringChoice>? chosen,
     Object? playingIndex = _keep,
     int? bpm,
@@ -117,6 +128,8 @@ class ProgressionsState {
     beginner: beginner ?? this.beginner,
     custom: custom ?? this.custom,
     customBeats: customBeats ?? this.customBeats,
+    saved: saved ?? this.saved,
+    clipboard: identical(clipboard, _keep) ? this.clipboard : clipboard as CustomChord?,
     chosen: chosen ?? this.chosen,
     playingIndex: identical(playingIndex, _keep) ? this.playingIndex : playingIndex as int?,
     bpm: bpm ?? this.bpm,
@@ -136,8 +149,6 @@ typedef FingeringChoice = ({List<int> frets, List<int> fingers});
 /// Id de la progresión armada por el usuario.
 const customProgressionId = 'custom';
 
-/// Máximo de acordes en "Mi progresión".
-const customProgressionMax = 8;
 
 /// Transición entre dos acordes consecutivos de un camino.
 class ProgressionTransition {
@@ -302,6 +313,7 @@ class ProgressionsViewModel extends Notifier<ProgressionsState> {
   static const _keyCustom = 'progressions_custom';
   static const _keyCustomMode = 'progressions_custom_mode';
   static const _keyCustomSevenths = 'progressions_custom_sevenths';
+  static const _keySaved = 'progressions_saved';
 
   @override
   ProgressionsState build() {
@@ -340,7 +352,10 @@ class ProgressionsViewModel extends Notifier<ProgressionsState> {
       final mode = await storage.get<int>(StorageBoxes.userProgress, _keyCustomMode);
       final sevenths = await storage.get<bool>(StorageBoxes.userProgress, _keyCustomSevenths);
       final saved = [for (final t in custom.whereType<String>()) ?parseCustomToken(t)];
+      final named = await storage.get<List<dynamic>>(StorageBoxes.userProgress, _keySaved) ?? const [];
       state = state.copyWith(
+        // Una guardada que ya no se puede leer se descarta.
+        saved: [for (final j in named) ?SavedProgression.fromJson(j)],
         progressionsGenerated: count,
         customMode: customBaseModes.contains(mode) ? mode : null,
         customSevenths: sevenths,
@@ -528,6 +543,68 @@ class ProgressionsViewModel extends Notifier<ProgressionsState> {
   }
 
   void clearCustom() => _setCustom(const [], const []);
+
+  /// Pone una copia del acorde [index] justo detrás de él.
+  void duplicateCustom(int index) {
+    if (index < 0 || index >= state.custom.length) return;
+    _insertCustom(index + 1, (numeral: state.custom[index], beats: state.customBeats[index]));
+  }
+
+  /// Copia el acorde [index] para pegarlo después.
+  void copyCustom(int index) {
+    if (index < 0 || index >= state.custom.length) return;
+    state = state.copyWith(clipboard: (numeral: state.custom[index], beats: state.customBeats[index]));
+  }
+
+  /// Pega el acorde copiado detrás del [after] (al final si es `null`).
+  void pasteCustom({int? after}) {
+    final chord = state.clipboard;
+    if (chord == null) return;
+    _insertCustom(after == null ? state.custom.length : after + 1, chord);
+  }
+
+  void _insertCustom(int at, CustomChord chord) {
+    if (state.custom.length >= customProgressionMax || at < 0 || at > state.custom.length) return;
+    _setCustom(
+      [...state.custom]..insert(at, chord.numeral),
+      [...state.customBeats]..insert(at, chord.beats),
+    );
+  }
+
+  /// Guarda "Mi progresión" en "Mis progresiones" con [name] (si ya hay una
+  /// con ese nombre, la reemplaza). `false` si no se guardó: sin acordes, sin
+  /// nombre o sin lugar.
+  bool saveCustomAs(String name) {
+    if (state.custom.isEmpty || name.trim().isEmpty) return false;
+    final item = SavedProgression(
+      name: name.trim(),
+      mode: state.customMode,
+      chords: [for (final (i, n) in state.custom.indexed) (numeral: n, beats: state.customBeats[i])],
+    );
+    final next = upsertSaved(state.saved, item);
+    if (next == null) return false;
+    _setSaved(next);
+    return true;
+  }
+
+  /// Abre la guardada [index] en "Mi progresión", con su escala de base.
+  void openSaved(int index) {
+    if (index < 0 || index >= state.saved.length) return;
+    final item = state.saved[index];
+    setCustomMode(item.mode);
+    _setCustom([for (final c in item.chords) c.numeral], [for (final c in item.chords) c.beats]);
+  }
+
+  /// Quita la guardada [index] de "Mis progresiones".
+  void deleteSaved(int index) {
+    if (index < 0 || index >= state.saved.length) return;
+    _setSaved([...state.saved]..removeAt(index));
+  }
+
+  void _setSaved(List<SavedProgression> saved) {
+    state = state.copyWith(saved: saved);
+    _saveSetting(_keySaved, [for (final s in saved) s.toJson()]);
+  }
 
   void _setCustom(List<String> custom, List<int> beats) {
     _stopListening();

@@ -1,4 +1,5 @@
 import '../../domain/progressions/custom_progression.dart';
+import '../../domain/progressions/saved_progressions.dart';
 import '../i18n/tr.dart';
 
 /// Textos de la interfaz en español e inglés.
@@ -32,6 +33,7 @@ class AppStrings {
   static String get play => tr(es: 'Reproducir', en: 'Play');
   static String get stop => tr(es: 'Detener', en: 'Stop');
   static String get save => tr(es: 'Guardar', en: 'Save');
+  static String get cancel => tr(es: 'Cancelar', en: 'Cancel');
   static String get reset => tr(es: 'Reiniciar', en: 'Reset');
   static String get next => tr(es: 'Siguiente', en: 'Next');
   static String get share => tr(es: 'Compartir', en: 'Share');
@@ -1395,7 +1397,31 @@ class AppStrings {
     4 => tr(es: 'Un compás (4 pulsos)', en: 'One bar (4 beats)'),
     _ => tr(es: '${beats ~/ 4} compases ($beats pulsos)', en: '${beats ~/ 4} bars ($beats beats)'),
   };
-  static String chordBeatsTitle(String numeral) => tr(es: '¿Cuánto dura $numeral?', en: 'How long does $numeral last?');
+  static String customChordTitle(int n, String numeral) => tr(es: 'Acorde $n: $numeral', en: 'Chord $n: $numeral');
+  static String get chordBeatsSection => tr(es: 'Cuánto dura', en: 'How long it lasts');
+  static String get customDuplicate => tr(es: 'Duplicar', en: 'Duplicate');
+  static String get customCopy => tr(es: 'Copiar', en: 'Copy');
+  static String customPasteAfter(String numeral) => tr(es: 'Pegar $numeral detrás', en: 'Paste $numeral after');
+  static String customPaste(String numeral) => tr(es: 'Pegar $numeral', en: 'Paste $numeral');
+  static String get savedProgressionBase => tr(es: 'Mi progresión', en: 'My progression');
+  static String get saveProgressionTitle => tr(es: 'Guardar la progresión', en: 'Save the progression');
+  static String get saveProgressionName => tr(es: 'Nombre', en: 'Name');
+  static String get saveProgressionHint => tr(
+    es: 'Si ya hay una con ese nombre, se reemplaza.',
+    en: 'If there is already one with that name, it is replaced.',
+  );
+  static String savedProgressionDone(String name) => tr(es: 'Guardada: $name', en: 'Saved: $name');
+  static String get savedProgressionsFull => tr(
+    es: 'Ya tienes $savedProgressionsMax guardadas: borra una para guardar otra.',
+    en: 'You already have $savedProgressionsMax saved: delete one to save another.',
+  );
+  static String get savedProgressionsTitle => tr(es: 'Mis progresiones', en: 'My progressions');
+  static String savedProgressionsButton(int n) => tr(es: 'Mis progresiones ($n)', en: 'My progressions ($n)');
+  static String get savedProgressionsEmpty => tr(
+    es: 'Todavía no guardaste ninguna. Arma una y toca «Guardar».',
+    en: 'You have not saved any yet. Build one and tap "Save".',
+  );
+  static String savedProgressionDelete(String name) => tr(es: 'Borrar $name', en: 'Delete $name');
   static String get chordBeatsPick => tr(es: 'Cambiar cuánto dura', en: 'Change how long it lasts');
   static String get chordBeatsHint => tr(
     es: 'Toca un acorde para cambiar cuánto dura; la ✕ lo quita.',

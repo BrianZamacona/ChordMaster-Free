@@ -119,6 +119,9 @@ void main() {
       for (final b in customChordBeats) {
         expect(tester.getRect(find.byKey(Key('custom-beats-$b'))).right, lessThanOrEqualTo(360));
       }
+      for (final k in ['custom-duplicate', 'custom-copy']) {
+        expect(tester.getRect(find.byKey(Key(k))).right, lessThanOrEqualTo(360), reason: k);
+      }
       // La hoja va por encima de la barra de pestañas (no detrás): con ella
       // abierta, la barra no recibe el toque.
       final bar = find.byType(NavigationBar);
@@ -126,6 +129,35 @@ void main() {
       expect(hit.path.any((e) => e.target == tester.renderObject(bar)), isFalse);
       expect(tester.takeException(), isNull);
       await tester.tap(find.byKey(const Key('custom-beats-1')));
+      await settle(tester);
+      // La ventana de guardar: el aviso entero, en su propio texto.
+      await tester.ensureVisible(find.byKey(const Key('custom-save')));
+      await settle(tester);
+      await tester.tap(find.byKey(const Key('custom-save')));
+      await settle(tester);
+      final hint = find.byKey(const Key('custom-save-hint'));
+      expect(tester.widget<Text>(hint).data, AppStrings.saveProgressionHint);
+      expect(tester.widget<Text>(hint).maxLines, isNull);
+      expect(tester.getRect(hint).right, lessThanOrEqualTo(360));
+      expect(tester.takeException(), isNull);
+      await tester.tap(find.text(AppStrings.cancel));
+      await settle(tester);
+      // Guardar, con el nombre largo de la hoja de "Mis progresiones".
+      vm
+        ..copyCustom(0)
+        ..saveCustomAs('Progresión de práctica con un nombre largo');
+      await settle(tester);
+      for (final k in ['custom-save', 'custom-saved', 'custom-paste']) {
+        final f = find.byKey(Key(k));
+        await tester.ensureVisible(f);
+        await settle(tester);
+        expect(tester.getRect(f).right, lessThanOrEqualTo(360), reason: k);
+      }
+      await tester.tap(find.byKey(const Key('custom-saved')));
+      await settle(tester);
+      expect(tester.getRect(find.byKey(const Key('saved-delete-0'))).right, lessThanOrEqualTo(360));
+      expect(tester.takeException(), isNull);
+      await tester.tap(find.byKey(const Key('saved-0')));
       await settle(tester);
       for (final mode in customBaseModes) {
         vm.setCustomMode(mode);

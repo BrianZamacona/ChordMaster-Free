@@ -14,6 +14,7 @@ import '../../domain/practice/technique_exercises.dart';
 import '../../domain/progressions/custom_progression.dart';
 import '../../domain/progressions/progression_data.dart';
 import '../../domain/progressions/progression_playback.dart';
+import '../../domain/progressions/saved_progressions.dart';
 import '../../domain/strumming/strumming_course.dart';
 import '../../domain/theory/harmony.dart';
 import '../../domain/theory/notes.dart';
@@ -633,12 +634,53 @@ class _CustomBuilder extends ConsumerWidget {
   /// Cuánto dura el acorde [index]: uno de `customChordBeats`.
   void _pickBeats(BuildContext context, WidgetRef ref, int index) {
     final vm = ref.read(progressionsViewModelProvider.notifier);
+    final full = state.custom.length >= customProgressionMax;
     showSelectorSheet(
       context,
-      title: AppStrings.chordBeatsTitle(state.custom[index]),
+      title: AppStrings.customChordTitle(index + 1, state.custom[index]),
       builder: (sheet) => Column(
         crossAxisAlignment: CrossAxisAlignment.stretch,
         children: [
+          Wrap(
+            spacing: 8,
+            runSpacing: 4,
+            children: [
+              OutlinedButton.icon(
+                key: const Key('custom-duplicate'),
+                onPressed: full
+                    ? null
+                    : () {
+                        vm.duplicateCustom(index);
+                        Navigator.of(sheet).pop();
+                      },
+                icon: const Icon(Icons.control_point_duplicate, size: 18),
+                label: Text(AppStrings.customDuplicate),
+              ),
+              OutlinedButton.icon(
+                key: const Key('custom-copy'),
+                onPressed: () {
+                  vm.copyCustom(index);
+                  Navigator.of(sheet).pop();
+                },
+                icon: const Icon(Icons.content_copy, size: 18),
+                label: Text(AppStrings.customCopy),
+              ),
+              if (state.clipboard case final c?)
+                OutlinedButton.icon(
+                  key: const Key('custom-paste-after'),
+                  onPressed: full
+                      ? null
+                      : () {
+                          vm.pasteCustom(after: index);
+                          Navigator.of(sheet).pop();
+                        },
+                  icon: const Icon(Icons.content_paste, size: 18),
+                  label: Text(AppStrings.customPasteAfter(c.numeral)),
+                ),
+            ],
+          ),
+          const SizedBox(height: 12),
+          Text(AppStrings.chordBeatsSection, style: Theme.of(sheet).textTheme.titleSmall),
           for (final b in customChordBeats)
             ListTile(
               key: Key('custom-beats-$b'),
@@ -654,6 +696,58 @@ class _CustomBuilder extends ConsumerWidget {
       ),
     );
   }
+
+  /// Pide un nombre y guarda "Mi progresión" en "Mis progresiones".
+  Future<void> _save(BuildContext context, WidgetRef ref) async {
+    final vm = ref.read(progressionsViewModelProvider.notifier);
+    final messenger = ScaffoldMessenger.of(context);
+    final name = await showDialog<String>(
+      context: context,
+      builder: (_) => _SaveNameDialog(initial: nextProgressionName(state.saved, AppStrings.savedProgressionBase)),
+    );
+    if (name == null || name.trim().isEmpty) return;
+    final ok = vm.saveCustomAs(name);
+    messenger.showSnackBar(
+      SnackBar(content: Text(ok ? AppStrings.savedProgressionDone(name.trim()) : AppStrings.savedProgressionsFull)),
+    );
+  }
+
+  /// "Mis progresiones": abrir o borrar cada una.
+  void _openSaved(BuildContext context) => showSelectorSheet(
+    context,
+    title: AppStrings.savedProgressionsTitle,
+    builder: (sheet) => Consumer(
+      builder: (context, ref, _) {
+        final s = ref.watch(progressionsViewModelProvider);
+        final vm = ref.read(progressionsViewModelProvider.notifier);
+        if (s.saved.isEmpty) return Text(AppStrings.savedProgressionsEmpty);
+        return Column(
+          children: [
+            for (final (i, item) in s.saved.indexed)
+              ListTile(
+                key: Key('saved-$i'),
+                contentPadding: EdgeInsets.zero,
+                title: Text(item.name),
+                subtitle: Text(
+                  '${_modeName(item.mode)} · ${[for (final c in item.chords) c.numeral].join(' – ')}',
+                  style: musicMono(fontSize: 12, color: context.palette.textSecondary),
+                ),
+                onTap: () {
+                  vm.openSaved(i);
+                  Navigator.of(sheet).pop();
+                },
+                trailing: IconButton(
+                  key: Key('saved-delete-$i'),
+                  tooltip: AppStrings.savedProgressionDelete(item.name),
+                  icon: const Icon(Icons.delete_outline),
+                  onPressed: () => vm.deleteSaved(i),
+                ),
+              ),
+          ],
+        );
+      },
+    ),
+  );
 
   static String _modeName(int mode) => switch (mode) {
     0 => AppStrings.progressionBaseMajor,
@@ -791,11 +885,93 @@ class _CustomBuilder extends ConsumerWidget {
               const SizedBox(height: 6),
               Text(AppStrings.chordBeatsHint, style: text.bodySmall?.copyWith(color: p.textSecondary)),
             ],
+            const SizedBox(height: 8),
+            Wrap(
+              spacing: 4,
+              runSpacing: 4,
+              children: [
+                if (custom.isNotEmpty)
+                  TextButton.icon(
+                    key: const Key('custom-save'),
+                    onPressed: () => _save(context, ref),
+                    icon: const Icon(Icons.save_outlined, size: 18),
+                    label: Text(AppStrings.save),
+                  ),
+                TextButton.icon(
+                  key: const Key('custom-saved'),
+                  onPressed: () => _openSaved(context),
+                  icon: const Icon(Icons.folder_open_outlined, size: 18),
+                  label: Text(AppStrings.savedProgressionsButton(state.saved.length)),
+                ),
+                if (state.clipboard case final c?)
+                  TextButton.icon(
+                    key: const Key('custom-paste'),
+                    onPressed: full ? null : vm.pasteCustom,
+                    icon: const Icon(Icons.content_paste, size: 18),
+                    label: Text(AppStrings.customPaste(c.numeral)),
+                  ),
+              ],
+            ),
           ],
         ),
       ),
     );
   }
+}
+
+/// Pide el nombre con el que se guarda "Mi progresión". El campo es suyo: se
+/// libera al cerrarse la ventana, no antes (seguiría dibujándose al salir).
+class _SaveNameDialog extends StatefulWidget {
+  const _SaveNameDialog({required this.initial});
+
+  final String initial;
+
+  @override
+  State<_SaveNameDialog> createState() => _SaveNameDialogState();
+}
+
+class _SaveNameDialogState extends State<_SaveNameDialog> {
+  late final _controller = TextEditingController(text: widget.initial);
+
+  @override
+  void dispose() {
+    _controller.dispose();
+    super.dispose();
+  }
+
+  @override
+  Widget build(BuildContext context) => AlertDialog(
+    title: Text(AppStrings.saveProgressionTitle),
+    // El aviso va aparte: como texto de ayuda compartía renglón con el
+    // contador y se cortaba.
+    content: Column(
+      mainAxisSize: MainAxisSize.min,
+      crossAxisAlignment: CrossAxisAlignment.start,
+      children: [
+        TextField(
+          key: const Key('custom-save-name'),
+          controller: _controller,
+          autofocus: true,
+          maxLength: 40,
+          decoration: InputDecoration(labelText: AppStrings.saveProgressionName),
+          onSubmitted: (v) => Navigator.of(context).pop(v),
+        ),
+        Text(
+          AppStrings.saveProgressionHint,
+          key: const Key('custom-save-hint'),
+          style: Theme.of(context).textTheme.bodySmall?.copyWith(color: context.palette.textSecondary),
+        ),
+      ],
+    ),
+    actions: [
+      TextButton(onPressed: () => Navigator.of(context).pop(), child: Text(AppStrings.cancel)),
+      FilledButton(
+        key: const Key('custom-save-ok'),
+        onPressed: () => Navigator.of(context).pop(_controller.text),
+        child: Text(AppStrings.save),
+      ),
+    ],
+  );
 }
 
 /// «¿Qué tocar encima?» (`domain/theory/play_over`): las escalas que caben en
