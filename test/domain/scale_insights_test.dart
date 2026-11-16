@@ -1,6 +1,7 @@
 import 'dart:convert';
 import 'dart:io';
 
+import 'package:chordmaster_free/core/constants/app_strings.dart';
 import 'package:chordmaster_free/core/constants/scale_names.dart';
 import 'package:chordmaster_free/core/i18n/tr.dart';
 import 'package:chordmaster_free/domain/theory/intervals.dart';
@@ -142,6 +143,25 @@ void main() {
         }
       }
     }
+  });
+
+  test('la leyenda de pasos explica cada paso que sale en alguna escala, en los dos idiomas', () {
+    final data =
+        jsonDecode(File('assets/data/scales_master.json').readAsStringSync())
+            as Map<String, dynamic>;
+    for (final language in AppLanguage.values) {
+      CurrentLanguage.value = language;
+      final legend = AppStrings.scaleStepsLegend;
+      for (final g in ['scales', 'modes']) {
+        for (final raw in data[g] as List<dynamic>) {
+          final intervals = ((raw as Map<String, dynamic>)['intervals'] as List<dynamic>).cast<int>();
+          for (final label in stepPatternLabel(intervals).split(' ')) {
+            expect(legend, contains('$label = '), reason: '${raw['id']} ($label, ${language.name})');
+          }
+        }
+      }
+    }
+    CurrentLanguage.value = AppLanguage.es;
   });
 
   test('cada escala y modo del JSON tiene ideas de improvisación', () {

@@ -761,8 +761,11 @@ Objetivo: código legible y mantenible antes que ingenioso. Capas (puertos y ada
     de C» bajo el diapasón fijo; resalta las notas de la tríada de la tónica (`tonicTriad`,
     `lib/domain/theory/scale_arpeggio.dart`: grados 1, 3 y 5 en las de 7 notas; en las demás, su 3ª
     y la 5ª justa, o b5/#5) y atenúa el resto (`FretboardDiagram.highlighted`); «Solo el arpegio»
-    deja solo esas notas. Estado en `ScaleDetailState.arpeggio/arpeggioOnly`; la vista ampliada no
-    lo usa.
+    deja solo esas notas. Estado en `ScaleDetailState.arpeggio/arpeggioOnly`. En la vista ampliada
+    (decisión del usuario tras revisar las apps de mástil) el mismo estado se elige con el menú de
+    la nota (`NeckArpeggio`: toda la escala, resaltado, solo el arpegio) y vale en todo el mástil
+    (`triadNotesOnNeck`), con o sin forma elegida; una línea arriba lo dice en texto. Partes
+    comunes y arpegio se apagan uno al otro. Sin tríada (pentatónica suspendida) no hay menú.
   - Con nombres de nota, una nota al aire reemplaza el nombre de su cuerda para no decirlo dos
     veces; con intervalos, la afinación sigue al lado.
 - `lib/ui/navigation.dart` — UN solo `StatefulShellRoute` con 5 pestañas (`AppScaffold`):

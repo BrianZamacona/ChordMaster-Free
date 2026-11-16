@@ -1268,6 +1268,16 @@ class AppStrings {
     es: 'Elige un sistema y una forma para ver qué comparte con la siguiente',
     en: 'Choose a system and a shape to see what it shares with the next one',
   );
+  static String get neckArpeggioOff => tr(es: 'Toda la escala', en: 'Whole scale');
+  static String neckArpeggioHint(String chord, String notes, {required bool only}) => only
+      ? tr(
+          es: 'Solo el arpegio de $chord ($notes), en todo el mástil.',
+          en: 'Only the $chord arpeggio ($notes), across the whole neck.',
+        )
+      : tr(
+          es: 'Arpegio de $chord ($notes) resaltado en todo el mástil.',
+          en: '$chord arpeggio ($notes) highlighted across the whole neck.',
+        );
   static String get scaleShapeOrder => tr(es: 'Orden', en: 'Order');
   static String get cagedPositions =>
       tr(es: 'Posiciones CAGED', en: 'CAGED positions');
@@ -1293,10 +1303,10 @@ class AppStrings {
   );
   static String get scaleStepsLegend => tr(
     es: 'Pasos entre notas: S = semitono (1 traste) · T = tono (2 trastes) · '
-        'T+S = tono y medio (3 trastes) · 2T+S = dos tonos y medio (5 trastes). Solo '
+        'T+S = tono y medio (3 trastes) · 2T = dos tonos (4 trastes) · 2T+S = dos tonos y medio (5 trastes). Solo '
         'algunas escalas tienen saltos de más de un tono.',
     en: 'Steps between notes: H = half step (1 fret) · W = whole step (2 frets) · '
-        'W+H = step and a half (3 frets) · 2W+H = two and a half steps (5 frets). Only '
+        'W+H = step and a half (3 frets) · 2W = two whole steps (4 frets) · 2W+H = two and a half steps (5 frets). Only '
         'some scales have leaps bigger than a whole step.',
   );
   static String get progressionListen =>

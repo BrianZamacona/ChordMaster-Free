@@ -6,6 +6,7 @@ import 'package:chordmaster_free/data/models/note_coordinate.dart';
 import 'package:chordmaster_free/data/models/scale_definition.dart';
 import 'package:chordmaster_free/data/repository/scale_repository.dart';
 import 'package:chordmaster_free/domain/theory/neck_notes.dart';
+import 'package:chordmaster_free/domain/theory/scale_arpeggio.dart';
 import 'package:chordmaster_free/services/key_value_store.dart';
 import 'package:chordmaster_free/ui/scales/detail/scale_detail_notifier.dart';
 import 'package:chordmaster_free/ui/scales/detail/scale_detail_screen.dart';
@@ -314,6 +315,91 @@ void main() {
       expect(neck(tester).highlighted, patternAcrossNeck(chosen).toSet());
     });
 
+    Future<void> arpeggio(WidgetTester tester, NeckArpeggio mode) async {
+      await tester.tap(find.byKey(const Key('neck-arpeggio')));
+      await tester.pumpAndSettle();
+      await tester.tap(find.byKey(Key('neck-arpeggio-${mode.name}')));
+      await tester.pumpAndSettle();
+    }
+
+    testWidgets('arpegio de C en todo el mástil: resaltado, solo, y apagado', (tester) async {
+      await pump(tester);
+      await expand(tester);
+      expect(find.byKey(const Key('neck-arpeggio-hint')), findsNothing);
+      final all = neck(tester).coordinates;
+      final triad = tonicTriad(major.intervals)!;
+      final expected = triadNotesOnNeck(all, rootSemitone: 0, triad: triad);
+
+      await arpeggio(tester, NeckArpeggio.highlight);
+      expect(neck(tester).highlighted, expected);
+      expect(neck(tester).coordinates, hasLength(all.length));
+      expect({for (final c in neck(tester).highlighted!) c.note}, {'C', 'E', 'G'});
+      expect(
+        tester.widget<Text>(find.byKey(const Key('neck-arpeggio-hint'))).data,
+        'Arpegio de C (C E G) resaltado en todo el mástil.',
+      );
+      // Es el mismo estado que el chip del detalle.
+      expect(stateOf(tester).arpeggio, isTrue);
+
+      await arpeggio(tester, NeckArpeggio.only);
+      expect(neck(tester).highlighted, isNull);
+      expect(neck(tester).coordinates.toSet(), expected);
+
+      await arpeggio(tester, NeckArpeggio.off);
+      expect(neck(tester).coordinates, hasLength(all.length));
+      expect(neck(tester).highlighted, isNull);
+      expect(find.byKey(const Key('neck-arpeggio-hint')), findsNothing);
+      expect(stateOf(tester).arpeggio, isFalse);
+    });
+
+    testWidgets('con una forma elegida, el arpegio sigue en todo el mástil y partes comunes lo apaga', (tester) async {
+      await pump(tester);
+      await expand(tester);
+      ProviderScope.containerOf(tester.element(find.byType(FretboardNeck)))
+          .read(scaleDetailProvider(args).notifier)
+          .changeSystem('caged');
+      await settle(tester);
+      await chooseInNeck(tester, 1);
+      await arpeggio(tester, NeckArpeggio.highlight);
+      final all = neck(tester).coordinates;
+      final expected = triadNotesOnNeck(all, rootSemitone: 0, triad: tonicTriad(major.intervals)!);
+      expect(neck(tester).highlighted, expected);
+      // La forma sigue centrada.
+      expect(neck(tester).focus, isNotNull);
+      await tester.tap(find.byKey(const Key('neck-shared')));
+      await tester.pumpAndSettle();
+      expect(stateOf(tester).arpeggio, isFalse);
+      expect(neck(tester).highlighted, isNot(expected));
+      // Y al revés: el arpegio apaga partes comunes.
+      await arpeggio(tester, NeckArpeggio.highlight);
+      expect(neck(tester).highlighted, expected);
+      expect(tester.widget<IconButton>(find.byKey(const Key('neck-shared'))).isSelected, isFalse);
+    });
+
+    testWidgets('sin 3ª (pentatónica suspendida) no hay arpegio que ofrecer', (tester) async {
+      final sus = ScaleDefinition.fromJson(
+        (data['scales'] as List<dynamic>).cast<Map<String, dynamic>>().firstWhere(
+          (s) => s['id'] == 'pentatonic_suspended',
+        ),
+      );
+      tester.view.devicePixelRatio = 1;
+      tester.view.physicalSize = const Size(360, 800);
+      addTearDown(tester.view.reset);
+      await tester.pumpWidget(
+        ProviderScope(
+          overrides: [
+            keyValueStoreProvider.overrideWithValue(InMemoryStore()),
+            scaleRepositoryProvider.overrideWithValue(ScaleRepository(bundle: _FileBundle())),
+          ],
+          child: MaterialApp(theme: lightTheme, home: ScaleDetailScreen(scale: sus)),
+        ),
+      );
+      await settle(tester);
+      await expand(tester);
+      expect(find.byType(FretboardNeck), findsOneWidget);
+      expect(find.byKey(const Key('neck-arpeggio')), findsNothing);
+    });
+
     testWidgets('el botón de etiquetas cambia entre intervalo y nota', (
       tester,
     ) async {
@@ -354,6 +440,11 @@ void main() {
           expect(tester.takeException(), isNull);
           await chooseInNeck(tester, 4);
           expect(tester.takeException(), isNull);
+          await arpeggio(tester, NeckArpeggio.only);
+          expect(tester.takeException(), isNull);
+          final hint = find.byKey(const Key('neck-arpeggio-hint'));
+          expect(tester.getRect(hint).right, lessThanOrEqualTo(size.width));
+          expect(tester.getRect(find.byKey(const Key('neck-arpeggio'))).right, lessThanOrEqualTo(size.width));
         });
       }
     }
