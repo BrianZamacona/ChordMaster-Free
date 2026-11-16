@@ -136,6 +136,35 @@ void main() {
     expect(find.byType(ChordDiagramWidget), findsNothing);
   });
 
+  testWidgets('Mi progresión: con 7ª y en otra escala de base', (tester) async {
+    final container = await _pump(tester, builder);
+    final vm = container.read(progressionsViewModelProvider.notifier)..setProgression('custom');
+    await tester.pumpAndSettle();
+
+    await tester.tap(find.byKey(const Key('custom-sevenths')));
+    await tester.pumpAndSettle();
+    expect(container.read(progressionsViewModelProvider).customSevenths, isTrue);
+    for (final n in ['ii7', 'V7', 'Imaj7']) {
+      await tester.tap(find.byKey(Key('add-degree-$n')));
+      await tester.pumpAndSettle();
+    }
+    expect(_stepNames(tester), ['Dm7', 'G7', 'Cmaj7']);
+    expect(find.textContaining('V7 → Imaj7: cadencia auténtica'), findsOneWidget);
+
+    // La menor natural ofrece sus grados; los acordes ya puestos no cambian.
+    await tester.tap(find.byKey(const Key('custom-mode')));
+    await tester.pumpAndSettle();
+    await tester.tap(find.text('Menor natural').last);
+    await tester.pumpAndSettle();
+    expect(container.read(progressionsViewModelProvider).customMode, 5);
+    expect(find.byKey(const Key('add-degree-♭VII7')), findsOneWidget);
+    expect(find.byKey(const Key('add-degree-V7')), findsNothing);
+    expect(_stepNames(tester), ['Dm7', 'G7', 'Cmaj7']);
+    vm.addCustomDegree('♭VII7');
+    await tester.pumpAndSettle();
+    expect(_stepNames(tester).last, 'A#7');
+  });
+
   testWidgets('sin candidatos muestra un mensaje claro', (tester) async {
     await _pump(tester, ProgressionBuilder(const []));
 

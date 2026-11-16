@@ -11,6 +11,7 @@ import '../../core/widgets/feature_module_scaffold.dart';
 import '../../core/widgets/selector_pill.dart';
 import '../../data/repository/scale_repository.dart';
 import '../../domain/practice/technique_exercises.dart';
+import '../../domain/progressions/custom_progression.dart';
 import '../../domain/progressions/progression_data.dart';
 import '../../domain/strumming/strumming_course.dart';
 import '../../domain/theory/harmony.dart';
@@ -97,7 +98,7 @@ class ProgressionsContent extends ConsumerWidget {
         ),
         const SizedBox(height: 16),
         if (state.isCustom) ...[
-          _CustomBuilder(tonic: state.tonic, custom: state.custom),
+          _CustomBuilder(state: state),
           const SizedBox(height: 16),
         ],
         plan.when(
@@ -618,17 +619,24 @@ class ProgressionTransitionChip extends StatelessWidget {
 /// "Mi progresión": se arma tocando grados de la tonalidad (antes era el
 /// módulo Componer, con nombres de acorde sueltos y sin teoría).
 class _CustomBuilder extends ConsumerWidget {
-  const _CustomBuilder({required this.tonic, required this.custom});
+  const _CustomBuilder({required this.state});
 
-  final int tonic;
-  final List<String> custom;
+  final ProgressionsState state;
+
+  static String _modeName(int mode) => switch (mode) {
+    0 => AppStrings.progressionBaseMajor,
+    5 => AppStrings.progressionBaseMinor,
+    _ => scaleDisplayName(modeScaleIds[mode], modeIntervals(mode)),
+  };
 
   @override
   Widget build(BuildContext context, WidgetRef ref) {
     final vm = ref.read(progressionsViewModelProvider.notifier);
     final p = context.palette;
     final text = Theme.of(context).textTheme;
-    final degrees = Progression('all', '', majorDegreeNumerals).degrees;
+    final tonic = state.tonic;
+    final custom = state.custom;
+    final degrees = customChordChoices(state.customMode, sevenths: state.customSevenths);
     final full = custom.length >= customProgressionMax;
     return Card(
       margin: EdgeInsets.zero,
@@ -640,12 +648,44 @@ class _CustomBuilder extends ConsumerWidget {
             Text(AppStrings.progressionCustomHint, style: text.bodySmall),
             const SizedBox(height: 10),
             Wrap(
+              spacing: 12,
+              runSpacing: 6,
+              crossAxisAlignment: WrapCrossAlignment.center,
+              children: [
+                Row(
+                  mainAxisSize: MainAxisSize.min,
+                  children: [
+                    Text(AppStrings.progressionBaseScale, style: text.labelLarge),
+                    const SizedBox(width: 8),
+                    DropdownButton<int>(
+                      key: const Key('custom-mode'),
+                      value: state.customMode,
+                      onChanged: (m) {
+                        if (m != null) vm.setCustomMode(m);
+                      },
+                      items: [
+                        for (final m in customBaseModes)
+                          DropdownMenuItem(value: m, child: Text(_modeName(m))),
+                      ],
+                    ),
+                  ],
+                ),
+                FilterChip(
+                  key: const Key('custom-sevenths'),
+                  label: Text(AppStrings.progressionWithSevenths),
+                  selected: state.customSevenths,
+                  onSelected: (on) => vm.setCustomSevenths(sevenths: on),
+                ),
+              ],
+            ),
+            const SizedBox(height: 10),
+            Wrap(
               spacing: 6,
               runSpacing: 6,
               children: [
                 for (final d in degrees)
                   Tooltip(
-                    message: degreeRole(d.numeral).text,
+                    message: degreeRoleOf(d.numeral)?.text ?? d.numeral,
                     child: ActionChip(
                       key: Key('add-degree-${d.numeral}'),
                       label: Text(
@@ -805,6 +845,16 @@ class _WhyCard extends StatelessWidget {
     final text = Theme.of(context).textTheme;
     final numerals = {for (final d in progression.degrees) d.numeral};
     final lines = explainProgression(progression, tonic);
+    // Las de siempre en su orden; las de "Mi progresión" que no están (ii7,
+    // ♭VIImaj7…) detrás. Una cuatríada sin frase propia dice la de su tríada,
+    // y la misma frase sale una vez.
+    final roles = <String>{
+      for (final n in [
+        ...allDegreeNumerals.where(numerals.contains),
+        ...numerals.where((n) => !allDegreeNumerals.contains(n)),
+      ])
+        ?degreeRoleOf(n)?.text,
+    };
     return Card(
       margin: EdgeInsets.zero,
       clipBehavior: Clip.antiAlias,
@@ -823,15 +873,11 @@ class _WhyCard extends StatelessWidget {
               child: Text(l.text, style: text.bodyMedium),
             ),
           const SizedBox(height: 6),
-          for (final n in allDegreeNumerals)
-            if (numerals.contains(n))
-              Padding(
-                padding: const EdgeInsets.only(bottom: 4),
-                child: Text(
-                  degreeRole(n).text,
-                  style: text.bodySmall?.copyWith(color: p.textSecondary),
-                ),
-              ),
+          for (final role in roles)
+            Padding(
+              padding: const EdgeInsets.only(bottom: 4),
+              child: Text(role, style: text.bodySmall?.copyWith(color: p.textSecondary)),
+            ),
         ],
       ),
     );

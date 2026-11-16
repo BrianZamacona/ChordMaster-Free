@@ -4,8 +4,11 @@ import 'package:chordmaster_free/app.dart';
 import 'package:chordmaster_free/core/constants/app_strings.dart';
 import 'package:chordmaster_free/core/i18n/tr.dart';
 import 'package:chordmaster_free/data/repository/scale_repository.dart';
+import 'package:chordmaster_free/domain/progressions/custom_progression.dart';
 import 'package:chordmaster_free/domain/progressions/progression_data.dart';
 import 'package:chordmaster_free/domain/progressions/progression_playback.dart';
+import 'package:chordmaster_free/features/progressions/progressions_screen.dart';
+import 'package:chordmaster_free/features/progressions/progressions_viewmodel.dart';
 import 'package:chordmaster_free/services/audio_service.dart';
 import 'package:chordmaster_free/services/key_value_store.dart';
 import 'package:chordmaster_free/ui/navigation.dart';
@@ -95,6 +98,27 @@ void main() {
       expect(find.text(AppStrings.progressionBarPerChord), findsOneWidget);
     });
   
+    testWidgets('a 360 dp ($code): Mi progresión con 7ª cabe en cada escala de base', (tester) async {
+      await open(tester, code);
+      final container = ProviderScope.containerOf(tester.element(find.byType(ProgressionsContent)));
+      final vm = container.read(progressionsViewModelProvider.notifier)
+        ..setProgression(customProgressionId)
+        ..setCustomSevenths(sevenths: true);
+      for (final mode in customBaseModes) {
+        vm.setCustomMode(mode);
+        await settle(tester);
+        expect(tester.takeException(), isNull, reason: '$mode');
+        for (final k in ['custom-mode', 'custom-sevenths']) {
+          expect(tester.getRect(find.byKey(Key(k))).right, lessThanOrEqualTo(360), reason: '$k ($mode)');
+        }
+        for (final d in customChordChoices(mode, sevenths: true)) {
+          final chip = find.byKey(Key('add-degree-${d.numeral}'));
+          expect(chip, findsOneWidget, reason: d.numeral);
+          expect(tester.getRect(chip).right, lessThanOrEqualTo(360), reason: d.numeral);
+        }
+      }
+    });
+
     testWidgets('a 360 dp ($code): la lista se agrupa por familia y el blues trae sus 12 compases', (tester) async {
       await open(tester, code);
       await tester.tap(find.byKey(const Key('progression-pick')));

@@ -1533,6 +1533,10 @@ class AppStrings {
     en: 'Tap the degrees to build your progression. Long-press one to see '
         'its role.',
   );
+  static String get progressionBaseScale => tr(es: 'Escala', en: 'Scale');
+  static String get progressionBaseMajor => tr(es: 'Mayor', en: 'Major');
+  static String get progressionBaseMinor => tr(es: 'Menor natural', en: 'Natural minor');
+  static String get progressionWithSevenths => tr(es: 'Con 7ª', en: 'With 7ths');
   static String progressionCustomCount(int n, int max) =>
       tr(es: '$n de $max acordes', en: '$n of $max chords');
   static String get progressionLoadError => tr(

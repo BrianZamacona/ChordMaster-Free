@@ -49,6 +49,34 @@ void main() {
     expect(s.isCustom, isFalse); // abre en la progresión común por defecto
   });
 
+  test('Mi progresión: 7ª, escala de base y grados de otra escala se guardan', () async {
+    final storage = InMemoryStore();
+    final container = _container(storage);
+    final vm = container.read(progressionsViewModelProvider.notifier);
+    await vm.loaded;
+
+    vm
+      ..setCustomMode(5)
+      ..setCustomMode(9)
+      ..setCustomSevenths(sevenths: true)
+      ..addCustomDegree('i7')
+      ..addCustomDegree('♭VIImaj7')
+      ..addCustomDegree('Iø7');
+    var s = container.read(progressionsViewModelProvider);
+    expect(s.customMode, 5);
+    expect(s.custom, ['i7', '♭VIImaj7']);
+    expect([for (final d in s.progression.degrees) (d.semitones, d.type)], [(0, 'minor7'), (10, 'major7')]);
+    await _settle();
+
+    final again = _container(storage);
+    final vm2 = again.read(progressionsViewModelProvider.notifier);
+    await vm2.loaded;
+    s = again.read(progressionsViewModelProvider);
+    expect(s.customMode, 5);
+    expect(s.customSevenths, isTrue);
+    expect(s.custom, ['i7', '♭VIImaj7']);
+  });
+
   test('cuenta una vez por progresión distinta (id + tónica)', () async {
     final storage = InMemoryStore();
     final container = _container(storage);
