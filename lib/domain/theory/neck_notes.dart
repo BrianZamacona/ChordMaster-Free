@@ -4,6 +4,7 @@ library;
 import '../../data/models/note_coordinate.dart';
 import 'intervals.dart';
 import 'notes.dart';
+import 'scale_arpeggio.dart';
 
 /// Una posición en todas las octavas donde cabe completa: 12 trastes arriba o
 /// abajo las notas son las mismas. Nunca recorta: si una copia se saldría de la
@@ -81,3 +82,15 @@ Set<NoteCoordinate> sharedWithNext(
     patternAcrossNeck(next, maxFret: maxFret).toSet(),
   );
 }
+
+/// Las notas de [neck] que son del arpegio [triad] (semitonos sobre la tónica,
+/// [tonicTriad]) con tónica [rootSemitone]: el acorde de la tónica en todo el
+/// mástil (decisión del usuario tras revisar las apps de mástil).
+Set<NoteCoordinate> triadNotesOnNeck(
+  List<NoteCoordinate> neck, {
+  required int rootSemitone,
+  required List<int> triad,
+}) => {
+  for (final c in neck)
+    if (isTriadNote(c.string, c.fret, rootSemitone, triad)) c,
+};

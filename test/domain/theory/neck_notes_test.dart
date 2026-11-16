@@ -1,6 +1,7 @@
 import 'package:chordmaster_free/data/models/note_coordinate.dart';
 import 'package:chordmaster_free/domain/theory/neck_notes.dart';
 import 'package:chordmaster_free/domain/theory/notes.dart';
+import 'package:chordmaster_free/domain/theory/scale_arpeggio.dart';
 import 'package:flutter_test/flutter_test.dart';
 
 void main() {
@@ -111,5 +112,34 @@ void main() {
       maxFret: 12,
     );
     expect(notes.every((n) => n.fret <= 12), isTrue);
+  });
+
+  group('el arpegio de la tónica en todo el mástil', () {
+    test('A menor: todas las A, C y E del mástil, y nada más', () {
+      const minor = [0, 2, 3, 5, 7, 8, 10];
+      final root = noteIndex('A');
+      final triad = tonicTriad(minor)!;
+      final neck = scaleNotesOnNeck(rootSemitone: root, intervals: minor);
+      final arp = triadNotesOnNeck(neck, rootSemitone: root, triad: triad);
+      expect({for (final c in arp) c.note}, {'A', 'C', 'E'});
+      expect({for (final c in arp) c.interval}, {'1', 'b3', '5'});
+      for (final c in neck) {
+        expect(arp.contains(c), {'A', 'C', 'E'}.contains(c.note), reason: '${c.string}:${c.fret}');
+      }
+      // Tres notas de doce, en 25 posiciones por cuerda: 6 o 7 por cuerda.
+      for (var string = 1; string <= 6; string++) {
+        expect(arp.where((c) => c.string == string).length, inInclusiveRange(6, 7));
+      }
+    });
+
+    test('en las 12 tónicas, la tónica de cada cuerda es del arpegio', () {
+      const major = [0, 2, 4, 5, 7, 9, 11];
+      for (var root = 0; root < 12; root++) {
+        final neck = scaleNotesOnNeck(rootSemitone: root, intervals: major);
+        final arp = triadNotesOnNeck(neck, rootSemitone: root, triad: tonicTriad(major)!);
+        expect(arp.containsAll(neck.where((c) => c.isRoot)), isTrue);
+        expect(arp.every((c) => ['1', '3', '5'].contains(c.interval)), isTrue);
+      }
+    });
   });
 }

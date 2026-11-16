@@ -4,8 +4,12 @@ import 'package:flutter/services.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 
 import '../../../core/constants/app_strings.dart';
+import '../../../core/constants/chord_metadata.dart';
 import '../../../core/constants/scale_names.dart';
 import '../../../domain/theory/neck_notes.dart';
+import '../../../domain/theory/notes.dart';
+import '../../../domain/theory/scale_arpeggio.dart';
+import '../../theme.dart';
 import '../../widgets/fretboard_diagram.dart';
 import 'scale_detail_notifier.dart';
 import 'widgets/pattern_selector.dart';
@@ -16,6 +20,18 @@ import 'widgets/pattern_selector.dart';
 bool forcesLandscape({required TargetPlatform platform, required bool isWeb}) =>
     !isWeb &&
     (platform == TargetPlatform.android || platform == TargetPlatform.iOS);
+
+/// Qué hace el arpegio de la tónica en el mástil completo.
+enum NeckArpeggio {
+  /// Toda la escala, sin arpegio.
+  off,
+
+  /// Las notas del acorde de la tónica resaltadas y el resto atenuado.
+  highlight,
+
+  /// Solo las notas del acorde de la tónica.
+  only,
+}
 
 /// Abre el mástil completo sobre toda la app, sin la barra de pestañas.
 void openScaleFretboardFullscreen(BuildContext context, ScaleDetailArgs args) =>
@@ -135,9 +151,57 @@ class _ScaleFretboardFullscreenState
       isSelected: _shared && canShare,
       icon: const Icon(Icons.layers_outlined),
       selectedIcon: const Icon(Icons.layers),
-      onPressed: canShare ? () => setState(() => _shared = !_shared) : null,
+      onPressed: canShare
+          ? () {
+              if (!_shared) notifier.setArpeggio(on: false);
+              setState(() => _shared = !_shared);
+            }
+          : null,
     );
-    final shared = _shared && canShare ? sharedWithNext(shapes, selected.coordinates) : null;
+    // El arpegio de la tónica en todo el mástil (el mismo estado que el chip
+    // del detalle). Partes comunes y arpegio resaltan cosas distintas: uno
+    // apaga al otro.
+    final triad = tonicTriad(scale.intervals);
+    final arpeggio = triad == null || !state.arpeggio
+        ? NeckArpeggio.off
+        : (state.arpeggioOnly ? NeckArpeggio.only : NeckArpeggio.highlight);
+    final chord = triad == null ? null : chordDisplayName(root: state.rootName, type: triadType(triad));
+    void setArpeggio(NeckArpeggio mode) {
+      notifier
+        ..setArpeggio(on: mode != NeckArpeggio.off)
+        ..setArpeggioOnly(on: mode == NeckArpeggio.only);
+      if (mode != NeckArpeggio.off) setState(() => _shared = false);
+    }
+
+    final arpeggioMenu = chord == null
+        ? null
+        : PopupMenuButton<NeckArpeggio>(
+            key: const Key('neck-arpeggio'),
+            tooltip: AppStrings.scaleArpeggioOf(chord),
+            initialValue: arpeggio,
+            onSelected: setArpeggio,
+            icon: Icon(arpeggio == NeckArpeggio.off ? Icons.music_note_outlined : Icons.music_note),
+            itemBuilder: (_) => [
+              for (final mode in NeckArpeggio.values)
+                CheckedPopupMenuItem(
+                  key: Key('neck-arpeggio-${mode.name}'),
+                  value: mode,
+                  checked: arpeggio == mode,
+                  child: Text(switch (mode) {
+                    NeckArpeggio.off => AppStrings.neckArpeggioOff,
+                    NeckArpeggio.highlight => AppStrings.scaleArpeggioOf(chord),
+                    NeckArpeggio.only => AppStrings.scaleArpeggioOnly,
+                  }),
+                ),
+            ],
+          );
+    final shared = _shared && canShare && arpeggio == NeckArpeggio.off
+        ? sharedWithNext(shapes, selected.coordinates)
+        : null;
+    final allNotes = scaleNotesOnNeck(rootSemitone: state.rootSemitone, intervals: scale.intervals);
+    final arpeggioNotes = arpeggio == NeckArpeggio.off
+        ? null
+        : triadNotesOnNeck(allNotes, rootSemitone: state.rootSemitone, triad: triad!);
     final screenWidth = MediaQuery.sizeOf(context).width;
     final inline = screenWidth >= _toolbarInlineWidth;
 
@@ -171,6 +235,7 @@ class _ScaleFretboardFullscreenState
                             const SizedBox(width: 8),
                             labelToggle,
                             sharedToggle,
+                            ?arpeggioMenu,
                           ],
                         ),
                       ),
@@ -194,7 +259,9 @@ class _ScaleFretboardFullscreenState
                               ],
                             ),
                             const SizedBox(height: 8),
-                            Row(children: [labelToggle, const SizedBox(width: 8), sharedToggle]),
+                            Row(
+                              children: [labelToggle, const SizedBox(width: 8), sharedToggle, ?arpeggioMenu],
+                            ),
                           ],
                         ),
                       ),
@@ -202,21 +269,41 @@ class _ScaleFretboardFullscreenState
             ),
             body: SafeArea(
               top: false,
-              child: FretboardNeck(
-                key: const Key('scale-neck'),
-                coordinates: scaleNotesOnNeck(
-                  rootSemitone: state.rootSemitone,
-                  intervals: scale.intervals,
-                ),
-                highlighted:
-                    shared ??
-                    (selected == null
-                        ? null
-                        : patternAcrossNeck(selected.coordinates).toSet()),
-                focus: selected == null
-                    ? null
-                    : (start: selected.startingFret, end: selected.endFret),
-                label: _label,
+              child: Column(
+                crossAxisAlignment: CrossAxisAlignment.start,
+                children: [
+                  if (arpeggioNotes != null)
+                    Padding(
+                      padding: const EdgeInsets.fromLTRB(16, 4, 16, 0),
+                      child: Text(
+                        AppStrings.neckArpeggioHint(
+                          chord!,
+                          [for (final i in triad!) pitchClassName(state.rootSemitone + i)].join(' '),
+                          only: arpeggio == NeckArpeggio.only,
+                        ),
+                        key: const Key('neck-arpeggio-hint'),
+                        maxLines: 1,
+                        overflow: TextOverflow.ellipsis,
+                        style: Theme.of(context).textTheme.bodySmall?.copyWith(color: context.palette.textSecondary),
+                      ),
+                    ),
+                  Expanded(
+                    child: FretboardNeck(
+                      key: const Key('scale-neck'),
+                      coordinates: arpeggio == NeckArpeggio.only ? arpeggioNotes!.toList() : allNotes,
+                      highlighted: switch (arpeggio) {
+                        NeckArpeggio.highlight => arpeggioNotes,
+                        NeckArpeggio.only => null,
+                        NeckArpeggio.off =>
+                          shared ?? (selected == null ? null : patternAcrossNeck(selected.coordinates).toSet()),
+                      },
+                      focus: selected == null
+                          ? null
+                          : (start: selected.startingFret, end: selected.endFret),
+                      label: _label,
+                    ),
+                  ),
+                ],
               ),
             ),
           ),
