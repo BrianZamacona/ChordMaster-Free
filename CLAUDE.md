@@ -198,7 +198,11 @@ cada nota pertenezca a la escala. No bajar la tolerancia de 0.
   pentatónicas que caben en la primera, y en el blues (ninguna de 7 notas contiene I7, IV7 y V7)
   la pentatónica menor, la de blues y la mayor, con lo que aporta cada una (test con sus
   intervalos). Debajo, las notas de cada acorde con sus intervalos (`degreeArpeggio`). Cada escala
-  abre su detalle en la tónica con `push`.
+  abre su detalle en la tónica con `push`. Al final, «Cada acorde en el mástil» (idea de Pocket
+  Composer; `ChordOnNeck`, `chordInScaleOnNeck` en `neck_notes.dart`): se elige un acorde y sus notas
+  se resaltan, con nombre, entre las de la primera escala que cabe (en el blues, la pentatónica
+  menor) en todo el mástil; las del acorde que no son de la escala también salen; sin escala, solo
+  las del acorde.
 - Progresiones, escuchar (decisión del usuario tras revisar las apps jam): la vuelta entera se
   sintetiza en un WAV (`progression_playback.dart`: un compás por acorde, un golpe abajo por
   pulso), con tempo de 5 en 5 (40–200, los límites de Técnica) y bucle. En bucle el archivo
@@ -208,6 +212,12 @@ cada nota pertenezca a la escala. No bajar la tolerancia de 0.
   Rasgueo (pista de guitarra, decisión del usuario: primero solo guitarra; bajo y batería
   después): uno de los 5 patrones del curso (`strummingPatterns`; el 1 = un golpe por pulso),
   dibujado con `StrumPatternView`; el 12/8 no lleva patrón.
+  Arpegio (decisión del usuario tras revisar Pocket Composer; `arpeggio_patterns.dart`): detrás de los 5
+  rasgueos, tres patrones de una nota por corchea (B = el bajo, b = el otro bajo, 3 2 1 esas cuerdas):
+  bajo y subir, subir y bajar, bajos alternados. Siguen el compás como el rasgueo, cada nota suena
+  hasta que cambia el acorde o se vuelve a pulsar su cuerda, y una cuerda que no suena deja la
+  corchea en silencio. `progressionAccompaniment` elige rasgueo o arpegio (el 12/8 siempre rasguea);
+  se dibuja con `ArpeggioPatternView`.
 - Comparador de digitaciones: `analyzeFingering` incluye SIEMPRE la cejilla en el costo,
   así que puede no coincidir con Progresiones en modo Estándar; la pantalla lo advierte.
 - Calidad de double stops por grado (3ª, 6ª, 7ª...) en `lib/domain/theory/double_stops.dart`,
@@ -467,7 +477,10 @@ cada nota pertenezca a la escala. No bajar la tolerancia de 0.
   `MelodyStep`), así que comparte `MelodyStepScreen`; el reproductor suena como está escrito
   (`tappingPlayerNote`). Test (`tapping_course_test.dart`): escritura, escala de cada nivel,
   dos compases que empiezan con tap, la izquierda en cuatro trastes por grupo (cinco en total) y
-  siempre bajo su tap, el orden, y lo que dice cada texto.
+  siempre bajo su tap, el orden, y lo que dice cada texto. Al final, «Armónicos con tap»
+  (`tp4_harmonics`, decisión del usuario): siete notas de Am y E, cada una con su armónico 12 trastes
+  arriba; es el único que empieza con la nota pisada (el armónico con tap cuenta como golpe de la
+  derecha en las reglas de la mano).
 
 ## Curso de patrones de rasgueo (Parte 1)
 - `lib/domain/strumming/`, unidad `r_strumming_patterns_1` del mapa (segunda de rítmica). Cinco patrones de
@@ -525,7 +538,8 @@ cada nota pertenezca a la escala. No bajar la tolerancia de 0.
   (`LickFilter.favoritesOnly`); se guardan en `licks_favorites` (lista de ids; uno que ya no existe
   se descarta al leer).
   Transponer (decisión del usuario: solo las movibles, `lib/domain/licks/lick_transpose.dart`):
-  movible = ninguna nota al aire (`isMovable`). "Tonalidad: − E +" en el detalle lleva la frase a
+  movible = ninguna nota al aire ni armónico natural (`isMovable`). El rock atmosférico tiene
+  además «Campanas en el 12, el 7 y el 5» (`atmospheric_harmonics`, armónicos naturales sobre Bm y D). "Tonalidad: − E +" en el detalle lleva la frase a
   las tónicas en las que cabe (`transposableRoots`): todos los trastes se mueven lo mismo, por el
   camino más corto, y si algo sale de los trastes 1–20 se prueba la otra octava; si tampoco cabe,
   esa tónica no se ofrece. Las de cuerdas al aire lo dicen. La tónica elegida es de la sesión y
@@ -617,7 +631,12 @@ cada nota pertenezca a la escala. No bajar la tolerancia de 0.
   dedo de la mano de la púa pisa el traste; suena con ataque y apaga lo que sonaba en su cuerda,
   no lleva púa ni dedo de la mano izquierda (`tabFingers`) y lo normal es que le siga un pull-off.
   Hammer-on desde la nada: «h» sin nota antes en su cuerda (tras una nota en la misma cuerda es un
-  hammer-on de siempre), suena más suave (`hammerFromNowhereGain`). `TabTechnique.unpicked` = no
+  hammer-on de siempre), suena más suave (`hammerFromNowhereGain`).
+  Armónicos (decisión del usuario, 2026-11-16): natural «<12>» (`TabTechnique.harmonic`) solo en los
+  trastes 12, 7 y 5 (`naturalHarmonics`: suena 12, 19 o 24 semitonos sobre la cuerda al aire; `tabMidi`
+  da esa altura) y con tap «T.H.» arriba (`tapHarmonic`): sin púa, 12 trastes arriba de la nota pisada
+  justo antes en su cuerda (suena su octava). Los dos suenan con `StringTouch.harmonic` (ataque suave,
+  `harmonicRingSeconds`), no llevan dedo en `tabFingers` y no cuentan para el estiramiento de los licks. `TabTechnique.unpicked` = no
   llevan púa (ligados, tapping y desde la nada);
   `chord` = otras notas a la vez, (cuerda, traste), 2 o 3 en total, en cuerdas distintas y más
   agudas que la principal, que es la más grave (`TabNote.tones` las da todas); un acorde se

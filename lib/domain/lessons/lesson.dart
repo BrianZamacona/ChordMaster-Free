@@ -67,10 +67,20 @@ enum TabTechnique {
 
   /// Hammer-on desde la nada (h sin nota antes): un dedo de la mano izquierda
   /// cae sobre una cuerda que no sonaba y la hace sonar, sin púa.
-  hammerFromNowhere;
+  hammerFromNowhere,
+
+  /// Armónico natural (<12>): un dedo apenas toca la cuerda justo sobre el
+  /// alambre del traste 12, 7 o 5, sin apretarla, y se pulsa; suena una
+  /// campana una o dos octavas arriba de la cuerda al aire.
+  harmonic,
+
+  /// Armónico con tap (T.H.): con la nota de la cuerda pisada [fret] − 12, un
+  /// dedo de la mano de la púa golpea justo sobre el alambre del traste
+  /// [fret] y se suelta enseguida; suena la nota pisada una octava arriba.
+  tapHarmonic;
 
   /// Suena sin púa: la nota no lleva golpe de púa.
-  bool get unpicked => legato || this == tap || this == hammerFromNowhere;
+  bool get unpicked => legato || this == tap || this == hammerFromNowhere || this == tapHarmonic;
 
   /// Sigue sonando la nota anterior: no se vuelve a pulsar.
   bool get legato => this == hammerOn || this == pullOff || this == slide || this == release;

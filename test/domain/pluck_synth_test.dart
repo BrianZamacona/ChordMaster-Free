@@ -48,6 +48,26 @@ void main() {
     }
   });
 
+  test('el armónico suena afinado, más puro y dura más que una nota pulsada', () {
+    const midi = 64; // E4: el armónico del traste 5 de la 6ª
+    final hz = midiToHz(midi);
+    final harmonic = renderStrings(const [StringSound(midi: midi, at: 0, seconds: 2, touch: StringTouch.harmonic)], seconds: 2);
+    final plucked = renderStrings(const [StringSound(midi: midi, at: 0, seconds: 2)], seconds: 2);
+    expect(_cents(_estimateHz(harmonic), hz).abs(), lessThan(5));
+    // Energía en el último medio segundo frente al primero: el armónico cae menos.
+    double energy(Float64List x, int from, int to) {
+      var e = 0.0;
+      for (var i = from; i < to; i++) {
+        e += x[i] * x[i];
+      }
+      return e;
+    }
+    final n = harmonic.length;
+    final keep = energy(harmonic, n - n ~/ 4, n) / energy(harmonic, 0, n ~/ 4);
+    final keepPlucked = energy(plucked, n - n ~/ 4, n) / energy(plucked, 0, n ~/ 4);
+    expect(keep, greaterThan(keepPlucked));
+  });
+
   test('la cuerda se apaga: el final suena mucho menos que el ataque', () {
     final x = pluck(midiToHz(64), 2);
     double rms(int from, int to) {

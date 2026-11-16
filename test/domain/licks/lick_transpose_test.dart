@@ -20,10 +20,11 @@ void main() {
   List<TabNote> tones(List<TabNote> tab) => [for (final n in tab) ...n.tones];
   final movable = licks.where(isMovable).toList();
 
-  test('movible = ninguna nota al aire; las demás no se ofrecen en otra tónica', () {
+  test('movible = ninguna nota al aire ni armónico natural; las demás no se ofrecen en otra tónica', () {
     expect(movable, isNotEmpty);
     for (final l in licks) {
-      final open = tones(l.tab).any((t) => t.fret == 0);
+      // El armónico natural es de la cuerda al aire: tampoco se mueve.
+      final open = tones(l.tab).any((t) => t.fret == 0) || l.tab.any((n) => n.technique == TabTechnique.harmonic);
       expect(isMovable(l), !open, reason: l.id);
       if (open) expect(transposableRoots(l), isEmpty, reason: l.id);
     }

@@ -1140,6 +1140,8 @@ class AppStrings {
   static String get tabSpokenPalmMute => tr(es: 'apagada con la palma', en: 'palm muted');
   static String get tabSpokenDead => tr(es: 'nota muerta', en: 'dead note');
   static String get tabSpokenTap => tr(es: 'tapping', en: 'tap');
+  static String get tabSpokenHarmonic => tr(es: 'armónico natural', en: 'natural harmonic');
+  static String get tabSpokenTapHarmonic => tr(es: 'armónico con tap', en: 'tapped harmonic');
   static String get tabSpokenHammerFromNowhere =>
       tr(es: 'hammer-on desde la nada', en: 'hammer-on from nowhere');
   static String get tabSpokenDown => tr(es: 'púa abajo', en: 'downstroke');
@@ -1187,6 +1189,14 @@ class AppStrings {
   static String get tabLegendHammerFromNowhere => tr(
     es: 'h sin nota antes: hammer-on desde la nada, el dedo cae sobre una cuerda que no sonaba',
     en: 'h with no note before: hammer-on from nowhere, the finger lands on a silent string',
+  );
+  static String get tabLegendHarmonic => tr(
+    es: '<12> armónico natural: un dedo apenas toca la cuerda sobre el alambre de ese traste, sin apretar, y se pulsa',
+    en: '<12> natural harmonic: a finger barely touches the string over that fret wire, without pressing, and you pick',
+  );
+  static String get tabLegendTapHarmonic => tr(
+    es: 'T.H. armónico con tap: con la nota pisada, la otra mano golpea 12 trastes más arriba, sobre el alambre, y se suelta',
+    en: 'T.H. tapped harmonic: with the note fretted, the other hand strikes 12 frets higher, over the wire, and lets go',
   );
   static String get tabLegendPick => tr(es: '⊓ púa abajo · V púa arriba', en: '⊓ downstroke · V upstroke');
 
@@ -1371,6 +1381,15 @@ class AppStrings {
     es: 'Ninguna escala de 7 notas tiene todas sus notas: improvisa con las notas de cada acorde.',
     en: 'No 7-note scale has all of its notes: improvise with the notes of each chord.',
   );
+  static String get chordOnNeckTitle => tr(es: 'Cada acorde en el mástil', en: 'Each chord on the neck');
+  static String chordOnNeckInScale(String chord, String notes, String scale) => tr(
+    es: 'Las notas de $chord ($notes) resaltadas dentro de $scale: apóyate en ellas cuando suena.',
+    en: 'The notes of $chord ($notes) highlighted within $scale: lean on them while it plays.',
+  );
+  static String chordOnNeckAlone(String chord, String notes) => tr(
+    es: 'Las notas de $chord ($notes): ninguna escala cabe en toda la progresión.',
+    en: 'The notes of $chord ($notes): no scale fits the whole progression.',
+  );
   static String get playOverArpeggios => tr(es: 'Notas de cada acorde (su arpegio)', en: 'Notes of each chord (its arpeggio)');
   static String progressionBarPerChordPattern(int n) => tr(
     es: 'Un compás por acorde, con el patrón $n del curso de rasgueo.',
@@ -1443,6 +1462,25 @@ class AppStrings {
     es: 'Toca un acorde para cambiar cuánto dura; la ✕ lo quita.',
     en: 'Tap a chord to change how long it lasts; the ✕ removes it.',
   );
+  static String get progressionArpeggio => tr(es: 'Arpegio', en: 'Arpeggio');
+  static String arpeggioName(int i) => switch (i) {
+    0 => tr(es: 'Bajo y subir', en: 'Bass and up'),
+    1 => tr(es: 'Subir y bajar', en: 'Up and down'),
+    _ => tr(es: 'Bajos alternados', en: 'Alternating bass'),
+  };
+  static String get arpeggioLegend => tr(
+    es: 'B = el bajo del acorde · B2 = el otro bajo · 3, 2, 1 = esas cuerdas',
+    en: 'B = the chord\'s bass · B2 = the other bass · 3, 2, 1 = those strings',
+  );
+  static String progressionArpeggioHint({required bool ownBeats}) => ownBeats
+      ? tr(
+          es: 'Cada acorde dura lo que le pusiste, arpegiado: una nota por corchea, que se deja sonar.',
+          en: 'Each chord lasts what you set, arpeggiated: one note per eighth, left ringing.',
+        )
+      : tr(
+          es: 'Un compás por acorde, arpegiado: una nota por corchea, que se deja sonar.',
+          en: 'One bar per chord, arpeggiated: one note per eighth, left ringing.',
+        );
   static String get progressionBarPerChordTriplet => tr(
     es: 'Un compás por acorde, en 12/8: tres golpes hacia abajo en cada pulso.',
     en: 'One bar per chord, in 12/8: three downstrokes on each beat.',
@@ -1884,6 +1922,8 @@ class AppStrings {
   static String get techniqueNamePalmMute => tr(es: 'Palm mute', en: 'Palm mute');
   static String get techniqueNameDead => tr(es: 'Nota muerta', en: 'Dead note');
   static String get techniqueNameTap => tr(es: 'Tapping', en: 'Tapping');
+  static String get techniqueNameHarmonic => tr(es: 'Armónicos naturales', en: 'Natural harmonics');
+  static String get techniqueNameTapHarmonic => tr(es: 'Armónicos con tap', en: 'Tapped harmonics');
   static String get techniqueNameHammerFromNowhere =>
       tr(es: 'Hammer-on desde la nada', en: 'Hammer-on from nowhere');
   static String get finderChordHint => tr(

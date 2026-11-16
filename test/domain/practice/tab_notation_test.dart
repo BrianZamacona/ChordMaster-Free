@@ -139,6 +139,9 @@ void main() {
         TabNote(1, 12, technique: TabTechnique.tap),
         TabNote(1, 5, technique: TabTechnique.pullOff),
         TabNote(2, 8, technique: TabTechnique.hammerFromNowhere),
+        TabNote(3, 12, technique: TabTechnique.harmonic),
+        TabNote(2, 5),
+        TabNote(2, 17, technique: TabTechnique.tapHarmonic),
         TabNote.rest(tabEighth),
         TabNote(1, 5, technique: TabTechnique.vibrato, length: tabQuarter),
       ];
@@ -190,8 +193,37 @@ void main() {
           TabTechnique.release,
           TabTechnique.tap,
           TabTechnique.hammerFromNowhere,
+          TabTechnique.tapHarmonic,
         ],
       );
+    });
+
+    test('armónico natural: solo en el 12, el 7 o el 5, y suena una o dos octavas arriba', () {
+      for (final fret in [12, 7, 5]) {
+        expect(tabNotationProblems([TabNote(6, fret, technique: TabTechnique.harmonic)]), isEmpty, reason: '$fret');
+      }
+      for (final fret in [0, 3, 9, 19]) {
+        expect(tabNotationProblems([TabNote(6, fret, technique: TabTechnique.harmonic)]), hasLength(1), reason: '$fret');
+      }
+      // Sobre la 6ª al aire (E2 = 40): E3, B3 y E4.
+      expect([for (final f in [12, 7, 5]) tabMidi(TabNote(6, f, technique: TabTechnique.harmonic))], [52, 59, 64]);
+      // Con púa sí: se pulsa.
+      expect(tabNotationProblems(const [TabNote(1, 12, technique: TabTechnique.harmonic, pick: PickStroke.down)]), isEmpty);
+    });
+
+    test('armónico con tap: 12 trastes arriba de la nota pisada antes en su cuerda, sin púa', () {
+      expect(tabNotationProblems(const [TabNote(3, 4), TabNote(3, 16, technique: TabTechnique.tapHarmonic)]), isEmpty);
+      // Suena la nota pisada una octava arriba.
+      expect(tabMidi(const TabNote(3, 16, technique: TabTechnique.tapHarmonic)), tabMidi(const TabNote(3, 4)) + 12);
+      for (final bad in const [
+        [TabNote(3, 16, technique: TabTechnique.tapHarmonic)],
+        [TabNote(3, 5), TabNote(3, 16, technique: TabTechnique.tapHarmonic)],
+        [TabNote(2, 4), TabNote(3, 16, technique: TabTechnique.tapHarmonic)],
+        [TabNote(3, 4), TabNote(3, 16, technique: TabTechnique.tapHarmonic, pick: PickStroke.down)],
+        [TabNote(3, 4, technique: TabTechnique.dead), TabNote(3, 16, technique: TabTechnique.tapHarmonic)],
+      ]) {
+        expect(tabNotationProblems(bad), isNotEmpty, reason: '$bad');
+      }
     });
   });
 
@@ -272,6 +304,25 @@ void main() {
       expect([for (final g in sounds.last.glides) (g.at, g.midi)], [(0.5, 60.0)]);
     });
 
+    test('los armónicos suenan como campana; el de tap apaga la nota pisada y suena su octava', () {
+      final sounds = tabSounds(
+        const [
+          TabNote(6, 12, technique: TabTechnique.harmonic),
+          TabNote(3, 4),
+          TabNote(3, 16, technique: TabTechnique.tapHarmonic),
+        ],
+        bpm: 60,
+      );
+      expect([for (final s in sounds) (s.midi, s.touch)], [
+        (52, StringTouch.harmonic),
+        (59, StringTouch.open),
+        (71, StringTouch.harmonic),
+      ]);
+      // La nota pisada se apaga cuando entra el armónico (a 60 BPM, corcheas).
+      expect(sounds[1].seconds, closeTo(0.5, 1e-9));
+      expect(sounds.last.seconds, greaterThan(tabNoteRingSeconds));
+    });
+
     test('el hammer-on desde la nada suena solo, más suave que la púa', () {
       final sounds = tabSounds(
         const [TabNote(3, 5), TabNote(2, 5, technique: TabTechnique.hammerFromNowhere)],
@@ -325,6 +376,15 @@ void main() {
       expect(f.hear(heard(60, 0.5)), HeardKind.right);
       expect(f.hear(heard(62, 1, plucked: false)), HeardKind.right);
       expect(f.mistakes, 0);
+    });
+
+    test('el micrófono espera la altura que suena del armónico', () {
+      final f = NoteFollower(const [
+        TabNote(6, 5, technique: TabTechnique.harmonic),
+        TabNote(3, 4),
+        TabNote(3, 16, technique: TabTechnique.tapHarmonic),
+      ]);
+      expect(f.expected, [64, 59, 71]);
     });
 
     test('el tapping y el hammer-on desde la nada se esperan como notas atacadas', () {

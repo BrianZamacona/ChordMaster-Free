@@ -87,6 +87,7 @@ class LessonTabView extends StatelessWidget {
             n.pick != null ||
             n.technique == TabTechnique.palmMute ||
             n.technique == TabTechnique.tap ||
+            n.technique == TabTechnique.tapHarmonic ||
             isTripletLength(n.length),
       ),
       count: tabHasRhythm(notes, swing: swing),
@@ -204,6 +205,8 @@ String _spoken(TabNote n, int? finger) {
     TabTechnique.dead => AppStrings.tabSpokenDead,
     TabTechnique.tap => AppStrings.tabSpokenTap,
     TabTechnique.hammerFromNowhere => AppStrings.tabSpokenHammerFromNowhere,
+    TabTechnique.harmonic => AppStrings.tabSpokenHarmonic,
+    TabTechnique.tapHarmonic => AppStrings.tabSpokenTapHarmonic,
   };
   final pick = switch (n.pick) {
     null => null,
@@ -234,6 +237,8 @@ String _legend(TabMark m) => switch (m) {
   TabMark.dead => AppStrings.tabLegendDead,
   TabMark.tap => AppStrings.tabLegendTap,
   TabMark.hammerFromNowhere => AppStrings.tabLegendHammerFromNowhere,
+  TabMark.harmonic => AppStrings.tabLegendHarmonic,
+  TabMark.tapHarmonic => AppStrings.tabLegendTapHarmonic,
   TabMark.pick => AppStrings.tabLegendPick,
 };
 
@@ -392,16 +397,25 @@ class _TabPainter extends CustomPainter {
   /// la que suena va sobre el acento y más grande (no solo por color).
   void _note(Canvas canvas, TabNote n, double x, {required bool playing, required bool done}) {
     final center = Offset(x, _y(n.string));
+    final harmonic = n.technique == TabTechnique.harmonic;
     canvas.drawRRect(
       RRect.fromRectAndRadius(
-        Rect.fromCenter(center: center, width: playing ? 22 : 18, height: playing ? 17 : 13),
+        Rect.fromCenter(
+          center: center,
+          width: (playing ? 22 : 18) + (harmonic ? 12 : 0),
+          height: playing ? 17 : 13,
+        ),
         const Radius.circular(4),
       ),
       Paint()..color = playing ? palette.accent : palette.surface,
     );
     _text(
       canvas,
-      n.technique == TabTechnique.dead ? 'x' : '${n.fret}',
+      switch (n.technique) {
+        TabTechnique.dead => 'x',
+        TabTechnique.harmonic => '<${n.fret}>',
+        _ => '${n.fret}',
+      },
       center,
       playing ? palette.onAccent : (done ? palette.success : palette.textPrimary),
       playing ? 15 : 13,
@@ -464,6 +478,12 @@ class _TabPainter extends CustomPainter {
           Paint()..color = palette.surface,
         );
         _text(canvas, 'T', Offset(x, top), color, 10, bold: true);
+      case TabTechnique.tapHarmonic:
+        canvas.drawRect(
+          Rect.fromCenter(center: Offset(x, top), width: 22, height: 11),
+          Paint()..color = palette.surface,
+        );
+        _text(canvas, 'T.H.', Offset(x, top), color, 9, bold: true);
       default:
     }
     if (n.pick case final pick?) {

@@ -14,7 +14,10 @@ import 'lick.dart';
 const lickMaxFret = 20;
 
 /// Ninguna nota (tampoco de un acorde) va al aire.
-bool isMovable(Lick lick) => lick.tab.every((n) => n.isRest || n.tones.every((t) => t.fret > 0));
+bool isMovable(Lick lick) => lick.tab.every(
+  // Un armónico natural depende de la cuerda al aire: no se mueve.
+  (n) => n.isRest || (n.technique != TabTechnique.harmonic && n.tones.every((t) => t.fret > 0)),
+);
 
 /// Semitonos que hay que mover [lick] para que su tónica sea [root], o `null`
 /// si no es movible o no cabe en los trastes 1 a [lickMaxFret].
