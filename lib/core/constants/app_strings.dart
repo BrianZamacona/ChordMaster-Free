@@ -1443,6 +1443,25 @@ class AppStrings {
     es: 'Toca un acorde para cambiar cuánto dura; la ✕ lo quita.',
     en: 'Tap a chord to change how long it lasts; the ✕ removes it.',
   );
+  static String get progressionArpeggio => tr(es: 'Arpegio', en: 'Arpeggio');
+  static String arpeggioName(int i) => switch (i) {
+    0 => tr(es: 'Bajo y subir', en: 'Bass and up'),
+    1 => tr(es: 'Subir y bajar', en: 'Up and down'),
+    _ => tr(es: 'Bajos alternados', en: 'Alternating bass'),
+  };
+  static String get arpeggioLegend => tr(
+    es: 'B = el bajo del acorde · B2 = el otro bajo · 3, 2, 1 = esas cuerdas',
+    en: 'B = the chord\'s bass · B2 = the other bass · 3, 2, 1 = those strings',
+  );
+  static String progressionArpeggioHint({required bool ownBeats}) => ownBeats
+      ? tr(
+          es: 'Cada acorde dura lo que le pusiste, arpegiado: una nota por corchea, que se deja sonar.',
+          en: 'Each chord lasts what you set, arpeggiated: one note per eighth, left ringing.',
+        )
+      : tr(
+          es: 'Un compás por acorde, arpegiado: una nota por corchea, que se deja sonar.',
+          en: 'One bar per chord, arpeggiated: one note per eighth, left ringing.',
+        );
   static String get progressionBarPerChordTriplet => tr(
     es: 'Un compás por acorde, en 12/8: tres golpes hacia abajo en cada pulso.',
     en: 'One bar per chord, in 12/8: three downstrokes on each beat.',

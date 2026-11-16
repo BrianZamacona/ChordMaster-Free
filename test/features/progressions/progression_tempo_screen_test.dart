@@ -4,10 +4,12 @@ import 'package:chordmaster_free/app.dart';
 import 'package:chordmaster_free/core/constants/app_strings.dart';
 import 'package:chordmaster_free/core/i18n/tr.dart';
 import 'package:chordmaster_free/data/repository/scale_repository.dart';
+import 'package:chordmaster_free/domain/progressions/arpeggio_patterns.dart';
 import 'package:chordmaster_free/domain/progressions/custom_progression.dart';
 import 'package:chordmaster_free/domain/progressions/progression_data.dart';
 import 'package:chordmaster_free/domain/progressions/progression_playback.dart';
 import 'package:chordmaster_free/domain/progressions/song.dart';
+import 'package:chordmaster_free/features/progressions/arpeggio_pattern_view.dart';
 import 'package:chordmaster_free/features/progressions/progressions_screen.dart';
 import 'package:chordmaster_free/features/progressions/progressions_viewmodel.dart';
 import 'package:chordmaster_free/services/audio_service.dart';
@@ -259,6 +261,36 @@ void main() {
       }
       await tester.tap(listen);
       await settle(tester);
+    });
+
+    testWidgets('a 360 dp ($code): los arpegios caben, cambian la vista y suenan nota por nota', (tester) async {
+      await open(tester, code);
+      for (var i = 0; i < arpeggioPatterns.length; i++) {
+        final chip = find.byKey(Key('progression-arpeggio-$i'));
+        await tester.ensureVisible(chip);
+        await settle(tester);
+        expect(tester.getRect(chip).right, lessThanOrEqualTo(360), reason: 'arpegio $i');
+      }
+      await tester.tap(find.byKey(const Key('progression-arpeggio-2')));
+      await settle(tester);
+      expect(find.byType(ArpeggioPatternView), findsOneWidget);
+      expect(find.text(AppStrings.progressionArpeggioHint(ownBeats: false)), findsOneWidget);
+      expect(tester.getRect(find.byType(ArpeggioPatternView)).right, lessThanOrEqualTo(360));
+      expect(find.text('B2'), findsOneWidget);
+      expect(tester.takeException(), isNull);
+      final listen = find.byKey(const Key('progression-listen'));
+      await tester.ensureVisible(listen);
+      await tester.tap(listen);
+      await tester.runAsync(() => Future<void>.delayed(const Duration(milliseconds: 300)));
+      await settle(tester);
+      // I–V–vi–IV: cuatro compases de ocho notas sueltas (ningún rasgueo).
+      expect(audio.played.last, hasLength(4 * 8));
+      await tester.tap(listen);
+      await settle(tester);
+      // Volver a un rasgueo vuelve a la vista de golpes.
+      await tester.tap(find.byKey(const Key('progression-pattern-1')));
+      await settle(tester);
+      expect(find.byType(ArpeggioPatternView), findsNothing);
     });
 
     testWidgets('a 360 dp ($code): la lista se agrupa por familia y el blues trae sus 12 compases', (tester) async {

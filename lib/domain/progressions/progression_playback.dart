@@ -8,6 +8,8 @@ import '../audio/pluck_synth.dart';
 import '../open_chords/chord_shape.dart';
 import '../practice/technique_exercises.dart';
 import '../strumming/strum_pattern.dart';
+import '../strumming/strumming_course.dart';
+import 'arpeggio_patterns.dart';
 import 'progression_data.dart';
 
 /// Pulsos que dura cada acorde: un compás de 4/4.
@@ -84,6 +86,36 @@ List<StringSound> _strumByBeats(List<ChordShape> shapes, List<int> beats, {requi
     }
   }
   return out;
+}
+
+/// Acompañamientos que se eligen al escuchar: los rasgueos de
+/// `strummingPatterns` (0 a 4) y detrás los de [arpeggioPatterns].
+int get progressionPatternCount => strummingPatterns.length + arpeggioPatterns.length;
+
+/// Si el acompañamiento [pattern] es un arpegio (y cuál, desde 0), o `null`.
+int? arpeggioOf(int pattern) =>
+    pattern >= strummingPatterns.length && pattern < progressionPatternCount ? pattern - strummingPatterns.length : null;
+
+/// Lo que suena con el acompañamiento [pattern]: su rasgueo o su arpegio. El
+/// 12/8 no lleva patrón (sus corcheas son de tresillo): rasguea siempre.
+List<StringSound> progressionAccompaniment(
+  List<ChordShape> shapes, {
+  required int bpm,
+  required int pattern,
+  ProgressionFeel feel = ProgressionFeel.straight,
+  List<int>? beats,
+}) {
+  final arpeggio = feel == ProgressionFeel.straight ? arpeggioOf(pattern) : null;
+  if (arpeggio != null) {
+    return arpeggioEvents(shapes, bpm: bpm, pattern: arpeggioPatterns[arpeggio], beats: beats);
+  }
+  return progressionStrum(
+    shapes,
+    bpm: bpm,
+    feel: feel,
+    pattern: pattern < strummingPatterns.length ? strummingPatterns[pattern] : null,
+    beats: beats,
+  );
 }
 
 /// Segundos de una vuelta entera de [count] acordes (de [beats] pulsos cada

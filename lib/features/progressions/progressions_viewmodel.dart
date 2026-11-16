@@ -491,11 +491,11 @@ class ProgressionsViewModel extends Notifier<ProgressionsState> {
     final bpm = state.bpm;
     final loop = state.loop;
     final count = shapes.length;
-    final sounds = progressionStrum(
+    final sounds = progressionAccompaniment(
       shapes,
       bpm: bpm,
       feel: feel,
-      pattern: strummingPatterns[state.pattern],
+      pattern: state.pattern,
       beats: beats,
     );
     final seconds = progressionAudioSeconds(count, bpm: bpm, loop: loop, beats: beats);
@@ -544,9 +544,10 @@ class ProgressionsViewModel extends Notifier<ProgressionsState> {
     _restartIfPlaying();
   }
 
-  /// Patrón de rasgueo ([strummingPatterns]). Si suena, vuelve a empezar.
+  /// Acompañamiento: un rasgueo de [strummingPatterns] o, detrás, un arpegio
+  /// (`progressionPatternCount`). Si suena, vuelve a empezar.
   void setPattern(int pattern) {
-    if (pattern == state.pattern || pattern < 0 || pattern >= strummingPatterns.length) return;
+    if (pattern == state.pattern || pattern < 0 || pattern >= progressionPatternCount) return;
     state = state.copyWith(pattern: pattern);
     _restartIfPlaying();
   }
