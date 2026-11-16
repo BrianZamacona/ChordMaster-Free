@@ -41,7 +41,46 @@ final allDegreeNumerals = List<String>.unmodifiable([
 ]);
 
 ({int semitones, String type}) _degree(String numeral) =>
-    _majorDegrees[numeral] ?? _otherDegrees[numeral]!;
+    _majorDegrees[numeral] ??
+    _otherDegrees[numeral] ??
+    parseDegreeNumeral(numeral) ??
+    (throw ArgumentError.value(numeral, 'numeral'));
+
+const _romanNumerals = ['I', 'II', 'III', 'IV', 'V', 'VI', 'VII'];
+const _majorScaleSteps = [0, 2, 4, 5, 7, 9, 11];
+
+/// Grado y tipo de acorde de un número romano, por regla (lo usan los acordes
+/// de "Mi progresión"): ♭/♯ delante corre la raíz un semitono desde el grado
+/// de la escala mayor; mayúscula = 3ª mayor, minúscula = 3ª menor; detrás,
+/// `°` disminuido, `+` aumentado, `7` séptima (dominante en mayúscula, menor
+/// en minúscula), `maj7` séptima mayor, `ø7` semidisminuido y `°7`
+/// disminuido con 7ª. `null` si no es un grado así escrito.
+({int semitones, String type})? parseDegreeNumeral(String numeral) {
+  final m = RegExp(r'^([♭♯]?)(VII|VI|V|IV|III|II|I|vii|vi|v|iv|iii|ii|i)(|°|\+|7|maj7|ø7|°7)$').firstMatch(numeral);
+  if (m == null) return null;
+  final roman = m.group(2)!;
+  final upper = roman == roman.toUpperCase();
+  final shift = switch (m.group(1)) {
+    '♭' => -1,
+    '♯' => 1,
+    _ => 0,
+  };
+  final type = switch ((upper, m.group(3))) {
+    (true, '') => 'major',
+    (false, '') => 'minor',
+    (false, '°') => 'diminished',
+    (true, '+') => 'augmented',
+    (true, '7') => 'dominant7',
+    (false, '7') => 'minor7',
+    (true, 'maj7') => 'major7',
+    (false, 'ø7') => 'halfDiminished',
+    (false, '°7') => 'diminished7',
+    _ => null,
+  };
+  if (type == null) return null;
+  final step = _majorScaleSteps[_romanNumerals.indexOf(roman.toUpperCase())];
+  return (semitones: (step + shift + 12) % 12, type: type);
+}
 
 class ProgressionDegree {
   const ProgressionDegree(this.numeral, this.semitones, this.type);

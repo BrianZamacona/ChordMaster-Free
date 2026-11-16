@@ -38,8 +38,20 @@ const _otherFunctions = {
   'v': HarmonicFunction.dominant,
 };
 
-/// La función de [numeral], o `null` si no tiene una sola.
-HarmonicFunction? functionOf(String numeral) => _functionByNumeral[numeral] ?? _otherFunctions[numeral];
+/// La función de [numeral], o `null` si no tiene una sola. Una cuatríada que
+/// no está en las tablas (`ii7`, `Imaj7`, `viiø7`) tiene la de su tríada.
+HarmonicFunction? functionOf(String numeral) => _functionOfExact(numeral) ?? _functionOfExact(triadNumeral(numeral));
+
+HarmonicFunction? _functionOfExact(String numeral) => _functionByNumeral[numeral] ?? _otherFunctions[numeral];
+
+/// La tríada de un grado escrito con su 7ª: `ii7` → `ii`, `Imaj7` → `I`,
+/// `viiø7` y `vii°7` → `vii°`. Los demás quedan igual.
+String triadNumeral(String numeral) {
+  for (final (suffix, triad) in const [('maj7', ''), ('ø7', '°'), ('°7', '°'), ('7', '')]) {
+    if (numeral.endsWith(suffix)) return numeral.substring(0, numeral.length - suffix.length) + triad;
+  }
+  return numeral;
+}
 
 LocalizedText harmonicFunctionName(HarmonicFunction f) => switch (f) {
   HarmonicFunction.tonic => const LocalizedText(es: 'reposo', en: 'rest'),
@@ -51,7 +63,13 @@ LocalizedText harmonicFunctionName(HarmonicFunction f) => switch (f) {
 };
 
 /// Qué aporta cada grado, en una frase.
-LocalizedText degreeRole(String numeral) => switch (numeral) {
+LocalizedText degreeRole(String numeral) => _role(numeral) ?? (throw ArgumentError.value(numeral, 'numeral'));
+
+/// Qué aporta [numeral]; una cuatríada sin frase propia usa la de su tríada.
+/// `null` si ninguna de las dos la tiene (los grados de los modos).
+LocalizedText? degreeRoleOf(String numeral) => _role(numeral) ?? _role(triadNumeral(numeral));
+
+LocalizedText? _role(String numeral) => switch (numeral) {
   'I' => const LocalizedText(
     es: 'I: la tónica, el "hogar" de la tonalidad. Todo tiende a volver aquí.',
     en: 'I: the tonic, the "home" of the key. Everything wants to return here.',
@@ -128,16 +146,13 @@ LocalizedText degreeRole(String numeral) => switch (numeral) {
     es: 'i°: disminuido sobre la tónica: su 5ª es la b5 del locrio.',
     en: 'i°: diminished on the tonic: its 5th is the b5 of Locrian.',
   ),
-  _ => throw ArgumentError.value(numeral, 'numeral'),
+  _ => null,
 };
 
 /// Notas (pitch classes) de la tríada del grado en la tonalidad [tonic].
-Set<int> degreeTriad(ProgressionDegree d, int tonic) {
-  final root = (tonic + d.semitones) % 12;
-  final third = d.type == 'major' || d.type == 'dominant7' ? 4 : 3;
-  final fifth = d.type == 'diminished' ? 6 : 7;
-  return {root, (root + third) % 12, (root + fifth) % 12};
-}
+Set<int> degreeTriad(ProgressionDegree d, int tonic) => {
+  for (final i in degreeChordIntervals(d.type).take(3)) (tonic + d.semitones + i) % 12,
+};
 
 /// Nombres (con sostenidos) de las notas que comparten dos grados seguidos.
 List<String> commonTones(ProgressionDegree a, ProgressionDegree b, int tonic) {
@@ -145,8 +160,17 @@ List<String> commonTones(ProgressionDegree a, ProgressionDegree b, int tonic) {
   return [for (final pc in shared.toList()..sort()) noteNames[pc]];
 }
 
-/// Cadencia (cierre) entre dos grados seguidos, si la hay.
-LocalizedText? cadence(String from, String to) => switch ((from, to)) {
+/// Cadencia (cierre) entre dos grados seguidos, si la hay. Si alguno es una
+/// cuatríada de "Mi progresión" (`V7` → `Imaj7`), la de sus tríadas; entre
+/// grados de las progresiones de siempre, solo la lista (el IV7 → I7 del
+/// blues no se cuenta como plagal).
+LocalizedText? cadence(String from, String to) =>
+    _cadence(from, to) ??
+    (allDegreeNumerals.contains(from) && allDegreeNumerals.contains(to)
+        ? null
+        : _cadence(triadNumeral(from), triadNumeral(to)));
+
+LocalizedText? _cadence(String from, String to) => switch ((from, to)) {
   ('V', 'I') || ('vii°', 'I') || ('V7', 'I7') || ('V7', 'i') || ('V7', 'i7') => const LocalizedText(
     es: 'cadencia auténtica: la tensión se resuelve en el hogar, el cierre más fuerte',
     en: 'authentic cadence: tension resolves home, the strongest ending',
@@ -206,7 +230,7 @@ List<LocalizedText> explainProgression(Progression p, int tonic) {
   if (p.kind == ProgressionKind.blues) out.addAll(_bluesLines(p));
   if (p.mode != null) out.add(_modeLine(p, tonic));
 
-  if (degrees.last.numeral == 'V' && p.kind != ProgressionKind.blues) {
+  if (triadNumeral(degrees.last.numeral) == 'V' && p.kind != ProgressionKind.blues) {
     out.add(const LocalizedText(
       es: 'Termina en V (semicadencia): queda en suspenso y empuja a empezar de nuevo.',
       en: 'It ends on V (half cadence): it hangs in suspense and pushes you to start again.',
@@ -313,8 +337,12 @@ List<int> degreeChordIntervals(String type) => switch (type) {
   'major' => const [0, 4, 7],
   'minor' => const [0, 3, 7],
   'diminished' => const [0, 3, 6],
+  'augmented' => const [0, 4, 8],
   'dominant7' => const [0, 4, 7, 10],
   'minor7' => const [0, 3, 7, 10],
+  'major7' => const [0, 4, 7, 11],
+  'halfDiminished' => const [0, 3, 6, 10],
+  'diminished7' => const [0, 3, 6, 9],
   _ => throw ArgumentError.value(type, 'type'),
 };
 

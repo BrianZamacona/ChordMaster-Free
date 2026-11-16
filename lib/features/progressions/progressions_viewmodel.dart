@@ -7,6 +7,7 @@ import '../../core/constants/chord_metadata.dart';
 import '../../core/i18n/tr.dart';
 import '../../data/repository/chord_repository.dart';
 import '../../domain/open_chords/chord_shape.dart';
+import '../../domain/progressions/custom_progression.dart';
 import '../../domain/progressions/progression_builder.dart';
 import '../../domain/progressions/progression_data.dart';
 import '../../domain/progressions/progression_playback.dart';
@@ -30,7 +31,16 @@ class ProgressionsState {
     this.bpm = progressionDefaultBpm,
     this.loop = false,
     this.pattern = 0,
+    this.customMode = customDefaultMode,
+    this.customSevenths = false,
   });
+
+  /// Escala de base de "Mi progresión" (rotación de la mayor; 0 = mayor,
+  /// 5 = menor): qué acordes ofrece. Los ya puestos no cambian.
+  final int customMode;
+
+  /// "Mi progresión" ofrece los grados con su 7ª.
+  final bool customSevenths;
 
   /// Patrón de rasgueo al escuchar (índice en `strummingPatterns`; el 0 es un
   /// golpe por pulso). El 12/8 no lo usa.
@@ -81,6 +91,8 @@ class ProgressionsState {
     int? bpm,
     bool? loop,
     int? pattern,
+    int? customMode,
+    bool? customSevenths,
   }) => ProgressionsState(
     tonic: tonic ?? this.tonic,
     progressionId: progressionId ?? this.progressionId,
@@ -92,6 +104,8 @@ class ProgressionsState {
     bpm: bpm ?? this.bpm,
     loop: loop ?? this.loop,
     pattern: pattern ?? this.pattern,
+    customMode: customMode ?? this.customMode,
+    customSevenths: customSevenths ?? this.customSevenths,
   );
 
   static const Object _keep = Object();
@@ -267,6 +281,8 @@ class ProgressionsViewModel extends Notifier<ProgressionsState> {
   static const _keyCount = 'progressions_generated';
   static const _keySeen = 'progressions_seen';
   static const _keyCustom = 'progressions_custom';
+  static const _keyCustomMode = 'progressions_custom_mode';
+  static const _keyCustomSevenths = 'progressions_custom_sevenths';
 
   @override
   ProgressionsState build() {
@@ -302,12 +318,16 @@ class ProgressionsViewModel extends Notifier<ProgressionsState> {
             _keyCustom,
           ) ??
           const [];
+      final mode = await storage.get<int>(StorageBoxes.userProgress, _keyCustomMode);
+      final sevenths = await storage.get<bool>(StorageBoxes.userProgress, _keyCustomSevenths);
       state = state.copyWith(
         progressionsGenerated: count,
+        customMode: customBaseModes.contains(mode) ? mode : null,
+        customSevenths: sevenths,
         // Si el usuario ya empezó a armar una antes de terminar la carga, gana lo suyo.
         custom: state.custom.isNotEmpty
             ? state.custom
-            : [for (final n in custom.whereType<String>()) if (majorDegreeNumerals.contains(n)) n],
+            : [for (final n in custom.whereType<String>()) if (isCustomNumeral(n)) n],
       );
     } catch (e, st) {
       debugPrint('ProgressionsViewModel._loadCount error: $e\n$st');
@@ -437,9 +457,33 @@ class ProgressionsViewModel extends Notifier<ProgressionsState> {
     if (id != customProgressionId) _countGeneration('$id@${state.tonic}');
   }
 
-  /// Añade un grado a "Mi progresión" (máximo [customProgressionMax]).
+  /// Escala de base de "Mi progresión" (ver [ProgressionsState.customMode]).
+  void setCustomMode(int mode) {
+    if (!customBaseModes.contains(mode) || mode == state.customMode) return;
+    state = state.copyWith(customMode: mode);
+    _saveSetting(_keyCustomMode, mode);
+  }
+
+  /// "Mi progresión" ofrece los grados con su 7ª, o en tríada.
+  void setCustomSevenths({required bool sevenths}) {
+    if (sevenths == state.customSevenths) return;
+    state = state.copyWith(customSevenths: sevenths);
+    _saveSetting(_keyCustomSevenths, sevenths);
+  }
+
+  Future<void> _saveSetting(String key, Object value) async {
+    await _loaded;
+    try {
+      await ref.read(keyValueStoreProvider).save(StorageBoxes.userProgress, key, value);
+    } catch (e, st) {
+      debugPrint('ProgressionsViewModel._saveSetting error: $e\n$st');
+    }
+  }
+
+  /// Añade un grado a "Mi progresión" (máximo [customProgressionMax]): un
+  /// número romano que `parseDegreeNumeral` sabe leer.
   void addCustomDegree(String numeral) {
-    if (!majorDegreeNumerals.contains(numeral) ||
+    if (!isCustomNumeral(numeral) ||
         state.custom.length >= customProgressionMax) {
       return;
     }

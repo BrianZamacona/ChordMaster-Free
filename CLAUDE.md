@@ -143,6 +143,15 @@ cada nota pertenezca a la escala. No bajar la tolerancia de 0.
   compases va cada grado del blues y qué nota distingue al modo (`modeColorTones`, de
   `compareScale`). Test: `progression_kinds_test.dart`. El eólico no tiene vamp propio: es la
   menor natural, y va en «En menor».
+- «Mi progresión» (decisión del usuario tras revisar Pocket Composer; `custom_progression.dart`):
+  se arma por grados de una escala de base (la mayor o uno de sus modos, `customBaseModes`; la
+  menor natural es el 5), en tríada o con su 7ª («Con 7ª»), por regla (`diatonicTriads`). Cada
+  acorde se guarda como número romano (`ii7`, `♭VIImaj7`, `viiø7`) y `parseDegreeNumeral` lo vuelve
+  a leer: ♭/♯ desde el grado de la mayor, mayúscula = 3ª mayor, `°` `+` `7` `maj7` `ø7` `°7`. Los ya
+  puestos no cambian al cambiar de escala. La teoría usa la tríada de una cuatríada
+  (`triadNumeral`) para función, frase y cadencia, salvo entre grados de las progresiones de
+  siempre (el IV7 → I7 del blues no es plagal). Test: `custom_progression_test.dart` (cada acorde
+  de cada escala existe en chords.json en las 12 tónicas).
 - Progresiones, «¿Qué tocar encima?» (`lib/domain/theory/play_over.dart`, decisión del usuario
   tras revisar las apps jam): por regla, las escalas de la tónica que contienen todas las notas de
   todos los acordes (`scalesForChord` sobre `progressionTones`; las de mismas notas, una vez), las
