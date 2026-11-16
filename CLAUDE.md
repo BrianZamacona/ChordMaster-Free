@@ -249,7 +249,8 @@ cada nota pertenezca a la escala. No bajar la tolerancia de 0.
   cuerdas sonando). Un solo micrófono para la app (`playAlongProvider`): se suelta al sonar
   un reproductor, al salir o al ocultar la pestaña.
 - Tramo y bucle (inspirado en el "Loop"/"Slow Down" de Gibson): `TabPlayer` deja elegir un
-  renglón (`tabNotesPerLine` = 8, en `tab_playback.dart`) y repetirlo en bucle, al escuchar y
+  renglón (hasta `tabNotesPerLine` = 8 notas, `tabLineStarts` en `tab_playback.dart`: si el corte cae
+  dentro de un tresillo, el renglón termina antes y el grupo pasa entero) y repetirlo en bucle, al escuchar y
   con el micrófono (vuelve a escuchar 1.5 s después y cuenta las pasadas limpias seguidas). Un
   renglón suelto nunca da récord: solo la tablatura entera llama a `onPlayed`. Tras una pasada
   entera con errores o pausa, `PlayAlongResult.lineToPractice` (el renglón de más errores; si
@@ -338,7 +339,7 @@ cada nota pertenezca a la escala. No bajar la tolerancia de 0.
 - Tablatura en `Lesson.tab` (`TabNote`: cuerda 1 = mi aguda, traste; ritmo y técnicas en
   "Notación de la tablatura"). Toda lección con tab
   declara `scale` y un test exige que cada nota pertenezca a ella; las notas que el texto nombra
-  se verifican una por una. Se dibuja en `lesson_tab.dart`, en renglones de 8 notas.
+  se verifican una por una. Se dibuja en `lesson_tab.dart`, en renglones de hasta 8 notas (`tabLineStarts`).
 - `Lesson.tool` abre afinador, metrónomo o un módulo de Aprender, siempre con `push`: atrás vuelve
   a la lección. Regla (decisión del usuario): afinador y metrónomo abiertos desde otra pantalla
   se apilan sobre ella (`/tuner` y `/metronome` en Inicio, `/learn/tuner` y `/learn/metronome`

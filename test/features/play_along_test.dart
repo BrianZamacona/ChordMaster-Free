@@ -190,7 +190,7 @@ void main() {
     testWidgets('un renglón suena solo: sus notas y nada más', (tester) async {
       final (_, _, audio) = await open(tester, '/learn/lessons/course/melodies/mo_ode');
       final tab = melodyStepsById['mo_ode']!.tab;
-      expect(tabLineCount(tab.length), 4);
+      expect(tabLineCount(tab), 4);
       for (var i = 0; i < 4; i++) {
         expect(find.byKey(Key('tab-line-$i')), findsOneWidget);
       }

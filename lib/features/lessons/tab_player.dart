@@ -101,7 +101,7 @@ class _TabPlayerState extends ConsumerState<TabPlayer> {
 
   ({int start, int end}) get _range => _line == null
       ? (start: 0, end: widget.notes.length)
-      : tabLineRange(widget.notes.length, _line!);
+      : tabLineRange(widget.notes, _line!);
 
   List<TabNote> get _part => widget.notes.sublist(_range.start, _range.end);
 
@@ -318,7 +318,7 @@ class _TabPlayerState extends ConsumerState<TabPlayer> {
       });
     }
     final range = _range;
-    final lines = tabLineCount(widget.notes.length);
+    final lines = tabLineCount(widget.notes);
     final practice = finished && _line == null ? mine!.result!.lineToPractice : null;
     final slower = widget.onBpmChanged == null ? null : slowerBpm(widget.bpm);
 
