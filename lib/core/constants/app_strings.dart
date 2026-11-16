@@ -1381,6 +1381,15 @@ class AppStrings {
     es: 'Ninguna escala de 7 notas tiene todas sus notas: improvisa con las notas de cada acorde.',
     en: 'No 7-note scale has all of its notes: improvise with the notes of each chord.',
   );
+  static String get chordOnNeckTitle => tr(es: 'Cada acorde en el mástil', en: 'Each chord on the neck');
+  static String chordOnNeckInScale(String chord, String notes, String scale) => tr(
+    es: 'Las notas de $chord ($notes) resaltadas dentro de $scale: apóyate en ellas cuando suena.',
+    en: 'The notes of $chord ($notes) highlighted within $scale: lean on them while it plays.',
+  );
+  static String chordOnNeckAlone(String chord, String notes) => tr(
+    es: 'Las notas de $chord ($notes): ninguna escala cabe en toda la progresión.',
+    en: 'The notes of $chord ($notes): no scale fits the whole progression.',
+  );
   static String get playOverArpeggios => tr(es: 'Notas de cada acorde (su arpegio)', en: 'Notes of each chord (its arpeggio)');
   static String progressionBarPerChordPattern(int n) => tr(
     es: 'Un compás por acorde, con el patrón $n del curso de rasgueo.',

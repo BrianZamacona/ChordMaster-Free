@@ -198,7 +198,11 @@ cada nota pertenezca a la escala. No bajar la tolerancia de 0.
   pentatónicas que caben en la primera, y en el blues (ninguna de 7 notas contiene I7, IV7 y V7)
   la pentatónica menor, la de blues y la mayor, con lo que aporta cada una (test con sus
   intervalos). Debajo, las notas de cada acorde con sus intervalos (`degreeArpeggio`). Cada escala
-  abre su detalle en la tónica con `push`.
+  abre su detalle en la tónica con `push`. Al final, «Cada acorde en el mástil» (idea de Pocket
+  Composer; `ChordOnNeck`, `chordInScaleOnNeck` en `neck_notes.dart`): se elige un acorde y sus notas
+  se resaltan, con nombre, entre las de la primera escala que cabe (en el blues, la pentatónica
+  menor) en todo el mástil; las del acorde que no son de la escala también salen; sin escala, solo
+  las del acorde.
 - Progresiones, escuchar (decisión del usuario tras revisar las apps jam): la vuelta entera se
   sintetiza en un WAV (`progression_playback.dart`: un compás por acorde, un golpe abajo por
   pulso), con tempo de 5 en 5 (40–200, los límites de Técnica) y bucle. En bucle el archivo

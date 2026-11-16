@@ -94,3 +94,29 @@ Set<NoteCoordinate> triadNotesOnNeck(
   for (final c in neck)
     if (isTriadNote(c.string, c.fret, rootSemitone, triad)) c,
 };
+
+/// Un acorde dentro de su escala en todo el mástil (idea de Pocket Composer,
+/// decisión del usuario): las notas de la escala [scale] (semitonos sobre la
+/// tónica [rootSemitone]; vacía si ninguna escala cabe en la progresión) más
+/// las del acorde que no son de ella, y cuáles son del acorde ([chordTones],
+/// semitonos sobre la tónica): esas se resaltan y el resto se atenúa.
+({List<NoteCoordinate> neck, Set<NoteCoordinate> chord}) chordInScaleOnNeck({
+  required int rootSemitone,
+  required List<int> scale,
+  required Set<int> chordTones,
+  int maxFret = 24,
+}) {
+  final tones = {for (final t in chordTones) t % 12};
+  final neck = scaleNotesOnNeck(
+    rootSemitone: rootSemitone,
+    intervals: ({for (final i in scale) i % 12}..addAll(tones)).toList()..sort(),
+    maxFret: maxFret,
+  );
+  return (
+    neck: neck,
+    chord: {
+      for (final c in neck)
+        if (tones.contains((standardOpenStringMidi[c.string - 1] + c.fret - rootSemitone) % 12)) c,
+    },
+  );
+}
