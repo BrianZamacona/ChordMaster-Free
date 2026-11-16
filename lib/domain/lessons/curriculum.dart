@@ -1131,6 +1131,19 @@ const _doubleStops = LessonUnit(
   art: NotesArt(['C', 'E']),
 );
 
+const _tappingCourse = LessonUnit(
+  id: 'l_tapping',
+  track: LessonTrack.lead,
+  level: 2,
+  title: LocalizedText(es: 'Tapping', en: 'Tapping'),
+  summary: LocalizedText(
+    es: 'Curso por niveles: del primer tap en una cuerda al trino con las dos manos.',
+    en: 'A course by levels: from the first tap on one string to the two-hand trill.',
+  ),
+  art: NotesArt(['A', 'C', 'E']),
+  course: LessonCourse.tapping,
+);
+
 /// Retos al final de cada nivel de cada camino; se superan con el récord de
 /// un módulo de práctica.
 const _basicsCourse = LessonUnit(
@@ -1213,6 +1226,7 @@ const List<LessonUnit> lessonUnits = [
   _majorMinor,
   _circleOfFifths,
   _doubleStops,
+  _tappingCourse,
 ];
 
 const List<LessonChallenge> challenges = [

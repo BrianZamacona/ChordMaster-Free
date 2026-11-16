@@ -290,8 +290,8 @@ cada nota pertenezca a la escala. No bajar la tolerancia de 0.
   abiertos 2 (D/Dm, séptimas, maj7/m7), Rasgueo 2 (3/4, 6/8 y acento en 2 y 4) y Riffs (power
   chords y boogie); líder = Licks, Mayor y menor (escala mayor, relativa menor, círculo),
   Círculo de quintas (cómo se arma, dominantes secundarias y el quiz; cada lección abre su
-  pantalla con `LessonTool.circleBuild/circleHarmony/circleQuiz`) y Double stops (terceras y
-  sextas). Nada de riffs ni melodías con derechos de autor.
+  pantalla con `LessonTool.circleBuild/circleHarmony/circleQuiz`), Double stops (terceras y
+  sextas) y el curso de Tapping (al final). Nada de riffs ni melodías con derechos de autor.
 - Fundamentos (decisión del usuario, inspirado en "Basic Skills" y "Melodies"): conocer el
   instrumento y moverse con ganas de seguir, no acordes. Am, A y E van en el curso Acordes
   abiertos – Parte 2 (las lecciones f3–f5 y su unidad "Más acordes abiertos" se borraron al
@@ -403,6 +403,21 @@ cada nota pertenezca a la escala. No bajar la tolerancia de 0.
   (`StrumPlayer`, en `features/courses/`) rasguea un golpe hacia abajo por pulso; la pantalla
   lo aclara. Las canciones viven en `lib/domain/courses/course_songs.dart` (una sola lista para
   todos los cursos).
+
+## Curso de tapping (líder nivel 2)
+- Decisión del usuario tras revisar Learn Tapping: unidad-curso `l_tapping` al final del nivel 2
+  de líder (detrás de Double stops; no cambia el reto del nivel). `lib/domain/tapping/
+  tapping_course.dart`, `LessonCourse.tapping`, progreso `tapping_*`, ruta
+  `/learn/lessons/course/tapping/<paso>`. Cuatro niveles en el orden de la app: el primer tap
+  (tap y pull-off, arpegio de Am, al revés), mover una mano (la izquierda de Am a E con la G# de
+  la menor armónica; la derecha por 17, 18 y 15), de cuerda en cuerda (pentatónica de A menor,
+  hammer-on desde la nada) y el trino (en un lugar, subiendo y todo junto).
+- Frases propias armadas por regla (`tapTriplet`, `tapTripletDown`, `tapTrill`, `tapAndDrop`,
+  `tapEnd`), en la 2ª cuerda casi siempre. Pasos con `TabCourseStep` (texto + tablatura, como
+  `MelodyStep`), así que comparte `MelodyStepScreen`; el reproductor suena como está escrito
+  (`tappingPlayerNote`). Test (`tapping_course_test.dart`): escritura, escala de cada nivel,
+  dos compases que empiezan con tap, la izquierda en cuatro trastes por grupo (cinco en total) y
+  siempre bajo su tap, el orden, y lo que dice cada texto.
 
 ## Curso de patrones de rasgueo (Parte 1)
 - `lib/domain/strumming/`, unidad `r_strumming_patterns_1` del mapa (segunda de rítmica). Cinco patrones de
