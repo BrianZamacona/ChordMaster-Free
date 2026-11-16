@@ -30,6 +30,19 @@ void main() {
   Set<String> names(Iterable<TabNote> notes) => {for (final n in notes) pitchClassName(tabMidi(n))};
 
   group('la escritura', () {
+    test('ningún tresillo queda partido entre dos renglones (pierde su llave «3»)', () {
+      var cutBefore = 0;
+      for (final s in steps) {
+        final starts = tabLineStarts(s.tab);
+        for (final g in tabTripletGroups(s.tab)) {
+          expect(tabLineOf(starts, g.first), tabLineOf(starts, g.last), reason: s.id);
+          // Con renglones de 8 justas, este grupo se partía.
+          if (g.first ~/ tabNotesPerLine != g.last ~/ tabNotesPerLine) cutBefore++;
+        }
+      }
+      expect(cutBefore, greaterThan(0));
+    });
+
     test('ids únicos; teoría sin notas; ejercicios con tablatura bien escrita', () {
       expect(tappingStepsById, hasLength(steps.length));
       for (final s in steps) {

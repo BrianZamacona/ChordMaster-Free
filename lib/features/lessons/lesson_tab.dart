@@ -67,9 +67,11 @@ class LessonTabView extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     final p = context.palette;
+    // Renglones de hasta [tabNotesPerLine] notas, sin partir un tresillo.
+    final starts = tabLineStarts(notes);
+    final ends = [...starts.skip(1), notes.length];
     final lines = [
-      for (var i = 0; i < notes.length; i += tabNotesPerLine)
-        notes.sublist(i, math.min(i + tabNotesPerLine, notes.length)),
+      for (final (i, start) in starts.indexed) notes.sublist(start, ends[i]),
     ];
     final all = showFingers ? tabFingers(notes) : null;
     final fingers = all != null && all.any((f) => f != null) ? all : null;
@@ -117,21 +119,18 @@ class LessonTabView extends StatelessWidget {
                     child: CustomPaint(
                       painter: _TabPainter(
                         notes: line,
-                        previous: i == 0 ? null : notes[i * tabNotesPerLine - 1],
+                        previous: i == 0 ? null : notes[starts[i] - 1],
                         // Los tresillos de este renglón, con índices del renglón.
                         triplets: [
                           for (final g in triplets)
-                            if (tabLineOf(g.first) == i && tabLineOf(g.last) == i)
-                              [for (final k in g) k - i * tabNotesPerLine],
+                            if (tabLineOf(starts, g.first) == i)
+                              [for (final k in g) k - starts[i]],
                         ],
                         layout: layout,
                         palette: p,
                         counts: layout.count
                             ? [
-                                for (final pos in positions.sublist(
-                                  i * tabNotesPerLine,
-                                  i * tabNotesPerLine + line.length,
-                                ))
+                                for (final pos in positions.sublist(starts[i], ends[i]))
                                   tabCountAt(
                                     pos,
                                     e: count.e,
@@ -144,17 +143,14 @@ class LessonTabView extends StatelessWidget {
                             : null,
                         highlight: highlight == null
                             ? null
-                            : highlight! - i * tabNotesPerLine,
-                        playedFrom: playedFrom - i * tabNotesPerLine,
-                        played: played - i * tabNotesPerLine,
+                            : highlight! - starts[i],
+                        playedFrom: playedFrom - starts[i],
+                        played: played - starts[i],
                         chords: {
                           for (final MapEntry(:key, :value) in chordLabels.entries)
-                            if (tabLineOf(key) == i) key - i * tabNotesPerLine: value,
+                            if (tabLineOf(starts, key) == i) key - starts[i]: value,
                         },
-                        fingers: fingers?.sublist(
-                          i * tabNotesPerLine,
-                          math.min((i + 1) * tabNotesPerLine, notes.length),
-                        ),
+                        fingers: fingers?.sublist(starts[i], ends[i]),
                       ),
                     ),
                   ),

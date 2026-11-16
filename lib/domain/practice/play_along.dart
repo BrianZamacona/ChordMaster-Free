@@ -45,7 +45,9 @@ int slowerBpm(int bpm) => math.max(techniqueMinBpm, bpm - playAlongSlowerBy);
 /// tienen altura: no se esperan (la nota muerta es solo un golpe). Tampoco un
 /// acorde que no es de quintas ([tabMicHears]).
 class NoteFollower {
-  NoteFollower(List<TabNote> tab, {TabSwing swing = TabSwing.none}) : length = tab.length {
+  NoteFollower(List<TabNote> tab, {TabSwing swing = TabSwing.none})
+    : length = tab.length,
+      _lineStarts = tabLineStarts(tab) {
     final positions = tabPositions(tab);
     for (final (i, n) in tab.indexed) {
       if (n.isRest || n.technique == TabTechnique.dead || !tabMicHears(n)) continue;
@@ -59,6 +61,9 @@ class NoteFollower {
 
   /// Notas de la tablatura (con silencios y notas muertas).
   final int length;
+
+  /// Dónde empieza cada renglón ([tabLineStarts]).
+  final List<int> _lineStarts;
 
   /// MIDI esperado de cada nota que se oye (al pulsarla: un bend se espera en
   /// su traste, y la nota empujada llega sin ataque).
@@ -110,6 +115,7 @@ class NoteFollower {
     _times,
     beats: _beats.sublist(0, _times.length),
     mistakesAt: _mistakesAt,
+    lineStarts: _lineStarts,
   );
 }
 
@@ -178,20 +184,28 @@ class PlayAlongResult {
     required this.mistakesAt,
     required this.bpm,
     required this.pauseAt,
+    this.lineStarts = const [0],
   });
 
   /// [times]: instante de cada nota correcta, en orden, y [beats]: en qué
   /// pulso cae cada una en la tablatura (sin darlos, corcheas seguidas);
-  /// [mistakesAt]: la nota que se esperaba (índice) cuando sonó cada error.
+  /// [mistakesAt]: la nota que se esperaba (índice) cuando sonó cada error;
+  /// [lineStarts]: dónde empieza cada renglón (sin darlos, de a
+  /// [tabNotesPerLine]).
   factory PlayAlongResult.from(
     List<double> times, {
     List<double>? beats,
     List<int> mistakesAt = const [],
+    List<int>? lineStarts,
   }) {
+    final lines = lineStarts ??
+        [
+          for (var i = 0; i <= [...mistakesAt, times.length].reduce(math.max); i += tabNotesPerLine) i,
+        ];
     final at = beats ?? [for (var i = 0; i < times.length; i++) i / defaultNotesPerBeat];
     final errors = List<int>.unmodifiable(mistakesAt);
     if (times.length < 2 || at.last <= at.first) {
-      return PlayAlongResult(mistakesAt: errors, bpm: null, pauseAt: null);
+      return PlayAlongResult(mistakesAt: errors, bpm: null, pauseAt: null, lineStarts: lines);
     }
     // El tempo, por la distancia de la primera a la última: el micrófono
     // ubica cada nota en cuadros de ~46 ms, y en toda la pasada ese redondeo
@@ -209,11 +223,15 @@ class PlayAlongResult {
       bpm: seconds <= 0 ? null : 60 * (at.last - at.first) / seconds,
       // La pausa es antes de la nota que tardó en llegar.
       pauseAt: pause < 0 ? null : pause + 1,
+      lineStarts: lines,
     );
   }
 
   /// Dónde sonó cada error: el índice de la nota que se esperaba.
   final List<int> mistakesAt;
+
+  /// Dónde empieza cada renglón de la tablatura ([tabLineStarts]).
+  final List<int> lineStarts;
 
   int get mistakes => mistakesAt.length;
 
@@ -242,20 +260,20 @@ class PlayAlongResult {
     return math.min(floored, techniqueMaxBpm);
   }
 
-  /// El renglón (desde 0, de [tabNotesPerLine] notas) que conviene repetir:
+  /// El renglón (desde 0, de [lineStarts]) que conviene repetir:
   /// el de más errores (si empatan, el primero) o, sin errores, el de la
   /// pausa. `null` si salió limpia.
   int? get lineToPractice {
     if (mistakesAt.isNotEmpty) {
       final perLine = <int, int>{};
       for (final i in mistakesAt) {
-        perLine.update(tabLineOf(i), (n) => n + 1, ifAbsent: () => 1);
+        perLine.update(tabLineOf(lineStarts, i), (n) => n + 1, ifAbsent: () => 1);
       }
       final most = perLine.values.reduce(math.max);
       return perLine.keys.where((l) => perLine[l] == most).reduce(math.min);
     }
     final pause = pauseAt;
-    return pause == null ? null : tabLineOf(pause);
+    return pause == null ? null : tabLineOf(lineStarts, pause);
   }
 }
 double _median(List<double> xs) {

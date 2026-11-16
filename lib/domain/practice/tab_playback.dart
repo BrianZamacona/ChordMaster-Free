@@ -7,6 +7,7 @@ import 'dart:math' as math;
 import '../audio/pluck_synth.dart';
 import '../lessons/lesson.dart';
 import '../theory/notes.dart';
+import 'tab_notation.dart';
 
 /// Corcheas: dos notas por pulso.
 const defaultNotesPerBeat = 2;
@@ -42,21 +43,45 @@ const perfectFifthSemitones = 7, perfectFourthSemitones = 5;
 /// palma de la pompe, no se espera: se siguen las notas de alrededor.
 bool tabMicHears(TabNote note) => !note.isChord || tabChordPeriodDivisor(note) > 1;
 
-/// Notas por renglón: la pantalla dibuja la tablatura de a tantas notas (a 360
-/// dp caben sin apretarse) y cada renglón se puede practicar suelto.
+/// Notas por renglón, como mucho: la pantalla dibuja la tablatura de a tantas
+/// notas (a 360 dp caben sin apretarse) y cada renglón se puede practicar suelto.
 const tabNotesPerLine = 8;
 
-/// Cuántos renglones ocupan [count] notas.
-int tabLineCount(int count) => (count + tabNotesPerLine - 1) ~/ tabNotesPerLine;
+/// Dónde empieza cada renglón de [notes]: de a [tabNotesPerLine] notas, salvo
+/// que el corte caiga dentro de un tresillo; entonces el renglón termina antes
+/// del grupo y el tresillo entero pasa al siguiente (con su llave «3»).
+List<int> tabLineStarts(List<TabNote> notes) {
+  final groupStart = {
+    for (final g in tabTripletGroups(notes))
+      for (final i in g) i: g.first,
+  };
+  final starts = <int>[];
+  for (var i = 0; i < notes.length;) {
+    starts.add(i);
+    var end = i + tabNotesPerLine;
+    final cut = groupStart[end];
+    if (end < notes.length && cut != null && cut > i) end = cut;
+    i = end;
+  }
+  return starts;
+}
 
-/// Renglón (desde 0) de la nota [index].
-int tabLineOf(int index) => index ~/ tabNotesPerLine;
+/// Cuántos renglones ocupa [notes].
+int tabLineCount(List<TabNote> notes) => tabLineStarts(notes).length;
 
-/// Notas del renglón [line]: de [start] a [end] (sin incluirlo).
-({int start, int end}) tabLineRange(int count, int line) {
-  final start = line * tabNotesPerLine;
-  final end = start + tabNotesPerLine;
-  return (start: start, end: end < count ? end : count);
+/// Renglón (desde 0) de la nota [index], con los comienzos de [tabLineStarts].
+int tabLineOf(List<int> starts, int index) {
+  var line = 0;
+  while (line + 1 < starts.length && starts[line + 1] <= index) {
+    line++;
+  }
+  return line;
+}
+
+/// Notas del renglón [line] de [notes]: de [start] a [end] (sin incluirlo).
+({int start, int end}) tabLineRange(List<TabNote> notes, int line) {
+  final starts = tabLineStarts(notes);
+  return (start: starts[line], end: line + 1 < starts.length ? starts[line + 1] : notes.length);
 }
 
 /// Trastes que cubre la mano quieta: un dedo por traste.

@@ -69,8 +69,11 @@ void main() {
 
     test('un tresillo nunca queda partido entre dos renglones (perdería su llave)', () {
       for (final l in licks) {
+        final starts = tabLineStarts(l.tab);
         for (final g in tabTripletGroups(l.tab)) {
-          expect(tabLineOf(g.first), tabLineOf(g.last), reason: l.id);
+          expect(tabLineOf(starts, g.first), tabLineOf(starts, g.last), reason: l.id);
+          // Los licks se escriben para que el corte de 8 no caiga en un tresillo.
+          expect(g.first ~/ tabNotesPerLine, g.last ~/ tabNotesPerLine, reason: l.id);
         }
         expect(
           l.tab.where((n) => isTripletLength(n.length)).length,

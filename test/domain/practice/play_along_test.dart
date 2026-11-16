@@ -10,6 +10,7 @@ import 'package:chordmaster_free/domain/licks/licks.dart';
 import 'package:chordmaster_free/domain/melodies/basics_course.dart';
 import 'package:chordmaster_free/domain/melodies/melody_course.dart';
 import 'package:chordmaster_free/domain/practice/play_along.dart';
+import 'package:chordmaster_free/domain/practice/tab_notation.dart';
 import 'package:chordmaster_free/domain/practice/tab_playback.dart';
 import 'package:chordmaster_free/domain/practice/technique_exercises.dart';
 import 'package:flutter_test/flutter_test.dart';
@@ -301,13 +302,39 @@ void main() {
 
   group('repetir un renglón y más lento', () {
     test('renglones de 8 notas', () {
-      expect(tabLineCount(0), 0);
-      expect(tabLineCount(8), 1);
-      expect(tabLineCount(9), 2);
-      expect(tabLineOf(7), 0);
-      expect(tabLineOf(8), 1);
-      expect(tabLineRange(20, 0), (start: 0, end: 8));
-      expect(tabLineRange(20, 2), (start: 16, end: 20));
+      List<TabNote> eighths(int n) => List.filled(n, const TabNote(3, 0));
+      expect(tabLineCount(eighths(0)), 0);
+      expect(tabLineCount(eighths(8)), 1);
+      expect(tabLineCount(eighths(9)), 2);
+      final starts = tabLineStarts(eighths(20));
+      expect(starts, [0, 8, 16]);
+      expect(tabLineOf(starts, 7), 0);
+      expect(tabLineOf(starts, 8), 1);
+      expect(tabLineRange(eighths(20), 0), (start: 0, end: 8));
+      expect(tabLineRange(eighths(20), 2), (start: 16, end: 20));
+    });
+
+    test('un tresillo no se parte: el renglón termina antes y el grupo pasa entero', () {
+      const triplet = TabNote(3, 2, length: tabTripletEighth);
+      final tab = [
+        for (var i = 0; i < 6; i++) const TabNote(3, 0),
+        triplet, triplet, triplet, // índices 6, 7 y 8: el corte de 8 caía en medio
+        for (var i = 0; i < 9; i++) const TabNote(3, 0),
+      ];
+      expect(tabLineStarts(tab), [0, 6, 14]);
+      expect(tabLineRange(tab, 0), (start: 0, end: 6));
+      expect(tabLineRange(tab, 1), (start: 6, end: 14));
+      for (final g in tabTripletGroups(tab)) {
+        final starts = tabLineStarts(tab);
+        expect(tabLineOf(starts, g.first), tabLineOf(starts, g.last));
+      }
+      // El renglón que se propone repetir sale de esos mismos renglones.
+      final f = NoteFollower(tab)..hear((midi: 60, at: 0, plucked: true));
+      expect(f.result.lineStarts, [0, 6, 14]);
+      expect(
+        PlayAlongResult.from(const [0.0, 0.5, 1.0], mistakesAt: const [7], lineStarts: const [0, 6, 14]).lineToPractice,
+        1,
+      );
     });
 
     test('el seguidor anota dónde fue cada error', () {

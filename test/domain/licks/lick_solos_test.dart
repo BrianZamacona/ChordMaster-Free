@@ -27,7 +27,7 @@ void main() {
     expect({for (final s in solos) s.level}, GuideLevel.values.toSet());
     for (final s in solos) {
       expect(tabLength(s.tab), 4 * lickBar, reason: s.id);
-      expect(tabLineCount(s.tab.length), greaterThanOrEqualTo(2), reason: s.id);
+      expect(tabLineCount(s.tab), greaterThanOrEqualTo(2), reason: s.id);
     }
   });
 
