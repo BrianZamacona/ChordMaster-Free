@@ -108,4 +108,14 @@ void main() {
       expect(lines, contains(startsWith('V7 → Imaj7: cadencia auténtica')));
     });
   });
+
+  test('se guarda cada acorde con su duración; lo de antes dura un compás', () {
+    expect(customToken('ii7', 4), 'ii7');
+    expect(customToken('ii7', 2), 'ii7@2');
+    expect(parseCustomToken('ii7@2'), (numeral: 'ii7', beats: 2));
+    expect(parseCustomToken('vi'), (numeral: 'vi', beats: 4));
+    for (final bad in ['ii7@3', 'ii7@', 'X@2', 'ii@2@4', '@4']) {
+      expect(parseCustomToken(bad), isNull, reason: bad);
+    }
+  });
 }

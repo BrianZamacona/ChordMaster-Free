@@ -26,6 +26,7 @@ class ProgressionsState {
     this.progressionsGenerated = 0,
     this.beginner = false,
     this.custom = const [],
+    this.customBeats = const [],
     this.chosen = const {},
     this.playingIndex,
     this.bpm = progressionDefaultBpm,
@@ -71,6 +72,9 @@ class ProgressionsState {
   /// Grados de "Mi progresión" (lo que antes era el módulo Componer).
   final List<String> custom;
 
+  /// Pulsos de cada acorde de [custom] (los de `customChordBeats`).
+  final List<int> customBeats;
+
   /// Digitaciones elegidas a mano en el glosario, por índice de acorde
   /// (orden de chords.json). El resto sigue el camino óptimo.
   final Map<int, FingeringChoice> chosen;
@@ -79,7 +83,13 @@ class ProgressionsState {
 
   /// Progresión elegida: una de [progressions] o la propia del usuario.
   Progression get progression => isCustom
-      ? Progression(customProgressionId, custom.join(' - '), custom)
+      ? Progression(
+          customProgressionId,
+          custom.join(' - '),
+          custom,
+          // Todos de un compás = como las de siempre.
+          beats: customBeats.every((b) => b == progressionBeatsPerChord) ? null : customBeats,
+        )
       : progressions.firstWhere(
           (p) => p.id == progressionId,
           orElse: () => progressions.first,
@@ -91,6 +101,7 @@ class ProgressionsState {
     int? progressionsGenerated,
     bool? beginner,
     List<String>? custom,
+    List<int>? customBeats,
     Map<int, FingeringChoice>? chosen,
     Object? playingIndex = _keep,
     int? bpm,
@@ -105,6 +116,7 @@ class ProgressionsState {
     progressionsGenerated: progressionsGenerated ?? this.progressionsGenerated,
     beginner: beginner ?? this.beginner,
     custom: custom ?? this.custom,
+    customBeats: customBeats ?? this.customBeats,
     chosen: chosen ?? this.chosen,
     playingIndex: identical(playingIndex, _keep) ? this.playingIndex : playingIndex as int?,
     bpm: bpm ?? this.bpm,
@@ -327,14 +339,14 @@ class ProgressionsViewModel extends Notifier<ProgressionsState> {
           const [];
       final mode = await storage.get<int>(StorageBoxes.userProgress, _keyCustomMode);
       final sevenths = await storage.get<bool>(StorageBoxes.userProgress, _keyCustomSevenths);
+      final saved = [for (final t in custom.whereType<String>()) ?parseCustomToken(t)];
       state = state.copyWith(
         progressionsGenerated: count,
         customMode: customBaseModes.contains(mode) ? mode : null,
         customSevenths: sevenths,
         // Si el usuario ya empezó a armar una antes de terminar la carga, gana lo suyo.
-        custom: state.custom.isNotEmpty
-            ? state.custom
-            : [for (final n in custom.whereType<String>()) if (isCustomNumeral(n)) n],
+        custom: state.custom.isNotEmpty ? state.custom : [for (final c in saved) c.numeral],
+        customBeats: state.custom.isNotEmpty ? state.customBeats : [for (final c in saved) c.beats],
       );
     } catch (e, st) {
       debugPrint('ProgressionsViewModel._loadCount error: $e\n$st');
@@ -368,6 +380,7 @@ class ProgressionsViewModel extends Notifier<ProgressionsState> {
     final bpm = state.bpm;
     final loop = state.loop;
     final count = plan.steps.length;
+    final beats = plan.progression.beats;
     final shapes = [
       for (final s in plan.steps)
         ChordShape(name: '', frets: s.voicing.jsonFrets, fingers: List.filled(6, 0)),
@@ -377,8 +390,9 @@ class ProgressionsViewModel extends Notifier<ProgressionsState> {
       bpm: bpm,
       feel: state.progression.feel,
       pattern: strummingPatterns[state.pattern],
+      beats: beats,
     );
-    final seconds = progressionAudioSeconds(count, bpm: bpm, loop: loop);
+    final seconds = progressionAudioSeconds(count, bpm: bpm, loop: loop, beats: beats);
     final audio = ref.read(audioServiceProvider);
     state = state.copyWith(playingIndex: 0);
     // El temporizador cuenta sus vueltas (`tick` salta si una se atrasa):
@@ -386,7 +400,7 @@ class ProgressionsViewModel extends Notifier<ProgressionsState> {
     _listenTimer = Timer.periodic(listenFrame, (timer) {
       if (token != _listenToken) return timer.cancel();
       final elapsed = timer.tick * listenFrame.inMicroseconds / 1e6;
-      final i = progressionChordAt(elapsed, count, bpm: bpm, loop: loop);
+      final i = progressionChordAt(elapsed, count, bpm: bpm, loop: loop, beats: beats);
       if (i == null) {
         _stopListening(silence: false);
       } else if (i != state.playingIndex) {
@@ -497,24 +511,33 @@ class ProgressionsViewModel extends Notifier<ProgressionsState> {
         state.custom.length >= customProgressionMax) {
       return;
     }
-    _setCustom([...state.custom, numeral]);
+    _setCustom([...state.custom, numeral], [...state.customBeats, progressionBeatsPerChord]);
   }
 
   void removeCustomDegree(int index) {
     if (index < 0 || index >= state.custom.length) return;
-    _setCustom([...state.custom]..removeAt(index));
+    _setCustom([...state.custom]..removeAt(index), [...state.customBeats]..removeAt(index));
   }
 
-  void clearCustom() => _setCustom(const []);
+  /// Cuántos pulsos dura el acorde [index] de "Mi progresión" (uno de
+  /// `customChordBeats`).
+  void setCustomBeats(int index, int beats) {
+    if (index < 0 || index >= state.custom.length || !customChordBeats.contains(beats)) return;
+    if (state.customBeats[index] == beats) return;
+    _setCustom(state.custom, [...state.customBeats]..[index] = beats);
+  }
 
-  void _setCustom(List<String> custom) {
+  void clearCustom() => _setCustom(const [], const []);
+
+  void _setCustom(List<String> custom, List<int> beats) {
     _stopListening();
     state = state.copyWith(
       custom: custom,
+      customBeats: beats,
       progressionId: customProgressionId,
       chosen: const {},
     );
-    _saveCustom(custom);
+    _saveCustom([for (final (i, n) in custom.indexed) customToken(n, beats[i])]);
     // Cuenta como progresión generada a partir de 3 acordes.
     if (custom.length >= 3) {
       _countGeneration('$customProgressionId:${custom.join('-')}@${state.tonic}');

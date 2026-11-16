@@ -77,6 +77,41 @@ void main() {
     expect(s.custom, ['i7', '♭VIImaj7']);
   });
 
+  test('Mi progresión: cada acorde con su duración, guardada', () async {
+    final storage = InMemoryStore();
+    final container = _container(storage);
+    final vm = container.read(progressionsViewModelProvider.notifier);
+    await vm.loaded;
+
+    vm
+      ..addCustomDegree('I')
+      ..addCustomDegree('IV')
+      ..addCustomDegree('V')
+      ..setCustomBeats(1, 2)
+      ..setCustomBeats(2, 3)
+      ..setCustomBeats(9, 2);
+    var s = container.read(progressionsViewModelProvider);
+    expect(s.customBeats, [4, 2, 4]);
+    expect(s.progression.beats, [4, 2, 4]);
+    vm.removeCustomDegree(0);
+    s = container.read(progressionsViewModelProvider);
+    expect(s.custom, ['IV', 'V']);
+    expect(s.customBeats, [2, 4]);
+    await _settle();
+    expect(storage.progress['progressions_custom'], ['IV@2', 'V']);
+
+    final again = _container(storage);
+    final vm2 = again.read(progressionsViewModelProvider.notifier);
+    await vm2.loaded;
+    s = again.read(progressionsViewModelProvider);
+    expect(s.custom, ['IV', 'V']);
+    expect(s.customBeats, [2, 4]);
+
+    // Todos de un compás: la progresión suena como las de siempre.
+    vm2.setCustomBeats(0, 4);
+    expect(again.read(progressionsViewModelProvider).progression.beats, isNull);
+  });
+
   test('cuenta una vez por progresión distinta (id + tónica)', () async {
     final storage = InMemoryStore();
     final container = _container(storage);

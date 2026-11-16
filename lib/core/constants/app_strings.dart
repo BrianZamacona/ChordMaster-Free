@@ -1374,6 +1374,33 @@ class AppStrings {
     es: 'Un compás por acorde, con el patrón $n del curso de rasgueo.',
     en: 'One bar per chord, with pattern $n from the strumming course.',
   );
+  static String progressionChordBeatsPattern(int n) => n == 1
+      ? tr(
+          es: 'Cada acorde dura lo que le pusiste, un golpe hacia abajo en cada pulso.',
+          en: 'Each chord lasts what you set, one downstroke on each beat.',
+        )
+      : tr(
+          es: 'Cada acorde dura lo que le pusiste; el patrón $n sigue el compás, aunque cambie el acorde.',
+          en: 'Each chord lasts what you set; pattern $n follows the bar, even when the chord changes.',
+        );
+  static String chordBeatsShort(int beats) => switch (beats) {
+    1 => tr(es: '1 pulso', en: '1 beat'),
+    2 => tr(es: '½ compás', en: '½ bar'),
+    4 => tr(es: '1 compás', en: '1 bar'),
+    _ => tr(es: '${beats ~/ 4} compases', en: '${beats ~/ 4} bars'),
+  };
+  static String chordBeatsLong(int beats) => switch (beats) {
+    1 => tr(es: 'Un pulso', en: 'One beat'),
+    2 => tr(es: 'Medio compás (2 pulsos)', en: 'Half a bar (2 beats)'),
+    4 => tr(es: 'Un compás (4 pulsos)', en: 'One bar (4 beats)'),
+    _ => tr(es: '${beats ~/ 4} compases ($beats pulsos)', en: '${beats ~/ 4} bars ($beats beats)'),
+  };
+  static String chordBeatsTitle(String numeral) => tr(es: '¿Cuánto dura $numeral?', en: 'How long does $numeral last?');
+  static String get chordBeatsPick => tr(es: 'Cambiar cuánto dura', en: 'Change how long it lasts');
+  static String get chordBeatsHint => tr(
+    es: 'Toca un acorde para cambiar cuánto dura; la ✕ lo quita.',
+    en: 'Tap a chord to change how long it lasts; the ✕ removes it.',
+  );
   static String get progressionBarPerChordTriplet => tr(
     es: 'Un compás por acorde, en 12/8: tres golpes hacia abajo en cada pulso.',
     en: 'One bar per chord, in 12/8: three downstrokes on each beat.',

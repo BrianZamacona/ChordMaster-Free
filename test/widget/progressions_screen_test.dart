@@ -199,6 +199,29 @@ void main() {
     expect(find.text('iv ⇄ V · Fm'), findsOneWidget);
   });
 
+  testWidgets('Mi progresión: tocar un acorde cambia cuánto dura', (tester) async {
+    final container = await _pump(tester, builder);
+    container.read(progressionsViewModelProvider.notifier)
+      ..setProgression('custom')
+      ..addCustomDegree('I')
+      ..addCustomDegree('V');
+    await tester.pumpAndSettle();
+    expect(find.text('I · 1 compás'), findsOneWidget);
+    expect(find.text('Un compás por acorde, un golpe hacia abajo en cada pulso.'), findsOneWidget);
+
+    await tester.tap(find.text('V · 1 compás'));
+    await tester.pumpAndSettle();
+    expect(find.text('¿Cuánto dura V?'), findsOneWidget);
+    await tester.tap(find.byKey(const Key('custom-beats-2')));
+    await tester.pumpAndSettle();
+    expect(container.read(progressionsViewModelProvider).customBeats, [4, 2]);
+    expect(find.text('V · ½ compás'), findsOneWidget);
+    expect(
+      find.text('Cada acorde dura lo que le pusiste, un golpe hacia abajo en cada pulso.'),
+      findsOneWidget,
+    );
+  });
+
   testWidgets('sin candidatos muestra un mensaje claro', (tester) async {
     await _pump(tester, ProgressionBuilder(const []));
 

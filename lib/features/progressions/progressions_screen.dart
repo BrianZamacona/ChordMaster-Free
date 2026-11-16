@@ -13,6 +13,7 @@ import '../../data/repository/scale_repository.dart';
 import '../../domain/practice/technique_exercises.dart';
 import '../../domain/progressions/custom_progression.dart';
 import '../../domain/progressions/progression_data.dart';
+import '../../domain/progressions/progression_playback.dart';
 import '../../domain/strumming/strumming_course.dart';
 import '../../domain/theory/harmony.dart';
 import '../../domain/theory/notes.dart';
@@ -309,6 +310,8 @@ class _ListenOptions extends ConsumerWidget {
         Text(
           state.progression.feel == ProgressionFeel.triplet
               ? AppStrings.progressionBarPerChordTriplet
+              : state.progression.beats != null
+              ? AppStrings.progressionChordBeatsPattern(state.pattern + 1)
               : state.pattern == 0
               ? AppStrings.progressionBarPerChord
               : AppStrings.progressionBarPerChordPattern(state.pattern + 1),
@@ -627,6 +630,31 @@ class _CustomBuilder extends ConsumerWidget {
 
   final ProgressionsState state;
 
+  /// Cuánto dura el acorde [index]: uno de `customChordBeats`.
+  void _pickBeats(BuildContext context, WidgetRef ref, int index) {
+    final vm = ref.read(progressionsViewModelProvider.notifier);
+    showSelectorSheet(
+      context,
+      title: AppStrings.chordBeatsTitle(state.custom[index]),
+      builder: (sheet) => Column(
+        crossAxisAlignment: CrossAxisAlignment.stretch,
+        children: [
+          for (final b in customChordBeats)
+            ListTile(
+              key: Key('custom-beats-$b'),
+              contentPadding: EdgeInsets.zero,
+              title: Text(AppStrings.chordBeatsLong(b)),
+              trailing: state.customBeats[index] == b ? const Icon(Icons.check) : null,
+              onTap: () {
+                vm.setCustomBeats(index, b);
+                Navigator.of(sheet).pop();
+              },
+            ),
+        ],
+      ),
+    );
+  }
+
   static String _modeName(int mode) => switch (mode) {
     0 => AppStrings.progressionBaseMajor,
     5 => AppStrings.progressionBaseMinor,
@@ -749,11 +777,20 @@ class _CustomBuilder extends ConsumerWidget {
                   for (var i = 0; i < custom.length; i++)
                     InputChip(
                       key: Key('custom-$i'),
-                      label: Text(custom[i], style: musicMono(fontSize: 13, color: p.textPrimary)),
+                      label: Text(
+                        '${custom[i]} · ${AppStrings.chordBeatsShort(state.customBeats[i])}',
+                        style: musicMono(fontSize: 13, color: p.textPrimary),
+                      ),
+                      tooltip: AppStrings.chordBeatsPick,
+                      onPressed: () => _pickBeats(context, ref, i),
                       onDeleted: () => vm.removeCustomDegree(i),
                     ),
                 ],
               ),
+            if (custom.isNotEmpty) ...[
+              const SizedBox(height: 6),
+              Text(AppStrings.chordBeatsHint, style: text.bodySmall?.copyWith(color: p.textSecondary)),
+            ],
           ],
         ),
       ),

@@ -1,15 +1,24 @@
-/// Cómo suena una progresión en Progresiones: un compás por acorde, un golpe
-/// hacia abajo por pulso, al tempo elegido y, si se pide, en bucle (el archivo
-/// se repite solo, como el metrónomo: el tiempo no lo marca un temporizador).
+/// Cómo suena una progresión en Progresiones: un compás por acorde (o los
+/// pulsos que diga cada acorde de "Mi progresión"), un golpe hacia abajo por
+/// pulso, al tempo elegido y, si se pide, en bucle (el archivo se repite solo,
+/// como el metrónomo: el tiempo no lo marca un temporizador).
 library;
 
 import '../audio/pluck_synth.dart';
 import '../open_chords/chord_shape.dart';
 import '../practice/technique_exercises.dart';
+import '../strumming/strum_pattern.dart';
 import 'progression_data.dart';
 
 /// Pulsos que dura cada acorde: un compás de 4/4.
 const progressionBeatsPerChord = 4;
+
+/// Lo que puede durar un acorde de "Mi progresión", en pulsos: uno, medio
+/// compás, un compás o dos (decisión del usuario tras revisar Pocket Composer).
+const customChordBeats = [1, 2, 4, 8];
+
+/// Pulsos de cada uno de [count] acordes: los de [beats] o un compás.
+List<int> chordBeats(int count, List<int>? beats) => beats ?? List.filled(count, progressionBeatsPerChord);
 
 /// Tempo con el que se empieza.
 const progressionDefaultBpm = 80;
@@ -25,12 +34,18 @@ int strokesPerBeat(ProgressionFeel feel) => feel == ProgressionFeel.triplet ? 3 
 /// corchea, los de `strummingPatterns`), ese rasgueo en cada compás; sin él,
 /// un golpe hacia abajo por pulso, o tres parejos (como un tresillo) en 12/8.
 /// El 12/8 no lleva patrón: sus corcheas son de tresillo.
+///
+/// Con [beats] (pulsos de cada acorde), el patrón sigue la rejilla del
+/// compás, no la del acorde: un acorde de medio compás toca la mitad que le
+/// toca del patrón y el siguiente sigue desde ahí.
 List<StringSound> progressionStrum(
   List<ChordShape> shapes, {
   required int bpm,
   ProgressionFeel feel = ProgressionFeel.straight,
   String? pattern,
+  List<int>? beats,
 }) {
+  if (beats != null) return _strumByBeats(shapes, beats, bpm: bpm, pattern: pattern);
   if (feel == ProgressionFeel.straight) {
     return strumEvents(
       shapes,
@@ -47,21 +62,56 @@ List<StringSound> progressionStrum(
   ], bpm: bpm);
 }
 
-/// Segundos de una vuelta entera de [count] acordes.
-double progressionLapSeconds(int count, {required int bpm}) =>
-    count * progressionBeatsPerChord * 60 / bpm;
+List<StringSound> _strumByBeats(List<ChordShape> shapes, List<int> beats, {required int bpm, String? pattern}) {
+  final bar = pattern ?? 'D ' * progressionBeatsPerChord;
+  final eighth = 30 / bpm;
+  final out = <StringSound>[];
+  var k = 0;
+  for (final (i, shape) in shapes.indexed) {
+    for (var e = 0; e < beats[i] * 2; e++, k++) {
+      final stroke = bar[k % bar.length];
+      if (stroke == ' ') continue;
+      for (final (j, m) in strokeMidi(shape, stroke).indexed) {
+        out.add(
+          StringSound(
+            midi: m,
+            at: k * eighth + j * defaultStrumGap,
+            seconds: isMutedStroke(stroke) ? deadNoteSeconds * 2 : strumRingSeconds(bpm),
+            touch: isMutedStroke(stroke) ? StringTouch.dead : StringTouch.open,
+          ),
+        );
+      }
+    }
+  }
+  return out;
+}
+
+/// Segundos de una vuelta entera de [count] acordes (de [beats] pulsos cada
+/// uno, o un compás).
+double progressionLapSeconds(int count, {required int bpm, List<int>? beats}) =>
+    chordBeats(count, beats).fold(0, (a, b) => a + b) * 60 / bpm;
 
 /// Segundos del archivo: en bucle, la vuelta justa (si sobrara, se oiría un
 /// hueco al repetir); si no, la vuelta y lo que tarda en apagarse.
-double progressionAudioSeconds(int count, {required int bpm, required bool loop}) => loop
-    ? progressionLapSeconds(count, bpm: bpm)
-    : strumDurationSeconds(count, bpm: bpm, beatsPerSlot: progressionBeatsPerChord);
+double progressionAudioSeconds(int count, {required int bpm, required bool loop, List<int>? beats}) {
+  final lap = progressionLapSeconds(count, bpm: bpm, beats: beats);
+  return loop || count == 0 ? lap : lap + strumDurationSeconds(1, bpm: bpm, beatsPerSlot: 0);
+}
 
 /// El acorde que suena a los [elapsed] segundos; en bucle se vuelve a empezar,
 /// y sin bucle es `null` al terminar la vuelta.
-int? progressionChordAt(double elapsed, int count, {required int bpm, required bool loop}) {
+int? progressionChordAt(double elapsed, int count, {required int bpm, required bool loop, List<int>? beats}) {
   if (count == 0 || elapsed < 0) return null;
-  final i = (elapsed / (progressionBeatsPerChord * 60 / bpm)).floor();
-  if (loop) return i % count;
-  return i < count ? i : null;
+  final lengths = chordBeats(count, beats);
+  final lap = lengths.fold(0, (a, b) => a + b);
+  var beat = elapsed * bpm / 60;
+  if (beat >= lap) {
+    if (!loop) return null;
+    beat %= lap;
+  }
+  for (final (i, n) in lengths.indexed) {
+    if (beat < n) return i;
+    beat -= n;
+  }
+  return null;
 }

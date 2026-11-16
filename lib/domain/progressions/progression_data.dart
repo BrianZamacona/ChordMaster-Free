@@ -111,6 +111,7 @@ class Progression {
     this.feel = ProgressionFeel.straight,
     this.name,
     this.mode,
+    this.beats,
   }) : degrees = [
          for (final n in numerals)
            ProgressionDegree(n, _degree(n).semitones, _degree(n).type),
@@ -129,6 +130,9 @@ class Progression {
   /// En un vamp modal, el modo como rotación de la escala mayor (1 = dórico,
   /// 2 = frigio … 6 = locrio); el test lo compara con scales_master.json.
   final int? mode;
+
+  /// Pulsos de cada acorde ("Mi progresión"); `null` = un compás cada uno.
+  final List<int>? beats;
 }
 
 /// Id en scales_master.json de cada rotación de la mayor ([Progression.mode]).
