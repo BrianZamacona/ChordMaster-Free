@@ -152,6 +152,15 @@ cada nota pertenezca a la escala. No bajar la tolerancia de 0.
   (`triadNumeral`) para función, frase y cadencia, salvo entre grados de las progresiones de
   siempre (el IV7 → I7 del blues no es plagal). Test: `custom_progression_test.dart` (cada acorde
   de cada escala existe en chords.json en las 12 tónicas).
+  Fuentes de acordes (`ChordSource`, `chordsFrom`, misma decisión): además de la escala, prestados
+  (los grados de las paralelas que no están en la de base, con el nombre de su escala; se atribuyen a
+  la más brillante que los tiene), V7 de cada grado (`V7/ii`), vii°7 de cada grado (medio tono abajo,
+  con ♯), sustituto tritonal (medio tono arriba, con ♭) y armonía negativa (cada nota p → 7 − p,
+  `negativeOf`). Las tres de dominante van siempre con 7ª; ninguna repite un acorde de la escala. El
+  número romano de fuera de la mayor sale de `spellDegree` (♭ salvo la sensible). En «¿Por qué?» un
+  acorde de fuera no lleva la función de su número (`explainProgression(outside:)`: un V7/IV se
+  escribe I7) y dice su fuente (`sourcesOf`: primero las de dominante, luego prestados). Test:
+  `chord_sources_test.dart`.
 - Progresiones, «¿Qué tocar encima?» (`lib/domain/theory/play_over.dart`, decisión del usuario
   tras revisar las apps jam): por regla, las escalas de la tónica que contienen todas las notas de
   todos los acordes (`scalesForChord` sobre `progressionTones`; las de mismas notas, una vez), las

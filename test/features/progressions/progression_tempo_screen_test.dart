@@ -98,7 +98,7 @@ void main() {
       expect(find.text(AppStrings.progressionBarPerChord), findsOneWidget);
     });
   
-    testWidgets('a 360 dp ($code): Mi progresión con 7ª cabe en cada escala de base', (tester) async {
+    testWidgets('a 360 dp ($code): Mi progresión con 7ª cabe en cada escala de base y cada fuente', (tester) async {
       await open(tester, code);
       final container = ProviderScope.containerOf(tester.element(find.byType(ProgressionsContent)));
       final vm = container.read(progressionsViewModelProvider.notifier)
@@ -111,10 +111,18 @@ void main() {
         for (final k in ['custom-mode', 'custom-sevenths']) {
           expect(tester.getRect(find.byKey(Key(k))).right, lessThanOrEqualTo(360), reason: '$k ($mode)');
         }
-        for (final d in customChordChoices(mode, sevenths: true)) {
-          final chip = find.byKey(Key('add-degree-${d.numeral}'));
-          expect(chip, findsOneWidget, reason: d.numeral);
-          expect(tester.getRect(chip).right, lessThanOrEqualTo(360), reason: d.numeral);
+        for (final source in ChordSource.values) {
+          vm.setCustomSource(source);
+          await settle(tester);
+          expect(tester.takeException(), isNull, reason: '$source $mode');
+          for (final k in ['custom-source-${source.name}', 'custom-source-hint']) {
+            expect(tester.getRect(find.byKey(Key(k))).right, lessThanOrEqualTo(360), reason: k);
+          }
+          for (final c in chordsFrom(source, mode, sevenths: true)) {
+            final chip = find.byKey(Key('add-degree-${c.degree.numeral}'));
+            expect(chip, findsOneWidget, reason: '${c.label} ($source $mode)');
+            expect(tester.getRect(chip).right, lessThanOrEqualTo(360), reason: c.label);
+          }
         }
       }
     });

@@ -33,7 +33,12 @@ class ProgressionsState {
     this.pattern = 0,
     this.customMode = customDefaultMode,
     this.customSevenths = false,
+    this.customSource = ChordSource.scale,
   });
+
+  /// De qué fuente ofrece acordes "Mi progresión" (la escala de base, los
+  /// prestados, las dominantes secundarias…).
+  final ChordSource customSource;
 
   /// Escala de base de "Mi progresión" (rotación de la mayor; 0 = mayor,
   /// 5 = menor): qué acordes ofrece. Los ya puestos no cambian.
@@ -93,6 +98,7 @@ class ProgressionsState {
     int? pattern,
     int? customMode,
     bool? customSevenths,
+    ChordSource? customSource,
   }) => ProgressionsState(
     tonic: tonic ?? this.tonic,
     progressionId: progressionId ?? this.progressionId,
@@ -106,6 +112,7 @@ class ProgressionsState {
     pattern: pattern ?? this.pattern,
     customMode: customMode ?? this.customMode,
     customSevenths: customSevenths ?? this.customSevenths,
+    customSource: customSource ?? this.customSource,
   );
 
   static const Object _keep = Object();
@@ -463,6 +470,9 @@ class ProgressionsViewModel extends Notifier<ProgressionsState> {
     state = state.copyWith(customMode: mode);
     _saveSetting(_keyCustomMode, mode);
   }
+
+  /// De qué fuente ofrece acordes "Mi progresión".
+  void setCustomSource(ChordSource source) => state = state.copyWith(customSource: source);
 
   /// "Mi progresión" ofrece los grados con su 7ª, o en tríada.
   void setCustomSevenths({required bool sevenths}) {

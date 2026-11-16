@@ -112,7 +112,11 @@ class ProgressionsContent extends ConsumerWidget {
         ),
         if (current.degrees.isNotEmpty) ...[
           const SizedBox(height: 16),
-          _WhyCard(progression: current, tonic: state.tonic),
+          _WhyCard(
+            progression: current,
+            tonic: state.tonic,
+            baseMode: state.isCustom ? state.customMode : null,
+          ),
           const SizedBox(height: 16),
           _PlayOverCard(progression: current, tonic: state.tonic),
         ],
@@ -636,7 +640,7 @@ class _CustomBuilder extends ConsumerWidget {
     final text = Theme.of(context).textTheme;
     final tonic = state.tonic;
     final custom = state.custom;
-    final degrees = customChordChoices(state.customMode, sevenths: state.customSevenths);
+    final chords = chordsFrom(state.customSource, state.customMode, sevenths: state.customSevenths);
     final full = custom.length >= customProgressionMax;
     return Card(
       margin: EdgeInsets.zero,
@@ -683,16 +687,38 @@ class _CustomBuilder extends ConsumerWidget {
               spacing: 6,
               runSpacing: 6,
               children: [
-                for (final d in degrees)
+                for (final source in ChordSource.values)
+                  ChoiceChip(
+                    key: Key('custom-source-${source.name}'),
+                    label: Text(AppStrings.chordSourceName(source)),
+                    selected: state.customSource == source,
+                    onSelected: (_) => vm.setCustomSource(source),
+                  ),
+              ],
+            ),
+            const SizedBox(height: 8),
+            Text(
+              AppStrings.chordSourceHint(state.customSource),
+              key: const Key('custom-source-hint'),
+              style: text.bodySmall?.copyWith(color: p.textSecondary),
+            ),
+            const SizedBox(height: 10),
+            Wrap(
+              spacing: 6,
+              runSpacing: 6,
+              children: [
+                for (final c in chords)
                   Tooltip(
-                    message: degreeRoleOf(d.numeral)?.text ?? d.numeral,
+                    message: state.customSource == ChordSource.scale
+                        ? degreeRoleOf(c.degree.numeral)?.text ?? c.why.text
+                        : '${c.label}: ${c.why.text}',
                     child: ActionChip(
-                      key: Key('add-degree-${d.numeral}'),
+                      key: Key('add-degree-${c.degree.numeral}'),
                       label: Text(
-                        '${d.numeral} · ${ProgressionsContent._chordIn(d, tonic)}',
+                        '${c.label} · ${ProgressionsContent._chordIn(c.degree, tonic)}',
                         style: musicMono(fontSize: 13, color: p.textPrimary),
                       ),
-                      onPressed: full ? null : () => vm.addCustomDegree(d.numeral),
+                      onPressed: full ? null : () => vm.addCustomDegree(c.degree.numeral),
                     ),
                   ),
               ],
@@ -834,17 +860,28 @@ class _PlayOverCard extends ConsumerWidget {
 
 /// "¿Por qué suena así?": teoría generada por reglas (`domain/theory/harmony`).
 class _WhyCard extends StatelessWidget {
-  const _WhyCard({required this.progression, required this.tonic});
+  const _WhyCard({required this.progression, required this.tonic, this.baseMode});
 
   final Progression progression;
   final int tonic;
+
+  /// Escala de base de "Mi progresión": los acordes de fuera de ella dicen de
+  /// qué fuente vienen. `null` en las progresiones de siempre.
+  final int? baseMode;
 
   @override
   Widget build(BuildContext context) {
     final p = context.palette;
     final text = Theme.of(context).textTheme;
     final numerals = {for (final d in progression.degrees) d.numeral};
-    final lines = explainProgression(progression, tonic);
+    // Los de fuera de la escala de base: la primera fuente que los explica.
+    final mode = baseMode;
+    final sourced = <String, SourcedChord>{
+      if (mode != null)
+        for (final d in progression.degrees)
+          d.numeral: ?sourcesOf(d, mode).firstOrNull,
+    };
+    final lines = explainProgression(progression, tonic, outside: sourced.keys.toSet());
     // Las de siempre en su orden; las de "Mi progresión" que no están (ii7,
     // ♭VIImaj7…) detrás. Una cuatríada sin frase propia dice la de su tríada,
     // y la misma frase sale una vez.
@@ -853,7 +890,10 @@ class _WhyCard extends StatelessWidget {
         ...allDegreeNumerals.where(numerals.contains),
         ...numerals.where((n) => !allDegreeNumerals.contains(n)),
       ])
-        ?degreeRoleOf(n)?.text,
+        if (sourced[n] case final c?)
+          '${c.label}: ${c.why.text}.'
+        else
+          ?degreeRoleOf(n)?.text,
     };
     return Card(
       margin: EdgeInsets.zero,

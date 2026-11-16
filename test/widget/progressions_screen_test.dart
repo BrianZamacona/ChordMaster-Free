@@ -165,6 +165,40 @@ void main() {
     expect(_stepNames(tester).last, 'A#7');
   });
 
+  testWidgets('Mi progresión: acordes de otra fuente, con su porqué', (tester) async {
+    final container = await _pump(tester, builder);
+    container.read(progressionsViewModelProvider.notifier).setProgression('custom');
+    await tester.pumpAndSettle();
+
+    for (final n in ['I']) {
+      await tester.tap(find.byKey(Key('add-degree-$n')));
+      await tester.pumpAndSettle();
+    }
+    await tester.tap(find.byKey(const Key('custom-source-secondaryDominant')));
+    await tester.pumpAndSettle();
+    expect(find.text('El V7 de cada grado: ponlo justo antes de él.'), findsOneWidget);
+    expect(find.byKey(const Key('add-degree-ii')), findsNothing);
+    expect(find.text('V7/ii · A7'), findsOneWidget);
+    await tester.tap(find.byKey(const Key('add-degree-VI7')));
+    await tester.pumpAndSettle();
+    await tester.tap(find.byKey(const Key('custom-source-scale')));
+    await tester.pumpAndSettle();
+    for (final n in ['ii', 'V']) {
+      await tester.tap(find.byKey(Key('add-degree-$n')));
+      await tester.pumpAndSettle();
+    }
+    expect(_stepNames(tester), ['C', 'A7', 'Dm', 'G']);
+    expect(find.textContaining('Recorrido: I (reposo) → VI7 → ii (preparación)'), findsOneWidget);
+    expect(
+      find.text('V7/ii: la dominante de ii: su 3ª sube medio tono a la raíz de ii.'),
+      findsOneWidget,
+    );
+
+    await tester.tap(find.byKey(const Key('custom-source-negative')));
+    await tester.pumpAndSettle();
+    expect(find.text('iv ⇄ V · Fm'), findsOneWidget);
+  });
+
   testWidgets('sin candidatos muestra un mensaje claro', (tester) async {
     await _pump(tester, ProgressionBuilder(const []));
 
