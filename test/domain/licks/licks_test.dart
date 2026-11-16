@@ -4,6 +4,7 @@ import 'dart:io';
 import 'package:chordmaster_free/domain/guides/guides.dart';
 import 'package:chordmaster_free/domain/lessons/lesson.dart';
 import 'package:chordmaster_free/domain/licks/lick.dart';
+import 'package:chordmaster_free/domain/licks/lick_transpose.dart';
 import 'package:chordmaster_free/domain/licks/licks.dart';
 import 'package:chordmaster_free/domain/practice/tab_notation.dart';
 import 'package:chordmaster_free/domain/practice/tab_playback.dart';
@@ -56,7 +57,12 @@ void main() {
       for (final l in licks) {
         final frets = [for (final n in tones(l)) if (n.fret > 0) n.fret];
         expect(frets.reduce((a, b) => a > b ? a : b), lessThanOrEqualTo(20), reason: l.id);
-        final span = frets.reduce((a, b) => a > b ? a : b) - frets.reduce((a, b) => a < b ? a : b);
+        // El tapping lo pisa la otra mano: no cuenta para el estiramiento.
+        final left = [
+          for (final n in tones(l))
+            if (n.fret > 0 && n.technique != TabTechnique.tap) n.fret,
+        ];
+        final span = left.reduce((a, b) => a > b ? a : b) - left.reduce((a, b) => a < b ? a : b);
         expect(span, lessThanOrEqualTo(5), reason: l.id);
       }
     });
@@ -181,6 +187,39 @@ void main() {
       for (var i = 0; i < riff.length; i++) {
         expect(riff[i].pick, i.isEven ? PickStroke.down : PickStroke.up);
       }
+    });
+
+    test('virtuoso con tapping: 2ª cuerda, sin púa; el tap es la nota de arriba de cada acorde', () {
+      final l = lick('virtuoso_tapping');
+      final tab = played(l);
+      expect({for (final n in tab) n.string}, {2});
+      expect(tab.every((n) => n.technique.unpicked && n.pick == null), isTrue);
+      // Cada pulso: tapping, pull-off, hammer-on y pull-off.
+      for (var i = 0; i + 4 <= 28; i += 4) {
+        expect([for (final n in tab.sublist(i, i + 4)) n.technique], [
+          TabTechnique.tap,
+          TabTechnique.pullOff,
+          TabTechnique.hammerOn,
+          TabTechnique.pullOff,
+        ]);
+      }
+      // Por acorde ({R}m, {R+8}, {R+10}, {R}m, dos pulsos cada uno): el tap es
+      // la nota más aguda y las tres son la tríada.
+      expect([for (final c in l.chords) (c.degree, c.type)], [(0, 'minor'), (8, 'major'), (10, 'major'), (0, 'minor')]);
+      const triads = {'minor': [0, 3, 7], 'major': [0, 4, 7]};
+      for (final (k, c) in l.chords.indexed) {
+        final notes = tab.sublist(k * 8, k == 3 ? tab.length : k * 8 + 8);
+        final tap = notes.firstWhere((n) => n.technique == TabTechnique.tap);
+        expect(notes.every((n) => tabMidi(n) <= tabMidi(tap)), isTrue, reason: '$k');
+        final chordRoot = (l.scale.root + c.degree) % 12;
+        expect(
+          {for (final n in notes) (tabMidi(n) - chordRoot) % 12},
+          triads[c.type]!.toSet(),
+          reason: '$k',
+        );
+      }
+      expect(isMovable(l), isTrue);
+      expect(l.about.es, contains('curso de Tapping'));
     });
 
     test('atmosférico: el arpegio no repite cuerda seguida; el lick tiene un silencio antes de la última', () {

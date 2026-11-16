@@ -467,7 +467,10 @@ cada nota pertenezca a la escala. No bajar la tolerancia de 0.
   licks): filtros por nivel, tipo, escala, tónica y técnica (`LickFilter`; los menús solo ofrecen lo
   que usa la biblioteca), "Velocidad 50 / 75 / 100 %" (`lickTempoAt`, de 5 en 5 y desde 40) y
   anterior / siguiente dentro del estilo (`lickNeighbors`, reemplaza la pantalla). El test de licks
-  admite tempos de 50 a 160 BPM y trastes hasta el 20. Favoritas (decisión del usuario): estrella en
+  admite tempos de 50 a 160 BPM y trastes hasta el 20; el estiramiento de 5 trastes es de la mano
+  izquierda (el tapping no cuenta). El hard rock virtuoso tiene además «Arpegios con tapping»
+  (`virtuoso_tapping`, decisión del usuario tras revisar Learn Tapping): Am–F–G–Am en la 2ª cuerda,
+  el tap en la nota de arriba de cada tríada. Favoritas (decisión del usuario): estrella en
   la barra del detalle, marca en la tarjeta y chip "Favoritas" en la lista
   (`LickFilter.favoritesOnly`); se guardan en `licks_favorites` (lista de ids; uno que ya no existe
   se descarta al leer).
