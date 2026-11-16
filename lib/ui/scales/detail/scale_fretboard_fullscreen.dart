@@ -8,6 +8,7 @@ import '../../../core/constants/chord_metadata.dart';
 import '../../../core/constants/scale_names.dart';
 import '../../../domain/theory/neck_notes.dart';
 import '../../../domain/theory/notes.dart';
+import '../../../domain/theory/position_brackets.dart';
 import '../../../domain/theory/scale_arpeggio.dart';
 import '../../theme.dart';
 import '../../widgets/fretboard_diagram.dart';
@@ -60,12 +61,16 @@ class _ScaleFretboardFullscreenState
   static const _toolbarInlineWidth = 600.0;
 
   /// Parte de la barra superior que pueden ocupar los controles.
-  static const _toolbarWidthShare = 0.72;
+  static const _toolbarWidthShare = 0.8;
 
   var _label = FretboardLabel.interval;
 
   /// Resalta las notas que comparten las formas vecinas del sistema elegido.
   var _shared = false;
+
+  /// Muestra las llaves de posición bajo el mástil (ocultarlas le da todo el
+  /// alto a las cuerdas).
+  var _brackets = true;
   var _landscapeRequested = false;
 
   @override
@@ -195,6 +200,31 @@ class _ScaleFretboardFullscreenState
                 ),
             ],
           );
+    // Llaves bajo el mástil: dónde va cada forma del sistema elegido (decisión
+    // del usuario tras revisar las apps de mástil). Tocar una la elige.
+    final systemPatterns = state.selectedSystemId == null
+        ? const <int>[]
+        : [
+            for (final (i, p) in state.visiblePatterns.indexed)
+              if (p.systemId == state.selectedSystemId) i,
+          ];
+    final brackets = positionBrackets([
+      for (final i in systemPatterns)
+        (start: state.visiblePatterns[i].startingFret, end: state.visiblePatterns[i].endFret),
+    ]);
+    final bracketLabels = [
+      for (final i in systemPatterns) positionDisplayName(state.visiblePatterns[i].positionName),
+    ];
+    final bracketsToggle = IconButton(
+      key: const Key('neck-brackets-toggle'),
+      tooltip: systemPatterns.isEmpty ? AppStrings.neckBracketsNeedSystem : AppStrings.neckBrackets,
+      isSelected: _brackets && systemPatterns.isNotEmpty,
+      icon: const Icon(Icons.straighten_outlined),
+      selectedIcon: const Icon(Icons.straighten),
+      onPressed: systemPatterns.isEmpty ? null : () => setState(() => _brackets = !_brackets),
+    );
+    final selectedBracket = selected == null ? null : systemPatterns.indexOf(state.selectedPatternIndex!);
+
     final shared = _shared && canShare && arpeggio == NeckArpeggio.off
         ? sharedWithNext(shapes, selected.coordinates)
         : null;
@@ -235,6 +265,7 @@ class _ScaleFretboardFullscreenState
                             const SizedBox(width: 8),
                             labelToggle,
                             sharedToggle,
+                            bracketsToggle,
                             ?arpeggioMenu,
                           ],
                         ),
@@ -260,7 +291,7 @@ class _ScaleFretboardFullscreenState
                             ),
                             const SizedBox(height: 8),
                             Row(
-                              children: [labelToggle, const SizedBox(width: 8), sharedToggle, ?arpeggioMenu],
+                              children: [labelToggle, const SizedBox(width: 8), sharedToggle, bracketsToggle, ?arpeggioMenu],
                             ),
                           ],
                         ),
@@ -301,6 +332,10 @@ class _ScaleFretboardFullscreenState
                           ? null
                           : (start: selected.startingFret, end: selected.endFret),
                       label: _label,
+                      brackets: _brackets ? brackets : const [],
+                      bracketLabels: bracketLabels,
+                      selectedBracket: selectedBracket != null && selectedBracket >= 0 ? selectedBracket : null,
+                      onTapBracket: (i) => notifier.selectPattern(systemPatterns[i]),
                     ),
                   ),
                 ],

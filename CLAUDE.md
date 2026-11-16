@@ -755,6 +755,12 @@ Objetivo: código legible y mantenible antes que ingenioso. Capas (puertos y ada
     primera, una octava arriba): por dónde se pasa de una a otra. Sin forma, el botón queda apagado
     (en CAGED las formas se enciman tanto con la anterior y la siguiente que «lo compartido con
     todas» era la forma entera). El mástil completo ya muestra todas las formas juntas («unir»).
+    Llaves de posición (decisión del usuario tras revisar las apps de mástil): con un sistema
+    elegido, bajo los números de traste va una llave por forma en cada octava donde cabe entera
+    (`positionBrackets`, `lib/domain/theory/position_brackets.dart`; filas sin que dos se toquen,
+    hasta 5 en 4NPS), con su nombre; la elegida, más gruesa y en negrita. Se dibujan con la misma
+    geometría en `PositionBracketStrip`, dentro del scroll del mástil, y tocar una elige esa forma.
+    El botón de la regla las oculta y le devuelve el alto al mástil (filas de 16).
     Solo Android e iOS piden horizontal, y al salir se devuelve con la lista vacía: la app no fija
     orientación y así respeta el bloqueo de rotación.
   - Arpegio dentro de la forma (decisión del usuario tras revisar las apps CAGED): chip «Arpegio
