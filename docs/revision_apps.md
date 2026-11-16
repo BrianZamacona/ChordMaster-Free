@@ -598,6 +598,16 @@ Para decidir:
   sueltas o solo ejercicios de Técnica y licks?
 - ¿Armónicos (naturales y con tap) ahora o después?
 
+Decidido por el usuario (2026-11-15):
+- **Notación**: el tapping («T») y el hammer-on desde la nada, con su regla y su sonido.
+- **Curso de tapping** como unidad-curso del camino líder, nivel 2, al final (detrás de Double
+  stops y antes del reto del nivel), con frases propias en el orden de la app.
+- **Trino con las dos manos** en Técnica, con récord, y un **lick de tapping** en el estilo
+  virtuoso.
+- Los armónicos quedan para después.
+
+Orden de trabajo (un PR por punto): notación → curso → trino en Técnica → lick.
+
 ## 6. Familia componer
 
 Qué mirar: cómo se arma una progresión o una canción (grados, compases, secciones), qué
