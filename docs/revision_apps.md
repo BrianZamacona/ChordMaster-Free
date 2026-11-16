@@ -665,6 +665,17 @@ Para decidir:
 - ¿Armonía negativa? (propuesta: no, es poco útil para el público de la app).
 - ¿Varias progresiones guardadas y edición de compases?
 
+Decidido por el usuario (2026-11-15):
+- **"Mi progresión" crece**: cada grado con su 7ª (y extensiones que existan en chords.json) y
+  una escala de base a elegir (mayor, menor, modos).
+- **Fuentes de acordes** a un toque: intercambio modal, dominante secundaria, vii° secundario,
+  sustituto tritonal y **armonía negativa**, cada una con su «¿Por qué?».
+- **Duración por acorde** sí; las **secciones** de canción, después.
+- **Varias progresiones guardadas** con nombre y **edición de compases** (duplicar, copiar, pegar).
+
+Orden de trabajo (un PR por punto): 7ª y escala de base → fuentes de acordes → duración por
+acorde → varias progresiones y edición.
+
 ## Plantilla de ficha
 
 ```markdown
