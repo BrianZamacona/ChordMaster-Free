@@ -8,6 +8,7 @@ import '../../core/i18n/tr.dart';
 import '../theory/harmony.dart';
 import '../theory/scale_insights.dart';
 import 'progression_data.dart';
+import 'progression_playback.dart';
 
 /// Escalas de base de "Mi progresión": las rotaciones de la mayor, en el
 /// orden de [modeScaleIds] (0 = mayor, 5 = menor natural).
@@ -30,6 +31,21 @@ List<ProgressionDegree> customChordChoices(int mode, {bool sevenths = false}) =>
 
 /// Si [numeral] se puede poner en "Mi progresión" (un grado bien escrito).
 bool isCustomNumeral(String numeral) => parseDegreeNumeral(numeral) != null;
+
+/// Cómo se guarda un acorde de "Mi progresión": su número romano y, si no
+/// dura un compás, `@` y sus pulsos (`ii7@2`). Lo guardado antes, sin `@`,
+/// dura un compás.
+String customToken(String numeral, int beats) =>
+    beats == progressionBeatsPerChord ? numeral : '$numeral@$beats';
+
+/// Lee [customToken]; `null` si el grado o la duración no valen.
+({String numeral, int beats})? parseCustomToken(String token) {
+  final parts = token.split('@');
+  if (parts.length > 2 || !isCustomNumeral(parts.first)) return null;
+  final beats = parts.length == 1 ? progressionBeatsPerChord : int.tryParse(parts[1]);
+  if (beats == null || !customChordBeats.contains(beats)) return null;
+  return (numeral: parts.first, beats: beats);
+}
 
 /// `b`/`#` de `spellInterval` con los signos de las progresiones (♭, ♯).
 String _glyphs(String numeral) => numeral.replaceAll('b', '♭').replaceAll('#', '♯');

@@ -161,6 +161,12 @@ cada nota pertenezca a la escala. No bajar la tolerancia de 0.
   acorde de fuera no lleva la función de su número (`explainProgression(outside:)`: un V7/IV se
   escribe I7) y dice su fuente (`sourcesOf`: primero las de dominante, luego prestados). Test:
   `chord_sources_test.dart`.
+  Duración por acorde (misma decisión; las secciones de canción, después): tocar un acorde de la
+  progresión armada elige un pulso, medio compás, un compás o dos (`customChordBeats`). Se guarda
+  en el mismo token (`ii7@2`, `customToken`; sin `@` = un compás, así lo de antes sigue valiendo) y
+  llega a `Progression.beats` solo si alguno no dura un compás. La escucha (`progressionStrum`,
+  `progressionChordAt` con `beats`) cuenta pulsos, y el patrón de rasgueo sigue la rejilla del
+  compás aunque cambie el acorde (dos acordes de medio compás tocan un patrón entero).
 - Progresiones, «¿Qué tocar encima?» (`lib/domain/theory/play_over.dart`, decisión del usuario
   tras revisar las apps jam): por regla, las escalas de la tónica que contienen todas las notas de
   todos los acordes (`scalesForChord` sobre `progressionTones`; las de mismas notas, una vez), las

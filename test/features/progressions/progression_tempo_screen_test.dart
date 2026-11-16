@@ -104,6 +104,29 @@ void main() {
       final vm = container.read(progressionsViewModelProvider.notifier)
         ..setProgression(customProgressionId)
         ..setCustomSevenths(sevenths: true);
+      // Ocho acordes, uno de cada duración: sus chips y la hoja caben.
+      for (var i = 0; i < customProgressionMax; i++) {
+        vm
+          ..addCustomDegree('viiø7')
+          ..setCustomBeats(i, customChordBeats[i % customChordBeats.length]);
+      }
+      await settle(tester);
+      for (var i = 0; i < customProgressionMax; i++) {
+        expect(tester.getRect(find.byKey(Key('custom-$i'))).right, lessThanOrEqualTo(360), reason: 'custom-$i');
+      }
+      await tester.tap(find.byKey(const Key('custom-7')));
+      await settle(tester);
+      for (final b in customChordBeats) {
+        expect(tester.getRect(find.byKey(Key('custom-beats-$b'))).right, lessThanOrEqualTo(360));
+      }
+      // La hoja va por encima de la barra de pestañas (no detrás): con ella
+      // abierta, la barra no recibe el toque.
+      final bar = find.byType(NavigationBar);
+      final hit = tester.hitTestOnBinding(tester.getCenter(bar));
+      expect(hit.path.any((e) => e.target == tester.renderObject(bar)), isFalse);
+      expect(tester.takeException(), isNull);
+      await tester.tap(find.byKey(const Key('custom-beats-1')));
+      await settle(tester);
       for (final mode in customBaseModes) {
         vm.setCustomMode(mode);
         await settle(tester);
