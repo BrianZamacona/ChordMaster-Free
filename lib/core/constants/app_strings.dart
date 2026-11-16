@@ -1140,6 +1140,8 @@ class AppStrings {
   static String get tabSpokenPalmMute => tr(es: 'apagada con la palma', en: 'palm muted');
   static String get tabSpokenDead => tr(es: 'nota muerta', en: 'dead note');
   static String get tabSpokenTap => tr(es: 'tapping', en: 'tap');
+  static String get tabSpokenHarmonic => tr(es: 'armónico natural', en: 'natural harmonic');
+  static String get tabSpokenTapHarmonic => tr(es: 'armónico con tap', en: 'tapped harmonic');
   static String get tabSpokenHammerFromNowhere =>
       tr(es: 'hammer-on desde la nada', en: 'hammer-on from nowhere');
   static String get tabSpokenDown => tr(es: 'púa abajo', en: 'downstroke');
@@ -1187,6 +1189,14 @@ class AppStrings {
   static String get tabLegendHammerFromNowhere => tr(
     es: 'h sin nota antes: hammer-on desde la nada, el dedo cae sobre una cuerda que no sonaba',
     en: 'h with no note before: hammer-on from nowhere, the finger lands on a silent string',
+  );
+  static String get tabLegendHarmonic => tr(
+    es: '<12> armónico natural: un dedo apenas toca la cuerda sobre el alambre de ese traste, sin apretar, y se pulsa',
+    en: '<12> natural harmonic: a finger barely touches the string over that fret wire, without pressing, and you pick',
+  );
+  static String get tabLegendTapHarmonic => tr(
+    es: 'T.H. armónico con tap: con la nota pisada, la otra mano golpea 12 trastes más arriba, sobre el alambre, y se suelta',
+    en: 'T.H. tapped harmonic: with the note fretted, the other hand strikes 12 frets higher, over the wire, and lets go',
   );
   static String get tabLegendPick => tr(es: '⊓ púa abajo · V púa arriba', en: '⊓ downstroke · V upstroke');
 
@@ -1899,6 +1909,8 @@ class AppStrings {
   static String get techniqueNamePalmMute => tr(es: 'Palm mute', en: 'Palm mute');
   static String get techniqueNameDead => tr(es: 'Nota muerta', en: 'Dead note');
   static String get techniqueNameTap => tr(es: 'Tapping', en: 'Tapping');
+  static String get techniqueNameHarmonic => tr(es: 'Armónicos naturales', en: 'Natural harmonics');
+  static String get techniqueNameTapHarmonic => tr(es: 'Armónicos con tap', en: 'Tapped harmonics');
   static String get techniqueNameHammerFromNowhere =>
       tr(es: 'Hammer-on desde la nada', en: 'Hammer-on from nowhere');
   static String get finderChordHint => tr(

@@ -50,6 +50,21 @@ List<String> tabNotationProblems(List<TabNote> notes) {
         previous.string == n.string) {
       fail('tras una nota en la misma cuerda es un hammer-on');
     }
+    if (n.technique == TabTechnique.harmonic && (!naturalHarmonics.containsKey(n.fret) || n.isChord)) {
+      fail('un armónico natural va en el traste 12, 7 o 5, solo');
+    }
+    if (n.technique == TabTechnique.tapHarmonic) {
+      final p = previous;
+      if (n.isChord ||
+          p == null ||
+          p.string != n.string ||
+          p.fret != n.fret - 12 ||
+          p.technique == TabTechnique.dead ||
+          p.technique == TabTechnique.harmonic ||
+          p.technique == TabTechnique.tapHarmonic) {
+        fail('el armónico con tap va 12 trastes arriba de la nota pisada antes en su cuerda');
+      }
+    }
     if (n.technique.legato) {
       final p = previous;
       if (p == null || p.string != n.string || p.technique == TabTechnique.dead || p.isChord) {
@@ -98,6 +113,8 @@ TabMark? _markOf(TabNote n) => switch (n.technique) {
   TabTechnique.dead => TabMark.dead,
   TabTechnique.tap => TabMark.tap,
   TabTechnique.hammerFromNowhere => TabMark.hammerFromNowhere,
+  TabTechnique.harmonic => TabMark.harmonic,
+  TabTechnique.tapHarmonic => TabMark.tapHarmonic,
 };
 
 /// Lo que se explica debajo de una tablatura.
@@ -115,6 +132,8 @@ enum TabMark {
   dead,
   tap,
   hammerFromNowhere,
+  harmonic,
+  tapHarmonic,
   pick,
 }
 

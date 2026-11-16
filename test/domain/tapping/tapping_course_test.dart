@@ -24,8 +24,10 @@ void main() {
   String noteAt(int string, int fret) => pitchClassName(tabMidi(TabNote(string, fret)));
   TappingStep step(String id) => tappingStepsById[id]!;
   final steps = courseSteps(tappingCourse);
+  // La mano derecha golpea el tap y el armónico con tap; lo demás es de la izquierda.
+  bool right(TabNote n) => n.technique == TabTechnique.tap || n.technique == TabTechnique.tapHarmonic;
   Iterable<TabNote> taps(TappingStep s) => s.tab.where((n) => n.technique == TabTechnique.tap);
-  Iterable<TabNote> left(TappingStep s) => s.tab.where((n) => n.technique != TabTechnique.tap);
+  Iterable<TabNote> left(TappingStep s) => s.tab.where((n) => !right(n));
   Set<int> frets(Iterable<TabNote> notes) => {for (final n in notes) n.fret};
   Set<String> names(Iterable<TabNote> notes) => {for (final n in notes) pitchClassName(tabMidi(n))};
 
@@ -60,10 +62,11 @@ void main() {
       }
     });
 
-    test('cada ejercicio dura dos compases de 4/4 y empieza con un tapping', () {
+    test('cada ejercicio dura dos compases de 4/4 y empieza con un tapping (el de armónicos, con la nota pisada)', () {
       for (final s in steps.where((s) => s.tab.isNotEmpty)) {
         expect(tabLength(s.tab), 8 * tabTicksPerBeat, reason: s.id);
-        expect(s.tab.first.technique, TabTechnique.tap, reason: s.id);
+        final harmonics = s.tab.any((n) => n.technique == TabTechnique.tapHarmonic);
+        expect(s.tab.first.technique, harmonics ? TabTechnique.none : TabTechnique.tap, reason: s.id);
       }
     });
 
@@ -86,9 +89,9 @@ void main() {
         // Lo que pisa la izquierda entre un tap y el siguiente: cabe en la
         // mano y queda más abajo que ese tap.
         var group = <int>[];
-        var tap = 0;
+        var tap = 25; // antes del primer golpe de la derecha, sin límite
         for (final n in [...s.tab, tapEnd(1, 24)]) {
-          if (n.technique != TabTechnique.tap) {
+          if (!right(n)) {
             group.add(n.fret);
             expect(n.fret, lessThan(tap), reason: '${s.id}: $n');
           } else {
@@ -118,6 +121,7 @@ void main() {
         'tp4_trill',
         'tp4_trill_climb',
         'tp4_final',
+        'tp4_harmonics',
       ]);
       // El hammer-on desde la nada aparece después de explicarlo.
       final first = steps.indexWhere((s) => s.tab.any((n) => n.technique == TabTechnique.hammerFromNowhere));
@@ -132,6 +136,33 @@ void main() {
       final lead2 = unitsOf(LessonTrack.lead, level: 2);
       expect(lead2.last, unit);
       expect(lead2[lead2.length - 2].id, 'l_double_stops');
+    });
+  });
+
+  group('los armónicos con tap', () {
+    test('cada uno, 12 trastes arriba de la nota pisada justo antes; suena su octava', () {
+      final tab = step('tp4_harmonics').tab;
+      final harmonics = [for (final (i, n) in tab.indexed) if (n.technique == TabTechnique.tapHarmonic) i];
+      expect(harmonics, hasLength(7));
+      for (final i in harmonics) {
+        expect((tab[i].string, tab[i].fret), (tab[i - 1].string, tab[i - 1].fret + 12));
+        expect(tabMidi(tab[i]), tabMidi(tab[i - 1]) + 12);
+      }
+    });
+
+    test('lo que dice el texto: las notas y sus trastes, y el cierre en A', () {
+      final tab = step('tp4_harmonics').tab;
+      final pairs = [
+        for (final (i, n) in tab.indexed)
+          if (n.technique == TabTechnique.tapHarmonic) (noteAt(n.string, tab[i - 1].fret), tab[i - 1].fret, n.fret),
+      ];
+      expect(pairs, [('A', 2, 14), ('C', 1, 13), ('E', 5, 17), ('A', 5, 17), ('B', 4, 16), ('G#', 1, 13), ('E', 5, 17)]);
+      // A en la 1ª: el cuarto par es de la 1ª cuerda.
+      expect(tab[6].string, 1);
+      expect(noteAt(tab.last.string, tab.last.fret), 'A');
+      // Am y luego E: los cuatro primeros son de Am (A C E), los otros tres de E (E G# B).
+      expect({for (final p in pairs.take(4)) p.$1}, {'A', 'C', 'E'});
+      expect({for (final p in pairs.skip(4)) p.$1}, {'B', 'G#', 'E'});
     });
   });
 

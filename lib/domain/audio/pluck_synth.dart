@@ -18,7 +18,7 @@ typedef NoteEvent = ({int midi, double at});
 
 /// Cuerda pulsada de [hz] durante [seconds] (Karplus-Strong con afinación
 /// fraccionaria por filtro pasa-todo, Jaffe-Smith). Amplitud ≤ 1.
-Float64List pluck(double hz, double seconds, {int seed = 1, double decay = 0.996}) {
+Float64List pluck(double hz, double seconds, {int seed = 1, double decay = 0.996, double softness = 0.5}) {
   final total = (seconds * synthSampleRate).round();
   final out = Float64List(total);
   // Retardo del lazo = N + 0.5 (promedio) + d (pasa-todo) = periodo exacto.
@@ -27,12 +27,13 @@ Float64List pluck(double hz, double seconds, {int seed = 1, double decay = 0.996
   final d = period - 0.5 - n;
   final c = (1 - d) / (1 + d);
 
-  // Ataque: ruido suavizado (pulsación con la yema, no con púa metálica).
+  // Ataque: ruido suavizado (pulsación con la yema, no con púa metálica); con
+  // más [softness], menos armónicos agudos (un armónico suena casi puro).
   final rng = math.Random(seed);
   final buf = Float64List(n);
   var smooth = 0.0;
   for (var i = 0; i < n; i++) {
-    smooth = 0.5 * smooth + 0.5 * (rng.nextDouble() * 2 - 1);
+    smooth = softness * smooth + (1 - softness) * (rng.nextDouble() * 2 - 1);
     buf[i] = smooth;
   }
   var mean = 0.0;
@@ -100,6 +101,9 @@ enum StringTouch {
 
   /// Nota muerta: solo el golpe ([deadNoteSeconds]).
   dead,
+
+  /// Armónico: casi sin brillo de ataque y apagándose despacio, como una campana.
+  harmonic,
 }
 
 /// En cuánto se apaga (−60 dB) una nota con la palma.
@@ -219,8 +223,11 @@ Float64List _renderString(StringSound s, double seconds, {required int seed}) {
     StringTouch.open => 0.996,
     StringTouch.palmMute => decayFor(hz, palmMuteSeconds),
     StringTouch.dead => decayFor(hz, deadNoteSeconds),
+    StringTouch.harmonic => 0.998,
   };
-  if (!s.moves) return pluck(hz, seconds, seed: seed, decay: decay);
+  if (!s.moves) {
+    return pluck(hz, seconds, seed: seed, decay: decay, softness: s.touch == StringTouch.harmonic ? 0.9 : 0.5);
+  }
   return _pluckMoving(s, seconds, seed: seed, decay: decay);
 }
 
