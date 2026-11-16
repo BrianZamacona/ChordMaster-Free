@@ -704,8 +704,8 @@ class AppStrings {
   static String get hubTechnique =>
       tr(es: 'Técnica', en: 'Technique');
   static String get hubTechniqueSub => tr(
-    es: 'Cromático, araña, diagonal y salto de cuerda, con tu récord de tempo.',
-    en: 'Chromatic, spider, diagonal and string skipping, with your tempo record.',
+    es: 'Cromático, araña, diagonal, salto de cuerda y trino con tapping, con tu récord de tempo.',
+    en: 'Chromatic, spider, diagonal, string skipping and tapping trill, with your tempo record.',
   );
   static String get techniqueIntro => tr(
     es: 'Un dedo por traste en una ventana de cuatro trastes. Escucha, tócalo '

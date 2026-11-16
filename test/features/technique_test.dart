@@ -72,11 +72,16 @@ void main() {
     expect(find.byType(TechniqueScreen), findsOneWidget);
   });
 
-  testWidgets('los cuatro ejercicios, y Escuchar toca el que se ve', (tester) async {
+  testWidgets('los cinco ejercicios, y Escuchar toca el que se ve', (tester) async {
     final (_, audio) = await open(tester);
+    // La lista arma las tarjetas al llegar a ellas: se baja hasta cada una.
     for (final e in TechniqueExercise.values) {
-      expect(find.byKey(Key('technique-${e.name}'), skipOffstage: false), findsOneWidget);
+      final card = find.byKey(Key('technique-${e.name}'));
+      await tester.scrollUntilVisible(card, 300, scrollable: find.byType(Scrollable).first);
+      expect(card, findsOneWidget);
     }
+    await tester.drag(find.byType(Scrollable).first, const Offset(0, 20000));
+    await tester.pumpAndSettle();
     final play = find.descendant(
       of: find.byKey(const Key('technique-chromatic')),
       matching: find.byKey(const Key('tab-play')),

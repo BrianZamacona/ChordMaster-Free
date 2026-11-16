@@ -552,6 +552,9 @@ cada nota pertenezca a la escala. No bajar la tolerancia de 0.
   1-2-3-4 y araña 1-3-2-4 (6ª→1ª y de vuelta), diagonal (cada cuerda un traste más arriba) y
   salto de cuerda (6 4 5 3 4 2 3 1), un dedo por traste desde el traste 1, 5 o 9. Tempo de 5 en
   5 BPM; "Me salió limpio" guarda el récord por ejercicio en `technique_best_bpm` y propone 5 más.
+  Trino con tapping (`tapTrill`, decisión del usuario tras revisar Learn Tapping): índice en el
+  traste de partida y tapping `tapTrillGap` (7) trastes arriba, dos veces por cuerda de la 1ª a la
+  6ª. La Práctica de hoy rota solo entre los de la mano izquierda (`leftHandExercises`).
 - Notación de la tablatura (fase 1 de los estilos, inspirada en las guías de Gibson):
   `TabNote` lleva `length` en partes de pulso (`tabTicksPerBeat` = 12: semicorchea 3, corchea 6,
   negra 12 y tresillos de corchea 4 y de semicorchea 2; por defecto corchea; usar siempre las

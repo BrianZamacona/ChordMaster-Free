@@ -59,7 +59,8 @@ void main() {
         final byFret = <int, int>{};
         for (final (i, n) in tab.indexed) {
           final f = fingers[i];
-          if (n.fret == 0) {
+          // Al aire o con tapping (la otra mano), sin dedo.
+          if (n.fret == 0 || n.technique == TabTechnique.tap) {
             expect(f, isNull);
             continue;
           }

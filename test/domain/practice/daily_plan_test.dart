@@ -23,7 +23,12 @@ void main() {
     );
     expect(
       {for (var i = 0; i < 4; i++) dailyTechnique(DateTime(2026, 5, 4 + i))},
-      TechniqueExercise.values.toSet(),
+      leftHandExercises.toSet(),
+    );
+    // El trino con tapping es avanzado: no sale en la Práctica de hoy.
+    expect(
+      [for (var i = 0; i < 30; i++) dailyTechnique(DateTime(2026, 5, 4 + i))],
+      isNot(contains(TechniqueExercise.tapTrill)),
     );
     // La hora no cambia el plan.
     expect(dailyWorkoutScale(start), dailyWorkoutScale(DateTime(2026, 5, 4, 23)));

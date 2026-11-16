@@ -1,4 +1,6 @@
 import 'package:chordmaster_free/domain/lessons/lesson.dart';
+import 'package:chordmaster_free/domain/practice/tab_notation.dart';
+import 'package:chordmaster_free/domain/practice/tab_playback.dart';
 import 'package:chordmaster_free/domain/practice/technique_exercises.dart';
 import 'package:flutter_test/flutter_test.dart';
 
@@ -8,8 +10,15 @@ void main() {
     for (var i = 0; i < notes.length; i += 4) notes.sublist(i, i + 4),
   ];
 
+  test('los de la mano izquierda: todos menos el trino con tapping', () {
+    expect(
+      TechniqueExercise.values.where((e) => !leftHandExercises.contains(e)),
+      [TechniqueExercise.tapTrill],
+    );
+  });
+
   test('cada grupo es una cuerda y un dedo por traste en cuatro trastes', () {
-    for (final e in TechniqueExercise.values) {
+    for (final e in leftHandExercises) {
       for (final start in techniqueStartFrets) {
         final notes = techniqueNotes(e, startFret: start);
         expect(notes.length % 4, 0, reason: e.name);
@@ -28,7 +37,7 @@ void main() {
   });
 
   test('el orden de los trastes sigue a los dedos', () {
-    for (final e in TechniqueExercise.values) {
+    for (final e in leftHandExercises) {
       final fingers = techniqueFingers(e);
       final g = groups(techniqueNotes(e, startFret: 5)).first;
       final low = g.map((n) => n.fret).reduce((a, b) => a < b ? a : b);
@@ -61,6 +70,27 @@ void main() {
   test('salto de cuerda: 6, 4, 5, 3, 4, 2, 3, 1', () {
     final gs = groups(techniqueNotes(TechniqueExercise.stringSkip));
     expect([for (final g in gs) g.first.string], [6, 4, 5, 3, 4, 2, 3, 1]);
+  });
+
+  test('trino con tapping: de la 1ª a la 6ª, el tap siete trastes arriba del índice', () {
+    for (final start in techniqueStartFrets) {
+      final notes = techniqueNotes(TechniqueExercise.tapTrill, startFret: start);
+      expect(tabNotationProblems(notes), isEmpty);
+      final gs = groups(notes);
+      expect([for (final g in gs) g.first.string], [1, 2, 3, 4, 5, 6]);
+      for (final g in gs) {
+        expect([for (final n in g) (n.fret, n.technique)], [
+          for (var i = 0; i < 2; i++) ...[
+            (start + tapTrillGap, TabTechnique.tap),
+            (start, TabTechnique.pullOff),
+          ],
+        ]);
+      }
+      // La izquierda solo pone el índice: dedo 1 en el traste de partida.
+      expect({for (final f in tabFingers(notes)!) f}, {null, 1});
+    }
+    expect(tapTrillGap, 7, reason: 'el texto dice siete trastes');
+    expect(techniqueHint(TechniqueExercise.tapTrill).es, contains('siete trastes'));
   });
 
   test('el próximo tempo es el récord más 5, dentro de los límites', () {
