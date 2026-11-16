@@ -169,7 +169,7 @@ cada nota pertenezca a la escala. No bajar la tolerancia de 0.
   acorde de fuera no lleva la función de su número (`explainProgression(outside:)`: un V7/IV se
   escribe I7) y dice su fuente (`sourcesOf`: primero las de dominante, luego prestados). Test:
   `chord_sources_test.dart`.
-  Duración por acorde (misma decisión; las secciones de canción, después): tocar un acorde de la
+  Duración por acorde (misma decisión): tocar un acorde de la
   progresión armada elige un pulso, medio compás, un compás o dos (`customChordBeats`). Se guarda
   en el mismo token (`ii7@2`, `customToken`; sin `@` = un compás, así lo de antes sigue valiendo) y
   llega a `Progression.beats` solo si alguno no dura un compás. La escucha (`progressionStrum`,
@@ -182,6 +182,16 @@ cada nota pertenezca a la escala. No bajar la tolerancia de 0.
   «Mis progresiones (n)» las abre o las borra. La hoja de cada acorde (tocarlo) también duplica,
   copia y pega detrás; «Pegar» al pie lo pone al final. Nunca más de `customProgressionMax` (8, en
   `custom_progression.dart`). La ventana del nombre es un `StatefulWidget` dueño de su campo.
+  Secciones de canción (decisión del usuario; `song.dart`): hasta 4 secciones (A–D, `sectionLetter`),
+  cada una con sus acordes y duraciones, y un orden de hasta 8 partes (A A B A). Se edita una sección
+  a la vez (`ProgressionsState.section`; `custom`/`customBeats` son los de ella): diagramas, camino,
+  «¿Por qué?» y «¿Qué tocar encima?» son de esa sección. «+» agrega una sección (y la suma al orden);
+  la basura la quita con sus partes (`orderWithoutSection`). Con más de una parte o sección, «Sección
+  X | Canción entera» elige qué suena: la canción toca cada parte con el camino de su sección
+  (`listenWholeSong`, `songTimeline`) y dice qué parte suena. Se guarda en `progressions_song`
+  (`{sections, order}`; lo de antes, en `progressions_custom`, se abre como la A) y «Mis progresiones»
+  guarda la canción entera sin secciones vacías (`withoutEmptySections`; las de una sola `chords`
+  se leen como la A).
 - Progresiones, «¿Qué tocar encima?» (`lib/domain/theory/play_over.dart`, decisión del usuario
   tras revisar las apps jam): por regla, las escalas de la tónica que contienen todas las notas de
   todos los acordes (`scalesForChord` sobre `progressionTones`; las de mismas notas, una vez), las

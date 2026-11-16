@@ -15,6 +15,7 @@ import '../../domain/progressions/custom_progression.dart';
 import '../../domain/progressions/progression_data.dart';
 import '../../domain/progressions/progression_playback.dart';
 import '../../domain/progressions/saved_progressions.dart';
+import '../../domain/progressions/song.dart';
 import '../../domain/strumming/strumming_course.dart';
 import '../../domain/theory/harmony.dart';
 import '../../domain/theory/notes.dart';
@@ -106,7 +107,14 @@ class ProgressionsContent extends ConsumerWidget {
         plan.when(
           data: (p) => p.problem != null
               ? _ProblemMessage(message: p.problem!)
-              : _PlanView(plan: p, playingIndex: state.playingIndex),
+              : _PlanView(
+                  plan: p,
+                  // Al escuchar la canción entera, solo se marca el acorde si
+                  // la parte que suena es de la sección que se ve.
+                  playingIndex: state.playingPart == null || state.order[state.playingPart!] == state.section
+                      ? state.playingIndex
+                      : null,
+                ),
           loading: () => const Center(child: CircularProgressIndicator()),
           error: (e, _) => _ProblemMessage(
             message: '${AppStrings.progressionLoadError}: $e',
@@ -323,6 +331,45 @@ class _ListenOptions extends ConsumerWidget {
   }
 }
 
+/// En "Mi progresión" con canción: escuchar la sección que se edita o la
+/// canción entera, y qué parte suena.
+class _SongListen extends ConsumerWidget {
+  const _SongListen();
+
+  @override
+  Widget build(BuildContext context, WidgetRef ref) {
+    final s = ref.watch(progressionsViewModelProvider);
+    if (!s.isCustom || !s.hasSong) return const SizedBox.shrink();
+    final vm = ref.read(progressionsViewModelProvider.notifier);
+    final part = s.playingPart;
+    return Padding(
+      padding: const EdgeInsets.only(bottom: 8),
+      child: Column(
+        crossAxisAlignment: CrossAxisAlignment.start,
+        children: [
+          SegmentedButton<bool>(
+            key: const Key('listen-scope'),
+            segments: [
+              ButtonSegment(value: false, label: Text(AppStrings.songListenSection(sectionLetter(s.section)))),
+              ButtonSegment(value: true, label: Text(AppStrings.songListenWhole)),
+            ],
+            selected: {s.listenSong},
+            onSelectionChanged: (v) => vm.setListenSong(song: v.first),
+          ),
+          if (part != null) ...[
+            const SizedBox(height: 6),
+            Text(
+              AppStrings.songNowPlaying(part + 1, s.order.length, sectionLetter(s.order[part])),
+              key: const Key('song-now'),
+              style: Theme.of(context).textTheme.labelLarge,
+            ),
+          ],
+        ],
+      ),
+    );
+  }
+}
+
 class _PlanView extends ConsumerWidget {
   const _PlanView({required this.plan, required this.playingIndex});
 
@@ -339,13 +386,21 @@ class _PlanView extends ConsumerWidget {
         crossAxisAlignment: CrossAxisAlignment.start,
         children: [
           if (plan.steps.isNotEmpty) ...[
+            const _SongListen(),
             FilledButton.tonalIcon(
               key: const Key('progression-listen'),
-              onPressed: () =>
-                  ref.read(progressionsViewModelProvider.notifier).listen(plan),
-              icon: Icon(playingIndex == null ? Icons.play_arrow : Icons.stop),
+              onPressed: () {
+                final vm = ref.read(progressionsViewModelProvider.notifier);
+                final s = ref.read(progressionsViewModelProvider);
+                if (s.isCustom && s.hasSong && s.listenSong) {
+                  vm.listenWholeSong();
+                } else {
+                  vm.listen(plan);
+                }
+              },
+              icon: Icon(ref.watch(progressionsViewModelProvider).playingIndex == null ? Icons.play_arrow : Icons.stop),
               label: Text(
-                playingIndex == null
+                ref.watch(progressionsViewModelProvider).playingIndex == null
                     ? AppStrings.progressionListen
                     : AppStrings.progressionStop,
               ),
@@ -729,7 +784,8 @@ class _CustomBuilder extends ConsumerWidget {
                 contentPadding: EdgeInsets.zero,
                 title: Text(item.name),
                 subtitle: Text(
-                  '${_modeName(item.mode)} · ${[for (final c in item.chords) c.numeral].join(' – ')}',
+                  // Una sola parte: sus acordes; una canción: su orden (A A B A).
+                  '${_modeName(item.mode)} · ${item.order.length == 1 ? [for (final c in item.sections[item.order.single]) c.numeral].join(' – ') : songOrderLabel(item.order)}',
                   style: musicMono(fontSize: 12, color: context.palette.textSecondary),
                 ),
                 onTap: () {
@@ -771,6 +827,8 @@ class _CustomBuilder extends ConsumerWidget {
         child: Column(
           crossAxisAlignment: CrossAxisAlignment.start,
           children: [
+            const _SongSections(),
+            const SizedBox(height: 12),
             Text(AppStrings.progressionCustomHint, style: text.bodySmall),
             const SizedBox(height: 10),
             Wrap(
@@ -915,6 +973,88 @@ class _CustomBuilder extends ConsumerWidget {
           ],
         ),
       ),
+    );
+  }
+}
+
+/// Las secciones de "Mi progresión" (A–D, se edita una) y el orden de la
+/// canción (A A B A).
+class _SongSections extends ConsumerWidget {
+  const _SongSections();
+
+  @override
+  Widget build(BuildContext context, WidgetRef ref) {
+    final s = ref.watch(progressionsViewModelProvider);
+    final vm = ref.read(progressionsViewModelProvider.notifier);
+    final p = context.palette;
+    final text = Theme.of(context).textTheme;
+    return Column(
+      crossAxisAlignment: CrossAxisAlignment.start,
+      children: [
+        Wrap(
+          spacing: 6,
+          runSpacing: 6,
+          crossAxisAlignment: WrapCrossAlignment.center,
+          children: [
+            Text(AppStrings.songSection, style: text.labelLarge),
+            for (var i = 0; i < s.sections.length; i++)
+              ChoiceChip(
+                key: Key('custom-section-$i'),
+                label: Text(
+                  sectionLetter(i),
+                  semanticsLabel: AppStrings.songSectionChords(sectionLetter(i), s.sections[i].length),
+                ),
+                selected: s.section == i,
+                onSelected: (_) => vm.selectSection(i),
+              ),
+            if (s.sections.length < songMaxSections)
+              IconButton(
+                key: const Key('custom-section-add'),
+                tooltip: AppStrings.songAddSection,
+                onPressed: vm.addSection,
+                icon: const Icon(Icons.add),
+              ),
+            if (s.sections.length > 1)
+              IconButton(
+                key: const Key('custom-section-remove'),
+                tooltip: AppStrings.songRemoveSection(sectionLetter(s.section)),
+                onPressed: () => vm.removeSection(s.section),
+                icon: const Icon(Icons.delete_outline),
+              ),
+          ],
+        ),
+        if (s.hasSong) ...[
+          const SizedBox(height: 6),
+          Wrap(
+            spacing: 6,
+            runSpacing: 6,
+            crossAxisAlignment: WrapCrossAlignment.center,
+            children: [
+              Text(AppStrings.songOrder, style: text.labelLarge),
+              for (final (i, section) in s.order.indexed)
+                InputChip(
+                  key: Key('song-part-$i'),
+                  label: Text(sectionLetter(section), style: musicMono(fontSize: 13, color: p.textPrimary)),
+                  selected: s.playingPart == i,
+                  showCheckmark: false,
+                  tooltip: AppStrings.songPart(i + 1, sectionLetter(section)),
+                  onDeleted: s.order.length > 1 ? () => vm.removePart(i) : null,
+                ),
+              if (s.order.length < songMaxParts)
+                for (var i = 0; i < s.sections.length; i++)
+                  ActionChip(
+                    key: Key('song-add-$i'),
+                    avatar: const Icon(Icons.add, size: 16),
+                    label: Text(sectionLetter(i)),
+                    tooltip: AppStrings.songAddPart(sectionLetter(i)),
+                    onPressed: () => vm.addPart(i),
+                  ),
+            ],
+          ),
+          const SizedBox(height: 4),
+          Text(AppStrings.songHint, style: text.bodySmall?.copyWith(color: p.textSecondary)),
+        ],
+      ],
     );
   }
 }

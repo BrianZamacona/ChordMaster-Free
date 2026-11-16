@@ -1403,6 +1403,22 @@ class AppStrings {
   static String get customCopy => tr(es: 'Copiar', en: 'Copy');
   static String customPasteAfter(String numeral) => tr(es: 'Pegar $numeral detrás', en: 'Paste $numeral after');
   static String customPaste(String numeral) => tr(es: 'Pegar $numeral', en: 'Paste $numeral');
+  static String get songSection => tr(es: 'Sección', en: 'Section');
+  static String songSectionChords(String letter, int n) =>
+      tr(es: 'Sección $letter, $n acordes', en: 'Section $letter, $n chords');
+  static String get songAddSection => tr(es: 'Agregar una sección', en: 'Add a section');
+  static String songRemoveSection(String letter) => tr(es: 'Quitar la sección $letter', en: 'Remove section $letter');
+  static String get songOrder => tr(es: 'Canción', en: 'Song');
+  static String songPart(int n, String letter) => tr(es: 'Parte $n: sección $letter', en: 'Part $n: section $letter');
+  static String songAddPart(String letter) => tr(es: 'Agregar $letter al final', en: 'Add $letter at the end');
+  static String get songHint => tr(
+    es: 'Toca una letra para editar su sección; con + la sumas al final de la canción.',
+    en: 'Tap a letter to edit its section; + adds it to the end of the song.',
+  );
+  static String songListenSection(String letter) => tr(es: 'Sección $letter', en: 'Section $letter');
+  static String get songListenWhole => tr(es: 'Canción entera', en: 'Whole song');
+  static String songNowPlaying(int part, int parts, String letter) =>
+      tr(es: 'Suena la parte $part de $parts: $letter', en: 'Playing part $part of $parts: $letter');
   static String get savedProgressionBase => tr(es: 'Mi progresión', en: 'My progression');
   static String get saveProgressionTitle => tr(es: 'Guardar la progresión', en: 'Save the progression');
   static String get saveProgressionName => tr(es: 'Nombre', en: 'Name');

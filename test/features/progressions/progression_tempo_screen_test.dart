@@ -7,6 +7,7 @@ import 'package:chordmaster_free/data/repository/scale_repository.dart';
 import 'package:chordmaster_free/domain/progressions/custom_progression.dart';
 import 'package:chordmaster_free/domain/progressions/progression_data.dart';
 import 'package:chordmaster_free/domain/progressions/progression_playback.dart';
+import 'package:chordmaster_free/domain/progressions/song.dart';
 import 'package:chordmaster_free/features/progressions/progressions_screen.dart';
 import 'package:chordmaster_free/features/progressions/progressions_viewmodel.dart';
 import 'package:chordmaster_free/services/audio_service.dart';
@@ -44,6 +45,8 @@ void main() {
     _ => appRouter.routerDelegate.currentConfiguration.uri.path,
   };
 
+  late FakeAudio audio;
+
   Future<void> open(WidgetTester tester, String code) async {
     tester.view.devicePixelRatio = 1;
     tester.view.physicalSize = const Size(360, 2400);
@@ -53,7 +56,7 @@ void main() {
       ProviderScope(
         overrides: [
           keyValueStoreProvider.overrideWithValue(InMemoryStore(settings: {'localeCode': code})),
-          audioServiceProvider.overrideWithValue(FakeAudio()),
+          audioServiceProvider.overrideWithValue(audio = FakeAudio()),
           scaleRepositoryProvider.overrideWithValue(ScaleRepository(bundle: _FileBundle())),
         ],
         child: const ChordMasterApp(),
@@ -180,6 +183,82 @@ void main() {
           }
         }
       }
+    });
+
+    testWidgets('a 360 dp ($code): secciones y orden de la canción, y escucharla entera', (tester) async {
+      await open(tester, code);
+      final container = ProviderScope.containerOf(tester.element(find.byType(ProgressionsContent)));
+      final vm = container.read(progressionsViewModelProvider.notifier)
+        ..setProgression(customProgressionId)
+        ..addCustomDegree('I')
+        ..addCustomDegree('V');
+      await settle(tester);
+      // Sin canción: no hay orden ni elección de qué escuchar.
+      expect(find.byKey(const Key('song-part-0')), findsNothing);
+      expect(find.byKey(const Key('listen-scope')), findsNothing);
+
+      await tester.tap(find.byKey(const Key('custom-section-add')));
+      await settle(tester);
+      vm
+        ..addCustomDegree('IV')
+        ..addCustomDegree('I')
+        ..addPart(0)
+        ..addSection()
+        ..addSection();
+      await settle(tester);
+      expect(tester.takeException(), isNull);
+      final state = container.read(progressionsViewModelProvider);
+      expect(state.order, [0, 1, 0, 2, 3]);
+      for (final k in [
+        for (var i = 0; i < songMaxSections; i++) 'custom-section-$i',
+        'custom-section-remove',
+        for (var i = 0; i < state.order.length; i++) 'song-part-$i',
+        for (var i = 0; i < songMaxSections; i++) 'song-add-$i',
+      ]) {
+        final f = find.byKey(Key(k));
+        await tester.ensureVisible(f);
+        await settle(tester);
+        expect(tester.getRect(f).right, lessThanOrEqualTo(360), reason: k);
+      }
+      // Sin las vacías (C y D), la canción es A B A.
+      vm
+        ..removeSection(3)
+        ..removeSection(2)
+        ..selectSection(0);
+      await settle(tester);
+      final listen = find.byKey(const Key('progression-listen'));
+      for (var i = 0; i < 20 && listen.evaluate().isEmpty; i++) {
+        await tester.runAsync(() => Future<void>.delayed(const Duration(milliseconds: 500)));
+        await settle(tester);
+      }
+      final scope = find.byKey(const Key('listen-scope'));
+      await tester.ensureVisible(scope);
+      await settle(tester);
+      expect(tester.getRect(scope).right, lessThanOrEqualTo(360));
+      await tester.tap(find.text(AppStrings.songListenWhole));
+      await settle(tester);
+      await tester.ensureVisible(listen);
+      await tester.tap(listen);
+      await tester.runAsync(() => Future<void>.delayed(const Duration(milliseconds: 500)));
+      await settle(tester);
+      // Suenan las tres partes: A (2 acordes), B (2) y A otra vez, cuatro golpes cada uno.
+      final bpm = container.read(progressionsViewModelProvider).bpm;
+      final strokes = {for (final x in audio.played.last) (x.at * bpm / 60).round()};
+      expect(strokes.length, 6 * 4);
+      expect(find.byKey(const Key('song-now')), findsOneWidget);
+      expect(find.text(AppStrings.songNowPlaying(1, 3, 'A')), findsOneWidget);
+      expect(tester.takeException(), isNull);
+      // La canción sigue sonando en cada parte, hasta el final (A, B, A: 6 acordes
+      // de un compás; a 80 BPM, 3 s cada uno).
+      for (final (seconds, part, letter) in [(7, 2, 'B'), (6, 3, 'A')]) {
+        for (var i = 0; i < seconds * 10; i++) {
+          await tester.pump(const Duration(milliseconds: 100));
+        }
+        expect(find.text(AppStrings.songNowPlaying(part, 3, letter)), findsOneWidget, reason: 'parte $part');
+        expect(container.read(progressionsViewModelProvider).playingIndex, isNotNull, reason: 'parte $part');
+      }
+      await tester.tap(listen);
+      await settle(tester);
     });
 
     testWidgets('a 360 dp ($code): la lista se agrupa por familia y el blues trae sus 12 compases', (tester) async {
