@@ -208,6 +208,12 @@ cada nota pertenezca a la escala. No bajar la tolerancia de 0.
   Rasgueo (pista de guitarra, decisión del usuario: primero solo guitarra; bajo y batería
   después): uno de los 5 patrones del curso (`strummingPatterns`; el 1 = un golpe por pulso),
   dibujado con `StrumPatternView`; el 12/8 no lleva patrón.
+  Arpegio (decisión del usuario tras revisar Pocket Composer; `arpeggio_patterns.dart`): detrás de los 5
+  rasgueos, tres patrones de una nota por corchea (B = el bajo, b = el otro bajo, 3 2 1 esas cuerdas):
+  bajo y subir, subir y bajar, bajos alternados. Siguen el compás como el rasgueo, cada nota suena
+  hasta que cambia el acorde o se vuelve a pulsar su cuerda, y una cuerda que no suena deja la
+  corchea en silencio. `progressionAccompaniment` elige rasgueo o arpegio (el 12/8 siempre rasguea);
+  se dibuja con `ArpeggioPatternView`.
 - Comparador de digitaciones: `analyzeFingering` incluye SIEMPRE la cejilla en el costo,
   así que puede no coincidir con Progresiones en modo Estándar; la pantalla lo advierte.
 - Calidad de double stops por grado (3ª, 6ª, 7ª...) en `lib/domain/theory/double_stops.dart`,
