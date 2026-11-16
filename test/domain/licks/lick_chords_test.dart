@@ -8,6 +8,7 @@ import 'package:chordmaster_free/domain/licks/licks.dart';
 import 'package:chordmaster_free/domain/open_chords/chord_shape.dart';
 import 'package:chordmaster_free/domain/practice/tab_playback.dart';
 import 'package:chordmaster_free/domain/theory/notes.dart';
+import 'package:chordmaster_free/domain/theory/tunings.dart';
 import 'package:flutter_test/flutter_test.dart';
 
 void main() {
@@ -24,7 +25,9 @@ void main() {
   Set<int> chordTones(int root, LickChord c) => {for (final i in chordIntervals[(root, c.type)]!) (root + i) % 12};
   Set<int> scaleTones(LessonScale s) => {for (final i in scaleIntervals[s.scaleId]!) (s.root + i) % 12};
   // Lo que se oye de una nota: con bend, la nota a la que llega.
-  Set<int> heard(TabNote n) => {for (final t in n.tones) (tabMidi(t) + t.bend) % 12};
+  Set<int> heard(TabNote n, [Lick? l]) => {
+    for (final t in n.tones) (tabMidi(t, tuning: (l?.tuning ?? GuitarTuning.standard).openMidi) + t.bend) % 12,
+  };
 
   test('cada frase tiene acordes: duran lo que la tablatura y cada uno entra con una nota', () {
     for (final l in licks) {
@@ -62,14 +65,14 @@ void main() {
       ];
       for (final s in spans) {
         final first = sounding.firstWhere((x) => x.at >= s.start);
-        expect(chordTones(s.root, s.chord), containsAll(heard(first.note)), reason: '${l.id}: entra ${s.chord.type}');
+        expect(chordTones(s.root, s.chord), containsAll(heard(first.note, l)), reason: '${l.id}: entra ${s.chord.type}');
       }
       if (l.kind == LickKind.riff) continue;
       for (final x in sounding) {
         final last = identical(x, sounding.last);
         if (x.note.length < tabQuarter && !last) continue;
         final c = at(x.at);
-        expect(chordTones(c.root, c.chord), containsAll(heard(x.note)), reason: '${l.id}: ${x.note} sobre ${c.chord.type}');
+        expect(chordTones(c.root, c.chord), containsAll(heard(x.note, l)), reason: '${l.id}: ${x.note} sobre ${c.chord.type}');
       }
     }
   });

@@ -10,6 +10,7 @@ import 'package:chordmaster_free/domain/lessons/lesson_path.dart';
 import 'package:chordmaster_free/domain/lessons/unit_summary.dart';
 import 'package:chordmaster_free/domain/melodies/basics_course.dart';
 import 'package:chordmaster_free/domain/melodies/melody_course.dart';
+import 'package:chordmaster_free/domain/theory/tunings.dart';
 import 'package:chordmaster_free/features/circle/circle_build_screen.dart';
 import 'package:chordmaster_free/features/circle/circle_harmony_screen.dart';
 import 'package:chordmaster_free/features/circle/circle_quiz_screen.dart';
@@ -544,7 +545,8 @@ void main() {
   });
 
   test('tablatura: nombres de cuerda de la afinación, la 1ª en minúscula', () {
-    expect(tabStringNames, ['e', 'B', 'G', 'D', 'A', 'E']);
+    expect(tabStringNames(), ['e', 'B', 'G', 'D', 'A', 'E']);
+    expect(tabStringNames(GuitarTuning.dropD), ['e', 'B', 'G', 'D', 'A', 'D']);
   });
 
   // Un desborde hace fallar estos tests; lo demás se comprueba midiendo.

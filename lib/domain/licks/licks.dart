@@ -7,6 +7,7 @@ library;
 import '../../core/i18n/tr.dart';
 import '../guides/guides.dart';
 import '../lessons/lesson.dart';
+import '../theory/tunings.dart';
 import 'lick.dart';
 
 /// Nombre, resumen y técnicas de cada estilo.
@@ -239,6 +240,42 @@ const licks = <Lick>[
       TabNote(2, 12),
       TabNote(3, 14),
       TabNote(4, 14, length: tabQuarter, technique: TabTechnique.vibrato),
+    ],
+  ),
+  // Afinaciones (decisión del usuario, 2026-11-16): medio tono abajo.
+  Lick(
+    id: 'stadium_half_step',
+    style: LickStyle.stadiumHardRock,
+    kind: LickKind.riff,
+    level: GuideLevel.beginner,
+    tuning: GuitarTuning.halfStepDown,
+    title: LocalizedText(es: 'Pedal medio tono abajo', en: 'Pedal a half step down'),
+    about: LocalizedText(
+      es: 'Con todas las cuerdas medio tono abajo, la 6ª al aire es D#: el pedal con palma y la pentatónica '
+          'en la posición abierta suenan más graves y las cuerdas se sienten más blandas. Cierra en el D# de la '
+          '4ª, con vibrato.',
+      en: 'With every string a half step down, the open 6th string is D#: the palm-muted pedal and the '
+          'pentatonic in open position sound lower and the strings feel looser. It ends on the D# of the 4th '
+          'string, with vibrato.',
+    ),
+    scale: LessonScale(scaleId: 'pentatonic_minor', root: 3),
+    chords: [LickChord(0, 'power5', length: 2 * lickBar)],
+    bpm: 90,
+    tab: [
+      TabNote(6, 0, technique: TabTechnique.palmMute),
+      TabNote(6, 0, technique: TabTechnique.palmMute),
+      TabNote(6, 3),
+      TabNote(6, 0, technique: TabTechnique.palmMute),
+      TabNote(5, 0),
+      TabNote(5, 2),
+      TabNote(6, 3),
+      TabNote(6, 0, technique: TabTechnique.palmMute),
+      TabNote(6, 0, technique: TabTechnique.palmMute),
+      TabNote(6, 0, technique: TabTechnique.palmMute),
+      TabNote(5, 0),
+      TabNote(5, 2),
+      TabNote(4, 0),
+      TabNote(4, 2, length: tabQuarter + tabEighth, technique: TabTechnique.vibrato),
     ],
   ),
   Lick(
@@ -919,6 +956,44 @@ const licks = <Lick>[
       TabNote(4, 5, length: tabHalf),
     ],
   ),
+  // Afinaciones (decisión del usuario, 2026-11-16): DADGAD.
+  Lick(
+    id: 'folk_dadgad',
+    style: LickStyle.singerSongwriterFolk,
+    kind: LickKind.riff,
+    level: GuideLevel.intermediate,
+    tuning: GuitarTuning.dadgad,
+    title: LocalizedText(es: 'Dsus4 al aire en DADGAD', en: 'Open Dsus4 in DADGAD'),
+    about: LocalizedText(
+      es: 'En DADGAD las seis cuerdas al aire ya suenan como un Dsus4 (D, G y A): el arpegio baja de la 6ª a '
+          'la 1ª y vuelve, con un hammer-on de G a A en la 3ª y, en la segunda vuelta, un pull-off de E a D en '
+          'la 1ª.',
+      en: 'In DADGAD the six open strings already sound like a Dsus4 (D, G and A): the arpeggio goes from the '
+          '6th string to the 1st and back, with a hammer-on from G to A on the 3rd and, the second time, a '
+          'pull-off from E to D on the 1st.',
+    ),
+    scale: LessonScale(scaleId: 'major', root: 2),
+    chords: [LickChord(0, 'sus4', length: 2 * lickBar)],
+    bpm: 80,
+    tab: [
+      TabNote(6, 0),
+      TabNote(4, 0),
+      TabNote(3, 0),
+      TabNote(2, 0),
+      TabNote(1, 0),
+      TabNote(2, 0),
+      TabNote(3, 0),
+      TabNote(3, 2, technique: TabTechnique.hammerOn),
+      TabNote(6, 0),
+      TabNote(4, 0),
+      TabNote(3, 0),
+      TabNote(3, 2, technique: TabTechnique.hammerOn),
+      TabNote(2, 0),
+      TabNote(1, 2),
+      TabNote(1, 0, technique: TabTechnique.pullOff),
+      TabNote(2, 0),
+    ],
+  ),
   Lick(
     id: 'funk_riff',
     style: LickStyle.funk,
@@ -1275,6 +1350,45 @@ const licks = <Lick>[
       TabNote(4, 14, length: tabQuarter, technique: TabTechnique.vibrato),
     ],
   ),
+  // Afinaciones (decisión del usuario, 2026-11-16): Drop D.
+  Lick(
+    id: 'grunge_drop_d',
+    style: LickStyle.grunge,
+    kind: LickKind.riff,
+    level: GuideLevel.beginner,
+    tuning: GuitarTuning.dropD,
+    title: LocalizedText(es: 'Un dedo en Drop D', en: 'One finger in Drop D'),
+    about: LocalizedText(
+      es: 'Con la 6ª en D, el power chord es un solo dedo sobre las tres cuerdas graves: D5 al aire con '
+          'palma, F5 en el traste 3 y G5 en el 5.',
+      en: 'With the 6th string in D, the power chord is a single finger across the three low strings: open '
+          'D5 with palm muting, F5 on fret 3 and G5 on fret 5.',
+    ),
+    scale: LessonScale(scaleId: 'pentatonic_minor', root: 2),
+    chords: [
+      LickChord(0, 'power5', length: tabHalf),
+      LickChord(3, 'power5', length: tabQuarter),
+      LickChord(5, 'power5', length: tabQuarter),
+      LickChord(0, 'power5', length: tabHalf),
+      LickChord(5, 'power5', length: tabQuarter),
+      LickChord(3, 'power5', length: tabQuarter),
+    ],
+    bpm: 90,
+    tab: [
+      TabNote(6, 0, chord: [(5, 0), (4, 0)], technique: TabTechnique.palmMute),
+      TabNote(6, 0, chord: [(5, 0), (4, 0)], technique: TabTechnique.palmMute),
+      TabNote(6, 0, chord: [(5, 0), (4, 0)], technique: TabTechnique.palmMute),
+      TabNote(6, 0, chord: [(5, 0), (4, 0)], technique: TabTechnique.palmMute),
+      TabNote(6, 3, chord: [(5, 3), (4, 3)], length: tabQuarter),
+      TabNote(6, 5, chord: [(5, 5), (4, 5)], length: tabQuarter),
+      TabNote(6, 0, chord: [(5, 0), (4, 0)], technique: TabTechnique.palmMute),
+      TabNote(6, 0, chord: [(5, 0), (4, 0)], technique: TabTechnique.palmMute),
+      TabNote(6, 0, chord: [(5, 0), (4, 0)], technique: TabTechnique.palmMute),
+      TabNote(6, 0, chord: [(5, 0), (4, 0)], technique: TabTechnique.palmMute),
+      TabNote(6, 5, chord: [(5, 5), (4, 5)], length: tabQuarter),
+      TabNote(6, 3, chord: [(5, 3), (4, 3)], length: tabQuarter),
+    ],
+  ),
   Lick(
     id: 'metal_riff',
     style: LickStyle.metal,
@@ -1383,6 +1497,43 @@ const licks = <Lick>[
       TabNote(2, 5, technique: TabTechnique.pullOff),
       TabNote(3, 6),
       TabNote(4, 7, length: tabQuarter, technique: TabTechnique.vibrato),
+    ],
+  ),
+  // Afinaciones (decisión del usuario, 2026-11-16): Open G.
+  Lick(
+    id: 'southern_open_g',
+    style: LickStyle.southernRock,
+    kind: LickKind.riff,
+    level: GuideLevel.intermediate,
+    tuning: GuitarTuning.openG,
+    title: LocalizedText(es: 'Acordes con un dedo en Open G', en: 'One-finger chords in Open G'),
+    about: LocalizedText(
+      es: 'Con la guitarra afinada en G, las tres cuerdas graves al aire ya son el acorde: el C es la cejilla '
+          'del traste 5 y el D, la del 7, con notas sueltas en las agudas entre medio.',
+      en: 'With the guitar tuned to G, the three open low strings are already the chord: C is the barre on '
+          'fret 5 and D the one on fret 7, with single notes on the high strings in between.',
+    ),
+    scale: LessonScale(scaleId: 'mixolydian', root: 7),
+    chords: [
+      LickChord(0, 'major', length: tabHalf),
+      LickChord(5, 'major', length: tabHalf),
+      LickChord(0, 'major', length: tabHalf),
+      LickChord(7, 'power5', length: tabHalf),
+    ],
+    bpm: 85,
+    tab: [
+      TabNote(5, 0, chord: [(4, 0), (3, 0)], length: tabQuarter),
+      TabNote(2, 0),
+      TabNote(1, 2),
+      TabNote(5, 5, chord: [(4, 5), (3, 5)], length: tabQuarter),
+      TabNote(2, 5),
+      TabNote(1, 5),
+      TabNote(5, 0, chord: [(4, 0), (3, 0)], length: tabQuarter),
+      TabNote(3, 2),
+      TabNote(2, 0),
+      TabNote(5, 7, chord: [(4, 7), (3, 7)], length: tabQuarter),
+      TabNote(2, 0),
+      TabNote(3, 0),
     ],
   ),
   Lick(

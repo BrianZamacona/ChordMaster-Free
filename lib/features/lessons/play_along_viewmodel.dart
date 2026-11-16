@@ -6,6 +6,7 @@ import 'package:flutter_riverpod/flutter_riverpod.dart';
 import '../../core/utils/permission_utils.dart';
 import '../../domain/lessons/lesson.dart';
 import '../../domain/practice/play_along.dart';
+import '../../domain/theory/tunings.dart';
 import '../../services/audio_service.dart';
 import '../../services/pitch_service.dart';
 import '../tuner/tuner_viewmodel.dart';
@@ -69,7 +70,12 @@ class PlayAlongViewModel extends Notifier<PlayAlongState> {
   }
 
   /// Empieza a escuchar [tab] para [owner].
-  Future<void> start(Object owner, List<TabNote> tab, {TabSwing swing = TabSwing.none}) async {
+  Future<void> start(
+    Object owner,
+    List<TabNote> tab, {
+    TabSwing swing = TabSwing.none,
+    GuitarTuning tuning = GuitarTuning.standard,
+  }) async {
     await _release();
     _wanted = owner;
     // Que no suene ningún reproductor: el micrófono lo oiría.
@@ -95,7 +101,7 @@ class PlayAlongViewModel extends Notifier<PlayAlongState> {
       await _pitch.stopListening();
       return;
     }
-    _session = PlayAlongSession(tab, a4: _pitch.referenceA4, swing: swing);
+    _session = PlayAlongSession(tab, a4: _pitch.referenceA4, swing: swing, tuning: tuning.openMidi);
     _sub = _pitch.windowStream.listen(_onWindow, onError: (Object e) => stop());
   }
 

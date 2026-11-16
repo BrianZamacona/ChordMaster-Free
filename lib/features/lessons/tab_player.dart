@@ -12,6 +12,7 @@ import '../../domain/practice/tab_notation.dart';
 import '../../domain/practice/tab_playback.dart';
 import '../../domain/practice/technique_exercises.dart';
 import '../../domain/theory/notes.dart';
+import '../../domain/theory/tunings.dart';
 import '../../services/audio_service.dart';
 import '../../ui/theme.dart';
 import 'lesson_tab.dart';
@@ -40,10 +41,15 @@ class TabPlayer extends ConsumerStatefulWidget {
     this.chordLabels = const {},
     this.backing,
     this.swing = TabSwing.none,
+    this.tuning = GuitarTuning.standard,
     this.onPlay,
     this.onPlayed,
     this.onBpmChanged,
   });
+
+  /// Afinación de la tablatura: cambia las letras de las cuerdas, el sonido y
+  /// lo que espera el micrófono.
+  final GuitarTuning tuning;
 
   final List<TabNote> notes;
   final int bpm;
@@ -183,7 +189,7 @@ class _TabPlayerState extends ConsumerState<TabPlayer> {
     final positions = tabPositions(widget.notes);
     _audio.playTab(
       [
-        ...tabSounds(part, bpm: widget.bpm, swing: widget.swing),
+        ...tabSounds(part, bpm: widget.bpm, swing: widget.swing, tuning: widget.tuning.openMidi),
         if (backing != null)
           ...lickBacking(
             backing,
@@ -232,7 +238,7 @@ class _TabPlayerState extends ConsumerState<TabPlayer> {
   void _listenMic() {
     _again?.cancel();
     _stop();
-    _mic!.start(_token, _part, swing: widget.swing);
+    _mic!.start(_token, _part, swing: widget.swing, tuning: widget.tuning);
   }
 
   void _stopMic() {
@@ -328,6 +334,7 @@ class _TabPlayerState extends ConsumerState<TabPlayer> {
         LessonTabView(
           notes: widget.notes,
           swing: widget.swing,
+          tuning: widget.tuning,
           showFingers: true,
           chordLabels: widget.chordLabels,
           focusLine: _line,

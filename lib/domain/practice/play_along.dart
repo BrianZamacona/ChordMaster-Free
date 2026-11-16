@@ -9,6 +9,7 @@ import 'dart:typed_data';
 
 import '../audio/note_onsets.dart';
 import '../lessons/lesson.dart';
+import '../theory/notes.dart';
 import 'tab_playback.dart';
 import 'technique_exercises.dart';
 
@@ -45,15 +46,15 @@ int slowerBpm(int bpm) => math.max(techniqueMinBpm, bpm - playAlongSlowerBy);
 /// tienen altura: no se esperan (la nota muerta es solo un golpe). Tampoco un
 /// acorde que no es de quintas ([tabMicHears]).
 class NoteFollower {
-  NoteFollower(List<TabNote> tab, {TabSwing swing = TabSwing.none})
+  NoteFollower(List<TabNote> tab, {TabSwing swing = TabSwing.none, List<int> tuning = standardOpenStringMidi})
     : length = tab.length,
       _lineStarts = tabLineStarts(tab) {
     final positions = tabPositions(tab);
     for (final (i, n) in tab.indexed) {
-      if (n.isRest || n.technique == TabTechnique.dead || !tabMicHears(n)) continue;
+      if (n.isRest || n.technique == TabTechnique.dead || !tabMicHears(n, tuning: tuning)) continue;
       _indices.add(i);
-      expected.add(tabMidi(n));
-      _divisors.add(tabChordPeriodDivisor(n));
+      expected.add(tabMidi(n, tuning: tuning));
+      _divisors.add(tabChordPeriodDivisor(n, tuning: tuning));
       _muted.add(n.technique == TabTechnique.palmMute);
       _beats.add(tabSwungBeats(positions[i], swing));
     }
@@ -122,8 +123,12 @@ class NoteFollower {
 /// Una tablatura tocada con el micrófono: cada ventana se analiza buscando la
 /// nota que toca ahora, y lo oído avanza el [follower].
 class PlayAlongSession {
-  PlayAlongSession(List<TabNote> tab, {this.a4 = 440, TabSwing swing = TabSwing.none})
-    : follower = NoteFollower(tab, swing: swing),
+  PlayAlongSession(
+    List<TabNote> tab, {
+    this.a4 = 440,
+    TabSwing swing = TabSwing.none,
+    List<int> tuning = standardOpenStringMidi,
+  }) : follower = NoteFollower(tab, swing: swing, tuning: tuning),
       _detector = NoteOnsetDetector(a4: a4);
 
   final double a4;

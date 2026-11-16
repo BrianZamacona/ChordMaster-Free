@@ -40,8 +40,9 @@ void main() {
         expect(intervals, contains(l.scale.scaleId), reason: l.id);
         final allowed = pitchClasses(l.scale);
         for (final n in tones(l)) {
-          expect(allowed, contains(tabMidi(n) % 12), reason: '${l.id} $n');
-          expect(allowed, contains((tabMidi(n) + n.bend) % 12), reason: '${l.id} $n');
+          final midi = tabMidi(n, tuning: l.tuning.openMidi);
+          expect(allowed, contains(midi % 12), reason: '${l.id} $n');
+          expect(allowed, contains((midi + n.bend) % 12), reason: '${l.id} $n');
         }
       }
     });
