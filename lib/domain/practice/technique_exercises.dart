@@ -1,13 +1,29 @@
 /// Ejercicios de técnica para la mano izquierda, generados por regla: un dedo
 /// por traste en una ventana de cuatro trastes que empieza en [startFret].
 /// No dependen de una escala (son cromáticos); sirven para calentar, para la
-/// independencia de los dedos y para la sincronía entre las manos.
+/// independencia de los dedos y para la sincronía entre las manos. El trino
+/// con las dos manos (decisión del usuario tras revisar Learn Tapping) usa el
+/// índice en el primer traste de la ventana y el tapping [tapTrillGap] trastes
+/// más arriba.
 library;
 
 import '../../core/i18n/tr.dart';
 import '../lessons/lesson.dart';
 
-enum TechniqueExercise { chromatic, spider, diagonal, stringSkip }
+enum TechniqueExercise { chromatic, spider, diagonal, stringSkip, tapTrill }
+
+/// Los de la mano izquierda (un dedo por traste): los que rotan en la
+/// Práctica de hoy. El trino con tapping es más avanzado y no entra.
+const leftHandExercises = [
+  TechniqueExercise.chromatic,
+  TechniqueExercise.spider,
+  TechniqueExercise.diagonal,
+  TechniqueExercise.stringSkip,
+];
+
+/// Trastes entre el índice y el tapping en el trino: una quinta, así las
+/// manos no se estorban.
+const tapTrillGap = 7;
 
 /// Trastes donde puede empezar la ventana: abajo cuesta más estirar, arriba
 /// los trastes son más cortos.
@@ -29,6 +45,8 @@ const _skipOrder = [6, 4, 5, 3, 4, 2, 3, 1];
 /// la ventana; el dedo n va en el traste `start + n − 1`.
 List<int> techniqueFingers(TechniqueExercise exercise) => switch (exercise) {
   TechniqueExercise.spider => const [1, 3, 2, 4],
+  // La izquierda solo pone el índice; la otra nota es el tapping.
+  TechniqueExercise.tapTrill => const [1],
   _ => const [1, 2, 3, 4],
 };
 
@@ -39,6 +57,8 @@ List<int> techniqueFingers(TechniqueExercise exercise) => switch (exercise) {
 /// - Diagonal: 1-2-3-4 subiendo de cuerda y un traste más arriba en cada una:
 ///   la mano se desplaza sin parar.
 /// - Salto de cuerda: 1-2-3-4 en 6, 4, 5, 3, 4, 2, 3, 1.
+/// - Trino con tapping: en cada cuerda, de la 1ª a la 6ª, dos veces tapping
+///   [tapTrillGap] trastes arriba y pull-off al índice.
 List<TabNote> techniqueNotes(TechniqueExercise exercise, {int startFret = 1}) {
   final fingers = techniqueFingers(exercise);
   List<TabNote> onString(int string, int start, List<int> order) => [
@@ -57,6 +77,13 @@ List<TabNote> techniqueNotes(TechniqueExercise exercise, {int startFret = 1}) {
     TechniqueExercise.stringSkip => [
       for (final s in _skipOrder) ...onString(s, startFret, fingers),
     ],
+    TechniqueExercise.tapTrill => [
+      for (final s in _lowToHigh.reversed)
+        for (var i = 0; i < 2; i++) ...[
+          TabNote(s, startFret + tapTrillGap, technique: TabTechnique.tap),
+          TabNote(s, startFret, technique: TabTechnique.pullOff),
+        ],
+    ],
   };
 }
 
@@ -74,6 +101,8 @@ LocalizedText techniqueName(TechniqueExercise exercise) => switch (exercise) {
     const LocalizedText(es: 'Diagonal', en: 'Diagonal'),
   TechniqueExercise.stringSkip =>
     const LocalizedText(es: 'Salto de cuerda', en: 'String skipping'),
+  TechniqueExercise.tapTrill =>
+    const LocalizedText(es: 'Trino con tapping', en: 'Tapping trill'),
 };
 
 LocalizedText techniqueHint(TechniqueExercise exercise) => switch (exercise) {
@@ -100,5 +129,13 @@ LocalizedText techniqueHint(TechniqueExercise exercise) => switch (exercise) {
         'sin tocar la del medio.',
     en: 'Skip a string and come back to the next one: the pick learns to '
         'cross without hitting the one in between.',
+  ),
+  TechniqueExercise.tapTrill => const LocalizedText(
+    es: 'El índice izquierdo en el primer traste y la derecha siete trastes más '
+        'arriba: tapping y pull-off, parejos, de la 1ª cuerda a la 6ª. Lo explica '
+        'el curso de Tapping.',
+    en: 'Fretting index on the first fret and the tapping hand seven frets '
+        'higher: tap and pull-off, even, from the 1st string to the 6th. The '
+        'Tapping course explains it.',
   ),
 };

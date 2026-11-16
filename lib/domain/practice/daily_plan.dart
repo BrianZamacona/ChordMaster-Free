@@ -28,9 +28,9 @@ int dayNumber(DateTime day) =>
 LessonScale dailyWorkoutScale(DateTime day) =>
     dailyWorkoutScales[dayNumber(day) % dailyWorkoutScales.length];
 
-/// Ejercicio de técnica de [day].
+/// Ejercicio de técnica de [day]: rota entre los de la mano izquierda.
 TechniqueExercise dailyTechnique(DateTime day) =>
-    TechniqueExercise.values[dayNumber(day) % TechniqueExercise.values.length];
+    leftHandExercises[dayNumber(day) % leftHandExercises.length];
 
 /// Actividades de los pasos, en orden: lección, rutina y técnica.
 const dailyPlanActivities = [
