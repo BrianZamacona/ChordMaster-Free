@@ -454,6 +454,11 @@ class _TabPainter extends CustomPainter {
       case TabTechnique.palmMute:
         _text(canvas, 'PM', Offset(n.pick == null ? x : x - 7, top), color, 9, bold: true);
       case TabTechnique.tap:
+        // Sobre un hueco, como el "3": la llave de un tresillo pasa por aquí.
+        canvas.drawRect(
+          Rect.fromCenter(center: Offset(x, top), width: 9, height: 11),
+          Paint()..color = palette.surface,
+        );
         _text(canvas, 'T', Offset(x, top), color, 10, bold: true);
       default:
     }

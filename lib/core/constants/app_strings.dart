@@ -665,6 +665,20 @@ class AppStrings {
   static String get courseUnread =>
       tr(es: 'Marcar como pendiente', en: 'Mark as not done');
   static String get courseNext => tr(es: 'Siguiente paso', en: 'Next step');
+  static String get tappingIntro => tr(
+    es: 'Aprende a tocar con las dos manos sobre el mástil: el tap y el pull-off '
+        'en una cuerda, el arpegio que cambia de acorde, el paso de cuerda en cuerda '
+        'y el trino. Cada ejercicio da hasta tres estrellas según el tempo al que te '
+        'sale limpio.',
+    en: 'Learn to play with both hands on the neck: the tap and pull-off on one '
+        'string, the arpeggio that changes chords, moving from string to string and '
+        'the trill. Each exercise gives up to three stars for the tempo at which it '
+        'comes out clean.',
+  );
+  static String get tappingPlayerNote => tr(
+    es: 'Suena como está escrito: tresillos y semicorcheas. La T es la mano derecha.',
+    en: 'It plays as written: triplets and sixteenths. The T is the tapping hand.',
+  );
   static String get melodiesEvenRhythm => tr(
     es: 'Suena con todas las notas iguales (corcheas): sirve para aprender '
         'las notas; el ritmo de la canción lo pones tú.',

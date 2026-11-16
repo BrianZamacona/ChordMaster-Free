@@ -45,7 +45,7 @@ TabNote _place(int midi, int minFret, int maxFret, Set<int>? strings, String nam
 }
 
 /// Un paso de un curso de melodía. Los de teoría no tienen notas.
-class MelodyStep implements CourseStep {
+class MelodyStep implements TabCourseStep {
   const MelodyStep({
     required this.id,
     required this.kind,
@@ -66,6 +66,7 @@ class MelodyStep implements CourseStep {
   final CourseStepKind kind;
   @override
   final LocalizedText title;
+  @override
   final LocalizedText body;
 
   /// Alturas en orden (las de un ejercicio con [pattern] son su escalera).
@@ -86,6 +87,7 @@ class MelodyStep implements CourseStep {
   final LocalizedText? origin;
 
   /// La tablatura que se toca.
+  @override
   List<TabNote> get tab {
     final notes = tabForPitches(
       pitches,

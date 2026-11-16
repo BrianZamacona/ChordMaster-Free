@@ -6,6 +6,7 @@ import '../../domain/courses/course.dart';
 import '../../domain/lessons/lesson.dart';
 import '../../domain/melodies/basics_course.dart';
 import '../../domain/melodies/melody_course.dart';
+import '../../domain/tapping/tapping_course.dart';
 import '../open_chords/open_chords_course_provider.dart';
 import '../strumming/strumming_course_provider.dart';
 import 'course_progress.dart';
@@ -20,6 +21,7 @@ extension LessonCourseInfo on LessonCourse {
     LessonCourse.openChords => CourseId.openChords,
     LessonCourse.strumming => CourseId.strumming,
     LessonCourse.openChords2 => CourseId.openChords2,
+    LessonCourse.tapping => CourseId.tapping,
   };
 
   /// Tramo de la ruta: `/learn/lessons/course/<slug>/<paso>`.
@@ -29,6 +31,7 @@ extension LessonCourseInfo on LessonCourse {
     LessonCourse.openChords => 'open-chords',
     LessonCourse.strumming => 'strumming',
     LessonCourse.openChords2 => 'open-chords-2',
+    LessonCourse.tapping => 'tapping',
   };
 
   String get intro => switch (this) {
@@ -37,6 +40,7 @@ extension LessonCourseInfo on LessonCourse {
     LessonCourse.openChords => AppStrings.openChordsIntro,
     LessonCourse.strumming => AppStrings.strummingIntro,
     LessonCourse.openChords2 => AppStrings.openChords2Intro,
+    LessonCourse.tapping => AppStrings.tappingIntro,
   };
 
   String stepRoute(String stepId) => '/learn/lessons/course/$slug/$stepId';
@@ -54,6 +58,7 @@ List<CourseLevel<CourseStep>>? watchCourseLevels(WidgetRef ref, LessonCourse cou
       LessonCourse.openChords => ref.watch(openChordsCourseProvider),
       LessonCourse.strumming => ref.watch(strummingCourseProvider),
       LessonCourse.openChords2 => ref.watch(openChords2CourseProvider),
+      LessonCourse.tapping => tappingCourse,
     };
 
 /// Lee un proveedor: `ref.watch` o `ref.read`.
@@ -67,6 +72,7 @@ typedef ProviderGet = T Function<T>(ProviderListenable<T> provider);
     LessonCourse.openChords => get(openChordsCourseProvider),
     LessonCourse.strumming => get(strummingCourseProvider),
     LessonCourse.openChords2 => get(openChords2CourseProvider),
+    LessonCourse.tapping => tappingCourse,
   };
   if (levels == null) return null;
   final progress = get(courseProgressProvider(course.progressId));

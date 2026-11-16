@@ -3,6 +3,7 @@
 library;
 
 import '../../core/i18n/tr.dart';
+import '../lessons/lesson.dart';
 
 enum CourseStepKind { theory, exercise, song }
 
@@ -16,6 +17,13 @@ abstract interface class CourseStep {
 
   /// De dónde viene una canción (tradicional, compositor y año).
   LocalizedText? get origin;
+}
+
+/// Un paso que se lee y se toca en tablatura (melodías, tapping): su texto y
+/// sus notas (vacías en la teoría).
+abstract interface class TabCourseStep implements CourseStep {
+  LocalizedText get body;
+  List<TabNote> get tab;
 }
 
 /// Un nivel: título, idea y sus pasos en orden.

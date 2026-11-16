@@ -263,7 +263,8 @@ class _CourseResults extends StatelessWidget {
             Text(AppStrings.courseResults, style: text.titleMedium),
             const SizedBox(height: 8),
             row(Icons.star_rounded, '$stars', '$maxStars', AppStrings.courseStarsLabel),
-            row(Icons.music_note, '$songs', '$maxSongs', AppStrings.courseSongsLabel),
+            // Un curso sin canciones (Tapping) no muestra "0/0 canciones".
+            if (maxSongs > 0) row(Icons.music_note, '$songs', '$maxSongs', AppStrings.courseSongsLabel),
             const SizedBox(height: 4),
             Text(
               AppStrings.courseStarRule,

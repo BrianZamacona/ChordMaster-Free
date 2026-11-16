@@ -6,21 +6,25 @@ import '../../domain/lessons/curriculum.dart';
 import '../../domain/lessons/lesson.dart';
 import '../../domain/melodies/basics_course.dart';
 import '../../domain/melodies/melody_course.dart';
+import '../../domain/tapping/tapping_course.dart';
 import '../courses/course_registry.dart';
 import '../courses/course_widgets.dart';
 import '../lessons/tab_player.dart';
 
-/// Un paso de un curso de melodía (Primeros pasos o Melodías): la teoría se
-/// lee y se marca; un ejercicio o una canción se escucha en tablatura al
-/// tempo elegido.
+/// Un paso de un curso en tablatura (Primeros pasos, Melodías o Tapping): la
+/// teoría se lee y se marca; un ejercicio o una canción se escucha en
+/// tablatura al tempo elegido.
 class MelodyStepScreen extends StatelessWidget {
   const MelodyStepScreen({super.key, required this.course, required this.stepId});
 
   final LessonCourse course;
   final String stepId;
 
-  List<MelodyLevel> get _levels =>
-      course == LessonCourse.basics ? basicsCourse : melodyCourse;
+  List<CourseLevel<TabCourseStep>> get _levels => switch (course) {
+    LessonCourse.basics => basicsCourse,
+    LessonCourse.tapping => tappingCourse,
+    _ => melodyCourse,
+  };
 
   @override
   Widget build(BuildContext context) {
@@ -42,7 +46,9 @@ class MelodyStepScreen extends StatelessWidget {
                 onPlayed: onPlayed,
                 onBpmChanged: onBpm,
               ),
-              playerNote: AppStrings.melodiesEvenRhythm,
+              // Las melodías suenan en corcheas iguales; el tapping, como
+              // está escrito (tresillos y semicorcheas).
+              playerNote: course == LessonCourse.tapping ? AppStrings.tappingPlayerNote : AppStrings.melodiesEvenRhythm,
               routeOf: course.stepRoute,
             ),
     );
