@@ -22,9 +22,9 @@ List<List<Object?>> _rows(List<DoubleStopGroup> groups) => [
 ];
 
 void main() {
-  // Golden del sandbox TS, salvo la 7ª diatónica del grado VII: el sandbox la
-  // daba como disminuida (9 semitonos) y en la escala mayor es menor (10). Esas
-  // filas se regeneraron con la versión corregida; el sandbox debe corregirse igual.
+  // Golden del sandbox TS. La 7ª diatónica del grado VII se corrigió en los dos
+  // (era disminuida, 9 semitonos; en la escala mayor es menor, 10), y el sandbox
+  // tiene un test que compara su salida con este mismo archivo.
   test('coincide con el golden del sandbox TS (118 casos)', () {
     final cases =
         jsonDecode(

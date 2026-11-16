@@ -1,5 +1,5 @@
 <manifest xmlns:android="http://schemas.android.com/apk/res/android">
-    <!-- Afinador: micrófono (también lo declara el plugin record; aquí queda explícito). -->
+    <!-- Micrófono: afinador y «Tocar yo» (también lo declara el plugin record; aquí queda explícito). -->
     <uses-permission android:name="android.permission.RECORD_AUDIO"/>
     <!-- Aviso de pausa durante la práctica (Android 13+ pide permiso). Se muestra al
          momento, sin notificaciones programadas: no hacen falta alarmas ni arranque. -->

@@ -25,7 +25,7 @@
 	<key>CFBundleVersion</key>
 	<string>$(FLUTTER_BUILD_NUMBER)</string>
 	<key>NSMicrophoneUsageDescription</key>
-	<string>Learn &amp; Strum usa el micrófono solo para el afinador; el audio no se graba ni sale del teléfono. / Learn &amp; Strum uses the microphone only for the tuner; audio is never recorded or sent anywhere.</string>
+	<string>Learn &amp; Strum usa el micrófono para el afinador y para oír lo que tocas en los ejercicios («Tocar yo»); el audio no se graba ni sale del teléfono. / Learn &amp; Strum uses the microphone for the tuner and to hear what you play in the exercises ("Play it myself"); audio is never recorded or sent anywhere.</string>
 	<key>LSRequiresIPhoneOS</key>
 	<true/>
 	<key>UIApplicationSceneManifest</key>

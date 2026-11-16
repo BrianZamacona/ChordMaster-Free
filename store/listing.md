@@ -46,7 +46,7 @@ PRÁCTICA
 • Calentamiento y avisos de pausa para cuidar tus manos.
 • Racha diaria y logros.
 
-Disponible en español e inglés, con tema claro y oscuro. Tus datos se quedan en tu teléfono: el micrófono solo se usa para el afinador y no graba nada.
+Disponible en español e inglés, con tema claro y oscuro. Tus datos se quedan en tu teléfono: el micrófono solo se usa en el afinador y en «Tocar yo» (para oír lo que tocas), y no graba nada.
 
 ---
 
@@ -87,7 +87,7 @@ PRACTICE
 • Warm-ups and break reminders to look after your hands.
 • Daily streak and achievements.
 
-Available in Spanish and English, with light and dark themes. Your data stays on your phone: the microphone is only used by the tuner and nothing is recorded.
+Available in Spanish and English, with light and dark themes. Your data stays on your phone: the microphone is only used by the tuner and by "Play it myself" (to hear what you play), and nothing is recorded.
 
 ---
 
@@ -98,8 +98,8 @@ Available in Spanish and English, with light and dark themes. Your data stays on
 
 **Seguridad de los datos** (verificado en el código):
 - ¿Recopila o comparte datos? **No.** La app no tiene permiso de internet ni SDK de analítica, anuncios o errores; el progreso y los ajustes se guardan cifrados solo en el teléfono.
-- Audio: el micrófono se procesa al momento en el teléfono para el afinador y no se guarda ni se envía. Según la definición de Google, el procesamiento que no sale del dispositivo no cuenta como "recopilado".
-- Permisos que verá Google: `RECORD_AUDIO` (afinador), `POST_NOTIFICATIONS` (avisos de pausa), `VIBRATE` (notificaciones).
+- Audio: el micrófono se procesa al momento en el teléfono para el afinador y para «Tocar yo», y no se guarda ni se envía. Según la definición de Google, el procesamiento que no sale del dispositivo no cuenta como "recopilado".
+- Permisos que verá Google: `RECORD_AUDIO` (afinador y «Tocar yo»), `POST_NOTIFICATIONS` (avisos de pausa), `VIBRATE` (notificaciones).
 
 **Clasificación de contenido:** sin violencia, lenguaje, contenido sexual, apuestas ni interacción entre usuarios (Comunidad se eliminó); no comparte ubicación ni datos personales.
 

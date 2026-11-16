@@ -123,7 +123,7 @@ están en [`CLAUDE.md`](CLAUDE.md).
 | go_router | 17.3.0 | Navegación |
 | hive · flutter_secure_storage | 2.2.3 · 10.3.1 | Datos locales cifrados |
 | just_audio · path_provider | 0.10.6 · 2.1.5 | Reproducir el sonido sintetizado |
-| record · permission_handler | 7.1.1 · 12.0.3 | Micrófono del afinador |
+| record · permission_handler | 7.1.1 · 12.0.3 | Micrófono del afinador y de «Tocar yo» |
 | flutter_local_notifications | 22.0.1 | Avisos de pausa |
 | google_fonts | 8.1.0 | Fuentes empaquetadas (sin descarga) |
 | url_launcher | 6.3.2 | Enlace de donación |
