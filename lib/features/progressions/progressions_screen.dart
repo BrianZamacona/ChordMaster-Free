@@ -11,6 +11,7 @@ import '../../core/widgets/feature_module_scaffold.dart';
 import '../../core/widgets/selector_pill.dart';
 import '../../data/repository/scale_repository.dart';
 import '../../domain/practice/technique_exercises.dart';
+import '../../domain/progressions/arpeggio_patterns.dart';
 import '../../domain/progressions/custom_progression.dart';
 import '../../domain/progressions/progression_data.dart';
 import '../../domain/progressions/progression_playback.dart';
@@ -26,6 +27,7 @@ import '../../ui/theme.dart';
 import '../chords/chord_viewmodel.dart';
 import '../chords/fingering_selection.dart';
 import '../lessons/lesson_widgets.dart';
+import 'arpeggio_pattern_view.dart';
 import 'chord_on_neck.dart';
 import 'progressions_viewmodel.dart';
 
@@ -313,13 +315,35 @@ class _ListenOptions extends ConsumerWidget {
                 ),
             ],
           ),
+          const SizedBox(height: 4),
+          Wrap(
+            key: const Key('progression-arpeggios'),
+            spacing: 6,
+            runSpacing: 4,
+            crossAxisAlignment: WrapCrossAlignment.center,
+            children: [
+              Text(AppStrings.progressionArpeggio, style: text.labelLarge),
+              for (var i = 0; i < arpeggioPatterns.length; i++)
+                ChoiceChip(
+                  key: Key('progression-arpeggio-$i'),
+                  label: Text(AppStrings.arpeggioName(i)),
+                  selected: arpeggioOf(state.pattern) == i,
+                  onSelected: (_) => vm.setPattern(strummingPatterns.length + i),
+                ),
+            ],
+          ),
           const SizedBox(height: 6),
-          StrumPatternView(key: const Key('progression-pattern-view'), pattern: strummingPatterns[state.pattern]),
+          if (arpeggioOf(state.pattern) case final a?)
+            ArpeggioPatternView(key: const Key('progression-pattern-view'), pattern: arpeggioPatterns[a])
+          else
+            StrumPatternView(key: const Key('progression-pattern-view'), pattern: strummingPatterns[state.pattern]),
           const SizedBox(height: 6),
         ],
         Text(
           state.progression.feel == ProgressionFeel.triplet
               ? AppStrings.progressionBarPerChordTriplet
+              : arpeggioOf(state.pattern) != null
+              ? AppStrings.progressionArpeggioHint(ownBeats: state.progression.beats != null)
               : state.progression.beats != null
               ? AppStrings.progressionChordBeatsPattern(state.pattern + 1)
               : state.pattern == 0

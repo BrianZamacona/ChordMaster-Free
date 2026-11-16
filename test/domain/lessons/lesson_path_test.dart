@@ -14,7 +14,7 @@ void main() {
     LessonCourse.openChords: (50, 50),
     LessonCourse.strumming: (50, 50),
     LessonCourse.openChords2: (50, 50),
-    LessonCourse.tapping: (14, 14),
+    LessonCourse.tapping: (15, 15),
   };
   const foundationsDone = {
     LessonCourse.basics: (20, 20),
