@@ -189,7 +189,11 @@ LocalizedText? _cadence(String from, String to) => switch ((from, to)) {
 /// Explicación de una progresión generada por reglas: el recorrido de
 /// funciones, las cadencias (también la de vuelta al inicio, porque las
 /// progresiones se tocan en bucle) y qué notas une cada cambio.
-List<LocalizedText> explainProgression(Progression p, int tonic) {
+///
+/// [outside] son los grados que vienen de fuera de la escala de base ("Mi
+/// progresión": un V7/IV se escribe I7): no se les pone función, porque la
+/// suya es la de su fuente, que se explica aparte.
+List<LocalizedText> explainProgression(Progression p, int tonic, {Set<String> outside = const {}}) {
   final degrees = p.degrees;
   if (degrees.isEmpty) return const [];
   final out = <LocalizedText>[];
@@ -201,7 +205,7 @@ List<LocalizedText> explainProgression(Progression p, int tonic) {
   ];
   String path(AppLanguage lang) => steps
       .map((d) {
-        final f = functionOf(d.numeral);
+        final f = outside.contains(d.numeral) ? null : functionOf(d.numeral);
         if (f == null) return d.numeral;
         final name = harmonicFunctionName(f);
         return '${d.numeral} (${lang == AppLanguage.es ? name.es : name.en})';

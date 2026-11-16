@@ -1,3 +1,4 @@
+import '../../domain/progressions/custom_progression.dart';
 import '../i18n/tr.dart';
 
 /// Textos de la interfaz en español e inglés.
@@ -1536,6 +1537,40 @@ class AppStrings {
   static String get progressionBaseScale => tr(es: 'Escala', en: 'Scale');
   static String get progressionBaseMajor => tr(es: 'Mayor', en: 'Major');
   static String get progressionBaseMinor => tr(es: 'Menor natural', en: 'Natural minor');
+  static String chordSourceName(ChordSource s) => switch (s) {
+    ChordSource.scale => tr(es: 'De la escala', en: 'From the scale'),
+    ChordSource.borrowed => tr(es: 'Prestados', en: 'Borrowed'),
+    ChordSource.secondaryDominant => tr(es: 'Dominantes secundarias', en: 'Secondary dominants'),
+    ChordSource.leadingTone => tr(es: 'vii°7 secundarios', en: 'Secondary vii°7'),
+    ChordSource.tritoneSub => tr(es: 'Sustituto tritonal', en: 'Tritone subs'),
+    ChordSource.negative => tr(es: 'Armonía negativa', en: 'Negative harmony'),
+  };
+  static String chordSourceHint(ChordSource s) => switch (s) {
+    ChordSource.scale => tr(
+      es: 'Los grados de la escala de base.',
+      en: 'The degrees of the base scale.',
+    ),
+    ChordSource.borrowed => tr(
+      es: 'Intercambio modal: los grados de otra escala con la misma tónica.',
+      en: 'Modal interchange: the degrees of another scale with the same tonic.',
+    ),
+    ChordSource.secondaryDominant => tr(
+      es: 'El V7 de cada grado: ponlo justo antes de él.',
+      en: 'The V7 of each degree: put it right before it.',
+    ),
+    ChordSource.leadingTone => tr(
+      es: 'Un disminuido medio tono debajo de cada grado: sube a él.',
+      en: 'A diminished chord a half step below each degree: it rises into it.',
+    ),
+    ChordSource.tritoneSub => tr(
+      es: 'En lugar del V7 de un grado, el 7 medio tono arriba de él: baja a él.',
+      en: 'Instead of the V7 of a degree, the 7 chord a half step above it: it falls into it.',
+    ),
+    ChordSource.negative => tr(
+      es: 'Cada grado reflejado sobre el eje entre la 3ª menor y la mayor de la tónica.',
+      en: "Each degree mirrored across the axis between the tonic's minor and major 3rd.",
+    ),
+  };
   static String get progressionWithSevenths => tr(es: 'Con 7ª', en: 'With 7ths');
   static String progressionCustomCount(int n, int max) =>
       tr(es: '$n de $max acordes', en: '$n of $max chords');
