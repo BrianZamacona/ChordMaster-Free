@@ -112,6 +112,74 @@ void main() {
     expect(again.read(progressionsViewModelProvider).progression.beats, isNull);
   });
 
+  test('Mi progresión: duplicar, copiar y pegar, sin pasar de 8', () async {
+    final container = _container(InMemoryStore());
+    final vm = container.read(progressionsViewModelProvider.notifier);
+    await vm.loaded;
+    ProgressionsState s() => container.read(progressionsViewModelProvider);
+
+    vm
+      ..addCustomDegree('I')
+      ..addCustomDegree('V')
+      ..setCustomBeats(1, 2)
+      ..duplicateCustom(1);
+    expect(s().custom, ['I', 'V', 'V']);
+    expect(s().customBeats, [4, 2, 2]);
+    vm.pasteCustom();
+    expect(s().custom, hasLength(3)); // nada copiado todavía
+    vm
+      ..copyCustom(1)
+      ..pasteCustom(after: 0);
+    expect(s().custom, ['I', 'V', 'V', 'V']);
+    expect(s().customBeats, [4, 2, 2, 2]);
+    vm.copyCustom(0);
+    for (var i = 0; i < 10; i++) {
+      vm.pasteCustom();
+    }
+    expect(s().custom, hasLength(8));
+    expect(s().custom.last, 'I');
+    vm.duplicateCustom(0);
+    expect(s().custom, hasLength(8));
+  });
+
+  test('Mis progresiones: guardar, abrir con su escala y duración, y borrar', () async {
+    final storage = InMemoryStore();
+    final container = _container(storage);
+    final vm = container.read(progressionsViewModelProvider.notifier);
+    await vm.loaded;
+
+    expect(vm.saveCustomAs('Vacía'), isFalse);
+    vm
+      ..setCustomMode(5)
+      ..addCustomDegree('i')
+      ..addCustomDegree('♭VII')
+      ..setCustomBeats(1, 2);
+    expect(vm.saveCustomAs('  '), isFalse);
+    expect(vm.saveCustomAs('Andaluza'), isTrue);
+    vm
+      ..clearCustom()
+      ..setCustomMode(0)
+      ..addCustomDegree('I');
+    expect(vm.saveCustomAs('Sola'), isTrue);
+    await _settle();
+
+    final again = _container(storage);
+    final vm2 = again.read(progressionsViewModelProvider.notifier);
+    await vm2.loaded;
+    var s = again.read(progressionsViewModelProvider);
+    expect([for (final p in s.saved) p.name], ['Sola', 'Andaluza']);
+    vm2.openSaved(1);
+    s = again.read(progressionsViewModelProvider);
+    expect((s.isCustom, s.customMode), (true, 5));
+    expect(s.custom, ['i', '♭VII']);
+    expect(s.customBeats, [4, 2]);
+    vm2.deleteSaved(0);
+    await _settle();
+    expect(storage.progress['progressions_saved'], [
+      {'name': 'Andaluza', 'mode': 5, 'chords': ['i', '♭VII@2']},
+    ]);
+  });
+
   test('cuenta una vez por progresión distinta (id + tónica)', () async {
     final storage = InMemoryStore();
     final container = _container(storage);

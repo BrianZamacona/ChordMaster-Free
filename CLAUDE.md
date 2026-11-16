@@ -167,6 +167,13 @@ cada nota pertenezca a la escala. No bajar la tolerancia de 0.
   llega a `Progression.beats` solo si alguno no dura un compás. La escucha (`progressionStrum`,
   `progressionChordAt` con `beats`) cuenta pulsos, y el patrón de rasgueo sigue la rejilla del
   compás aunque cambie el acorde (dos acordes de medio compás tocan un patrón entero).
+  «Mis progresiones» y edición (misma decisión; `saved_progressions.dart`): «Guardar» pide un nombre
+  (propone el primer «Mi progresión N» libre) y guarda los acordes, su duración y la escala de base
+  en `progressions_saved` (lista de `{name, mode, chords}`, hasta `savedProgressionsMax` = 20; el
+  mismo nombre, sin mayúsculas ni espacios de más, reemplaza; una que no se puede leer se descarta).
+  «Mis progresiones (n)» las abre o las borra. La hoja de cada acorde (tocarlo) también duplica,
+  copia y pega detrás; «Pegar» al pie lo pone al final. Nunca más de `customProgressionMax` (8, en
+  `custom_progression.dart`). La ventana del nombre es un `StatefulWidget` dueño de su campo.
 - Progresiones, «¿Qué tocar encima?» (`lib/domain/theory/play_over.dart`, decisión del usuario
   tras revisar las apps jam): por regla, las escalas de la tónica que contienen todas las notas de
   todos los acordes (`scalesForChord` sobre `progressionTones`; las de mismas notas, una vez), las

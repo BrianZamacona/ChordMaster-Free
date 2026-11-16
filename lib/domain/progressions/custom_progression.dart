@@ -14,6 +14,9 @@ import 'progression_playback.dart';
 /// orden de [modeScaleIds] (0 = mayor, 5 = menor natural).
 const customBaseModes = [0, 1, 2, 3, 4, 5, 6];
 
+/// Máximo de acordes en "Mi progresión".
+const customProgressionMax = 8;
+
 /// La escala de base por defecto: la mayor.
 const customDefaultMode = 0;
 

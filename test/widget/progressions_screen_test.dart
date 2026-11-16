@@ -211,7 +211,7 @@ void main() {
 
     await tester.tap(find.text('V · 1 compás'));
     await tester.pumpAndSettle();
-    expect(find.text('¿Cuánto dura V?'), findsOneWidget);
+    expect(find.text('Acorde 2: V'), findsOneWidget);
     await tester.tap(find.byKey(const Key('custom-beats-2')));
     await tester.pumpAndSettle();
     expect(container.read(progressionsViewModelProvider).customBeats, [4, 2]);
@@ -220,6 +220,74 @@ void main() {
       find.text('Cada acorde dura lo que le pusiste, un golpe hacia abajo en cada pulso.'),
       findsOneWidget,
     );
+  });
+
+  testWidgets('Mi progresión: duplicar, copiar y pegar desde la hoja del acorde', (tester) async {
+    final container = await _pump(tester, builder);
+    container.read(progressionsViewModelProvider.notifier)
+      ..setProgression('custom')
+      ..addCustomDegree('I')
+      ..addCustomDegree('V');
+    await tester.pumpAndSettle();
+    ProgressionsState s() => container.read(progressionsViewModelProvider);
+
+    await tester.tap(find.byKey(const Key('custom-1')));
+    await tester.pumpAndSettle();
+    expect(find.byKey(const Key('custom-paste-after')), findsNothing);
+    await tester.tap(find.byKey(const Key('custom-duplicate')));
+    await tester.pumpAndSettle();
+    expect(s().custom, ['I', 'V', 'V']);
+
+    await tester.tap(find.byKey(const Key('custom-0')));
+    await tester.pumpAndSettle();
+    await tester.tap(find.byKey(const Key('custom-copy')));
+    await tester.pumpAndSettle();
+    expect(find.text('Pegar I'), findsOneWidget);
+    await tester.tap(find.byKey(const Key('custom-1')));
+    await tester.pumpAndSettle();
+    await tester.tap(find.byKey(const Key('custom-paste-after')));
+    await tester.pumpAndSettle();
+    expect(s().custom, ['I', 'V', 'I', 'V']);
+    await tester.tap(find.byKey(const Key('custom-paste')));
+    await tester.pumpAndSettle();
+    expect(s().custom, ['I', 'V', 'I', 'V', 'I']);
+  });
+
+  testWidgets('Mis progresiones: guardar con nombre, abrir y borrar', (tester) async {
+    final container = await _pump(tester, builder);
+    final vm = container.read(progressionsViewModelProvider.notifier)
+      ..setProgression('custom')
+      ..addCustomDegree('ii')
+      ..addCustomDegree('V')
+      ..addCustomDegree('I');
+    await tester.pumpAndSettle();
+
+    await tester.tap(find.byKey(const Key('custom-save')));
+    await tester.pumpAndSettle();
+    final field = find.byKey(const Key('custom-save-name'));
+    expect(tester.widget<TextField>(field).controller!.text, 'Mi progresión 1');
+    await tester.enterText(field, 'Dos-cinco-uno');
+    await tester.tap(find.byKey(const Key('custom-save-ok')));
+    await tester.pumpAndSettle();
+    expect(find.text('Guardada: Dos-cinco-uno'), findsOneWidget);
+    expect(find.text('Mis progresiones (1)'), findsOneWidget);
+
+    vm.clearCustom();
+    await tester.pumpAndSettle();
+    expect(find.byKey(const Key('custom-save')), findsNothing);
+    await tester.tap(find.byKey(const Key('custom-saved')));
+    await tester.pumpAndSettle();
+    expect(find.text('Dos-cinco-uno'), findsOneWidget);
+    await tester.tap(find.byKey(const Key('saved-0')));
+    await tester.pumpAndSettle();
+    expect(_stepNames(tester), ['Dm', 'G', 'C']);
+
+    await tester.tap(find.byKey(const Key('custom-saved')));
+    await tester.pumpAndSettle();
+    await tester.tap(find.byKey(const Key('saved-delete-0')));
+    await tester.pumpAndSettle();
+    expect(find.text('Todavía no guardaste ninguna. Arma una y toca «Guardar».'), findsOneWidget);
+    expect(container.read(progressionsViewModelProvider).saved, isEmpty);
   });
 
   testWidgets('sin candidatos muestra un mensaje claro', (tester) async {
