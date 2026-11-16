@@ -76,7 +76,11 @@ class LessonTabView extends StatelessWidget {
     final positions = tabPositions(notes);
     final layout = _TabLayout(
       top: notes.any(
-        (n) => n.pick != null || n.technique == TabTechnique.palmMute || isTripletLength(n.length),
+        (n) =>
+            n.pick != null ||
+            n.technique == TabTechnique.palmMute ||
+            n.technique == TabTechnique.tap ||
+            isTripletLength(n.length),
       ),
       count: tabHasRhythm(notes, swing: swing),
       fingers: fingers != null,
@@ -196,6 +200,8 @@ String _spoken(TabNote n, int? finger) {
     TabTechnique.vibrato => AppStrings.tabSpokenVibrato,
     TabTechnique.palmMute => AppStrings.tabSpokenPalmMute,
     TabTechnique.dead => AppStrings.tabSpokenDead,
+    TabTechnique.tap => AppStrings.tabSpokenTap,
+    TabTechnique.hammerFromNowhere => AppStrings.tabSpokenHammerFromNowhere,
   };
   final pick = switch (n.pick) {
     null => null,
@@ -224,10 +230,12 @@ String _legend(TabMark m) => switch (m) {
   TabMark.vibrato => AppStrings.tabLegendVibrato,
   TabMark.palmMute => AppStrings.tabLegendPalmMute,
   TabMark.dead => AppStrings.tabLegendDead,
+  TabMark.tap => AppStrings.tabLegendTap,
+  TabMark.hammerFromNowhere => AppStrings.tabLegendHammerFromNowhere,
   TabMark.pick => AppStrings.tabLegendPick,
 };
 
-/// Qué filas lleva cada renglón: arriba (púa y PM), las seis cuerdas,
+/// Qué filas lleva cada renglón: arriba (púa, PM y T), las seis cuerdas,
 /// el conteo y los dedos. Todos los renglones de una tablatura, iguales.
 @immutable
 class _TabLayout {
@@ -420,8 +428,9 @@ class _TabPainter extends CustomPainter {
     final color = playing ? palette.accent : palette.textSecondary;
     final y = _y(n.string);
     // Ligados: la letra entre las dos notas, justo encima de la cuerda.
-    if (n.technique.legato) {
+    if (n.technique.legato || n.technique == TabTechnique.hammerFromNowhere) {
       final letter = switch (n.technique) {
+        TabTechnique.hammerFromNowhere => 'h',
         TabTechnique.hammerOn => 'h',
         TabTechnique.pullOff => 'p',
         TabTechnique.release => 'r',
@@ -444,6 +453,8 @@ class _TabPainter extends CustomPainter {
         _text(canvas, '~', Offset(x + 13, y), color, 13, bold: true);
       case TabTechnique.palmMute:
         _text(canvas, 'PM', Offset(n.pick == null ? x : x - 7, top), color, 9, bold: true);
+      case TabTechnique.tap:
+        _text(canvas, 'T', Offset(x, top), color, 10, bold: true);
       default:
     }
     if (n.pick case final pick?) {

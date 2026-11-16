@@ -118,6 +118,41 @@ void main() {
         );
       });
 
+      testWidgets('tapping: la T va arriba y se explica, con el hammer-on desde la nada', (tester) async {
+        final handle = tester.ensureSemantics();
+        await _pump(
+          tester,
+          const LessonTabView(
+            notes: [
+              TabNote(3, 12, technique: TabTechnique.tap),
+              TabNote(3, 5, technique: TabTechnique.pullOff),
+              TabNote(3, 8, technique: TabTechnique.hammerOn),
+              TabNote(2, 5, technique: TabTechnique.hammerFromNowhere),
+            ],
+            showFingers: true,
+          ),
+        );
+        expect(tester.takeException(), isNull);
+        final line = tester.getRect(find.byKey(const Key('lesson-tab-line-0')));
+        expect(line.right, lessThanOrEqualTo(360));
+        final legend = find.byKey(const Key('lesson-tab-legend'));
+        for (final text in [AppStrings.tabLegendTap, AppStrings.tabLegendHammerFromNowhere]) {
+          expect(find.descendant(of: legend, matching: find.text(text)), findsOneWidget);
+        }
+        expect(tester.getRect(legend).right, lessThanOrEqualTo(360));
+        expect(find.bySemanticsLabel(RegExp(RegExp.escape(AppStrings.tabSpokenTap))), findsWidgets);
+        expect(find.bySemanticsLabel(RegExp(RegExp.escape(AppStrings.tabSpokenHammerFromNowhere))), findsWidgets);
+        handle.dispose();
+      });
+
+      testWidgets('la T agrega la fila de arriba', (tester) async {
+        await _pump(
+          tester,
+          const LessonTabView(notes: [TabNote(1, 12, technique: TabTechnique.tap), TabNote(1, 5, technique: TabTechnique.pullOff)]),
+        );
+        expect(tester.getRect(find.byKey(const Key('lesson-tab-line-0'))).height, 14 * 5 + 16 + 14);
+      });
+
       testWidgets('el lector de pantalla oye la técnica y el silencio', (tester) async {
         final handle = tester.ensureSemantics();
         await _pump(

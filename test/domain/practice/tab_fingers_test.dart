@@ -22,6 +22,15 @@ void main() {
       expect(tabFingers(tab), [null, 1, 3, 2]);
     });
 
+    test('la nota con tapping la pisa la otra mano: sin dedo y fuera de la regla', () {
+      const tab = [
+        TabNote(1, 12, technique: TabTechnique.tap),
+        TabNote(1, 5, technique: TabTechnique.pullOff),
+        TabNote(1, 8, technique: TabTechnique.hammerOn),
+      ];
+      expect(tabFingers(tab), [null, 1, 4]);
+    });
+
     test('más arriba, el índice va en el traste más bajo', () {
       const tab = [TabNote(3, 5), TabNote(2, 7), TabNote(1, 8)];
       expect(tabFingers(tab), [1, 3, 4]);

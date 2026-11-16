@@ -41,8 +41,16 @@ List<String> tabNotationProblems(List<TabNote> notes) {
         }
       }
     }
+    if (n.technique.unpicked && n.pick != null) fail('esta nota suena sin púa');
+    if (n.technique == TabTechnique.tap || n.technique == TabTechnique.hammerFromNowhere) {
+      if (n.fret == 0) fail('una cuerda al aire no se pisa');
+    }
+    if (n.technique == TabTechnique.hammerFromNowhere &&
+        previous != null &&
+        previous.string == n.string) {
+      fail('tras una nota en la misma cuerda es un hammer-on');
+    }
     if (n.technique.legato) {
-      if (n.pick != null) fail('una nota ligada no lleva púa');
       final p = previous;
       if (p == null || p.string != n.string || p.technique == TabTechnique.dead || p.isChord) {
         fail('se liga a la nota anterior, en la misma cuerda');
@@ -88,10 +96,27 @@ TabMark? _markOf(TabNote n) => switch (n.technique) {
   TabTechnique.vibrato => TabMark.vibrato,
   TabTechnique.palmMute => TabMark.palmMute,
   TabTechnique.dead => TabMark.dead,
+  TabTechnique.tap => TabMark.tap,
+  TabTechnique.hammerFromNowhere => TabMark.hammerFromNowhere,
 };
 
 /// Lo que se explica debajo de una tablatura.
-enum TabMark { rest, triplet, chord, hammerOn, pullOff, slide, bend, release, vibrato, palmMute, dead, pick }
+enum TabMark {
+  rest,
+  triplet,
+  chord,
+  hammerOn,
+  pullOff,
+  slide,
+  bend,
+  release,
+  vibrato,
+  palmMute,
+  dead,
+  tap,
+  hammerFromNowhere,
+  pick,
+}
 
 /// Grupos de tresillo de [notes]: índices de cada tres notas seguidas con
 /// duración de tresillo (un tresillo incompleto no forma grupo).

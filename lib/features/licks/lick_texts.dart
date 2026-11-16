@@ -15,6 +15,8 @@ String techniqueLabel(TabTechnique t) => switch (t) {
   TabTechnique.vibrato => AppStrings.techniqueNameVibrato,
   TabTechnique.palmMute => AppStrings.techniqueNamePalmMute,
   TabTechnique.dead => AppStrings.techniqueNameDead,
+  TabTechnique.tap => AppStrings.techniqueNameTap,
+  TabTechnique.hammerFromNowhere => AppStrings.techniqueNameHammerFromNowhere,
 };
 
 String lickKindLabel(LickKind kind) => switch (kind) {

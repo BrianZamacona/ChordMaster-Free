@@ -59,7 +59,18 @@ enum TabTechnique {
   palmMute,
 
   /// Nota muerta (x): la mano izquierda apaga la cuerda; solo se oye el golpe.
-  dead;
+  dead,
+
+  /// Tapping (T): un dedo de la mano de la púa pisa el traste con fuerza y la
+  /// cuerda suena sin púa. Lo normal es que le siga un pull-off.
+  tap,
+
+  /// Hammer-on desde la nada (h sin nota antes): un dedo de la mano izquierda
+  /// cae sobre una cuerda que no sonaba y la hace sonar, sin púa.
+  hammerFromNowhere;
+
+  /// Suena sin púa: la nota no lleva golpe de púa.
+  bool get unpicked => legato || this == tap || this == hammerFromNowhere;
 
   /// Sigue sonando la nota anterior: no se vuelve a pulsar.
   bool get legato => this == hammerOn || this == pullOff || this == slide || this == release;

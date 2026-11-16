@@ -136,6 +136,9 @@ void main() {
         TabNote(6, 0, technique: TabTechnique.palmMute),
         TabNote(6, 0, technique: TabTechnique.dead),
         TabNote(6, 0, chord: [(5, 2)]),
+        TabNote(1, 12, technique: TabTechnique.tap),
+        TabNote(1, 5, technique: TabTechnique.pullOff),
+        TabNote(2, 8, technique: TabTechnique.hammerFromNowhere),
         TabNote.rest(tabEighth),
         TabNote(1, 5, technique: TabTechnique.vibrato, length: tabQuarter),
       ];
@@ -154,6 +157,41 @@ void main() {
       expect(tabNotationProblems(const [TabNote(3, 0, technique: TabTechnique.bend, bend: 1)]), hasLength(1));
       expect(tabNotationProblems(const [TabNote(3, 5, bend: 1)]), hasLength(1));
       expect(tabNotationProblems(const [TabNote(3, 5), TabNote(3, 7, technique: TabTechnique.hammerOn, pick: PickStroke.up)]), hasLength(1));
+    });
+
+    test('tapping: sin púa, sobre un traste, de una nota; se liga lo que sigue', () {
+      const tapAndPull = [TabNote(3, 5), TabNote(3, 12, technique: TabTechnique.tap), TabNote(3, 5, technique: TabTechnique.pullOff)];
+      expect(tabNotationProblems(tapAndPull), isEmpty);
+      expect(tabNotationProblems(const [TabNote(3, 12, technique: TabTechnique.tap, pick: PickStroke.down)]), hasLength(1));
+      expect(tabNotationProblems(const [TabNote(3, 0, technique: TabTechnique.tap)]), hasLength(1));
+      expect(tabNotationProblems(const [TabNote(6, 12, technique: TabTechnique.tap, chord: [(5, 14)])]), hasLength(1));
+    });
+
+    test('hammer-on desde la nada: en una cuerda que no venía sonando, sin púa', () {
+      expect(tabNotationProblems(const [TabNote(3, 5), TabNote(2, 5, technique: TabTechnique.hammerFromNowhere)]), isEmpty);
+      expect(tabNotationProblems(const [TabNote(2, 5, technique: TabTechnique.hammerFromNowhere)]), isEmpty);
+      expect(tabNotationProblems(const [TabNote.rest(tabEighth), TabNote(3, 7, technique: TabTechnique.hammerFromNowhere)]), isEmpty);
+      // Tras una nota en su misma cuerda, es un hammer-on de los de siempre.
+      expect(tabNotationProblems(const [TabNote(3, 5), TabNote(3, 7, technique: TabTechnique.hammerFromNowhere)]), hasLength(1));
+      expect(tabNotationProblems(const [TabNote(3, 0, technique: TabTechnique.hammerFromNowhere)]), hasLength(1));
+      expect(
+        tabNotationProblems(const [TabNote(3, 7, technique: TabTechnique.hammerFromNowhere, pick: PickStroke.up)]),
+        hasLength(1),
+      );
+    });
+
+    test('suenan sin púa: los ligados, el tapping y el hammer-on desde la nada', () {
+      expect(
+        [for (final t in TabTechnique.values) if (t.unpicked) t],
+        [
+          TabTechnique.hammerOn,
+          TabTechnique.pullOff,
+          TabTechnique.slide,
+          TabTechnique.release,
+          TabTechnique.tap,
+          TabTechnique.hammerFromNowhere,
+        ],
+      );
     });
   });
 
@@ -219,6 +257,30 @@ void main() {
       expect(_cents(_hzAt(audio, 1.3), 62).abs(), lessThan(5));
     });
 
+    test('el tapping vuelve a hacer sonar la cuerda y el pull-off sale de él', () {
+      final sounds = tabSounds(
+        const [
+          TabNote(3, 5),
+          TabNote(3, 12, technique: TabTechnique.tap),
+          TabNote(3, 5, technique: TabTechnique.pullOff),
+        ],
+        bpm: 60,
+      );
+      expect([for (final s in sounds) (s.at, s.midi, s.gain)], [(0.0, 60, 1.0), (0.5, 67, 1.0)]);
+      // El tapping apaga lo que sonaba en su cuerda.
+      expect(sounds.first.seconds, 0.5);
+      expect([for (final g in sounds.last.glides) (g.at, g.midi)], [(0.5, 60.0)]);
+    });
+
+    test('el hammer-on desde la nada suena solo, más suave que la púa', () {
+      final sounds = tabSounds(
+        const [TabNote(3, 5), TabNote(2, 5, technique: TabTechnique.hammerFromNowhere)],
+        bpm: 60,
+      );
+      expect([for (final s in sounds) (s.at, s.midi, s.gain)], [(0.0, 60, 1.0), (0.5, 64, hammerFromNowhereGain)]);
+      expect(hammerFromNowhereGain, lessThan(1));
+    });
+
     test('con la palma la nota se apaga mucho antes; la nota muerta es solo un golpe', () {
       Float64List one(TabTechnique t) => renderStrings(
         tabSounds([TabNote(5, 2, technique: t, length: tabHalf)], bpm: 60),
@@ -262,6 +324,19 @@ void main() {
       expect(f.hear(heard(69, 0.1, plucked: false)), HeardKind.echo);
       expect(f.hear(heard(60, 0.5)), HeardKind.right);
       expect(f.hear(heard(62, 1, plucked: false)), HeardKind.right);
+      expect(f.mistakes, 0);
+    });
+
+    test('el tapping y el hammer-on desde la nada se esperan como notas atacadas', () {
+      final f = NoteFollower(const [
+        TabNote(3, 12, technique: TabTechnique.tap),
+        TabNote(3, 5, technique: TabTechnique.pullOff),
+        TabNote(2, 5, technique: TabTechnique.hammerFromNowhere),
+      ]);
+      expect(f.expected, [67, 60, 64]);
+      expect(f.hear(heard(67, 0)), HeardKind.right);
+      expect(f.hear(heard(60, 0.5, plucked: false)), HeardKind.right);
+      expect(f.hear(heard(64, 1)), HeardKind.right);
       expect(f.mistakes, 0);
     });
 

@@ -1122,6 +1122,9 @@ class AppStrings {
   static String get tabSpokenVibrato => tr(es: 'con vibrato', en: 'with vibrato');
   static String get tabSpokenPalmMute => tr(es: 'apagada con la palma', en: 'palm muted');
   static String get tabSpokenDead => tr(es: 'nota muerta', en: 'dead note');
+  static String get tabSpokenTap => tr(es: 'tapping', en: 'tap');
+  static String get tabSpokenHammerFromNowhere =>
+      tr(es: 'hammer-on desde la nada', en: 'hammer-on from nowhere');
   static String get tabSpokenDown => tr(es: 'púa abajo', en: 'downstroke');
   static String get tabSpokenUp => tr(es: 'púa arriba', en: 'upstroke');
 
@@ -1159,6 +1162,14 @@ class AppStrings {
   static String get tabLegendDead => tr(
     es: 'x nota muerta: la mano izquierda apaga la cuerda',
     en: 'x dead note: the fretting hand mutes the string',
+  );
+  static String get tabLegendTap => tr(
+    es: 'T tapping: un dedo de la mano de la púa pisa el traste con fuerza, sin púa',
+    en: 'T tap: a picking-hand finger hammers the fret hard, no pick',
+  );
+  static String get tabLegendHammerFromNowhere => tr(
+    es: 'h sin nota antes: hammer-on desde la nada, el dedo cae sobre una cuerda que no sonaba',
+    en: 'h with no note before: hammer-on from nowhere, the finger lands on a silent string',
   );
   static String get tabLegendPick => tr(es: '⊓ púa abajo · V púa arriba', en: '⊓ downstroke · V upstroke');
 
@@ -1746,6 +1757,9 @@ class AppStrings {
   static String get techniqueNameVibrato => tr(es: 'Vibrato', en: 'Vibrato');
   static String get techniqueNamePalmMute => tr(es: 'Palm mute', en: 'Palm mute');
   static String get techniqueNameDead => tr(es: 'Nota muerta', en: 'Dead note');
+  static String get techniqueNameTap => tr(es: 'Tapping', en: 'Tapping');
+  static String get techniqueNameHammerFromNowhere =>
+      tr(es: 'Hammer-on desde la nada', en: 'Hammer-on from nowhere');
   static String get finderChordHint => tr(
     es: 'Toca una nota por cuerda; la que no marques no suena. Toca el nombre '
         'de una cuerda para tocarla al aire.',
