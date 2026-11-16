@@ -78,10 +78,10 @@ LickStyleInfo lickStyleInfo(LickStyle style) => switch (style) {
   LickStyle.atmosphericRock => const LickStyleInfo(
     title: LocalizedText(es: 'Rock atmosférico', en: 'Atmospheric rock'),
     summary: LocalizedText(
-      es: 'Pocas notas y mucho espacio: arpegios que dejan sonar las cuerdas, bends lentos y silencios.',
-      en: 'Few notes and lots of space: arpeggios that let the strings ring, slow bends and rests.',
+      es: 'Pocas notas y mucho espacio: arpegios que dejan sonar las cuerdas, bends lentos, armónicos y silencios.',
+      en: 'Few notes and lots of space: arpeggios that let the strings ring, slow bends, harmonics and rests.',
     ),
-    traits: {TabTechnique.bend, TabTechnique.release, TabTechnique.vibrato},
+    traits: {TabTechnique.bend, TabTechnique.release, TabTechnique.vibrato, TabTechnique.harmonic},
   ),
   LickStyle.progressiveMetal => const LickStyleInfo(
     title: LocalizedText(es: 'Metal progresivo', en: 'Progressive metal'),
@@ -765,6 +765,35 @@ const licks = <Lick>[
       TabNote(2, 7),
       TabNote.rest(tabEighth),
       TabNote(3, 9, length: tabQuarter, technique: TabTechnique.vibrato),
+    ],
+  ),
+  // Armónicos naturales (decisión del usuario): en los trastes 12, 7 y 5, en las
+  // cuerdas donde suenan notas de la pentatónica de B menor.
+  Lick(
+    id: 'atmospheric_harmonics',
+    style: LickStyle.atmosphericRock,
+    kind: LickKind.lick,
+    level: GuideLevel.intermediate,
+    title: LocalizedText(es: 'Campanas en el 12, el 7 y el 5', en: 'Bells on 12, 7 and 5'),
+    about: LocalizedText(
+      es: 'Armónicos naturales: un dedo apenas toca la cuerda sobre el alambre, sin apretar, y se deja '
+          'sonar. Sobre Bm suenan B, D y F#; sobre D, A, D y F#, y se cierra en el A.',
+      en: 'Natural harmonics: a finger barely touches the string over the wire, without pressing, and '
+          'you let it ring. Over Bm you hear B, D and F#; over D, A, D and F#, and it ends on the A.',
+    ),
+    scale: LessonScale(scaleId: 'pentatonic_minor', root: 11),
+    chords: [LickChord(0, 'minor'), LickChord(3, 'major')],
+    bpm: 60,
+    tab: [
+      TabNote(6, 7, length: tabQuarter, technique: TabTechnique.harmonic),
+      TabNote(4, 12, technique: TabTechnique.harmonic),
+      TabNote(3, 7, technique: TabTechnique.harmonic),
+      TabNote(2, 7, length: tabQuarter, technique: TabTechnique.harmonic),
+      TabNote(2, 12, length: tabQuarter, technique: TabTechnique.harmonic),
+      TabNote(5, 12, length: tabQuarter, technique: TabTechnique.harmonic),
+      TabNote(4, 5, technique: TabTechnique.harmonic),
+      TabNote(2, 7, technique: TabTechnique.harmonic),
+      TabNote(4, 7, length: tabHalf, technique: TabTechnique.harmonic),
     ],
   ),
   Lick(

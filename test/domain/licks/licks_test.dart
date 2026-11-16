@@ -57,11 +57,14 @@ void main() {
       for (final l in licks) {
         final frets = [for (final n in tones(l)) if (n.fret > 0) n.fret];
         expect(frets.reduce((a, b) => a > b ? a : b), lessThanOrEqualTo(20), reason: l.id);
-        // El tapping lo pisa la otra mano: no cuenta para el estiramiento.
+        // El tapping lo pisa la otra mano y el armónico natural no se pisa: no
+        // cuentan para el estiramiento.
+        const notPressed = {TabTechnique.tap, TabTechnique.tapHarmonic, TabTechnique.harmonic};
         final left = [
           for (final n in tones(l))
-            if (n.fret > 0 && n.technique != TabTechnique.tap) n.fret,
+            if (n.fret > 0 && !notPressed.contains(n.technique)) n.fret,
         ];
+        if (left.isEmpty) continue;
         final span = left.reduce((a, b) => a > b ? a : b) - left.reduce((a, b) => a < b ? a : b);
         expect(span, lessThanOrEqualTo(5), reason: l.id);
       }
@@ -111,6 +114,27 @@ void main() {
   });
 
   group('lo que dicen los textos', () {
+    test('atmosférico: armónicos naturales en el 12, el 7 y el 5; B D F# sobre Bm, A D F# sobre D', () {
+      final l = lick('atmospheric_harmonics');
+      final notes = played(l);
+      expect(notes.every((n) => n.technique == TabTechnique.harmonic), isTrue);
+      // Lo que dice el título: los tres trastes.
+      expect({for (final n in notes) n.fret}, {12, 7, 5});
+      // Corte de acorde: el Bm dura un compás.
+      var beat = 0;
+      final overBm = <String>{};
+      final overD = <String>{};
+      for (final n in notes) {
+        (beat < 4 * tabTicksPerBeat ? overBm : overD).add(pitchClassName(tabMidi(n)));
+        beat += n.length;
+      }
+      expect(overBm, {'B', 'D', 'F#'});
+      expect(overD, {'A', 'D', 'F#'});
+      expect(pitchClassName(tabMidi(notes.last)), 'A');
+      // No se transpone: depende de las cuerdas al aire.
+      expect(isMovable(l), isFalse);
+    });
+
     test('estadio: el pedal de la 6ª al aire va con palma; el lick sube un tono y cierra en la tónica', () {
       for (final n in played(lick('stadium_riff')).where((n) => n.string == 6 && n.fret == 0)) {
         expect(n.technique, TabTechnique.palmMute);

@@ -384,6 +384,29 @@ final List<TappingLevel> tappingCourse = [
           const TabNote(2, 10, technique: TabTechnique.pullOff, length: tabQuarter),
         ],
       ),
+      // Armónicos con tap (decisión del usuario: un paso al final del curso).
+      TappingStep(
+        id: 'tp4_harmonics',
+        kind: CourseStepKind.exercise,
+        title: const LocalizedText(es: 'Armónicos con tap', en: 'Tapped harmonics'),
+        body: const LocalizedText(
+          es: 'Pisa la nota, púlsala y, con un dedo de la mano derecha, golpea justo sobre el alambre '
+              '12 trastes más arriba y suéltalo enseguida: suena la misma nota una octava arriba, como '
+              'una campana. En Am: A (2 y 14), C (1 y 13), E (5 y 17) y A (5 y 17 en la 1ª); en E: B '
+              '(4 y 16), G# (1 y 13) y E (5 y 17), y cierra en el A.',
+          en: 'Fret the note, pick it and, with a right-hand finger, strike right over the wire 12 '
+              'frets higher and let go at once: the same note rings an octave up, like a bell. On Am: '
+              'A (2 and 14), C (1 and 13), E (5 and 17) and A (5 and 17 on the 1st); on E: B (4 and '
+              '16), G# (1 and 13) and E (5 and 17), and it ends on the A.',
+        ),
+        tab: [
+          for (final (string, fret) in const [(3, 2), (2, 1), (2, 5), (1, 5), (3, 4), (3, 1), (2, 5)]) ...[
+            TabNote(string, fret),
+            TabNote(string, fret + 12, technique: TabTechnique.tapHarmonic),
+          ],
+          const TabNote(3, 2, length: tabQuarter),
+        ],
+      ),
     ],
   ),
 ];

@@ -145,6 +145,32 @@ void main() {
         handle.dispose();
       });
 
+      testWidgets('armónicos: <12> en la cuerda, T.H. arriba, y su leyenda', (tester) async {
+        final handle = tester.ensureSemantics();
+        await _pump(
+          tester,
+          const LessonTabView(
+            notes: [
+              TabNote(6, 12, technique: TabTechnique.harmonic),
+              TabNote(1, 7, technique: TabTechnique.harmonic),
+              TabNote(3, 4),
+              TabNote(3, 16, technique: TabTechnique.tapHarmonic),
+            ],
+          ),
+        );
+        expect(tester.takeException(), isNull);
+        final legend = find.byKey(const Key('lesson-tab-legend'));
+        for (final text in [AppStrings.tabLegendHarmonic, AppStrings.tabLegendTapHarmonic]) {
+          expect(find.descendant(of: legend, matching: find.text(text)), findsOneWidget);
+        }
+        expect(tester.getRect(legend).right, lessThanOrEqualTo(360));
+        expect(find.bySemanticsLabel(RegExp(RegExp.escape(AppStrings.tabSpokenHarmonic))), findsWidgets);
+        expect(find.bySemanticsLabel(RegExp(RegExp.escape(AppStrings.tabSpokenTapHarmonic))), findsWidgets);
+        // T.H. va en la fila de arriba, como la T.
+        expect(tester.getRect(find.byKey(const Key('lesson-tab-line-0'))).height, 14 * 5 + 16 + 14);
+        handle.dispose();
+      });
+
       testWidgets('la T agrega la fila de arriba', (tester) async {
         await _pump(
           tester,

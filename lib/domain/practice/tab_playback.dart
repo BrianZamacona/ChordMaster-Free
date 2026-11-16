@@ -15,8 +15,17 @@ const defaultNotesPerBeat = 2;
 /// Cuánto deja sonar cada nota: la siguiente la apaga, como al tocar.
 const tabNoteRingSeconds = 1.2;
 
+/// Cuánto suena un armónico: más que una nota pulsada (es una campana).
+const harmonicRingSeconds = 2.0;
+
 /// MIDI de una nota de tablatura (cuerda 1 = mi aguda).
-int tabMidi(TabNote note) => standardOpenStringMidi[note.string - 1] + note.fret;
+int tabMidi(TabNote note) =>
+    standardOpenStringMidi[note.string - 1] +
+    (note.technique == TabTechnique.harmonic ? naturalHarmonics[note.fret] ?? note.fret : note.fret);
+
+/// Armónicos naturales: el traste donde se toca la cuerda y cuánto suena sobre
+/// ella al aire (12: una octava; 7: una octava y una quinta; 5: dos octavas).
+const naturalHarmonics = {12: 12, 7: 19, 5: 24};
 
 /// Cuántas veces cabe el periodo de la nota más grave de [note] en el periodo
 /// de todo el acorde: con la quinta (3:2) el acorde se repite cada dos periodos
@@ -96,7 +105,14 @@ const handSpanFrets = 4;
 /// con tapping la pisa la otra mano: no lleva dedo ni cuenta para la regla.
 List<int?>? tabFingers(List<TabNote> notes) {
   if (notes.any((n) => n.isChord)) return null;
-  bool left(TabNote n) => !n.isRest && n.fret > 0 && n.technique != TabTechnique.tap;
+  // El tapping y el armónico con tap los toca la otra mano; el armónico
+  // natural se toca sobre el alambre con cualquier dedo, sin pisar.
+  bool left(TabNote n) =>
+      !n.isRest &&
+      n.fret > 0 &&
+      n.technique != TabTechnique.tap &&
+      n.technique != TabTechnique.tapHarmonic &&
+      n.technique != TabTechnique.harmonic;
   final fretted = [for (final n in notes) if (left(n)) n.fret];
   if (fretted.isEmpty) return [for (final _ in notes) null];
   final low = fretted.reduce((a, b) => a < b ? a : b);
@@ -245,6 +261,7 @@ List<StringSound> tabSounds(
       touch: switch (n.technique) {
         TabTechnique.palmMute => StringTouch.palmMute,
         TabTechnique.dead => StringTouch.dead,
+        TabTechnique.harmonic || TabTechnique.tapHarmonic => StringTouch.harmonic,
         _ => StringTouch.open,
       },
       gain: n.technique == TabTechnique.hammerFromNowhere ? hammerFromNowhereGain : 1,
@@ -285,6 +302,7 @@ class _Voice {
       StringTouch.open => tabNoteRingSeconds,
       StringTouch.palmMute => palmMuteSeconds,
       StringTouch.dead => deadNoteSeconds * 2,
+      StringTouch.harmonic => harmonicRingSeconds,
     };
     var end = lastEvent + ring;
     if (cutAt != null && cutAt! < end) end = cutAt!;

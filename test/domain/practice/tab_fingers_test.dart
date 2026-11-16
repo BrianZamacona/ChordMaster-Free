@@ -31,6 +31,16 @@ void main() {
       expect(tabFingers(tab), [null, 1, 4]);
     });
 
+    test('los armónicos no llevan dedo de la regla (se tocan sobre el alambre o con la otra mano)', () {
+      const tab = [
+        TabNote(2, 5),
+        TabNote(2, 17, technique: TabTechnique.tapHarmonic),
+        TabNote(3, 12, technique: TabTechnique.harmonic),
+        TabNote(2, 7),
+      ];
+      expect(tabFingers(tab), [1, null, null, 3]);
+    });
+
     test('más arriba, el índice va en el traste más bajo', () {
       const tab = [TabNote(3, 5), TabNote(2, 7), TabNote(1, 8)];
       expect(tabFingers(tab), [1, 3, 4]);
