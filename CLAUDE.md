@@ -541,7 +541,13 @@ cada nota pertenezca a la escala. No bajar la tolerancia de 0.
   `TabNote` lleva `length` en partes de pulso (`tabTicksPerBeat` = 12: semicorchea 3, corchea 6,
   negra 12 y tresillos de corchea 4 y de semicorchea 2; por defecto corchea; usar siempre las
   constantes, nunca el número), `technique` (h, p, slide,
-  bend con `bend` semitonos, release, vibrato, PM, nota muerta x) y `pick` (⊓ V);
+  bend con `bend` semitonos, release, vibrato, PM, nota muerta x, tapping T y hammer-on desde la
+  nada) y `pick` (⊓ V). Tapping (decisión del usuario tras revisar Learn Tapping): «T» arriba, un
+  dedo de la mano de la púa pisa el traste; suena con ataque y apaga lo que sonaba en su cuerda,
+  no lleva púa ni dedo de la mano izquierda (`tabFingers`) y lo normal es que le siga un pull-off.
+  Hammer-on desde la nada: «h» sin nota antes en su cuerda (tras una nota en la misma cuerda es un
+  hammer-on de siempre), suena más suave (`hammerFromNowhereGain`). `TabTechnique.unpicked` = no
+  llevan púa (ligados, tapping y desde la nada);
   `chord` = otras notas a la vez, (cuerda, traste), 2 o 3 en total, en cuerdas distintas y más
   agudas que la principal, que es la más grave (`TabNote.tones` las da todas); un acorde se
   pulsa abierto o con palma, no se liga ni se empuja. Se dibuja con los números apilados en la

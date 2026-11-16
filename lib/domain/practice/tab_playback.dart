@@ -67,10 +67,12 @@ const handSpanFrets = 4;
 /// en los trastes 1 a 4, el dedo es el traste (primera posición); si no, el
 /// índice va en el traste más bajo. `null` si lo pisado no cabe en
 /// [handSpanFrets] trastes (la mano se mueve y la regla no alcanza) o si hay
-/// acordes (un número por columna no dice qué dedo va en cada cuerda).
+/// acordes (un número por columna no dice qué dedo va en cada cuerda). Una nota
+/// con tapping la pisa la otra mano: no lleva dedo ni cuenta para la regla.
 List<int?>? tabFingers(List<TabNote> notes) {
   if (notes.any((n) => n.isChord)) return null;
-  final fretted = [for (final n in notes) if (!n.isRest && n.fret > 0) n.fret];
+  bool left(TabNote n) => !n.isRest && n.fret > 0 && n.technique != TabTechnique.tap;
+  final fretted = [for (final n in notes) if (left(n)) n.fret];
   if (fretted.isEmpty) return [for (final _ in notes) null];
   final low = fretted.reduce((a, b) => a < b ? a : b);
   final high = fretted.reduce((a, b) => a > b ? a : b);
@@ -78,7 +80,7 @@ List<int?>? tabFingers(List<TabNote> notes) {
   if (high - start >= handSpanFrets) return null;
   return [
     for (final n in notes)
-      if (n.isRest || n.fret == 0) null else n.fret - start + 1,
+      if (left(n)) n.fret - start + 1 else null,
   ];
 }
 
@@ -151,6 +153,10 @@ const bendSeconds = 0.14;
 /// Cuándo empieza el vibrato tras la púa.
 const vibratoDelaySeconds = 0.12;
 
+/// Volumen de un hammer-on desde la nada: el dedo que cae suena más suave que
+/// la púa o el tapping.
+const hammerFromNowhereGain = 0.6;
+
 /// Un acorde se rasguea: cada cuerda suena tanto después de la anterior (de
 /// grave a aguda hacia abajo; al revés con la púa hacia arriba).
 const chordStrumSeconds = 0.012;
@@ -216,6 +222,7 @@ List<StringSound> tabSounds(
         TabTechnique.dead => StringTouch.dead,
         _ => StringTouch.open,
       },
+      gain: n.technique == TabTechnique.hammerFromNowhere ? hammerFromNowhereGain : 1,
     );
     if (n.technique == TabTechnique.bend) {
       voice.glides.add((
@@ -233,11 +240,12 @@ List<StringSound> tabSounds(
 }
 
 class _Voice {
-  _Voice({required this.at, required this.midi, required this.touch}) : lastEvent = at;
+  _Voice({required this.at, required this.midi, required this.touch, this.gain = 1}) : lastEvent = at;
 
   final double at;
   final int midi;
   final StringTouch touch;
+  final double gain;
   final glides = <Glide>[];
   double? vibratoFrom;
 
@@ -262,6 +270,7 @@ class _Voice {
       glides: List.unmodifiable(glides),
       vibratoFrom: vibratoFrom,
       touch: touch,
+      gain: gain,
     );
   }
 }
