@@ -6,6 +6,7 @@ import 'package:chordmaster_free/data/models/note_coordinate.dart';
 import 'package:chordmaster_free/data/models/scale_definition.dart';
 import 'package:chordmaster_free/data/repository/scale_repository.dart';
 import 'package:chordmaster_free/domain/theory/neck_notes.dart';
+import 'package:chordmaster_free/domain/theory/position_brackets.dart';
 import 'package:chordmaster_free/domain/theory/scale_arpeggio.dart';
 import 'package:chordmaster_free/services/key_value_store.dart';
 import 'package:chordmaster_free/ui/scales/detail/scale_detail_notifier.dart';
@@ -14,6 +15,7 @@ import 'package:chordmaster_free/ui/scales/detail/scale_fretboard_fullscreen.dar
 import 'package:chordmaster_free/ui/theme.dart';
 import 'package:chordmaster_free/ui/widgets/fret_grid_geometry.dart';
 import 'package:chordmaster_free/ui/widgets/fretboard_diagram.dart';
+import 'package:chordmaster_free/ui/widgets/position_bracket_strip.dart';
 import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
@@ -400,6 +402,63 @@ void main() {
       expect(find.byKey(const Key('neck-arpeggio')), findsNothing);
     });
 
+    testWidgets('llaves de posición: solo con sistema, una por forma y octava, y tocar una la elige', (tester) async {
+      await pump(tester, size: const Size(800, 360));
+      await expand(tester);
+      expect(neck(tester).brackets, isEmpty);
+      expect(find.byType(PositionBracketStrip), findsNothing);
+      ProviderScope.containerOf(tester.element(find.byType(FretboardNeck)))
+          .read(scaleDetailProvider(args).notifier)
+          .changeSystem('caged');
+      await settle(tester);
+      final shapes = stateOf(tester).visiblePatterns;
+      expect(neck(tester).bracketLabels, ['Forma C', 'Forma A', 'Forma G', 'Forma E', 'Forma D']);
+      expect(
+        neck(tester).brackets,
+        positionBrackets([for (final p in shapes) (start: p.startingFret, end: p.endFret)]),
+      );
+      expect(neck(tester).selectedBracket, isNull);
+      // Las llaves quedan bajo el mástil, sin taparlo, y caben en la pantalla.
+      final strip = find.byType(PositionBracketStrip);
+      expect(strip, findsOneWidget);
+      expect(tester.getRect(strip).top, greaterThanOrEqualTo(tester.getRect(find.byType(CustomPaint).first).top));
+      expect(tester.getRect(strip).bottom, lessThanOrEqualTo(360));
+
+      // Tocar la llave de la forma E (la primera de esa forma) la elige.
+      final e = neck(tester).brackets.firstWhere((b) => b.index == 3);
+      final widget = tester.widget<PositionBracketStrip>(strip);
+      final (left, right) = PositionBracketStrip.span(widget.geometry, e);
+      final scroll = tester.widget<SingleChildScrollView>(find.byKey(const Key('neck-scroll'))).controller!;
+      final origin = tester.getTopLeft(strip);
+      scroll.jumpTo(((left + right) / 2 - 400).clamp(0, scroll.position.maxScrollExtent));
+      await tester.pumpAndSettle();
+      await tester.tapAt(
+        tester.getTopLeft(strip) + Offset((left + right) / 2, e.row * PositionBracketStrip.rowHeight + 11),
+      );
+      await tester.pumpAndSettle();
+      expect(origin.dy, tester.getTopLeft(strip).dy);
+      expect(stateOf(tester).currentPattern!.positionName, 'Forma E');
+      expect(neck(tester).selectedBracket, 3);
+
+      // Se pueden ocultar, y el mástil recupera el alto.
+      final withBrackets = tester.getSize(find.byKey(const Key('neck-scroll'))).height;
+      final boardWith = tester.getSize(find.descendant(of: find.byKey(const Key('neck-scroll')), matching: find.byType(CustomPaint)).first).height;
+      await tester.tap(find.byKey(const Key('neck-brackets-toggle')));
+      await tester.pumpAndSettle();
+      expect(find.byType(PositionBracketStrip), findsNothing);
+      expect(tester.getSize(find.byKey(const Key('neck-scroll'))).height, withBrackets);
+      final boardWithout = tester.getSize(find.descendant(of: find.byKey(const Key('neck-scroll')), matching: find.byType(CustomPaint)).first).height;
+      expect(boardWithout, boardWith + 3 * PositionBracketStrip.rowHeight);
+    });
+
+    testWidgets('sin sistema, el botón de las llaves está apagado y lo dice', (tester) async {
+      await pump(tester);
+      await expand(tester);
+      final toggle = tester.widget<IconButton>(find.byKey(const Key('neck-brackets-toggle')));
+      expect(toggle.onPressed, isNull);
+      expect(toggle.tooltip, 'Elige un sistema para ver dónde va cada forma');
+    });
+
     testWidgets('el botón de etiquetas cambia entre intervalo y nota', (
       tester,
     ) async {
@@ -442,6 +501,20 @@ void main() {
           expect(tester.takeException(), isNull);
           await arpeggio(tester, NeckArpeggio.only);
           expect(tester.takeException(), isNull);
+          // Con un sistema de muchas formas (3NPS, de a cuatro filas de llaves).
+          ProviderScope.containerOf(tester.element(find.byType(FretboardNeck)))
+              .read(scaleDetailProvider(args).notifier)
+              .changeSystem('three_nps');
+          await settle(tester);
+          expect(tester.takeException(), isNull);
+          expect(tester.getRect(find.byType(PositionBracketStrip)).bottom, lessThanOrEqualTo(size.height));
+          expect(neck(tester).brackets, isNotEmpty);
+          // Con las llaves de 3NPS (4 filas), al mástil le queda sitio: cada
+          // cuerda separa al menos 20 de la siguiente.
+          final board = tester.getSize(
+            find.descendant(of: find.byKey(const Key('neck-scroll')), matching: find.byType(CustomPaint)).first,
+          );
+          expect((board.height - 16 - 26) / 5, greaterThanOrEqualTo(20));
           final hint = find.byKey(const Key('neck-arpeggio-hint'));
           expect(tester.getRect(hint).right, lessThanOrEqualTo(size.width));
           expect(tester.getRect(find.byKey(const Key('neck-arpeggio'))).right, lessThanOrEqualTo(size.width));

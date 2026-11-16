@@ -1268,6 +1268,14 @@ class AppStrings {
     es: 'Elige un sistema y una forma para ver qué comparte con la siguiente',
     en: 'Choose a system and a shape to see what it shares with the next one',
   );
+  static String get neckBrackets => tr(
+    es: 'Llaves: dónde va cada forma (tócala para elegirla)',
+    en: 'Brackets: where each shape goes (tap one to choose it)',
+  );
+  static String get neckBracketsNeedSystem => tr(
+    es: 'Elige un sistema para ver dónde va cada forma',
+    en: 'Choose a system to see where each shape goes',
+  );
   static String get neckArpeggioOff => tr(es: 'Toda la escala', en: 'Whole scale');
   static String neckArpeggioHint(String chord, String notes, {required bool only}) => only
       ? tr(

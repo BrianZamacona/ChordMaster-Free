@@ -8,9 +8,11 @@ import '../../core/i18n/tr.dart';
 
 import '../../data/models/note_coordinate.dart';
 import '../../data/repository/scale_repository.dart';
+import '../../domain/theory/position_brackets.dart';
 import '../handedness.dart';
 import '../theme.dart';
 import 'fret_grid_geometry.dart';
+import 'position_bracket_strip.dart';
 
 /// Qué se escribe dentro de cada nota del diapasón de escala.
 enum FretboardLabel { interval, note }
@@ -99,6 +101,10 @@ class FretboardNeck extends StatefulWidget {
     this.label = FretboardLabel.interval,
     this.onTapCell,
     this.semanticLabel,
+    this.brackets = const [],
+    this.bracketLabels = const [],
+    this.selectedBracket,
+    this.onTapBracket,
   });
 
   /// Ancho mínimo de traste para que los intervalos se lean.
@@ -119,6 +125,14 @@ class FretboardNeck extends StatefulWidget {
 
   /// Lo que dice el lector de pantalla; por defecto, las notas de la escala.
   final String? semanticLabel;
+
+  /// Llaves de posición bajo los números de traste ([positionBrackets]), con
+  /// el nombre de cada forma por su índice; la [selectedBracket] resaltada y
+  /// tocar una llama a [onTapBracket] con su índice.
+  final List<PositionBracket> brackets;
+  final List<String> bracketLabels;
+  final int? selectedBracket;
+  final ValueChanged<int>? onTapBracket;
 
   @override
   State<FretboardNeck> createState() => _FretboardNeckState();
@@ -166,7 +180,8 @@ class _FretboardNeckState extends State<FretboardNeck> {
   @override
   Widget build(BuildContext context) => LayoutBuilder(
     builder: (context, constraints) {
-      final height = constraints.maxHeight - FretboardNeck._scrollbarGap;
+      final bracketsHeight = PositionBracketStrip.heightFor(widget.brackets);
+      final height = constraints.maxHeight - FretboardNeck._scrollbarGap - bracketsHeight;
       final geometry = FretGridGeometry(
         width: constraints.maxWidth,
         height: height,
@@ -237,13 +252,27 @@ class _FretboardNeckState extends State<FretboardNeck> {
                     padding: const EdgeInsets.only(
                       bottom: FretboardNeck._scrollbarGap,
                     ),
-                    child: tappable(
-                      RepaintBoundary(
-                        child: CustomPaint(
-                          size: Size(geometry.boardWidth, height),
-                          painter: painter(_BoardLayer.frets),
+                    child: Column(
+                      mainAxisSize: MainAxisSize.min,
+                      crossAxisAlignment: CrossAxisAlignment.start,
+                      children: [
+                        tappable(
+                          RepaintBoundary(
+                            child: CustomPaint(
+                              size: Size(geometry.boardWidth, height),
+                              painter: painter(_BoardLayer.frets),
+                            ),
+                          ),
                         ),
-                      ),
+                        if (widget.brackets.isNotEmpty)
+                          PositionBracketStrip(
+                            geometry: geometry,
+                            brackets: widget.brackets,
+                            labels: widget.bracketLabels,
+                            selected: widget.selectedBracket,
+                            onTap: widget.onTapBracket,
+                          ),
+                      ],
                     ),
                   ),
                 ),
