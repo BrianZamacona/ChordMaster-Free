@@ -16,7 +16,16 @@ Reglas
   2NPS   : sólo pentatónicas y blues. Caja k = escalera de 2 notas consecutivas por cuerda; en blues se
            añade la b5 en las cuerdas que ya tienen 4ª y 5ª separadas por 2 trastes.
   4NPS   : sólo escalas de 7 notas y modos. Cada posición 3NPS + la nota siguiente en cada cuerda
-           (la repetida en el cambio de cuerda). Berklee NO se genera: no hay definición verificable.
+           (la repetida en el cambio de cuerda).
+  Un dedo por traste (decisión del usuario; la idea del método de Berklee, sin su nombre: la guía
+           que se usó no se puede verificar contra el libro): sólo escalas de 7 notas. Posición k =
+           la escala subiendo desde el grado k en la 6ª cuerda, sin cuerdas al aire, con el índice en
+           el traste p: los dedos van en p..p+3 y sólo se estiran el 1 (a p-1) y el 4 (a p+4); un
+           dedo no pisa p+3 y p+4 en la misma cuerda; 2 o 3 notas por cuerda en las 6. p es el traste
+           de esa nota o uno más (ella queda como estiramiento del índice). Entre las cajas posibles,
+           la de menos estiramientos; luego la de más notas; luego la de menos estiramientos del
+           meñique; luego la del índice más bajo. Así salen exactas las 7 posiciones de Do mayor de la
+           guía (test: test/data/one_finger_positions_test.dart).
   Pentatónica del modo (decisión del usuario): la pentatónica de su calidad (mayor si la 3ª
            es mayor, menor si es menor) en la que cada nota característica del modo (la que no
            tiene la mayor o la menor natural más cercana) reemplaza a la nota más cercana, sin
@@ -38,7 +47,7 @@ de las dos disminuidas, que estaban cruzados: el id sale de los intervalos (empi
 semitono -> `diminished_hw`, semitono-tono; por tono -> `diminished_wh`, tono-semitono).
 No toca category/description. Idempotente.
 """
-import json, sys
+import itertools, json, sys
 from pathlib import Path
 
 OPEN_LOW_TO_HIGH = [4, 9, 2, 7, 11, 4]        # 6ª..1ª (clase de nota)
@@ -112,6 +121,39 @@ def nps_positions(intervals):            # 3NPS
 
 def linear4_positions(intervals):        # 4NPS = cada posición 3NPS + 1 nota extra por cuerda
     return make_positions(intervals, 'linear_four_notes', 'lin4', 3, 1, 9)
+
+def one_finger_box(intervals, k):
+    """Caja de un dedo por traste desde el grado k en la 6ª cuerda (raíz C): (p, trastes 6ª..1ª)."""
+    for octave in (0, 12):
+        start = next(f for f in range(12) if (40 + f) % 12 == intervals[k] % 12) + octave
+        if start < 1: continue                       # sin cuerdas al aire: una octava arriba
+        ladder = ladder_from(intervals, k, octave, 18)
+        best = None
+        for p in (start, start + 1):
+            lo, hi = max(p - 1, 1), p + 4
+            for counts in itertools.product((3, 2), repeat=6):
+                i, frets, ok = 0, [], True
+                for s, c in enumerate(counts):
+                    fs = [ladder[i + j] - OPEN_ABS[s] for j in range(c)]; i += c
+                    if any(f < lo or f > hi for f in fs) or (p + 3 in fs and p + 4 in fs):
+                        ok = False; break
+                    frets.append(fs)
+                if not ok: continue
+                flat = [f for fs in frets for f in fs]
+                key = (sum(f in (p - 1, p + 4) for f in flat), -len(flat), sum(f == p + 4 for f in flat), p)
+                if best is None or key < best[0]: best = (key, p, frets)
+        if best: return best[1], best[2]
+    raise RuntimeError(f'un dedo por traste sin caja: {intervals} grado {k}')
+
+def one_finger_positions(intervals):
+    out = []
+    for k in range(len(intervals)):
+        _, frets = one_finger_box(intervals, k)
+        notes = [coord(s, f, (OPEN_LOW_TO_HIGH[s] + f) % 12 == 0) for s, fs in enumerate(frets) for f in fs]
+        flat = [f for fs in frets for f in fs]
+        out.append({'id': f'onefinger_{k + 1}', 'name': f'Posición {k + 1}', 'system_id': 'one_finger',
+                    'starting_fret': min(flat), 'fret_span': max(flat) - min(flat) + 1, 'coordinates': notes})
+    return out
 
 def pentatonic_box_positions(intervals, blues=False):  # 2 notas por cuerda; blues: añade la b5 entre 4ª y 5ª
     base = [i for i in intervals if not (blues and i == 6)]
@@ -239,6 +281,7 @@ def main(path):
             pos += pentatonic_box_positions(iv, blues=s['id'] == 'blues_minor')
         if len(iv) == 7:
             systems.append({'id': 'linear_four_notes', 'name': 'Linear (4NPS)'}); pos += linear4_positions(iv)
+            systems.append({'id': 'one_finger', 'name': 'Un dedo por traste'}); pos += one_finger_positions(iv)
         s['systems'], s['positions'] = systems, pos
     data['_meta'] = {'version': 3, 'source': 'rule-generated: tool/regenerate_scales_master.py'}
     Path(path).write_text(json.dumps(data, indent=2, ensure_ascii=False) + '\n', encoding='utf-8')

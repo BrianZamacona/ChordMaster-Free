@@ -15,10 +15,11 @@ salen de `assets/data/scales_master.json`, generado por reglas con
 | 3 notas por cuerda     | `three_nps/`           | `three_nps`            | escalas de 7 notas + 7 modos                        |
 | Pentatonic Box (2NPS)  | `pentatonic_two_notes/`| `pentatonic_two_notes` | pentatónicas mayor/menor y blues                    |
 | Linear (4NPS)          | `linear_four_notes/`   | `linear_four_notes`    | escalas de 7 notas + 7 modos                        |
+| Un dedo por traste     | `one_finger/`          | `one_finger`           | escalas de 7 notas + 7 modos                        |
 
-Berklee no está: no hay definición con trastes verificable (ver CLAUDE.md). Para añadirlo,
-primero definir sus 7 posiciones con una fuente, luego una regla en el generador de
-Python, luego su teoría aquí y su id en `displayOrder`.
+"Un dedo por traste" es la idea del método de Berklee, sin su nombre: la regla reproduce las 7
+posiciones de Do mayor de la guía que se usó, pero esa guía no se pudo comparar con el libro
+(ver CLAUDE.md).
 
 Para añadir un sistema: (1) regla en `tool/regenerate_scales_master.py`, (2) correr el
 generador y el auditor, (3) archivo `*_theory.dart` y alta en el registro, (4) test de chips.

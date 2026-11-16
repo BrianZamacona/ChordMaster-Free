@@ -63,14 +63,16 @@ void main() {
       await openSystems(tester);
       expect(find.widgetWithText(ListTile, 'Caja pentatónica (2NPS)'), findsOneWidget);
       expect(find.widgetWithText(ListTile, 'Lineal (4NPS)'), findsNothing);
+      expect(find.widgetWithText(ListTile, 'Un dedo por traste'), findsNothing);
     });
   }
 
   for (final scale in scales.where((s) => s.intervals.length == 7)) {
-    testWidgets('${scale.id}: ofrece Lineal (4NPS)', (tester) async {
+    testWidgets('${scale.id}: ofrece Lineal (4NPS) y Un dedo por traste', (tester) async {
       await pump(tester, scale);
       await openSystems(tester);
       expect(find.widgetWithText(ListTile, 'Lineal (4NPS)'), findsOneWidget);
+      expect(find.widgetWithText(ListTile, 'Un dedo por traste'), findsOneWidget);
       expect(find.widgetWithText(ListTile, 'Caja pentatónica (2NPS)'), findsNothing);
     });
   }
