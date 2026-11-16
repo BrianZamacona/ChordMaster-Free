@@ -12,6 +12,7 @@ import '../../domain/progressions/progression_builder.dart';
 import '../../domain/progressions/progression_data.dart';
 import '../../domain/progressions/progression_playback.dart';
 import '../../domain/progressions/saved_progressions.dart';
+import '../../domain/progressions/song.dart';
 import '../../domain/strumming/strumming_course.dart';
 import '../../domain/theory/notes.dart';
 import '../../domain/voicing/voice_leading.dart';
@@ -26,8 +27,11 @@ class ProgressionsState {
     this.progressionId = 'v1-2',
     this.progressionsGenerated = 0,
     this.beginner = false,
-    this.custom = const [],
-    this.customBeats = const [],
+    this.sections = const [[]],
+    this.section = 0,
+    this.order = const [0],
+    this.playingPart,
+    this.listenSong = false,
     this.saved = const [],
     this.clipboard,
     this.chosen = const {},
@@ -72,11 +76,31 @@ class ProgressionsState {
   /// Modo principiante: penaliza las cejillas al elegir digitaciones.
   final bool beginner;
 
-  /// Grados de "Mi progresión" (lo que antes era el módulo Componer).
-  final List<String> custom;
+  /// Las secciones de "Mi progresión" (A, B…, hasta `songMaxSections`), cada
+  /// una con sus acordes. La que se edita es [section].
+  final List<List<CustomChord>> sections;
+
+  /// La sección que se edita: la que dibujan los diagramas y explica la teoría.
+  final int section;
+
+  /// En qué orden se tocan las secciones en la canción (hasta `songMaxParts`).
+  final List<int> order;
+
+  /// Al escuchar la canción entera, la parte del orden que suena (`null` al
+  /// escuchar solo la sección).
+  final int? playingPart;
+
+  /// El botón de escuchar toca la canción entera, no solo la sección.
+  final bool listenSong;
+
+  /// Grados de la sección que se edita de "Mi progresión".
+  List<String> get custom => [for (final c in sections[section]) c.numeral];
 
   /// Pulsos de cada acorde de [custom] (los de `customChordBeats`).
-  final List<int> customBeats;
+  List<int> get customBeats => [for (final c in sections[section]) c.beats];
+
+  /// La canción tiene más de una parte o de una sección: se puede escuchar entera.
+  bool get hasSong => sections.length > 1 || order.length > 1;
 
   /// "Mis progresiones": las guardadas con nombre, la última primero.
   final List<SavedProgression> saved;
@@ -109,8 +133,11 @@ class ProgressionsState {
     String? progressionId,
     int? progressionsGenerated,
     bool? beginner,
-    List<String>? custom,
-    List<int>? customBeats,
+    List<List<CustomChord>>? sections,
+    int? section,
+    List<int>? order,
+    Object? playingPart = _keep,
+    bool? listenSong,
     List<SavedProgression>? saved,
     Object? clipboard = _keep,
     Map<int, FingeringChoice>? chosen,
@@ -126,8 +153,11 @@ class ProgressionsState {
     progressionId: progressionId ?? this.progressionId,
     progressionsGenerated: progressionsGenerated ?? this.progressionsGenerated,
     beginner: beginner ?? this.beginner,
-    custom: custom ?? this.custom,
-    customBeats: customBeats ?? this.customBeats,
+    sections: sections ?? this.sections,
+    section: section ?? this.section,
+    order: order ?? this.order,
+    playingPart: identical(playingPart, _keep) ? this.playingPart : playingPart as int?,
+    listenSong: listenSong ?? this.listenSong,
     saved: saved ?? this.saved,
     clipboard: identical(clipboard, _keep) ? this.clipboard : clipboard as CustomChord?,
     chosen: chosen ?? this.chosen,
@@ -314,6 +344,7 @@ class ProgressionsViewModel extends Notifier<ProgressionsState> {
   static const _keyCustomMode = 'progressions_custom_mode';
   static const _keyCustomSevenths = 'progressions_custom_sevenths';
   static const _keySaved = 'progressions_saved';
+  static const _keySong = 'progressions_song';
 
   @override
   ProgressionsState build() {
@@ -351,17 +382,22 @@ class ProgressionsViewModel extends Notifier<ProgressionsState> {
           const [];
       final mode = await storage.get<int>(StorageBoxes.userProgress, _keyCustomMode);
       final sevenths = await storage.get<bool>(StorageBoxes.userProgress, _keyCustomSevenths);
-      final saved = [for (final t in custom.whereType<String>()) ?parseCustomToken(t)];
       final named = await storage.get<List<dynamic>>(StorageBoxes.userProgress, _keySaved) ?? const [];
+      final rawSong = await storage.get<Map<dynamic, dynamic>>(StorageBoxes.userProgress, _keySong);
+      // La canción; la de antes era una sola sección en `progressions_custom`.
+      final song = rawSong == null
+          ? (sections: [[for (final t in custom.whereType<String>()) ?parseCustomToken(t)]], order: const [0])
+          : parseSong(rawSong['sections'], rawSong['order'], allowEmpty: true);
+      // Si el usuario ya empezó a armar una antes de terminar la carga, gana lo suyo.
+      final started = state.sections.any((x) => x.isNotEmpty);
       state = state.copyWith(
         // Una guardada que ya no se puede leer se descarta.
         saved: [for (final j in named) ?SavedProgression.fromJson(j)],
         progressionsGenerated: count,
         customMode: customBaseModes.contains(mode) ? mode : null,
         customSevenths: sevenths,
-        // Si el usuario ya empezó a armar una antes de terminar la carga, gana lo suyo.
-        custom: state.custom.isNotEmpty ? state.custom : [for (final c in saved) c.numeral],
-        customBeats: state.custom.isNotEmpty ? state.customBeats : [for (final c in saved) c.beats],
+        sections: started || song == null ? null : song.sections,
+        order: started || song == null ? null : song.order,
       );
     } catch (e, st) {
       debugPrint('ProgressionsViewModel._loadCount error: $e\n$st');
@@ -375,8 +411,8 @@ class ProgressionsViewModel extends Notifier<ProgressionsState> {
   int _listenToken = 0;
   Timer? _listenTimer;
 
-  /// La progresión que suena (para volver a empezarla al cambiar el tempo).
-  ProgressionPlan? _listening;
+  /// Lo que suena, para volver a empezarlo al cambiar el tempo.
+  Future<void> Function()? _listening;
 
   /// Rasguea [plan] entera (un compás por acorde, al tempo y, con bucle, sin
   /// parar), marcando cuál suena. Llamarla otra vez mientras suena la detiene.
@@ -385,31 +421,88 @@ class ProgressionsViewModel extends Notifier<ProgressionsState> {
       _stopListening();
       return;
     }
-    await _start(plan);
+    await _startPlan(plan);
   }
 
-  Future<void> _start(ProgressionPlan plan) async {
+  Future<void> _startPlan(ProgressionPlan plan) {
+    _listening = () => _startPlan(plan);
+    return _play(
+      [for (final s in plan.steps) _shapeOf(s)],
+      plan.progression.beats,
+      feel: plan.progression.feel,
+      mark: (i) => (part: null, chord: i),
+    );
+  }
+
+  /// Rasguea la canción entera de "Mi progresión": cada parte del orden con
+  /// el camino de digitaciones de su sección (la que se edita, con las
+  /// elegidas a mano). Llamarla otra vez mientras suena la detiene.
+  Future<void> listenWholeSong() async {
+    if (state.playingIndex != null) {
+      _stopListening();
+      return;
+    }
+    await _startSong();
+  }
+
+  Future<void> _startSong() async {
+    _listening = _startSong;
+    final builder = await ref.read(progressionBuilderProvider.future);
+    final s = state;
+    final plans = [
+      for (final (i, section) in s.sections.indexed)
+        if (section.isEmpty)
+          null
+        else
+          buildProgressionPlan(
+            builder,
+            Progression(customProgressionId, '', [for (final c in section) c.numeral]),
+            s.tonic,
+            beginner: s.beginner,
+            chosen: i == s.section ? s.chosen : const {},
+          ),
+    ];
+    final playable = [
+      for (final p in plans)
+        if (p != null && p.problem == null) p.steps.length else 0,
+    ];
+    final timeline = songTimeline(playable, s.order);
+    if (timeline.isEmpty) return;
+    await _play(
+      [for (final t in timeline) _shapeOf(plans[t.section]!.steps[t.chord])],
+      [for (final t in timeline) s.sections[t.section][t.chord].beats],
+      mark: (k) => (part: timeline[k].part, chord: timeline[k].chord),
+    );
+  }
+
+  static ChordShape _shapeOf(ProgressionStep s) =>
+      ChordShape(name: '', frets: s.voicing.jsonFrets, fingers: List.filled(6, 0));
+
+  /// Rasguea [shapes] (de [beats] pulsos cada una, o un compás) marcando qué
+  /// suena: [mark] da, del acorde k, la parte del orden y el acorde en su sección.
+  Future<void> _play(
+    List<ChordShape> shapes,
+    List<int>? beats, {
+    ProgressionFeel feel = ProgressionFeel.straight,
+    required ({int? part, int chord}) Function(int) mark,
+  }) async {
     final token = ++_listenToken;
     _listenTimer?.cancel();
-    _listening = plan;
     final bpm = state.bpm;
     final loop = state.loop;
-    final count = plan.steps.length;
-    final beats = plan.progression.beats;
-    final shapes = [
-      for (final s in plan.steps)
-        ChordShape(name: '', frets: s.voicing.jsonFrets, fingers: List.filled(6, 0)),
-    ];
+    final count = shapes.length;
     final sounds = progressionStrum(
       shapes,
       bpm: bpm,
-      feel: state.progression.feel,
+      feel: feel,
       pattern: strummingPatterns[state.pattern],
       beats: beats,
     );
     final seconds = progressionAudioSeconds(count, bpm: bpm, loop: loop, beats: beats);
     final audio = ref.read(audioServiceProvider);
-    state = state.copyWith(playingIndex: 0);
+    final first = mark(0);
+    state = state.copyWith(playingIndex: first.chord, playingPart: first.part);
+    var current = 0;
     // El temporizador cuenta sus vueltas (`tick` salta si una se atrasa):
     // así la marca sigue al audio, y en los tests avanza con el reloj falso.
     _listenTimer = Timer.periodic(listenFrame, (timer) {
@@ -418,8 +511,10 @@ class ProgressionsViewModel extends Notifier<ProgressionsState> {
       final i = progressionChordAt(elapsed, count, bpm: bpm, loop: loop, beats: beats);
       if (i == null) {
         _stopListening(silence: false);
-      } else if (i != state.playingIndex) {
-        state = state.copyWith(playingIndex: i);
+      } else if (i != current) {
+        current = i;
+        final m = mark(i);
+        state = state.copyWith(playingIndex: m.chord, playingPart: m.part);
       }
     });
     await (loop ? audio.loopTab(sounds, seconds: seconds) : audio.playTab(sounds, seconds: seconds));
@@ -430,7 +525,7 @@ class ProgressionsViewModel extends Notifier<ProgressionsState> {
     _listenTimer?.cancel();
     _listenTimer = null;
     final wasPlaying = state.playingIndex != null;
-    if (wasPlaying) state = state.copyWith(playingIndex: null);
+    if (wasPlaying) state = state.copyWith(playingIndex: null, playingPart: null);
     if (wasPlaying && silence) ref.read(audioServiceProvider).stopAll();
   }
 
@@ -457,9 +552,9 @@ class ProgressionsViewModel extends Notifier<ProgressionsState> {
   }
 
   void _restartIfPlaying() {
-    final plan = _listening;
-    if (state.playingIndex == null || plan == null) return;
-    unawaited(_start(plan));
+    final again = _listening;
+    if (state.playingIndex == null || again == null) return;
+    unawaited(again());
   }
 
   /// Usa [choice] para el acorde [index] de la progresión (glosario).
@@ -544,6 +639,71 @@ class ProgressionsViewModel extends Notifier<ProgressionsState> {
 
   void clearCustom() => _setCustom(const [], const []);
 
+  /// Edita la sección [index] (las digitaciones elegidas a mano se descartan:
+  /// son de la otra).
+  void selectSection(int index) {
+    if (index < 0 || index >= state.sections.length || index == state.section) return;
+    _stopListening();
+    state = state.copyWith(section: index, chosen: const {});
+  }
+
+  /// Agrega una sección vacía (hasta `songMaxSections`), la deja para editar
+  /// y la suma al final del orden (si cabe).
+  void addSection() {
+    if (state.sections.length >= songMaxSections) return;
+    final index = state.sections.length;
+    _setSong(
+      [...state.sections, const []],
+      state.order.length < songMaxParts ? [...state.order, index] : state.order,
+      section: index,
+    );
+  }
+
+  /// Quita la sección [index] y sus partes del orden (siempre queda una).
+  void removeSection(int index) {
+    if (state.sections.length <= 1 || index < 0 || index >= state.sections.length) return;
+    final section = state.section > index || state.section == state.sections.length - 1
+        ? state.section - 1
+        : state.section;
+    _setSong(
+      [...state.sections]..removeAt(index),
+      orderWithoutSection(state.order, index),
+      section: section < 0 ? 0 : section,
+    );
+  }
+
+  /// Agrega al final del orden una parte de la sección [index].
+  void addPart(int index) {
+    if (index < 0 || index >= state.sections.length || state.order.length >= songMaxParts) return;
+    _setSong(state.sections, [...state.order, index]);
+  }
+
+  /// Quita la parte [part] del orden (siempre queda una).
+  void removePart(int part) {
+    if (state.order.length <= 1 || part < 0 || part >= state.order.length) return;
+    _setSong(state.sections, [...state.order]..removeAt(part));
+  }
+
+  /// El botón de escuchar toca la canción entera o solo la sección.
+  void setListenSong({required bool song}) {
+    if (song == state.listenSong) return;
+    _stopListening();
+    state = state.copyWith(listenSong: song);
+  }
+
+  void _setSong(List<List<CustomChord>> sections, List<int> order, {int? section}) {
+    _stopListening();
+    final next = section ?? state.section;
+    state = state.copyWith(
+      sections: sections,
+      order: order,
+      section: next,
+      progressionId: customProgressionId,
+      chosen: next == state.section ? state.chosen : const {},
+    );
+    _saveSong();
+  }
+
   /// Pone una copia del acorde [index] justo detrás de él.
   void duplicateCustom(int index) {
     if (index < 0 || index >= state.custom.length) return;
@@ -575,11 +735,14 @@ class ProgressionsViewModel extends Notifier<ProgressionsState> {
   /// con ese nombre, la reemplaza). `false` si no se guardó: sin acordes, sin
   /// nombre o sin lugar.
   bool saveCustomAs(String name) {
-    if (state.custom.isEmpty || name.trim().isEmpty) return false;
+    // Se guarda la canción entera, sin las secciones que quedaron vacías.
+    final song = withoutEmptySections(state.sections, state.order);
+    if (song.sections.isEmpty || name.trim().isEmpty) return false;
     final item = SavedProgression(
       name: name.trim(),
       mode: state.customMode,
-      chords: [for (final (i, n) in state.custom.indexed) (numeral: n, beats: state.customBeats[i])],
+      sections: song.sections,
+      order: song.order,
     );
     final next = upsertSaved(state.saved, item);
     if (next == null) return false;
@@ -592,7 +755,8 @@ class ProgressionsViewModel extends Notifier<ProgressionsState> {
     if (index < 0 || index >= state.saved.length) return;
     final item = state.saved[index];
     setCustomMode(item.mode);
-    _setCustom([for (final c in item.chords) c.numeral], [for (final c in item.chords) c.beats]);
+    _setSong(item.sections, item.order, section: 0);
+    state = state.copyWith(chosen: const {});
   }
 
   /// Quita la guardada [index] de "Mis progresiones".
@@ -609,28 +773,25 @@ class ProgressionsViewModel extends Notifier<ProgressionsState> {
   void _setCustom(List<String> custom, List<int> beats) {
     _stopListening();
     state = state.copyWith(
-      custom: custom,
-      customBeats: beats,
+      sections: [...state.sections]
+        ..[state.section] = [for (final (i, n) in custom.indexed) (numeral: n, beats: beats[i])],
       progressionId: customProgressionId,
       chosen: const {},
     );
-    _saveCustom([for (final (i, n) in custom.indexed) customToken(n, beats[i])]);
+    _saveSong();
     // Cuenta como progresión generada a partir de 3 acordes.
     if (custom.length >= 3) {
       _countGeneration('$customProgressionId:${custom.join('-')}@${state.tonic}');
     }
   }
 
-  Future<void> _saveCustom(List<String> custom) async {
-    await _loaded;
-    try {
-      await ref
-          .read(keyValueStoreProvider)
-          .save(StorageBoxes.userProgress, _keyCustom, custom);
-    } catch (e, st) {
-      debugPrint('ProgressionsViewModel._saveCustom error: $e\n$st');
-    }
-  }
+  /// Guarda la canción de "Mi progresión" (secciones y orden).
+  void _saveSong() => _saveSetting(_keySong, {
+    'sections': [
+      for (final section in state.sections) [for (final c in section) customToken(c.numeral, c.beats)],
+    ],
+    'order': state.order,
+  });
 
   /// Cuenta [key] una sola vez. La clave se arma al llamar (no tras el
   /// `await`) para contar lo que el usuario eligió aunque ya haya cambiado.
