@@ -1,6 +1,7 @@
 import 'caged/caged_theory.dart';
 import 'fingering_theory.dart';
 import 'linear_four_notes/linear_four_notes_theory.dart';
+import 'one_finger/one_finger_theory.dart';
 import 'pentatonic_two_notes/pentatonic_two_notes_theory.dart';
 import 'three_nps/three_nps_theory.dart';
 
@@ -20,6 +21,7 @@ class FingeringSystemsRegistry {
     'three_nps': threeNpsTheory,
     'linear_four_notes': linearFourNotesTheory,
     'pentatonic_two_notes': pentatonicTwoNotesTheory,
+    'one_finger': oneFingerTheory,
   };
 
   static FingeringSystemTheory? theoryFor(String systemId) =>
@@ -33,6 +35,7 @@ class FingeringSystemsRegistry {
     'three_nps',
     'pentatonic_two_notes',
     'linear_four_notes',
+    'one_finger',
   ];
 
   /// De qué sistema sale la posición predeterminada de una escala: 3NPS en las
@@ -42,5 +45,6 @@ class FingeringSystemsRegistry {
     'pentatonic_two_notes',
     'caged',
     'linear_four_notes',
+    'one_finger',
   ];
 }

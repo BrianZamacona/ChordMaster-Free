@@ -74,6 +74,7 @@ cada nota pertenezca a la escala. No bajar la tolerancia de 0.
   indica ("G (usa la digitación E)").
 - Escalas: CAGED = notas de la escala dentro de la ventana de cada forma (≤ 5 trastes);
   3NPS = escalera de 3 notas por cuerda (solo 7 notas); 4NPS = 3NPS + 1 nota por cuerda;
+  un dedo por traste = cajas de 4 trastes con un estiramiento por lado (solo 7 notas);
   2NPS = cajas pentatónicas (blues añade la b5 entre 4ª y 5ª). Los modos tienen sus propios
   `intervals` (rotaciones de la mayor).
 - Pentatónica de cada modo (decisión del usuario tras revisar las apps jam; regla en
@@ -120,7 +121,14 @@ cada nota pertenezca a la escala. No bajar la tolerancia de 0.
   a agudo); si aun así hacen falta cinco (la forma C menor, x42124), se apaga la cuerda de un
   borde, primero la 1ª, solo si no quita ninguna nota (queda x4212x). Test:
   `test/data/chord_fingers_test.dart`.
-- Berklee NO está implementado: no hay definición con trastes verificada. No inventarla.
+- Un dedo por traste (`one_finger`, decisión del usuario con una guía de Berklee que trajo): la idea del
+  método de Berklee, sin su nombre (la guía no se pudo comparar con el libro, y sus reglas no
+  reproducen sus propias cajas de las menores). Regla en `regenerate_scales_master.py`
+  (`one_finger_box`): desde cada grado en la 6ª, sin cuerdas al aire, índice en el traste de esa nota
+  o uno más, dedos en p..p+3 y solo el 1 (p-1) y el 4 (p+4) se estiran, sin p+3 y p+4 en una cuerda,
+  2 o 3 notas por cuerda; gana la de menos estiramientos, luego más notas, luego menos del meñique,
+  luego el índice más bajo. Da exactas las 7 posiciones de Do mayor de la guía
+  (`test/data/one_finger_positions_test.dart`). Solo escalas de 7 notas.
 - Progresiones: candidatos = digitaciones de `chords.json` (principal, CAGED, voicings) sin costo ergonómico infinito;
   **formas abiertas primero** (decisión del usuario): si el acorde tiene alguna forma abierta
   (`isOpenPosition`: una cuerda al aire y nada más allá del traste 4), solo entran esas; si no
@@ -854,8 +862,7 @@ Objetivo: código legible y mantenible antes que ingenioso. Capas (puertos y ada
 1. Revisión en un dispositivo físico: rediseño completo, versión bilingüe, "Mi progresión",
    tarjetas "¿Por qué?", notificaciones, audio y afinador con una nota real. Lecciones: reto
    superado y letra grande.
-2. Berklee, si se consigue una definición verificable.
-3. iOS (al compilar por primera vez en una Mac): comprobar que `pod install` y la app funcionan
+2. iOS (al compilar por primera vez en una Mac): comprobar que `pod install` y la app funcionan
    con el `ios/Podfile` del repo (la plantilla de Flutter con `platform :ios, '13.0'` y, en el
    `post_install`, `PERMISSION_MICROPHONE=1` y `PERMISSION_NOTIFICATIONS=1` de
    `permission_handler`; sin eso el micrófono queda siempre denegado) y que el micrófono se
