@@ -854,11 +854,14 @@ Objetivo: código legible y mantenible antes que ingenioso. Capas (puertos y ada
 1. Revisión en un dispositivo físico: rediseño completo, versión bilingüe, "Mi progresión",
    tarjetas "¿Por qué?", notificaciones, audio y afinador con una nota real. Lecciones: reto
    superado y letra grande.
-2. Sandbox TS: corregir la 7ª diatónica del grado VII (allí sigue como disminuida; aquí se
-   corrigió a 7ª menor y se regeneraron solo esas filas del golden, 2005 → 1983).
-3. Berklee, si se consigue una definición verificable.
-4. iOS (al compilar por primera vez en una Mac): `permission_handler` necesita en el
-   `post_install` del `ios/Podfile` que genere Flutter
-   `config.build_settings['GCC_PREPROCESSOR_DEFINITIONS'] ||= ['$(inherited)', 'PERMISSION_MICROPHONE=1', 'PERMISSION_NOTIFICATIONS=1']`;
-   sin eso el micrófono queda siempre denegado. `Info.plist` ya trae
-   `NSMicrophoneUsageDescription`.
+2. Berklee, si se consigue una definición verificable.
+3. iOS (al compilar por primera vez en una Mac): comprobar que `pod install` y la app funcionan
+   con el `ios/Podfile` del repo (la plantilla de Flutter con `platform :ios, '13.0'` y, en el
+   `post_install`, `PERMISSION_MICROPHONE=1` y `PERMISSION_NOTIFICATIONS=1` de
+   `permission_handler`; sin eso el micrófono queda siempre denegado) y que el micrófono se
+   pide y funciona. `Debug.xcconfig` y `Release.xcconfig` ya incluyen los de Pods. Nunca se
+   probó en una Mac.
+
+El sandbox TS (`BrianZamacona/calculadora-diagramas-guitarra`) tiene la misma corrección de la
+7ª del grado VII y un test que compara su salida con `test/fixtures/golden/double_stops.json`:
+si se cambia el golden aquí, se copia allá.
