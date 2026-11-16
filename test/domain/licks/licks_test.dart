@@ -9,6 +9,7 @@ import 'package:chordmaster_free/domain/licks/licks.dart';
 import 'package:chordmaster_free/domain/practice/tab_notation.dart';
 import 'package:chordmaster_free/domain/practice/tab_playback.dart';
 import 'package:chordmaster_free/domain/theory/notes.dart';
+import 'package:chordmaster_free/domain/theory/tunings.dart';
 import 'package:flutter_test/flutter_test.dart';
 
 void main() {
@@ -111,6 +112,75 @@ void main() {
         final used = {for (final l in licks.where((l) => l.style == style)) ...l.techniques};
         expect(used, containsAll(info.traits), reason: style.name);
       }
+    });
+  });
+
+  group('afinaciones (lo que dice cada riff)', () {
+    String name(Lick l, TabNote n) => pitchClassName(tabMidi(n, tuning: l.tuning.openMidi));
+
+    test('hay un riff en cada afinación que no es la estándar', () {
+      expect(
+        {for (final l in licks) l.tuning}..remove(GuitarTuning.standard),
+        GuitarTuning.values.toSet()..remove(GuitarTuning.standard),
+      );
+      for (final l in licks.where((l) => l.tuning != GuitarTuning.standard)) {
+        expect(l.kind, LickKind.riff, reason: l.id);
+        // Usan cuerdas al aire: no se transponen.
+        expect(isMovable(l), isFalse, reason: l.id);
+      }
+    });
+
+    test('Drop D: un dedo sobre la 6ª, la 5ª y la 4ª; D5 al aire con palma, F5 en el 3 y G5 en el 5', () {
+      final l = lick('grunge_drop_d');
+      expect(l.tuning, GuitarTuning.dropD);
+      for (final n in played(l)) {
+        expect([for (final t in n.tones) (t.string, t.fret)], [(6, n.fret), (5, n.fret), (4, n.fret)]);
+        expect(n.technique == TabTechnique.palmMute, n.fret == 0, reason: '$n');
+      }
+      expect({for (final n in played(l)) (n.fret, name(l, n))}, {(0, 'D'), (3, 'F'), (5, 'G')});
+      // Raíz, quinta y octava.
+      final g5 = played(l).firstWhere((n) => n.fret == 5);
+      expect([for (final t in g5.tones) pitchClassName(tabMidi(t, tuning: l.tuning.openMidi))], ['G', 'D', 'G']);
+    });
+
+    test('medio tono abajo: la 6ª al aire es D# y va con palma; cierra en el D# de la 4ª con vibrato', () {
+      final l = lick('stadium_half_step');
+      expect(l.tuning, GuitarTuning.halfStepDown);
+      for (final n in played(l).where((n) => n.string == 6 && n.fret == 0)) {
+        expect(n.technique, TabTechnique.palmMute);
+        expect(name(l, n), 'D#');
+      }
+      final last = played(l).last;
+      expect((last.string, name(l, last), last.technique), (4, 'D#', TabTechnique.vibrato));
+      expect(l.scale.root, noteIndex('D#'));
+    });
+
+    test('Open G: G al aire, C en el 5 y D en el 7, en las tres cuerdas graves', () {
+      final l = lick('southern_open_g');
+      expect(l.tuning, GuitarTuning.openG);
+      final chords = [for (final n in played(l)) if (n.isChord) n];
+      for (final c in chords) {
+        expect([for (final t in c.tones) (t.string, t.fret)], [(5, c.fret), (4, c.fret), (3, c.fret)]);
+      }
+      expect([for (final c in chords) (c.fret, name(l, c))], [(0, 'G'), (5, 'C'), (0, 'G'), (7, 'D')]);
+      // Entre los acordes, notas sueltas en las agudas (2ª y 1ª).
+      expect(played(l).where((n) => !n.isChord).every((n) => n.string <= 3), isTrue);
+    });
+
+    test('DADGAD: al aire suena Dsus4; hammer-on de G a A en la 3ª y, en la segunda vuelta, pull-off de E a D en la 1ª', () {
+      final l = lick('folk_dadgad');
+      expect(l.tuning, GuitarTuning.dadgad);
+      expect({for (var s = 1; s <= 6; s++) pitchClassName(l.tuning.openMidi[s - 1])}, {'D', 'G', 'A'});
+      final notes = played(l);
+      final hammers = [for (final (i, n) in notes.indexed) if (n.technique == TabTechnique.hammerOn) i];
+      for (final i in hammers) {
+        expect((notes[i].string, name(l, notes[i - 1]), name(l, notes[i])), (3, 'G', 'A'));
+      }
+      final pull = notes.indexWhere((n) => n.technique == TabTechnique.pullOff);
+      expect(pull, greaterThanOrEqualTo(8)); // en la segunda vuelta
+      expect((notes[pull].string, name(l, notes[pull - 1]), name(l, notes[pull])), (1, 'E', 'D'));
+      // Baja de la 6ª a la 1ª y vuelve.
+      expect([for (final n in notes.take(5)) n.string], [6, 4, 3, 2, 1]);
     });
   });
 

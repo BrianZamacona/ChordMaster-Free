@@ -18,6 +18,10 @@ List<String> tabStringNames([GuitarTuning tuning = GuitarTuning.standard]) => [
     if (i == 0) pitchClassName(midi).toLowerCase() else pitchClassName(midi),
 ];
 
+/// Ancho de la columna con el nombre de cada cuerda: más ancha si alguno lleva
+/// sostenido (D# en la afinación medio tono abajo), para que no toque la línea.
+double tabLabelWidth(List<String> names) => names.any((n) => n.length > 1) ? 26.0 : 18.0;
+
 /// Tablatura de una lección: seis líneas (la 1ª cuerda arriba) y el traste de
 /// cada nota, de izquierda a derecha, en renglones de [tabNotesPerLine].
 ///
@@ -304,7 +308,7 @@ class _TabPainter extends CustomPainter {
     this.chords = const {},
   });
 
-  static const labelWidth = 18.0;
+  double get labelWidth => tabLabelWidth(stringNames);
 
   final List<String> stringNames;
   final List<TabNote> notes;
