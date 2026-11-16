@@ -616,7 +616,54 @@ teoría "¿Por qué?" (`harmony.dart`).
 
 | App | Estado | Fecha |
 |---|---|---|
-| Pocket Composer | pendiente | |
+| Pocket Composer | revisada | 2026-11-15 |
+
+### Pocket Composer (componer) — 2026-11-15
+
+Editor de progresiones: se elige una escala (decenas, con sus modos) y una cuadrícula muestra los
+acordes de cada grado (tríadas hasta 7 notas) o de otras fuentes; tocar uno lo hace sonar y, con
+un compás elegido, lo inserta. Debajo, el mástil con las notas del acorde sobre las de la escala.
+Lo mejor: las fuentes armónicas (paralelas, dominantes secundarias, sustituto tritonal…) a un toque
+mientras se compone.
+
+| Idea | Estado | Dónde encaja | Esfuerzo | Notas |
+|---|---|---|---|---|
+| Cuadrícula grado × acorde: cada grado con su tríada y sus extensiones (7ª, 9ª, 11ª, 13ª) de la escala elegida | parcial | "Mi progresión" (`progressions_viewmodel.dart`) | M | Hoy solo los siete grados de la mayor en tríada. Las 7ªs diatónicas ya salen de `scale_insights.dart`; las extensiones, solo las que existan en chords.json |
+| Escala de base a elegir (menor, modos, menor armónica/melódica) para armar la progresión | parcial | "Mi progresión" | M | Las progresiones de fábrica ya tienen familias (`ProgressionKind`), pero "Mi progresión" es solo mayor |
+| Fuentes armónicas a un toque: paralelas (intercambio modal), dominante secundaria, tono sensible secundario (vii° de cada grado), sustituto tritonal | parcial | "Mi progresión", reglas de `circle_harmony.dart` | M | `dominantOf` y el intercambio modal (iv, ♭VI, ♭VII) ya existen en el círculo; el sustituto tritonal y el vii°/x son nuevos. Cada uno con su "¿Por qué?" |
+| Armonía negativa (cuadrícula "Escala negativa") | nueva | — | M | Teoría avanzada y poco usada en guitarra; dudoso para nuestro público |
+| Compases con duración por acorde (1/4 a 7/4, medio compás, un acorde por pulso) y repetir | nueva | `ProgressionBuilder`, `progression_playback.dart` | M | Hoy un acorde = un compás. Pide que la reproducción y "¿Qué tocar encima?" respeten la duración |
+| Secciones (Main A, B…) para armar una canción entera | nueva | "Mi progresión" | L | Un nivel más arriba: progresión → canción |
+| Estilo de acompañamiento por acorde (bloque, arpegio, arpegio + bloque, swing) | parcial | Rasgueo de Progresiones (`strummingPatterns`) | M | Ya hay patrón de rasgueo para toda la vuelta; falta el arpegio y que cambie por acorde |
+| Mástil con las notas del acorde marcadas dentro de la escala (todas las octavas o solo la forma) | parcial | "¿Qué tocar encima?" (`degreeArpeggio`) | S | Hoy son notas e intervalos en texto; el diapasón por acorde sería nuevo, con el painter de siempre |
+| Varias progresiones guardadas con nombre ("Mis progresiones", abrir reciente) | parcial | "Mi progresión" (`progressions_custom`) | S | Hoy se guarda una sola |
+| Editar compases: duplicar, copiar, cortar, pegar, borrar, seleccionar todo | nueva | "Mi progresión" | S | Hoy solo se agrega y se quita |
+| Ficha de escala: nombres alternativos, estructura, pentagrama, armonización por tamaño de acorde, modos | ya está | Detalle de escala (`scale_insights.dart`) | — | Nos falta el pentagrama, que no usamos en ningún lado (la app es de tablatura) |
+| Tempo, ▶ y bucle de la vuelta | ya está | Progresiones, escuchar | — | |
+| Mezclador por pista (guitarras, octava, inversión, volumen) | parcial | — | L | Tenemos una sola pista de guitarra; bajo y batería ya estaban decididos para después |
+
+Lo que hacemos mejor: digitaciones reales para guitarra con camino óptimo (ellos solo marcan notas
+en el mástil), la explicación «¿Por qué?» de cada grado y cadencia, y «¿Qué tocar encima?».
+Para decidir: ver el resumen de la familia.
+Sin ver: los estilos de sonido de pago (los acordes "grises" no tienen estilo en la versión gratis).
+
+## Resumen de la familia componer
+
+Una sola app. Por valor:
+1. **"Mi progresión" con más acordes**: cada grado con su 7ª (y extensiones que existan en
+   chords.json) y una escala de base a elegir (mayor, menor, modos).
+2. **Fuentes armónicas a un toque** mientras se compone: intercambio modal, dominante secundaria,
+   vii° secundario y sustituto tritonal, cada una con su «¿Por qué?» y las reglas del círculo.
+3. **Duración por acorde** (medio compás, un pulso…) para que la vuelta suene como se piensa.
+4. **Varias progresiones guardadas** y editar compases (duplicar, copiar, pegar).
+5. Después, si se quiere: el mástil por acorde dentro de la escala, el acompañamiento arpegiado y
+   las secciones de canción.
+
+Para decidir:
+- ¿"Mi progresión" crece (7ªs, escala de base, fuentes armónicas) o se queda simple para principiantes?
+- ¿Duración por acorde y secciones (canción entera) o solo un acorde por compás?
+- ¿Armonía negativa? (propuesta: no, es poco útil para el público de la app).
+- ¿Varias progresiones guardadas y edición de compases?
 
 ## Plantilla de ficha
 
