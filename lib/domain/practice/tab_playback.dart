@@ -18,10 +18,15 @@ const tabNoteRingSeconds = 1.2;
 /// Cuánto suena un armónico: más que una nota pulsada (es una campana).
 const harmonicRingSeconds = 2.0;
 
-/// MIDI de una nota de tablatura (cuerda 1 = mi aguda).
-int tabMidi(TabNote note) =>
-    standardOpenStringMidi[note.string - 1] +
+/// MIDI de una nota de tablatura (cuerda 1 = mi aguda) en la afinación
+/// [tuning] (MIDI de cada cuerda al aire, de la 1ª a la 6ª; `GuitarTuning`).
+/// Un armónico natural suena sobre la cuerda al aire ([naturalHarmonics]).
+int tabMidi(TabNote note, {List<int> tuning = standardOpenStringMidi}) =>
+    tuning[note.string - 1] +
     (note.technique == TabTechnique.harmonic ? naturalHarmonics[note.fret] ?? note.fret : note.fret);
+
+/// [tabMidi] en [tuning] (para usarla dentro de funciones con su propio nombre).
+int tabMidiIn(TabNote note, List<int> tuning) => tabMidi(note, tuning: tuning);
 
 /// Armónicos naturales: el traste donde se toca la cuerda y cuánto suena sobre
 /// ella al aire (12: una octava; 7: una octava y una quinta; 5: dos octavas).
@@ -32,10 +37,10 @@ const naturalHarmonics = {12: 12, 7: 19, 5: 24};
 /// de la raíz, con la cuarta (4:3) cada tres; con octavas o una nota sola, 1.
 /// El micrófono busca la nota esperada con ese periodo: la quinta borra el de
 /// la raíz sola.
-int tabChordPeriodDivisor(TabNote note) {
+int tabChordPeriodDivisor(TabNote note, {List<int> tuning = standardOpenStringMidi}) {
   var divisor = 1;
   for (final t in note.tones.skip(1)) {
-    final d = switch ((tabMidi(t) - tabMidi(note)) % 12) {
+    final d = switch ((tabMidi(t, tuning: tuning) - tabMidi(note, tuning: tuning)) % 12) {
       perfectFifthSemitones => 2,
       perfectFourthSemitones => 3,
       _ => 1,
@@ -50,7 +55,8 @@ const perfectFifthSemitones = 7, perfectFourthSemitones = 5;
 /// El micrófono separa un acorde por su periodo solo si es de quintas (power
 /// chord: [tabChordPeriodDivisor] mayor que 1). Otro acorde, como el golpe con
 /// palma de la pompe, no se espera: se siguen las notas de alrededor.
-bool tabMicHears(TabNote note) => !note.isChord || tabChordPeriodDivisor(note) > 1;
+bool tabMicHears(TabNote note, {List<int> tuning = standardOpenStringMidi}) =>
+    !note.isChord || tabChordPeriodDivisor(note, tuning: tuning) > 1;
 
 /// Notas por renglón, como mucho: la pantalla dibuja la tablatura de a tantas
 /// notas (a 360 dp caben sin apretarse) y cada renglón se puede practicar suelto.
@@ -210,7 +216,9 @@ List<StringSound> tabSounds(
   List<TabNote> notes, {
   required int bpm,
   TabSwing swing = TabSwing.none,
+  List<int> tuning = standardOpenStringMidi,
 }) {
+  int tabMidi(TabNote n) => tabMidiIn(n, tuning);
   final onsets = tabOnsetSeconds(notes, bpm: bpm, swing: swing);
   final voices = <_Voice>[];
   final ringing = <int, _Voice>{};

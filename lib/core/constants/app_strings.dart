@@ -1871,6 +1871,10 @@ class AppStrings {
   static String get licksKey => tr(es: 'Tonalidad', en: 'Key');
   static String get licksKeyDown => tr(es: 'Bajar la tonalidad', en: 'Lower the key');
   static String get licksKeyUp => tr(es: 'Subir la tonalidad', en: 'Raise the key');
+  static String licksTuning(String name, String notes, String howTo) => tr(
+    es: 'Afinación $name ($notes). $howTo Las letras de las cuerdas de la tablatura son las de esta afinación.',
+    en: '$name tuning ($notes). $howTo The string letters on the tab are those of this tuning.',
+  );
   static String get licksKeyFixed => tr(
     es: 'Usa cuerdas al aire: suena en su tonalidad, no se transpone.',
     en: 'It uses open strings: it plays in its own key and is not transposed.',

@@ -15,6 +15,7 @@ import '../../domain/licks/licks.dart';
 import '../../domain/practice/play_along.dart';
 import '../../domain/practice/session_summary.dart';
 import '../../domain/theory/notes.dart';
+import '../../domain/theory/tunings.dart';
 import '../../services/session_log.dart';
 import '../../ui/section_routes.dart';
 import '../../ui/theme.dart';
@@ -98,6 +99,30 @@ class LickDetailScreen extends ConsumerWidget {
                     key: const Key('lick-scale'),
                     style: musicMono(fontSize: 13, color: p.textSecondary),
                   ),
+                  if (lick.tuning != GuitarTuning.standard) ...[
+                    const SizedBox(height: 8),
+                    Container(
+                      key: const Key('lick-tuning'),
+                      padding: const EdgeInsets.all(10),
+                      decoration: BoxDecoration(
+                        color: p.accent.withValues(alpha: 0.12),
+                        borderRadius: BorderRadius.circular(10),
+                      ),
+                      child: Row(
+                        crossAxisAlignment: CrossAxisAlignment.start,
+                        children: [
+                          Icon(Icons.tune, size: 18, color: p.accent),
+                          const SizedBox(width: 8),
+                          Expanded(
+                            child: Text(
+                              AppStrings.licksTuning(lick.tuning.name.text, lick.tuning.notes, lick.tuning.howTo.text),
+                              style: text.bodySmall,
+                            ),
+                          ),
+                        ],
+                      ),
+                    ),
+                  ],
                   const SizedBox(height: 8),
                   _KeyPicker(lick: lick, root: scale.root, onChanged: (r) => vm.setRoot(lick.id, r)),
                   const SizedBox(height: 4),
@@ -122,6 +147,7 @@ class LickDetailScreen extends ConsumerWidget {
                     chordLabels: lickChordLabels(lick, notes, scale.root),
                     backing: backing,
                     swing: lick.swing,
+                    tuning: lick.tuning,
                     onPlayed: (r) => _played(context, ref, lick, r),
                     onBpmChanged: (b) => vm.setTempo(lick.id, b),
                   ),

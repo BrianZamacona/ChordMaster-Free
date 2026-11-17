@@ -14,6 +14,7 @@ import 'package:chordmaster_free/domain/licks/licks.dart';
 import 'package:chordmaster_free/domain/open_chords/chord_shape.dart';
 import 'package:chordmaster_free/domain/practice/tab_playback.dart';
 import 'package:chordmaster_free/domain/theory/notes.dart';
+import 'package:chordmaster_free/domain/theory/tunings.dart';
 import 'package:chordmaster_free/features/lessons/lesson_tab.dart';
 import 'package:chordmaster_free/features/lessons/tab_player.dart';
 import 'package:chordmaster_free/features/licks/lick_rhythm_part.dart';
@@ -133,6 +134,23 @@ void main() {
           expect(tester.getRect(f).right, lessThanOrEqualTo(360), reason: k);
           expect(tester.getRect(f).left, greaterThanOrEqualTo(0), reason: k);
         }
+      });
+
+      testWidgets('en otra afinación: el aviso dice cuál y cómo, y la tablatura lleva sus letras', (tester) async {
+        await open(tester, '/licks/grunge_drop_d', code: code);
+        final banner = find.byKey(const Key('lick-tuning'));
+        await tester.ensureVisible(banner);
+        await settle(tester);
+        expect(tester.getRect(banner).right, lessThanOrEqualTo(360));
+        expect(
+          find.text(AppStrings.licksTuning(GuitarTuning.dropD.name.text, 'D A D G B E', GuitarTuning.dropD.howTo.text)),
+          findsOneWidget,
+        );
+        expect(tester.takeException(), isNull);
+        // En la estándar no hay aviso.
+        appRouter.go('/licks/${licks.first.id}');
+        await settle(tester);
+        expect(find.byKey(const Key('lick-tuning')), findsNothing);
       });
 
       testWidgets('el detalle cabe: tablatura, marcas y botones', (tester) async {

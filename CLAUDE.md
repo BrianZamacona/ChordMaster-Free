@@ -507,8 +507,15 @@ cada nota pertenezca a la escala. No bajar la tolerancia de 0.
   el jazz gitano, decisión del usuario tras revisar las apps de licks: la pompe con bajo que
   alterna fundamental y quinta y golpes de dos notas con palma, y un arpegio de m6 sobre la menor
   melódica; test en `gypsy_jazz_test.dart`). Nada de riffs
-  reconocibles: se enseña la técnica del estilo. Solo afinación
-  estándar por ahora (decisión del usuario; las abiertas o graves, después).
+  reconocibles: se enseña la técnica del estilo. Afinaciones (decisión del usuario, 2026-11-16;
+  `GuitarTuning` en `lib/domain/theory/tunings.dart`): estándar, Drop D, medio tono abajo (D# G# C#
+  F# A# D#), Open G y DADGAD; `Lick.tuning` (estándar si no se dice). `tabMidi`, `tabSounds`, el
+  micrófono (`NoteFollower`/`PlayAlongSession`) y las letras de las cuerdas (`tabStringNames`,
+  `LessonTabView.tuning`) reciben la afinación; `TabPlayer.tuning` la reparte. La escala y la tónica
+  del lick son las que suenan en su afinación. Un riff propio por afinación, detrás del lick de su
+  estilo: `grunge_drop_d`, `stadium_half_step`, `southern_open_g`, `folk_dadgad` (usan cuerdas al
+  aire: no se transponen). El detalle avisa la afinación y cómo llegar a ella (`howTo`, con test
+  contra las alturas); la parte rítmica sigue en estándar (son las digitaciones de chords.json).
 - Datos en `lib/domain/licks/licks.dart` (fuente única; se componen, no salen de una regla). Cada
   estilo (`lickStyleInfo`) declara nombre, resumen y `traits` (técnicas que lo distinguen); cada
   frase (`Lick`) su tipo (riff, lick, relleno o solo; decisión del usuario tras revisar las apps

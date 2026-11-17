@@ -10,6 +10,7 @@ import '../../domain/licks/lick.dart';
 import '../../domain/licks/lick_browse.dart';
 import '../../domain/licks/licks.dart';
 import '../../domain/theory/notes.dart';
+import '../../domain/theory/tunings.dart';
 import '../../ui/section_routes.dart';
 import '../../ui/theme.dart';
 import 'lick_texts.dart';
@@ -253,7 +254,8 @@ class _LickCard extends StatelessWidget {
                     const SizedBox(height: 2),
                     Text(
                       '${lickKindLabel(lick.kind)} · ${guideLevelTitle(lick.level).text} · '
-                      '${lickScaleLabel(lick.scale)}',
+                      '${lickScaleLabel(lick.scale)}'
+                      '${lick.tuning == GuitarTuning.standard ? '' : ' · ${lick.tuning.name.text}'}',
                       style: text.bodySmall?.copyWith(color: p.textSecondary),
                     ),
                     if (lick.techniques.isNotEmpty) ...[

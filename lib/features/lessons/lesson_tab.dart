@@ -8,14 +8,19 @@ import '../../domain/lessons/lesson.dart';
 import '../../domain/practice/tab_notation.dart';
 import '../../domain/practice/tab_playback.dart';
 import '../../domain/theory/notes.dart';
+import '../../domain/theory/tunings.dart';
 import '../../ui/theme.dart';
 
 /// Nombre de cada cuerda en la tablatura, de la 1ª (arriba, minúscula como es
 /// costumbre) a la 6ª. Sale de la afinación, no de una lista aparte.
-List<String> get tabStringNames => [
-  for (final (i, midi) in standardOpenStringMidi.indexed)
+List<String> tabStringNames([GuitarTuning tuning = GuitarTuning.standard]) => [
+  for (final (i, midi) in tuning.openMidi.indexed)
     if (i == 0) pitchClassName(midi).toLowerCase() else pitchClassName(midi),
 ];
+
+/// Ancho de la columna con el nombre de cada cuerda: más ancha si alguno lleva
+/// sostenido (D# en la afinación medio tono abajo), para que no toque la línea.
+double tabLabelWidth(List<String> names) => names.any((n) => n.length > 1) ? 26.0 : 18.0;
 
 /// Tablatura de una lección: seis líneas (la 1ª cuerda arriba) y el traste de
 /// cada nota, de izquierda a derecha, en renglones de [tabNotesPerLine].
@@ -39,7 +44,11 @@ class LessonTabView extends StatelessWidget {
     this.focusLine,
     this.showFingers = false,
     this.chordLabels = const {},
+    this.tuning = GuitarTuning.standard,
   });
+
+  /// Afinación: el nombre de cada cuerda a la izquierda.
+  final GuitarTuning tuning;
 
   final List<TabNote> notes;
 
@@ -119,6 +128,7 @@ class LessonTabView extends StatelessWidget {
                     width: double.infinity,
                     child: CustomPaint(
                       painter: _TabPainter(
+                        stringNames: tabStringNames(tuning),
                         notes: line,
                         previous: i == 0 ? null : notes[starts[i] - 1],
                         // Los tresillos de este renglón, con índices del renglón.
@@ -284,6 +294,7 @@ class _TabLayout {
 
 class _TabPainter extends CustomPainter {
   const _TabPainter({
+    required this.stringNames,
     required this.notes,
     required this.layout,
     required this.palette,
@@ -297,8 +308,9 @@ class _TabPainter extends CustomPainter {
     this.chords = const {},
   });
 
-  static const labelWidth = 18.0;
+  double get labelWidth => tabLabelWidth(stringNames);
 
+  final List<String> stringNames;
   final List<TabNote> notes;
   final _TabLayout layout;
   final AppPalette palette;
@@ -337,7 +349,7 @@ class _TabPainter extends CustomPainter {
     final line = Paint()
       ..color = palette.fretString
       ..strokeWidth = 1;
-    for (final (i, name) in tabStringNames.indexed) {
+    for (final (i, name) in stringNames.indexed) {
       final y = _y(i + 1);
       canvas.drawLine(Offset(labelWidth, y), Offset(size.width, y), line);
       _text(canvas, name, Offset(labelWidth / 2, y), palette.textSecondary, 11);

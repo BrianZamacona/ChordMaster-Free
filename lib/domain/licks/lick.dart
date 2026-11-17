@@ -7,6 +7,7 @@ import '../../core/i18n/tr.dart';
 import '../guides/guides.dart';
 import '../lessons/lesson.dart';
 import '../theory/notes.dart';
+import '../theory/tunings.dart';
 
 /// Riff = frase de acompañamiento que se repite (suele ir en las cuerdas
 /// graves); lick = frase corta de solo; relleno = lo que se toca entre los
@@ -72,7 +73,13 @@ class Lick {
     required this.tab,
     required this.chords,
     this.swing = TabSwing.none,
+    this.tuning = GuitarTuning.standard,
   });
+
+  /// Afinación en que se escribe la tablatura (decisión del usuario: Drop D,
+  /// medio tono abajo, Open G y DADGAD además de la estándar). La escala y la
+  /// tónica son las que suenan en esa afinación.
+  final GuitarTuning tuning;
 
   final String id;
   final LickStyle style;

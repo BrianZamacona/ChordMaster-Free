@@ -10,6 +10,7 @@ import 'package:chordmaster_free/domain/lessons/lesson_path.dart';
 import 'package:chordmaster_free/domain/lessons/unit_summary.dart';
 import 'package:chordmaster_free/domain/melodies/basics_course.dart';
 import 'package:chordmaster_free/domain/melodies/melody_course.dart';
+import 'package:chordmaster_free/domain/theory/tunings.dart';
 import 'package:chordmaster_free/features/circle/circle_build_screen.dart';
 import 'package:chordmaster_free/features/circle/circle_harmony_screen.dart';
 import 'package:chordmaster_free/features/circle/circle_quiz_screen.dart';
@@ -23,6 +24,7 @@ import 'package:chordmaster_free/features/progressions/progressions_screen.dart'
 import 'package:chordmaster_free/services/key_value_store.dart';
 import 'package:chordmaster_free/ui/navigation.dart';
 import 'package:chordmaster_free/ui/scales/double_stops/double_stops_screen.dart';
+import 'package:chordmaster_free/ui/theme.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:flutter_test/flutter_test.dart';
@@ -544,7 +546,18 @@ void main() {
   });
 
   test('tablatura: nombres de cuerda de la afinación, la 1ª en minúscula', () {
-    expect(tabStringNames, ['e', 'B', 'G', 'D', 'A', 'E']);
+    expect(tabStringNames(), ['e', 'B', 'G', 'D', 'A', 'E']);
+    expect(tabStringNames(GuitarTuning.dropD), ['e', 'B', 'G', 'D', 'A', 'D']);
+    // Con sostenidos (medio tono abajo) la columna se ensancha: "D#" cabe con
+    // aire antes de la línea (medido con la letra de la tablatura).
+    final sharp = tabStringNames(GuitarTuning.halfStepDown);
+    expect(sharp.first, 'd#');
+    final painter = TextPainter(
+      text: TextSpan(text: 'D#', style: musicMono(fontSize: 11)),
+      textDirection: TextDirection.ltr,
+    )..layout();
+    expect(painter.width, lessThanOrEqualTo(tabLabelWidth(sharp) - 4));
+    expect(tabLabelWidth(tabStringNames()), 18);
   });
 
   // Un desborde hace fallar estos tests; lo demás se comprueba midiendo.
